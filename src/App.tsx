@@ -10,6 +10,7 @@ import { CustomerList } from './pages/customer';
 import { PagesList, AddNewPage } from './pages/pages';
 import { AttributeList } from './pages/attribute';
 import { OrderList, AddNewOrder } from './pages/order';
+import { Component } from './pages/settings';
 
 // import components
 import Sider from './layout/Sider';
@@ -88,6 +89,9 @@ const App = () => {
 
 							<Route path='/page/new' exact>
 								<AddNewPage />
+							</Route>
+							<Route path='/settings/components' exact>
+								<Component />
 							</Route>
 						</Switch>
 					</Content>

@@ -120,7 +120,9 @@ const SiderComponent = () => {
 					<Menu.Item key='20'>Manage themes</Menu.Item>
 					<Menu.Item key='21'>Image</Menu.Item>
 					<Menu.Item key='22'>Invoice</Menu.Item>
-					<Menu.Item key='23'>Components</Menu.Item>
+					<Menu.Item key='23'>
+						<Link to='/settings/components'>Components</Link>
+					</Menu.Item>
 				</SubMenu>
 			</Menu>
 		</Sider>
