@@ -129,7 +129,7 @@ const BrandList = ({history}: Props) => {
 
             <div className='categoryListContainer__afterHeader'>
             <Search
-      placeholder="search prdoucts.."
+      placeholder="search brands.."
       size="large"
       onSearch={value => console.log(value)}
       style={{ width: 300 }}

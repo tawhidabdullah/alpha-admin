@@ -33,7 +33,7 @@ interface Props {}
 
 const AddNewProduct = ({  }: Props) => {
 	return (
-		<div className='site-layout-background' style={{ padding: 24, minHeight: 360 }}>
+		<div className='site-layout-background' style={{ padding: 60, minHeight: 360 }}>
 			<div className='addproductSectionTitleContainer'>
 				<h2 className='addprouctSectionTitle'>Add Product</h2>
 			</div>

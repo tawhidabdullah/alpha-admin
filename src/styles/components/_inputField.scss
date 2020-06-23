@@ -2,13 +2,32 @@
 	line-height: 1.6;
 	font-size: 14px;
 	font-weight: 600;
-	color: #666;
+	color: #444;
 }
 
 .addproductSectionContainer {
-	display: flex;
-	justify-content: center;
+	display: grid;
+	grid-gap: 20px;
+	grid-template-columns: minmax(auto, 700px) 250px;
+	grid-template-areas: "lefty righty";
+	color: #444;
 	margin-bottom: 20px;
+}
+
+.addproductSectionContainer-tags {
+	grid-template-columns: 400px minmax(auto, 700px);
+}
+
+.sidebar {
+	grid-area: sidebar;
+}
+
+.content {
+	grid-area: content;
+}
+
+.header {
+	grid-area: header;
 }
 
 .addproductSectionTitleContainer {
@@ -19,7 +38,7 @@
 .addprouctSectionTitle {
 	font-weight: 700;
 	font-size: 20px;
-	margin-left: 55px;
+	// margin-left: 55px;
 }
 
 .addproductSection {
@@ -29,9 +48,7 @@
 }
 
 .addproductSection-left {
-	min-width: 600px;
-	max-width: 600px;
-	margin-right: 20px;
+	grid-area: lefty;
 }
 
 .addproductSection-left-header {
@@ -52,11 +69,36 @@
 }
 
 .addproductSection-right {
-	min-width: 250px;
+	grid-area: righty;
 }
 
 .addproductSection-right-title {
-	font-weight: 700;
-	font-size: 16px;
-	margin-bottom: 15px;
+	line-height: 1.6;
+	font-size: 14px;
+	font-weight: 600;
+	color: #444;
+}
+
+.switchLabelContainer {
+	display: flex;
+	align-items: center;
+	margin-bottom: 20px;
+
+	&-textContainer {
+		margin-left: 20px;
+	}
+
+	&-lable {
+		line-height: 1.6;
+		font-size: 12px !important;
+		font-weight: 600;
+		color: #444;
+	}
+
+	&-desc {
+		line-height: 1.6;
+		font-size: 13px;
+		font-weight: 500;
+		color: #777;
+	}
 }
