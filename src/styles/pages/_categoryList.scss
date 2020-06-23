@@ -1,0 +1,27 @@
+.categoryListContainer {
+	background-color: #fff;
+	margin: 20px;
+	padding: 20px;
+	border-radius: 3px;
+
+	&__header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		&-title {
+			font-weight: 600;
+			font-size: 23px;
+			margin-bottom: 20px;
+		}
+	}
+
+	&__afterHeader {
+		display: flex;
+		justify-content: flex-end;
+		margin-bottom: 18px;
+		margin-top: 5px;
+	}
+
+	&__categoryList {
+	}
+}

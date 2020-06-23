@@ -1,0 +1,62 @@
+.inputFieldLabel {
+	line-height: 1.6;
+	font-size: 14px;
+	font-weight: 600;
+	color: #666;
+}
+
+.addproductSectionContainer {
+	display: flex;
+	justify-content: center;
+	margin-bottom: 20px;
+}
+
+.addproductSectionTitleContainer {
+	display: flex;
+	justify-content: flex-start;
+}
+
+.addprouctSectionTitle {
+	font-weight: 700;
+	font-size: 20px;
+	margin-left: 55px;
+}
+
+.addproductSection {
+	padding: 20px;
+	background-color: #fff;
+	border-radius: 3px;
+}
+
+.addproductSection-left {
+	min-width: 600px;
+	max-width: 600px;
+	margin-right: 20px;
+}
+
+.addproductSection-left-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 15px;
+	cursor: pointer;
+}
+
+.addproductSection-left-header div {
+	padding: 6px;
+}
+.addproductSection-left-header span {
+	color: #40a9ff;
+	font-size: 13px;
+	margin-left: 5px;
+}
+
+.addproductSection-right {
+	min-width: 250px;
+}
+
+.addproductSection-right-title {
+	font-weight: 700;
+	font-size: 16px;
+	margin-bottom: 15px;
+}
