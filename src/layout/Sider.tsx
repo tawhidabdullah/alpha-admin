@@ -90,6 +90,9 @@ const SiderComponent = () => {
 					<Menu.Item key='11'>
 						<Link to='/order'>List Orders</Link>
 					</Menu.Item>
+					<Menu.Item key='12'>
+						<Link to='/order/new'>Add Order</Link>
+					</Menu.Item>
 				</SubMenu>
 
 				<Menu.Item key='13' icon={<TeamOutlined />}>
@@ -100,7 +103,7 @@ const SiderComponent = () => {
 					<Menu.Item key='14'>STMP Configuration</Menu.Item>
 					<Menu.Item key='15'>Auto emails</Menu.Item>
 					<Menu.Item key='16'>Compose Email</Menu.Item>
-					<Menu.Item key='16'>Sent emails</Menu.Item>
+					<Menu.Item key='177'>Sent emails</Menu.Item>
 				</SubMenu>
 
 				<SubMenu key='sub6' icon={<FileOutlined />} title='Pages'>

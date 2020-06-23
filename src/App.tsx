@@ -9,7 +9,7 @@ import { TagList, AddNewTag } from './pages/tag';
 import { CustomerList } from './pages/customer';
 import { PagesList, AddNewPage } from './pages/pages';
 import { AttributeList } from './pages/attribute';
-import { OrderList } from './pages/order';
+import { OrderList, AddNewOrder } from './pages/order';
 
 // import components
 import Sider from './layout/Sider';
@@ -72,6 +72,10 @@ const App = () => {
 
 							<Route path='/order' exact>
 								<OrderList />
+							</Route>
+
+							<Route path='/order/new' exact>
+								<AddNewOrder />
 							</Route>
 
 							<Route path='/customer' exact>

@@ -116,7 +116,7 @@ const OrderList = ({history}: Props) => {
             <Button
           type="primary"
           icon={<PlusOutlined />}
-          onClick={() => history.push('/product/new')}
+          onClick={() => history.push('/order/new')}
         >
         Add New
             
