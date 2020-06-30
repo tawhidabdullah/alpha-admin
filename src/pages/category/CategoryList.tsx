@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {withRouter} from 'react-router-dom';
 import { Table, Badge, Menu, Dropdown, Space, Tag,Button, Input,Tooltip, Modal  } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined, EditOutlined, DeleteOutlined,EditFilled } from '@ant-design/icons';
 
 const { Column, ColumnGroup } = Table;
 const { Search } = Input;
@@ -123,26 +123,48 @@ const MyTable = () => {
         //     expandedRowRender: record => <p style={{ margin: 0 }}>{record.name}</p>,
         //     rowExpandable: record => record.name !== 'Not Expandable',
         //   }}
-        dataSource={data}>
+        // bordered={true}
+        // size='middle'
+        pagination={false}
+        dataSource={data}
+        >
             <Column 
           title="Cover"
            dataIndex="cover"
             key="cover" 
+            
+           className='classnameofthecolumn'
+
             render={cover => (
                 <>
                 <img src={cover} alt='cover img' style={{
-                    height: '40px',
-                    width: '40px',
+                    height: '25px',
+                    width: '25px',
                     objectFit: "contain"
                 }} />
                 </>
               )}
             />
-          <Column title="Name" dataIndex="name" key="name" />
-          <Column title="Product" dataIndex="product" key="product" />
-          <Column title="Sub Category" dataIndex="subCategory" key="subCategory" />
+          <Column
+           title="Name" 
+           dataIndex="name" 
+           key="name"
+           align='center'
+           className='classnameofthecolumn'
+
+            />
+          <Column 
+          
+          className='classnameofthecolumn'
+
+          title="Product" dataIndex="product" key="product" />
+          <Column 
+          
+          className='classnameofthecolumn'
+
+          title="Sub Category" dataIndex="subCategory" key="subCategory" />
         
-        <Column
+        {/* <Column
           title="Tags"
           dataIndex="tags"
           key="tags"
@@ -155,15 +177,33 @@ const MyTable = () => {
               ))}
             </>
           )}
-        />
+        /> */}
         <Column
-          title="Action"
+        
+        className='classnameofthecolumn'
+          title=""
           key="action"
+          align='right'
           render={(text, record : any) => (
             <Space size="middle">
-              <a onClick={() => setvisible(true)} href='##'>Quick Edit</a>
+               <Tooltip placement="top" title='Edit Category'>
+               <EditFilled />
+               </Tooltip>
+
+
+               <Tooltip placement="top" title='Quick Edit Category'>
+               <EditOutlined />
+               </Tooltip>
+
+
+             
               <Tooltip placement="top" title='Delete Category'>
-              <a href='##'>Delete</a>
+             <span style={{
+               color: 'rgba(238, 192, 106, 0.877)'
+             }}>
+             <DeleteOutlined/>
+             </span>
+            
           </Tooltip>
              
             </Space>
@@ -194,11 +234,31 @@ const CategoryList = ({history}: Props) => {
   
     
 	return (
-		<div className='categoryListContainer'>
+		<>
+    {/* <h2 className='containerPageTitle'>
+      Categories
+    </h2> */}
+    <div className='categoryListContainer'>
             <div className='categoryListContainer__header'>
-            <h2 className='categoryListContainer__header-title'>Categories</h2>
+           
+
+          <div className='categoryListContainer__header-searchBar'>
+          <h2 className='categoryListContainer__header-title'>
+            Categories
+            </h2>
+
+
+          <Search
+            enterButton={false}
+            className='searchbarClassName'
+          placeholder="search categories.."
+          onSearch={value => console.log(value)}
+          // style={{ width: 300 }}
+        />
+          </div>
             <Button
-          type="primary"
+          // type="primary"
+          className='btnPrimaryClassNameoutline'
           icon={<PlusOutlined />}
           onClick={() => history.push('/category/new')}
         >
@@ -208,12 +268,12 @@ const CategoryList = ({history}: Props) => {
             </div>
 
             <div className='categoryListContainer__afterHeader'>
-            <Search
+            {/* <Search
       placeholder="search categories.."
       size="large"
       onSearch={value => console.log(value)}
       style={{ width: 300 }}
-    />
+    /> */}
             </div>
 
      
@@ -222,6 +282,7 @@ const CategoryList = ({history}: Props) => {
 				<MyTable />
 			</div>
 		</div>
+    </>
 	);
 };
 

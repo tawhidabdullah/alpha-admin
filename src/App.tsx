@@ -10,7 +10,7 @@ import { CustomerList } from './pages/customer';
 import { PagesList, AddNewPage } from './pages/pages';
 import { AttributeList } from './pages/attribute';
 import { OrderList, AddNewOrder } from './pages/order';
-import { Component } from './pages/settings';
+import { Component, ManageThemes, Image, Invoice, SiteInfo } from './pages/settings';
 
 // import components
 import Sider from './layout/Sider';
@@ -29,9 +29,19 @@ const App = () => {
 				<Layout className='site-layout'>
 					<Header
 						className='site-layout-background'
-						style={{ padding: 0, backgroundColor: '#fff', height: '50px' }}
+						style={{
+							background: '#fff',
+							borderBottom: '1px solid #fafafa',
+							borderLeft: '1px solid #fafafa',
+							height: '50px'
+						}}
 					/>
-					<Content hasSider={true} style={{ margin: '0 16px', background: '#fafafa' }}>
+					<Content
+						hasSider={true}
+						style={{
+							backgroundColor: '#Fff'
+						}}
+					>
 						<Switch>
 							<Route path='/' exact>
 								<Overview />
@@ -92,6 +102,19 @@ const App = () => {
 							</Route>
 							<Route path='/settings/components' exact>
 								<Component />
+							</Route>
+							<Route path='/settings/image' exact>
+								<Image />
+							</Route>
+							<Route path='/settings/themes' exact>
+								<ManageThemes />
+							</Route>
+							<Route path='/settings/invoice' exact>
+								<Invoice />
+							</Route>
+
+							<Route path='/settings/siteInfo' exact>
+								<SiteInfo />
 							</Route>
 						</Switch>
 					</Content>

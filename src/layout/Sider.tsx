@@ -72,6 +72,18 @@ const SiderComponent = () => {
 					<Menu.Item key='7'>
 						<Link to='/product'> List Products</Link>
 					</Menu.Item>
+					<Menu.Item key='2'>
+						<Link to='/category'>List Categories</Link>
+					</Menu.Item>
+					<Menu.Item key='3'>
+						<Link to='/category/new'>Add Category</Link>
+					</Menu.Item>
+					<Menu.Item key='4'>
+						<Link to='/brand/new'>Add Brand</Link>
+					</Menu.Item>
+					<Menu.Item key='5'>
+						<Link to='/brand'>List Brand</Link>
+					</Menu.Item>
 				</SubMenu>
 
 				<Menu.Item key='8' icon={<FilterOutlined />}>
@@ -116,10 +128,18 @@ const SiderComponent = () => {
 				</SubMenu>
 
 				<SubMenu key='sub7' icon={<SettingOutlined />} title='Settings'>
-					<Menu.Item key='19'>Site information</Menu.Item>
-					<Menu.Item key='20'>Manage themes</Menu.Item>
-					<Menu.Item key='21'>Image</Menu.Item>
-					<Menu.Item key='22'>Invoice</Menu.Item>
+					<Menu.Item key='19'>
+						<Link to='/settings/siteInfo'>Site information</Link>
+					</Menu.Item>
+					<Menu.Item key='20'>
+						<Link to='/settings/themes'>Manage themes</Link>
+					</Menu.Item>
+					<Menu.Item key='21'>
+						<Link to='/settings/image'>Image</Link>
+					</Menu.Item>
+					<Menu.Item key='22'>
+						<Link to='/settings/invoice'>Invoice</Link>
+					</Menu.Item>
 					<Menu.Item key='23'>
 						<Link to='/settings/components'>Components</Link>
 					</Menu.Item>
