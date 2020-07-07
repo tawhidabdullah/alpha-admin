@@ -1,15 +1,10 @@
-import React from 'react'
+import React from 'react';
 
-interface Props {
-
-}
+interface Props {}
 
 const CategoryDetail = (props: Props) => {
-    return (
-        <div>
-            CategoryDetail
-        </div>
-    )
-}
+	console.log('getalifebaby');
+	return <div>CategoryDetail</div>;
+};
 
-export default CategoryDetail
+export default CategoryDetail;

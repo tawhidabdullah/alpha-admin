@@ -1,15 +1,14 @@
-import React from 'react'
+import React from 'react';
+import Login from '../auth/login';
 
-interface Props {
-
-}
+interface Props {}
 
 const Overview = (props: Props) => {
-    return (
-        <div>
-            Overview
-        </div>
-    )
-}
+	return (
+		<div>
+			<Login />
+		</div>
+	);
+};
 
-export default Overview
+export default Overview;

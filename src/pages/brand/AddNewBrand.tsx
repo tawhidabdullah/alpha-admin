@@ -1,7 +1,11 @@
-import React, {useState} from 'react';
+import React,{useState} from 'react';
+import { Formik } from 'formik';
+import * as Yup from 'yup';
 
+
+import {useHandleFetch} from '../../hooks';
 // import third party ui lib
-import { Upload, message, Switch, Select, Button, notification, Modal, Tabs} from 'antd';
+import { Upload, message, Switch, Select, Button, notification, Modal } from 'antd';
 
 import {
 	FileOutlined,
@@ -9,20 +13,34 @@ import {
 	RadiusUpleftOutlined,
 	RadiusUprightOutlined,
 	RadiusBottomleftOutlined,
-	RadiusBottomrightOutlined,
-	CheckOutlined,
-	FileAddOutlined, 
-	ArrowUpOutlined
+	RadiusBottomrightOutlined
 } from '@ant-design/icons';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
 // import components
 import Input from '../../components/Field/Input';
+import TextArea from '../../components/Field/TextArea';
+import MediaLibrary from "../../components/MediaLibrary";
+
+
+
+const validationSchema = Yup.object().shape({
+	name: Yup.string().label('Name').required('Name is required').min(3, 'Name must have at least 3 characters'),
+	description: Yup.string().label('Description').required('Description is required')
+});
+
+
+const initialValues = {
+	name:'',
+	description: '',
+	image: [],
+	url: '',
+	cover: ''
+}
 
 const { Dragger } = Upload;
 const { Option } = Select;
-const { TabPane } = Tabs;
 
 const props = {
 	name: 'file',
@@ -41,217 +59,168 @@ const props = {
 	}
 };
 
-interface Props {}
+interface Props {
+	addNewCategoryVisible?: any; 
+	setAddNewCategoryVisible?: any; 
+}
 
-const AddNewBrand = ({  }: Props) => {
-	const onSwitchChange = (checked: any) => {
-		console.log(checked);
-	};
+const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible }: Props) => {
 
+	const [addCategoryState, handleAddCategoryFetch] = useHandleFetch({}, 'addCategory');
 	const [visible,setvisible] = useState(false);   
 
 
 
-    const handleOk = (e: any) => {
-        setvisible(false);
-      
+	const handleSubmit = async (values : any, actions : any) => {
+	  const addCategoryRes = await handleAddCategoryFetch({
+		
+		body: {
+			name: values.name,
+			description: values.description,
+			type: values.type,
+			image: [],
+			cover: ''
+		},
+	  });
+	
+	  actions.setSubmitting(false);
+	};
+
+
+
+	const onSwitchChange = (checked: any) => {
+		console.log(checked);
+	};
+
+
+	const handleCancel = (e: any) => {
+        setAddNewCategoryVisible(false);
       };
-    
-      const handleCancel = (e: any) => {
-        setvisible(false);
-      };
+
+
+	const getisSubmitButtonDisabled = (values,isValid) => {
+		if(!values.name && !values.description || !isValid){
+			return true; 
+		}
+		return false; 
+	  }
+
+
+
 
 
 
 
 	return (
-		<>
-		<div className='site-layout-background' style={{ padding: '30px 50px 30px 50px', minHeight: 360 }}>
-			<div className='addproductSectionTitleContainer'>
-				<h2 className='addprouctSectionTitle'>Add Brand</h2>
-			</div>
-			<div className='addproductSectionContainer'>
-				<div className='addproductSection addproductSection-left'>
-					<Input label='Title' />
-					<Input label='Description' type='textarea' />
+		<Formik
+		onSubmit={(values, actions) => handleSubmit(values, actions)}
+		validationSchema={validationSchema}
+		validateOnBlur={false}
+		enableReinitialize={true}
+		initialValues={
+		  {...initialValues}
+		}
+	  >
+		{({
+		  handleChange,
+		  values,
+		  handleSubmit,
+		  errors,
+		  isValid,
+		  isSubmitting,
+		  touched,
+		  handleBlur,
+		  setFieldTouched,
+		  handleReset,
+		}) => (
+			<>
+			<Modal
+			style={{
+				top: '40px'
+			}}
+			title="Add New Brand"
+			visible={addNewCategoryVisible}
+			onOk={(e : any) => handleSubmit(e)}
+			onCancel={handleCancel}
+			okText='Update'
+			okButtonProps={{
+			loading: isSubmitting,
+			htmlType: "submit",
+			disabled: getisSubmitButtonDisabled(values, isValid)
+			}}
+  >
+  <Input 
+			   label='Title'
+			   value={values.name}
+			   name='name'
+			   isError={(touched.name && errors.name) ||
+				  (!isSubmitting && addCategoryState.error['error']['name'])}
+			  
+				  errorString={(touched.name && errors.name) ||
+					  (!isSubmitting && addCategoryState.error['error']['name'])}
+			   onChange={(e : any) => {
+				  handleChange(e);
+				  setFieldTouched('name');
+				}}
+			   />
+			  <TextArea
+			   label='Description' 
+			   value={values.description}
+			   name='description'
+			   isError={(touched.description && errors.description) ||
+				  (!isSubmitting && addCategoryState.error['error']['description'])}
+			  
+				  errorString={(touched.description && errors.description) ||
+					  (!isSubmitting && addCategoryState.error['error']['description'])}
+			   onChange={(e : any) => {
+				  handleChange(e);
+				  setFieldTouched('description');
+				}}
+				 />
 
-					<div
-						style={{
-							marginTop: '20px'
-						}}
-					/>
-					<div className='addproductSection-left-header'>
-						<h3 className='inputFieldLabel'>Images</h3>
-						<div onClick={()=> setvisible(true)}>
-							<FileOutlined />
-							<span>Media Center</span>
-						</div>
-					</div>
-					<div>
-						<Dragger
-							style={{
-								background: '#fff'
-							}}
-							{...props}
-						>
-							<p className='ant-upload-drag-icon'>
-								<InboxOutlined />
-							</p>
-							<p className='ant-upload-text'>Click or drag file to this area to upload</p>
-							<p className='ant-upload-hint'>
-								Support for a single or bulk upload. Strictly prohibit from uploading company data or
-								other band files
-							</p>
-						</Dragger>
-					</div>
-
-					<div
-						style={{
-							marginTop: '20px'
-						}}
-					/>
-					<Button type='primary' onClick={() => console.log('createCategory')}>
-						Add New Brand
-					</Button>
+			<div
+				style={{
+					marginTop: '20px'
+				}}
+			/>
+			<div className='addproductSection-left-header'>
+				<h3 className='inputFieldLabel'>Images</h3>
+				<div  onClick={()=> setvisible(true)}>
+					<FileOutlined />
+					<span>Media Center</span>
 				</div>
 			</div>
-		</div>
-		<Modal
-          title="Media Library"
-          visible={visible}
-          onOk={handleOk}
-		  onCancel={handleCancel}
-		  width={'80vw'}
-		  bodyStyle={{
-			  margin: '0',
-			  padding: '0'
-		  }}
-		  okText='Done'
-        >
-          <div className='mediaLibraryBodyContainer'>
-						<div className='mediaLibraryBodyContainer-left'>
-
-		<Tabs defaultActiveKey="2" type="card" size='middle'>
-          <TabPane tab="Upload New Media" key="1">
-		  <div className='mediaLibraryBodyContainer-left-header'>
-						
-					<div>
-						<Dragger
-							style={{
-								background: '#fff'
-							}}
-							{...props}
-						>
-							<p className='ant-upload-drag-icon'>
-								<InboxOutlined />
-							</p>
-							<p className='ant-upload-text'>Click or drag file to this area to upload</p>
-							<p className='ant-upload-hint'>
-								Support for a single or bulk upload. Strictly prohibit from uploading company data or
-								other band files
-							</p>
-						</Dragger>
-					</div>
-							</div>
-
-							<div style={{
-								marginTop: '20px'
-							}}></div>
-
-							<Button 
-							type='primary'
-							icon={<ArrowUpOutlined />}
-							 onClick={() => console.log('createCategory')}>
-						Upload
-					</Button>
-
-          </TabPane>
-          <TabPane tab="Media Library" key="2">
-		  <div className='mediaLibraryBodyContainer-left-imageListContainer'>
-		  							<div  className='mediaLibraryBodyContainer-left-imageListContainer-item'>
-										  <div className='mediaLibraryBodyContainer-left-imageListContainer-item-icon'>
-											  <CheckOutlined 
-											  
-											  />
-										  </div>
-									  <img src='https://homebazarshibchar.com/images/library/thumbnail/600043-cartScreen.jpg' alt='img' />
-		  								
-									  </div>
-									  <div  className='mediaLibraryBodyContainer-left-imageListContainer-item'>
-									  <img src='https://homebazarshibchar.com/images/library/thumbnail/600043-cartScreen.jpg' alt='img' />
-		  								
-									  </div>
-									  <div  className='mediaLibraryBodyContainer-left-imageListContainer-item'>
-									  <img src='https://homebazarshibchar.com/images/library/thumbnail/600043-cartScreen.jpg' alt='img' />
-		  								
-									  </div>
-									  <div  className='mediaLibraryBodyContainer-left-imageListContainer-item'>
-									  <img src='https://homebazarshibchar.com/images/library/thumbnail/600043-cartScreen.jpg' alt='img' />
-		  								
-									  </div>
-									  <div  className='mediaLibraryBodyContainer-left-imageListContainer-item'>
-									  <img src='https://homebazarshibchar.com/images/library/thumbnail/600043-cartScreen.jpg' alt='img' />
-		  								
-									  </div>
-									  <div  className='mediaLibraryBodyContainer-left-imageListContainer-item'>
-									  <img src='https://homebazarshibchar.com/images/library/thumbnail/600043-cartScreen.jpg' alt='img' />
-		  								
-									  </div>
-									  <div  className='mediaLibraryBodyContainer-left-imageListContainer-item'>
-									  <img src='https://homebazarshibchar.com/images/library/thumbnail/600043-cartScreen.jpg' alt='img' />
-		  								
-									  </div>
-
-							  </div>
-          </TabPane>
-        
-         </Tabs>
+			<div>
+				<Dragger
+					style={{
+						background: '#fff'
+					}}
+					{...props}
+				>
+					<p className='ant-upload-drag-icon'>
+						<InboxOutlined />
+					</p>
+					<p className='ant-upload-text'>Click or drag file to this area to upload</p>
+					<p className='ant-upload-hint'>
+						Support for a single or bulk upload. Strictly prohibit from uploading company data or other band
+						files
+					</p>
+				</Dragger>
+			</div>
 
 
-		  				
-						</div>
-						<div className='mediaLibraryBodyContainer-right'>
-							<h4>
-								Attachment Details
-							</h4>
-							<div className='mediaLibraryBodyContainer-right-ImageDetails'>
-								<div className='mediaLibraryBodyContainer-right-ImageDetails-imageContainer'>
-									<img src='https://homebazarshibchar.com/images/library/thumbnail/600043-cartScreen.jpg' alt='img' />
-								</div>
-								<div className='mediaLibraryBodyContainer-right-ImageDetails-infoContainer'>
-									<h5 className='imageLibnameText'>
-										IMG_1104.jpg
-									</h5>
-									<h5>
-										April 20,1204
-									</h5>
-									<h5>
-										5000 X 500
-									</h5>
-									<h5 className='imageLibdeleteText'>
-										Delete parmanently
-									</h5>
-								</div>
-							</div>
-							<div>
-							<Input label='Title' />
-							<Input label='Alternate Text' />
-							<Input label='Caption' />
-							<Input label='Label' />
-							<div
-						style={{
-							marginTop: '20px'
-						}}
-					/>
-					<Button type='primary' onClick={() => console.log('createCategory')}>
-						Update
-					</Button>
-							</div>
-						</div>
-		  </div>
-		  
-        </Modal>
-		</>
+  </Modal>
+			  
+			  	<MediaLibrary
+		setvisible={setvisible}
+		 visible={visible}/>
+			</>
+		  )}
+	  </Formik>
+
+
+		
+
 	);
 };
 

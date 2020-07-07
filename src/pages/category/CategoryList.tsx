@@ -3,117 +3,44 @@ import {withRouter} from 'react-router-dom';
 import { Table, Badge, Menu, Dropdown, Space, Tag,Button, Input,Tooltip, Modal  } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined,EditFilled } from '@ant-design/icons';
 
+import {AddNewCategory,QuickEdit} from "../category"
+
+/// import hooks
+import { useFetch, useHandleFetch } from "../../hooks";
+
+// import components
+import { DataTableSkeleton } from "../../components/Placeholders";
+
 const { Column, ColumnGroup } = Table;
 const { Search } = Input;
 
-const data = [
-	{
-		key: '1',
-		cover:
-			'https://homebazarshibchar.com/images/library/thumbnail/783515-Meat-(%E0%A6%AE%E0%A6%BE%E0%A6%82%E0%A6%B8).jpg',
-		name: 'John',
-		product: 32,
-		subCategory: '50',
-        tags: [ 'nice', 'developer' ],
-        children: [
-            {
-              key: 1311,
-              cover:
-              'https://homebazarshibchar.com/images/library/thumbnail/783515-Meat-(%E0%A6%AE%E0%A6%BE%E0%A6%82%E0%A6%B8).jpg',
-          name: 'John',
-          product: 32,
-          subCategory: '50',
-          tags: [ 'loser' ]
-            },
-            {
-              key: 1312,
-              cover:
-              'https://homebazarshibchar.com/images/library/thumbnail/783515-Meat-(%E0%A6%AE%E0%A6%BE%E0%A6%82%E0%A6%B8).jpg',
-          name: 'John',
-          product: 32,
-          subCategory: '50',
-          tags: [ 'loser' ]
-            },
-          ],
-	},
-	{
-		key: '2',
-		cover:
-			'https://homebazarshibchar.com/images/library/thumbnail/783515-Meat-(%E0%A6%AE%E0%A6%BE%E0%A6%82%E0%A6%B8).jpg',
-		name: 'John',
-		product: 32,
-		subCategory: '50',
-        tags: [ 'loser' ],
-        children: [
-            {
-              key: 13,
-              cover:
-              'https://homebazarshibchar.com/images/library/thumbnail/783515-Meat-(%E0%A6%AE%E0%A6%BE%E0%A6%82%E0%A6%B8).jpg',
-          name: 'John',
-          product: 32,
-          subCategory: '50',
-          tags: [ 'loser' ]
-            },
-            {
-              key: 131552,
-              cover:
-              'https://homebazarshibchar.com/images/library/thumbnail/783515-Meat-(%E0%A6%AE%E0%A6%BE%E0%A6%82%E0%A6%B8).jpg',
-          name: 'John',
-          product: 32,
-          subCategory: '50',
-          tags: [ 'loser' ]
-            },
-          ],
-	},
-	{
-		key: '3',
-		cover:
-			'https://homebazarshibchar.com/images/library/thumbnail/783515-Meat-(%E0%A6%AE%E0%A6%BE%E0%A6%82%E0%A6%B8).jpg',
-		name: 'John',
-		product: 32,
-		subCategory: '50',
-        tags: [ 'cool', 'teacher' ],
-        children: [
-            {
-              key: 1343,
-              cover:
-              'https://homebazarshibchar.com/images/library/thumbnail/783515-Meat-(%E0%A6%AE%E0%A6%BE%E0%A6%82%E0%A6%B8).jpg',
-          name: 'John',
-          product: 32,
-          subCategory: '50',
-          tags: [ 'loser' ]
-            },
-            {
-              key: 13431552,
-              cover:
-              'https://homebazarshibchar.com/images/library/thumbnail/783515-Meat-(%E0%A6%AE%E0%A6%BE%E0%A6%82%E0%A6%B8).jpg',
-          name: 'John',
-          product: 32,
-          subCategory: '50',
-          tags: [ 'loser' ]
-            },
-          ],
-	}
-];
 
 
 
+interface myTableProps {
+  data: any; 
+} 
 
 
-const MyTable = () => {
+const MyTable = ({data}: myTableProps) => {
     const [visible,setvisible] = useState(false);   
+    const [activeCategoryForEdit,setactiveCategoryForEdit] = useState(false); 
+    const [deleteCategoryState, handleDeleteCategoryFetch] = useHandleFetch({}, 'deleteCategory');
 
 
-
-    const handleOk = (e: any) => {
-        setvisible(false);
       
-      };
-    
-      const handleCancel = (e: any) => {
-        setvisible(false);
-      };
+      console.log('activeCategoryForEdit',activeCategoryForEdit)
 
+ 
+      const handleDeleteCategory = async (id) => {
+        const deleteCategoryRes = await handleDeleteCategoryFetch({
+          urlOptions: {
+            placeHolders: {
+              id,
+            }
+            }
+          });
+      }
       
 
     return (
@@ -124,23 +51,25 @@ const MyTable = () => {
         //     rowExpandable: record => record.name !== 'Not Expandable',
         //   }}
         // bordered={true}
-        // size='middle'
-        pagination={false}
+        size='small'
+        // pagination={false}
         dataSource={data}
         >
             <Column 
-          title="Cover"
+          title=""
            dataIndex="cover"
-            key="cover" 
+            key="id" 
+            // width={'100px'}
             
            className='classnameofthecolumn'
 
             render={cover => (
                 <>
                 <img src={cover} alt='cover img' style={{
-                    height: '25px',
-                    width: '25px',
-                    objectFit: "contain"
+                    height: '40px',
+                    width: '40px',
+                    objectFit: "contain",
+                    borderRadius:'3px'
                 }} />
                 </>
               )}
@@ -148,21 +77,21 @@ const MyTable = () => {
           <Column
            title="Name" 
            dataIndex="name" 
-           key="name"
-           align='center'
+           key="id" 
            className='classnameofthecolumn'
-
+         
             />
-          <Column 
+          {/* <Column 
           
           className='classnameofthecolumn'
 
-          title="Product" dataIndex="product" key="product" />
-          <Column 
+          title="Product" dataIndex="product" key="product" /> */}
+
+          {/* <Column 
           
           className='classnameofthecolumn'
 
-          title="Sub Category" dataIndex="subCategory" key="subCategory" />
+          title="Sub Category" dataIndex="subCategory" key="subCategory" /> */}
         
         {/* <Column
           title="Tags"
@@ -186,23 +115,28 @@ const MyTable = () => {
           align='right'
           render={(text, record : any) => (
             <Space size="middle">
-               <Tooltip placement="top" title='Edit Category'>
-               <EditFilled />
-               </Tooltip>
-
-
+            
                <Tooltip placement="top" title='Quick Edit Category'>
-               <EditOutlined />
+              <span className='iconSize' onClick={() => {
+                setvisible(true)
+                setactiveCategoryForEdit(record); 
+              }}> 
+              <EditOutlined />
+            
+              </span>
                </Tooltip>
 
 
              
               <Tooltip placement="top" title='Delete Category'>
-             <span style={{
-               color: 'rgba(238, 192, 106, 0.877)'
-             }}>
+            
+
+             <span 
+             className='iconSize iconSize-danger'
+             onClick={() => handleDeleteCategory(record.id)}
+             > 
              <DeleteOutlined/>
-             </span>
+            </span>
             
           </Tooltip>
              
@@ -211,16 +145,14 @@ const MyTable = () => {
         />
       </Table>
 
-      <Modal
-          title="Quick Edit"
-          visible={visible}
-          onOk={handleOk}
-          onCancel={handleCancel}
-        >
-          {/* <p>Some contents...</p>
-          <p>Some contents...</p>
-          <p>Some contents...</p> */}
-        </Modal>
+    
+
+    {activeCategoryForEdit &&   <QuickEdit 
+    setvisible={setvisible}
+    visible={visible}
+    category={activeCategoryForEdit}/>}
+    
+    
     </>
     )
 }
@@ -231,8 +163,32 @@ interface Props {
 }
 
 const CategoryList = ({history}: Props) => {
+
+    const categoryState = useFetch([], [], 'categoryList', {
+    urlOptions: {
+      params: {
+        isSubCategory: true,
+      },
+    },
+  });
+
+
   
-    
+  const [addNewCategoryVisible,setAddNewCategoryVisible] = useState(false);   
+
+  const handleOkAddNewCategory = (e: any) => {
+    setAddNewCategoryVisible(false);
+  
+  };
+
+  const handleCancelAddNewCategory = (e: any) => {
+    setAddNewCategoryVisible(false);
+  };
+
+  console.log('categoryState',categoryState)
+
+
+
 	return (
 		<>
     {/* <h2 className='containerPageTitle'>
@@ -260,7 +216,7 @@ const CategoryList = ({history}: Props) => {
           // type="primary"
           className='btnPrimaryClassNameoutline'
           icon={<PlusOutlined />}
-          onClick={() => history.push('/category/new')}
+          onClick={() => setAddNewCategoryVisible(true)}
         >
         Add New
             
@@ -279,9 +235,18 @@ const CategoryList = ({history}: Props) => {
      
 			
 			<div className='categoryListContainer__categoryList'>
-				<MyTable />
+        {categoryState.done && categoryState.data.length > 0 && <MyTable data={categoryState.data} />}
+        {categoryState.isLoading && <DataTableSkeleton />}
 			</div>
 		</div>
+
+    <AddNewCategory 
+          addNewCategoryVisible={addNewCategoryVisible} 
+          setAddNewCategoryVisible={setAddNewCategoryVisible} />
+
+      
+
+        
     </>
 	);
 };

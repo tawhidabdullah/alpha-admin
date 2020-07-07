@@ -2,6 +2,10 @@ import React, {useState} from 'react';
 
 // import third party ui lib
 import { Upload, message, Switch, Select, Button, notification,Table, Space, Input as CoolInput,Tooltip, Modal } from 'antd';
+import { Formik } from 'formik';
+import * as Yup from 'yup';
+
+
 
 import {
 	FileOutlined,
@@ -9,50 +13,60 @@ import {
 	RadiusUpleftOutlined,
 	RadiusUprightOutlined,
 	RadiusBottomleftOutlined,
-	RadiusBottomrightOutlined
+	RadiusBottomrightOutlined,
+	PlusOutlined,
+	DeleteOutlined,
+	EditOutlined
 } from '@ant-design/icons';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
+
+
+/// import hooks
+import { useFetch, useHandleFetch } from "../../hooks";
+
+
 // import components
 import Input from '../../components/Field/Input';
+import TextArea from '../../components/Field/TextArea';
+import { DataTableSkeleton } from "../../components/Placeholders";
+import QuickEdit from "./QuickEdit"
 
-const { Dragger } = Upload;
-const { Option } = Select;
+
+
+const validationSchema = Yup.object().shape({
+	name: Yup.string().label('Name').required('Name is required').min(3, 'Name must have at least 3 characters'),
+	description: Yup.string().label('Description').required('Description is required')
+});
+
+
+const initialValues = {
+	name: '',
+	description: ''
+}
+
 
 const { Column, ColumnGroup } = Table;
 const { Search } = CoolInput;
 
-const data = [
-	{
-		key: '1',
-		cover:
-			'https://homebazarshibchar.com/images/library/thumbnail/783515-Meat-(%E0%A6%AE%E0%A6%BE%E0%A6%82%E0%A6%B8).jpg',
-		name: 'Phone',
-        description: 'Tags are useful nowadays',
-      
-
-	},
-	{
-		key: '2',
-		cover:
-			'https://homebazarshibchar.com/images/library/thumbnail/783515-Meat-(%E0%A6%AE%E0%A6%BE%E0%A6%82%E0%A6%B8).jpg',
-            name: 'Cool',
-            description: 'Tags are useful nowadays',
-	},
-	{
-		key: '3',
-		cover:
-			'https://homebazarshibchar.com/images/library/thumbnail/783515-Meat-(%E0%A6%AE%E0%A6%BE%E0%A6%82%E0%A6%B8).jpg',
-            name: 'Man',
-            description: 'Tags are useful nowadays',
-	}
-];
 
 
-const MyTable = () => {
+const MyTable = ({data}) => {
     const [visible,setvisible] = useState(false);   
+	const [activeCategoryForEdit,setactiveCategoryForEdit] = useState(false); 
+    const [deleteTagState, handleDeleteTagFetch] = useHandleFetch({}, 'deleteTag');
 
+
+	const handleDeleteCategory = async (id) => {
+        const deleteTagRes = await handleDeleteTagFetch({
+          urlOptions: {
+            placeHolders: {
+              id,
+            }
+            }
+          });
+      }
 
 
     const handleOk = (e: any) => {
@@ -68,23 +82,63 @@ const MyTable = () => {
 
     return (
         <>
-        <Table 
+         <Table 
         // expandable={{
         //     expandedRowRender: record => <p style={{ margin: 0 }}>{record.name}</p>,
         //     rowExpandable: record => record.name !== 'Not Expandable',
         //   }}
-        dataSource={data}>
-        
-            <Column title="Name" dataIndex="name" key="name" />
-          <Column title="Description" dataIndex="description" key="description" />
+        // bordered={true}
+        size='small'
+        // pagination={false}
+        dataSource={data}
+        >
+
+          <Column
+           title="Name" 
+           dataIndex="name" 
+           key="id" 
+           className='classnameofthecolumn'
+         
+            />
+
+<Column
+           title="Description" 
+           dataIndex="description" 
+           key="id" 
+           className='classnameofthecolumn'
+         
+            />
         <Column
-          title="Action"
+        
+        className='classnameofthecolumn'
+          title=""
           key="action"
+          align='right'
           render={(text, record : any) => (
             <Space size="middle">
-              <a onClick={() => setvisible(true)} href='##'>Quick Edit</a>
-              <Tooltip placement="top" title='Delete Category'>
-              <a href='##'>Delete</a>
+            
+               <Tooltip placement="top" title='Quick Edit Tag'>
+              <span className='iconSize' onClick={() => {
+                setvisible(true)
+                setactiveCategoryForEdit(record); 
+              }}> 
+              <EditOutlined />
+            
+              </span>
+               </Tooltip>
+
+
+             
+              <Tooltip placement="top" title='Delete Tag'>
+            
+
+             <span 
+             className='iconSize iconSize-danger'
+             onClick={() => handleDeleteCategory(record.id)}
+             > 
+             <DeleteOutlined/>
+            </span>
+            
           </Tooltip>
              
             </Space>
@@ -92,16 +146,14 @@ const MyTable = () => {
         />
       </Table>
 
-      <Modal
-          title="Quick Edit"
-          visible={visible}
-          onOk={handleOk}
-          onCancel={handleCancel}
-        >
-          {/* <p>Some contents...</p>
-          <p>Some contents...</p>
-          <p>Some contents...</p> */}
-        </Modal>
+
+
+     
+
+		{activeCategoryForEdit &&   <QuickEdit 
+    setvisible={setvisible}
+    visible={visible}
+    category={activeCategoryForEdit}/>}
     </>
     )
 }
@@ -130,9 +182,58 @@ const props = {
 interface Props {}
 
 const TagList = ({  }: Props) => {
-	const onSwitchChange = (checked: any) => {
-		console.log(checked);
-	};
+	const tagState = useFetch([], [], 'brandList', {
+		urlOptions: {
+		  params: {
+			isSubCategory: true,
+		  },
+		},
+	  });
+
+	  const [updateCategoryState, handleUpdateCategoryFetch] = useHandleFetch({}, 'updateCategory');
+	  const [addNewCategoryVisible,setAddNewCategoryVisible] = useState(false);   
+
+
+
+	  const handleSubmit = async (values : any, actions : any) => {
+		  console.log('ourDamnValues',values)
+		const updateCategoryRes = await handleUpdateCategoryFetch({
+		  urlOptions: {
+			  placeHolders: {
+				id: values.id,
+			  }
+			},
+		  body: {
+			  name: values.name,
+			  description: values.description,
+		  },
+		});
+	  
+		actions.setSubmitting(false);
+	  };
+	  
+ 
+  
+  
+  
+		const getisSubmitButtonDisabled = (values,isValid) => {
+		  if(!values.name || !values.description || !isValid){
+			  return true; 
+		  }
+		  return false; 
+		}
+
+
+
+
+  const handleOkAddNewCategory = (e: any) => {
+    setAddNewCategoryVisible(false);
+  
+  };
+
+  const handleCancelAddNewCategory = (e: any) => {
+    setAddNewCategoryVisible(false);
+  };
 
 	return (
 		<div className='site-layout-background' style={{ padding: '30px 20px 30px 20px', minHeight: 360 }}>
@@ -141,36 +242,122 @@ const TagList = ({  }: Props) => {
 			</div>
 			<div className='addproductSectionContainer addproductSectionContainer-tags'>
 				<div className='addproductSection addproductSection-left'>
-					<Input label='Title' />
-					<Input label='Description' type='textarea' />
+				<Formik
+		onSubmit={(values, actions) => handleSubmit(values, actions)}
+		validationSchema={validationSchema}
+		validateOnBlur={false}
+		enableReinitialize={true}
+		initialValues={
+		  {...initialValues}
+		}
+	  >
+		{({
+		  handleChange,
+		  values,
+		  handleSubmit,
+		  errors,
+		  isValid,
+		  isSubmitting,
+		  touched,
+		  handleBlur,
+		  setFieldTouched,
+		  handleReset,
+		}) => (
+			<>
+  <Input 
+			   label='Title'
+			   value={values.name}
+			   name='name'
+			   isError={(touched.name && errors.name) ||
+				  (!isSubmitting && updateCategoryState.error['error']['name'])}
+			  
+				  errorString={(touched.name && errors.name) ||
+					  (!isSubmitting && updateCategoryState.error['error']['name'])}
+			   onChange={(e : any) => {
+				  handleChange(e);
+				  setFieldTouched('name');
+				}}
+			   />
+			  <TextArea
+			   label='Description' 
+			   value={values.description}
+			   name='description'
+			   isError={(touched.description && errors.description) ||
+				  (!isSubmitting && updateCategoryState.error['error']['description'])}
+			  
+				  errorString={(touched.description && errors.description) ||
+					  (!isSubmitting && updateCategoryState.error['error']['description'])}
+			   onChange={(e : any) => {
+				  handleChange(e);
+				  setFieldTouched('description');
+				}}
+				 />
 
-				
 
-					<div
-						style={{
-							marginTop: '20px'
-						}}
-					/>
-					<Button type='primary' onClick={() => console.log('createCategory')}>
-						Add New Tag
+				  	<Button 
+							type='primary'
+							onClick={(e: any) => handleSubmit(e)}
+							disabled={getisSubmitButtonDisabled(values,isValid)}
+							loading={isSubmitting}
+							
+							 >
+						Create
 					</Button>
+			</>
+		  )}
+	  </Formik>
+
+
 				</div>
                 <div className='addproductSection addproductSection-right'> 
-                <div className='categoryListContainer__afterHeader'>
-            <Search
-      placeholder="search tags.."
+
+				<div className='categoryListContainer'>
+            <div className='categoryListContainer__header'>
+           
+
+          <div className='categoryListContainer__header-searchBar-tag'>
+          {/* <h2 className='categoryListContainer__header-title'>
+            Brand
+            </h2> */}
+
+
+          <Search
+            enterButton={false}
+            className='searchbarClassName'
+          placeholder="search categories.."
+          onSearch={value => console.log(value)}
+          // style={{ width: 300 }}
+        />
+          </div>
+            {/* <Button
+          // type="primary"
+          className='btnPrimaryClassNameoutline'
+          icon={<PlusOutlined />}
+          onClick={() => setAddNewCategoryVisible(true)}
+        >
+        Add New
+            
+            </Button> */}
+            </div>
+
+            <div className='categoryListContainer__afterHeader'>
+            {/* <Search
+      placeholder="search categories.."
       size="large"
       onSearch={value => console.log(value)}
       style={{ width: 300 }}
-    />
+    /> */}
             </div>
 
      
 			
 			<div className='categoryListContainer__categoryList'>
-				<MyTable />
+        {tagState.done && tagState.data.length > 0 && <MyTable data={tagState.data} />}
+        {tagState.isLoading && <DataTableSkeleton />}
 			</div>
-                        </div>
+		</div>
+
+                </div>
 			</div>
 		</div>
 	);

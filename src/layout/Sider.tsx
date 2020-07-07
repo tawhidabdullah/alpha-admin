@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Link, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Link, Switch, withRouter } from 'react-router-dom';
 import { Layout, Menu, Upload, message } from 'antd';
 import Title from 'antd/lib/typography/Title';
+
 import {
 	PieChartOutlined,
 	FileOutlined,
@@ -21,7 +22,7 @@ import {
 const { Header, Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
 
-const SiderComponent = () => {
+const SiderComponent = (props: any) => {
 	const [ collapsed, setcollapsed ] = useState(false);
 	const onCollapse = (collapsed: any) => {
 		console.log(collapsed);
@@ -42,7 +43,7 @@ const SiderComponent = () => {
 					ALPHA
 				</Title>
 			</div>
-			<Menu defaultSelectedKeys={[ '1' ]} mode='inline'>
+			<Menu selectable={true} defaultSelectedKeys={[ '1' ]} mode='inline'>
 				<Menu.Item key='1' icon={<PieChartOutlined />}>
 					<Link to='/'>Dashboard</Link>
 				</Menu.Item>
@@ -51,9 +52,9 @@ const SiderComponent = () => {
 					<Menu.Item key='2'>
 						<Link to='/category'>List Categories</Link>
 					</Menu.Item>
-					<Menu.Item key='3'>
+					{/* <Menu.Item key='3'>
 						<Link to='/category/new'>Add Category</Link>
-					</Menu.Item>
+					</Menu.Item> */}
 				</SubMenu>
 
 				<SubMenu key='sub2' icon={<BranchesOutlined />} title='Brand'>
@@ -65,13 +66,16 @@ const SiderComponent = () => {
 					</Menu.Item>
 				</SubMenu>
 
-				<SubMenu key='sub3' icon={<GoldOutlined />} title='Product'>
+				<SubMenu
+					key='sub3'
+					icon={<GoldOutlined />}
+					title='Product'
+					onTitleClick={() => props.history.push('/product')}
+				>
 					<Menu.Item key='6'>
 						<Link to='/product/new'>Add Product</Link>
 					</Menu.Item>
-					<Menu.Item key='7'>
-						<Link to='/product'> List Products</Link>
-					</Menu.Item>
+
 					<Menu.Item key='2'>
 						<Link to='/category'>List Categories</Link>
 					</Menu.Item>
@@ -149,4 +153,4 @@ const SiderComponent = () => {
 	);
 };
 
-export default SiderComponent;
+export default withRouter(SiderComponent);

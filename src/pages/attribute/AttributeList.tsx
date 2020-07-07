@@ -1,15 +1,9 @@
-import React from 'react'
+import React from 'react';
 
-interface Props {
-
-}
+interface Props {}
 
 const AttributeList = (props: Props) => {
-    return (
-        <div>
-            AttributeList
-        </div>
-    )
-}
+	return <div>AttributeList is not cool and i am not saying a word about that.</div>;
+};
 
-export default AttributeList
+export default AttributeList;

@@ -28,12 +28,13 @@ const Demo = ({ label, type, defaultValue, value, onChange, disabled, isError, e
             help={errorString}
             // rules={[{ required: true }]}
                 >
-                     <Input
-                    name={name}
-                    disabled={disabled}
-                    value={value}
-                    onChange={onChange}
-                    className='inputclassName' />
+                  <TextArea
+                      disabled={disabled}
+                      onChange={onChange}
+                      value={value}
+                      name={name}
+                    className='inputclassName'
+                     rows={4} /> 
                
             </Form.Item>
         </>
