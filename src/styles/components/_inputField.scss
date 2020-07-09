@@ -67,7 +67,7 @@
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	margin-bottom: 15px;
+	margin-bottom: 5px;
 	cursor: pointer;
 }
 
@@ -133,7 +133,6 @@
 			display: flex;
 			justify-content: flex-start;
 			flex-wrap: wrap;
-			// background-color: #f7f7f7;
 			height: 100%;
 			align-items: flex-start;
 			align-content: flex-start;
@@ -171,7 +170,7 @@
 				img {
 					width: 100%;
 					height: 100%;
-					object-fit: cover;
+					object-fit: contain;
 					transition: .3s;
 				}
 
@@ -196,14 +195,18 @@
 		&-ImageDetails {
 			margin: 20px 0;
 			display: flex;
+			width: 100%;
 			border-bottom: 1px solid #eee;
 			padding-bottom: 20px;
 
 			&-imageContainer {
-				width: 120px;
+				width: 120px !important;
 				height: 100px;
+				margin-right: 15px;
 
 				img {
+					width: 120px !important;
+					height: 100px;
 					width: 100%;
 					height: 100%;
 					object-fit: contain;
@@ -211,11 +214,12 @@
 			}
 
 			&-infoContainer {
-				margin-right: 15px;
 				font-size: 15px;
+				margin-right: 15px;
 
 				h5.imageLibnameText {
 					color: #333;
+					word-break: break-all;
 				}
 
 				h5 {
@@ -250,4 +254,82 @@
 	&-item {
 		// background-color: #fafafa;
 	}
+}
+
+.aboutToUploadImagesContainer {
+	display: flex;
+
+	&__uploadItem {
+		width: 60px;
+		height: 60px;
+		padding: 8px;
+		border: 1px solid #d9d9d9;
+		border-radius: 3px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		cursor: pointer;
+		flex-direction: column;
+		font-size: 17px;
+
+		&-thumbnail {
+			width: 100px;
+			height: 100px;
+			padding-top: 15px;
+		}
+
+		h5 {
+			text-align: center;
+			font-size: 10px;
+			margin-top: 15px;
+		}
+	}
+
+	&__item {
+		width: 60px;
+		height: 60px;
+		padding: 8px;
+		border: 1px solid #d9d9d9;
+		border-radius: 3px;
+		overflow: hidden;
+		position: relative;
+		margin-right: 15px;
+
+		&-thumbnail {
+			width: 100px;
+			height: 100px;
+		}
+
+		&-overlay {
+			overflow: hidden;
+			border-radius: 3px;
+			background-color: rgba(57, 58, 71, 0.432);
+			position: absolute;
+			display: none;
+			cursor: pointer;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+		}
+
+		&:hover &-overlay {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			font-size: 17px;
+			color: #fff;
+		}
+
+		img {
+			width: 100%;
+			height: 100%;
+			object-fit: contain;
+		}
+	}
+}
+
+// chnage form item styltes
+.ant-form-item {
+	margin-bottom: 12px !important;
 }

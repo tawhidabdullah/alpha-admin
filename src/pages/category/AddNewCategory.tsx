@@ -13,7 +13,9 @@ import {
 	RadiusUpleftOutlined,
 	RadiusUprightOutlined,
 	RadiusBottomleftOutlined,
-	RadiusBottomrightOutlined
+	RadiusBottomrightOutlined,
+	DeleteOutlined,
+	FileAddOutlined
 } from '@ant-design/icons';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -62,24 +64,40 @@ const props = {
 interface Props {
 	addNewCategoryVisible: any; 
 	setAddNewCategoryVisible: any; 
+	categoryList?: any; 
 }
 
-const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible }: Props) => {
+const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible,categoryList }: Props) => {
 
 	const [addCategoryState, handleAddCategoryFetch] = useHandleFetch({}, 'addCategory');
 	const [visible,setvisible] = useState(false);   
+	const [myImages,setmyImages] = useState(false);   
+	const [myThumbnailImage,setmyThumbnailImage] = useState(false);   
+	const [isparentCategoryChecked,setisparentcategoryChecked] = useState(true); 
+	const [isModalOpenForThumbnail,setisModalOpenForThumbnail] = useState(false); 
+	const [isModalOpenForImages,setisModalOpenForImages] = useState(false); 
+	const [selectedParentId,setselectedParentId] =useState(''); 
 
 
 
 	const handleSubmit = async (values : any, actions : any) => {
+		// @ts-ignore
+		const imagesIds = myImages ? myImages.map(image => {
+			return image.id;
+		}): []; 
+
+			// @ts-ignore
+	const coverId = myThumbnailImage ? myThumbnailImage[0] && myThumbnailImage[0].id: ''; 
+
+
 	  const addCategoryRes = await handleAddCategoryFetch({
 		
 		body: {
 			name: values.name,
 			description: values.description,
-			type: values.type,
-			image: [],
-			cover: ''
+			image: imagesIds,
+			cover: coverId,
+			parent: setselectedParentId
 		},
 	  });
 	
@@ -89,6 +107,7 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible }: Pro
 
 
 	const onSwitchChange = (checked: any) => {
+		setisparentcategoryChecked(checked)
 		console.log(checked);
 	};
 
@@ -99,16 +118,46 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible }: Pro
 
 
 	const getisSubmitButtonDisabled = (values,isValid) => {
-		if(!values.name && !values.description || !isValid){
+		if(!values.name || !values.description || !isValid){
 			return true; 
 		}
 		return false; 
 	  }
 
 
+	  const handleImagesDelete = (id) => {
+		  // @ts-ignore
+		  const newImages = myImages && myImages.filter(image => {
+			  return image.id !== id; 
+		  })
+
+		  setmyImages(newImages); 
+	  }
+
+
+	  const handleThumbnailImageDelete = (id) => {
+		    // @ts-ignore
+			const newImages = myThumbnailImage && myThumbnailImage.filter(image => {
+				return image.id !== id; 
+			})
+
+			if(newImages.length >  0){
+				setmyThumbnailImage(newImages); 
+
+			}
+  			else setmyThumbnailImage(false);
+	  }
 
 
 
+
+	  console.log('isparentCategoryChecked', isparentCategoryChecked); 
+
+
+	  const onChangeSelect = (value) => {
+		setselectedParentId(value); 
+		console.log('selectedValue',value); 
+	  }
 
 
 	return (
@@ -142,14 +191,14 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible }: Pro
 			visible={addNewCategoryVisible}
 			onOk={(e : any) => handleSubmit(e)}
 			onCancel={handleCancel}
-			okText='Update'
+			okText='Create'
 			okButtonProps={{
 			loading: isSubmitting,
 			htmlType: "submit",
 			disabled: getisSubmitButtonDisabled(values, isValid)
 			}}
   >
-  <Input 
+			<Input 
 			   label='Title'
 			   value={values.name}
 			   name='name'
@@ -185,22 +234,76 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible }: Pro
 					<h5 className='switchLabelContainer-desc'>Disable to select a Parent Category</h5>
 				</div>
 			</div>
-			<h3 className='inputFieldLabel'>Parent Category</h3>
+			
+			{!isparentCategoryChecked && (
+				<>
+				<h3 className='inputFieldLabel'>Parent Category</h3>
 			<Select
 				showSearch
 				style={{ width: 300 }}
 				placeholder='Select a Parent Category'
 				optionFilterProp='children'
-				// onChange={onChange}
+				onChange={onChangeSelect}
 				// onFocus={onFocus}
 				// onBlur={onBlur}
 				// onSearch={onSearch}
 				filterOption={(input, option: any) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
 			>
-				<Option value='jack'>Jack</Option>
-				<Option value='lucy'>Lucy</Option>
-				<Option value='tom'>Tom</Option>
+				{categoryList.length > 0 && categoryList.map(category => {
+					return <Option value={category.id}>{category.name}</Option>
+				})}
+				
+			
 			</Select>
+				</>
+			)}
+					<div
+				style={{
+					marginTop: '20px'
+				}}
+			/>
+			<div className='addproductSection-left-header'>
+				<h3 className='inputFieldLabel'>Thumbnail Image</h3>
+				{/* <div  >
+					<FileOutlined />
+					<span>Media Center</span>
+				</div> */}
+			</div>
+			<div className='aboutToUploadImagesContainer'>
+				{myThumbnailImage &&
+				// @ts-ignore
+				myThumbnailImage.length > 0 &&  myThumbnailImage.slice(0,1).map(image => {
+					 return (
+						 <div className='aboutToUploadImagesContainer__item aboutToUploadImagesContainer__item-thumbnail'>
+							 <div 
+							 onClick={() => handleThumbnailImageDelete(image.id)}
+							 className='aboutToUploadImagesContainer__item-overlay'>
+								 <DeleteOutlined />
+							 </div>
+							 <img src={image.cover} alt={image.alt} />
+						 </div>
+					 )
+				 })}
+
+
+{!myThumbnailImage && (
+	<div 
+	onClick={()=> {
+		setvisible(true); 
+		setisModalOpenForImages(false); 
+		setisModalOpenForThumbnail(true); 
+	}}
+	className='aboutToUploadImagesContainer__uploadItem aboutToUploadImagesContainer__uploadItem-thumbnail'>
+		<FileAddOutlined />
+		<h5>
+			Select From Library
+		</h5>
+	 </div>
+)}
+					
+			
+			</div>
+
 
 			<div
 				style={{
@@ -209,35 +312,54 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible }: Pro
 			/>
 			<div className='addproductSection-left-header'>
 				<h3 className='inputFieldLabel'>Images</h3>
-				<div  onClick={()=> setvisible(true)}>
+				{/* <div  >
 					<FileOutlined />
 					<span>Media Center</span>
-				</div>
+				</div> */}
 			</div>
-			<div>
-				<Dragger
-					style={{
-						background: '#fff'
-					}}
-					{...props}
-				>
-					<p className='ant-upload-drag-icon'>
-						<InboxOutlined />
-					</p>
-					<p className='ant-upload-text'>Click or drag file to this area to upload</p>
-					<p className='ant-upload-hint'>
-						Support for a single or bulk upload. Strictly prohibit from uploading company data or other band
-						files
-					</p>
-				</Dragger>
-			</div>
+			<div className='aboutToUploadImagesContainer'>
+				{myImages &&
+				// @ts-ignore
+				 myImages.length > 0 &&  myImages.map(image => {
+					 return (
+						 <div className='aboutToUploadImagesContainer__item'>
+							 <div 
+							 onClick={() => handleImagesDelete(image.id)}
+							 className='aboutToUploadImagesContainer__item-overlay'>
+								 <DeleteOutlined />
+							 </div>
+							 <img src={image.cover} alt={image.alt} />
+						 </div>
+					 )
+				 })}
+
+				<div 
+				onClick={()=> {
+					setvisible(true); 
+					setisModalOpenForImages(true); 
+					setisModalOpenForThumbnail(false); 
+				}}
+				className='aboutToUploadImagesContainer__uploadItem'>
+					<FileAddOutlined />
+											{/* <h5>
+												Select From Library
+											</h5> */}
+										</div>
+							
+							</div>
 
 
   </Modal>
 			  
 			  	<MediaLibrary
 		setvisible={setvisible}
-		 visible={visible}/>
+		 visible={visible}
+		 setmyImages={setmyImages}
+		 setmyThumbnailImage={setmyThumbnailImage}
+		 isModalOpenForThumbnail={isModalOpenForThumbnail}
+		 isModalOpenForImages={isModalOpenForImages}
+		 
+		 />
 			</>
 		  )}
 	  </Formik>

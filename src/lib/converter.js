@@ -20,7 +20,7 @@ class Converter {
 					key: category._id || '',
 					name: category.name && category.name,
 					description: category.description && category.description,
-					cover: `${config['baseURL']}${category.cover.thumbnail}`,
+					cover: category.cover ? `${config['baseURL']}${category.cover.thumbnail}` : null,
 					...(category.subCategory &&
 					category.subCategory.length > 0 &&
 					category.subCategory[0] &&
@@ -362,10 +362,10 @@ class Converter {
 				};
 			});
 
-		convertedData = {
-			data: convertedData,
-			isNext
-		};
+		// convertedData = {
+		// 	data: convertedData,
+		// 	isNext
+		// };
 
 		return convertedData;
 	}
@@ -411,6 +411,44 @@ class Converter {
 					name: brand.name && brand.name,
 					description: brand.description && brand.description,
 					cover: `${config['baseURL']}${brand.cover.thumbnail}`
+				};
+			});
+
+		return convertedData;
+	}
+
+	/**
+   * @public
+   * @method attributeList convert api data from API to general format based on config server
+   * @param {Object} data response objectc from alpha
+   * @returns {Object}  converted data
+   */
+	async attributeList(data) {
+		const convertedData = Object.keys(data).length > 0 && data;
+		return convertedData;
+	}
+
+	/**
+   * @public
+   * @method ImageListFromLibrary convert api data from API to general format based on config server
+   * @param {Object} data response objectc from alpha
+   * @returns {Object}  converted data
+   */
+	async ImageListFromLibrary(resData) {
+		const data = resData.data || [];
+
+		const convertedData =
+			data.length > 0 &&
+			data.map((image) => {
+				return {
+					id: image._id || '',
+					name: image.name && image.name,
+					cover: `${config['baseURL']}${image.thumbnail}`,
+					added: image.added,
+					title: image.title,
+					labels: image.labels,
+					alt: image.alt,
+					caption: image.caption
 				};
 			});
 
@@ -481,14 +519,13 @@ class Converter {
 		return resData;
 	}
 
-	forAnalytics;
-
 	/**
    * @public
    * @method productDetail convert api data from API to general format based on config server
    * @param {Object} data response objectc from alpha
    * @returns {Object}  converted data
    */
+
 	async productDetail(data) {
 		const convertedData =
 			(Object.keys(data).length > 0 && {

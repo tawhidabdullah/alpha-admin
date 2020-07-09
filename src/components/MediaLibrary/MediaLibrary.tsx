@@ -1,4 +1,6 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
+import { Formik } from 'formik';
+import * as Yup from 'yup';
 
 // import third party ui lib
 import { Upload, Button, Modal, Tabs,message } from 'antd';
@@ -9,7 +11,8 @@ import reqwest from 'reqwest';
 import {
 	InboxOutlined,
 	CheckOutlined,
-	ArrowUpOutlined
+	ArrowUpOutlined,
+	
 } from '@ant-design/icons';
 
 import 'react-quill/dist/quill.snow.css';
@@ -25,43 +28,52 @@ const { TabPane } = Tabs;
 
 
 	
-const myImages = [
-	{
-	  id: '1',
-	  name: 'image1.png',
-	  status: 'done',
-	  url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-	},
-	{
-	  id: '2',
-	  name: 'image2.png',
-	  status: 'done',
-	  url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-	},
-	{
-	  id: '3',
-	  name: 'image3.png',
-	  status: 'done',
-	  url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-	}
-  ]
+
 
 
 interface Props {
     visible: boolean; 
-    setvisible: (isVisible : any) => void; 
+	setvisible: (isVisible : any) => void; 
+	setmyImages?: any; 
+	setmyThumbnailImage?:any; 
+	isModalOpenForThumbnail?: boolean;
+	isModalOpenForImages?: boolean;
 }
 
 const MediaLibrary = ({
     visible,
-    setvisible,
-    ...rest
+	setvisible,
+	setmyImages,
+	isModalOpenForImages,
+	isModalOpenForThumbnail,
+	setmyThumbnailImage,
+	...rest
 }: Props) => {
 
 	const [fileList,setfileList] = useState([]); 
 	const [uploading,setuploading] = useState(false); 
 	const [selectedimages,setselectedImages] = useState([]); 
-	const [mediaLibrary, handleMediaLibraryFetch] = useHandleFetch({}, 'addImageToLibrary');
+	const [activeImageItem,setactiveImageItem] = useState(false); 
+	const [addMediaLibrary, handleAddMediaLibraryFetch] = useHandleFetch({}, 'addImageToLibrary');
+	const [updateMediaLibrary, handleUpdateMediaLibraryFetch] = useHandleFetch({}, 'updateImageFromLibrary');
+	const [imageListFromLibraryState, handleImageListFromLibraryFetch] = useHandleFetch({}, 'ImageListFromLibrary');
+	const [deleteImageFromLibraryFetchState, handleDeleteImageFromLibraryFetch] = useHandleFetch({}, 'deleteImageFromLibrary');
+
+
+
+	const handleDeleteImageFromImageLibrary = async (id) => {
+
+		const deleteImageLibraryItemRes = await handleDeleteImageFromLibraryFetch({
+			urlOptions: {
+			  placeHolders: {
+				id,
+			  }
+			  }
+			});
+	}; 
+
+
+
 
 
 	const handleUpload = async () => {
@@ -73,7 +85,7 @@ const MediaLibrary = ({
 	
 		setuploading(true); 
 
-		//  const addImageToLibraryRes = await handleMediaLibraryFetch({
+		//  const addImageToLibraryRes = awAddait handleMediaLibraryFetch({
 		// 	body: formData
 		//   });
 
@@ -101,8 +113,23 @@ const MediaLibrary = ({
 	  };
 
 
+	  useEffect(() => {
+		 	const getImageList = async () => {
+				 const imageListRes = await handleImageListFromLibraryFetch({}); 
+				 console.log('imageListRes',imageListRes); 
+			 }
+			 getImageList(); 
+	  }, [])
+
 	  
     const handleOk = (e: any) => {
+		
+		if(isModalOpenForImages){
+			setmyImages(selectedimages); 
+		}
+		else {
+			setmyThumbnailImage(selectedimages)
+		}
         setvisible(false);
       
       };
@@ -140,7 +167,8 @@ const MediaLibrary = ({
 		if(selectedimages && selectedimages.length > 0){
 			const isImageExist = selectedimages.find(image => image.id === id); 
 			if(!isImageExist){
-				setselectedImages([image,...selectedimages]);  
+				setselectedImages([image,...selectedimages]);
+				setactiveImageItem(image);   
 			}
 			else {
 				const newselectedImages = selectedimages.filter(image => image.id !== id); 
@@ -149,6 +177,7 @@ const MediaLibrary = ({
 		}
 		else {
 			setselectedImages([image,...selectedimages]);  
+			setactiveImageItem(image); 
 		}
 		
 	  }
@@ -166,6 +195,33 @@ const MediaLibrary = ({
 			  return false; 
 		  }
 		
+	  }; 
+
+
+	  const handleUpdateSubmit = async (values,actions) => {
+		const updateImageLibraryItemRes = await handleUpdateMediaLibraryFetch({
+			body: {
+				id: values.id,
+				alt: values.alt,
+				title: values.title,
+				captoin: values.captoin,
+				labels: values.labels,
+
+			},
+		  });
+		
+		  actions.setSubmitting(false);
+	  }
+
+	  
+	  const getisUpdateSubmitButtonDisabled = (values,isValid) => {
+		// if(!values.alt || !values.title || !values.title || !values.caption || !isValid){
+		// 	return true; 
+		// }
+		if(!isValid){
+			return true; 
+		}
+		return false; 
 	  }
 
 	  console.log('selectedimages',selectedimages)
@@ -233,8 +289,10 @@ const MediaLibrary = ({
           <TabPane tab="Media Library" key="2">
 		  <div className='mediaLibraryBodyContainer-left-imageListContainer'>
 
-			  {myImages.map(image => {
-				  return (
+			{imageListFromLibraryState.done 
+			&& imageListFromLibraryState.data.length > 0
+			 && imageListFromLibraryState.data.map(image => {
+				 return (
 					<div 
 					key={image.id}
 					onClick={() => {
@@ -246,11 +304,12 @@ const MediaLibrary = ({
 						
 						/>
 					</div> : ''}
-					<img src={image.url} alt='img' />
+					<img src={image.cover} alt='img' />
 
 					</div>
-				  )
-			  })}
+				 )
+			 })}
+
 							  </div>
                     </TabPane>
                     
@@ -260,42 +319,134 @@ const MediaLibrary = ({
 		  				
 						</div>
 						<div className='mediaLibraryBodyContainer-right'>
-							<h4>
+
+							{activeImageItem && (
+								<>
+								<Formik
+		onSubmit={(values, actions) => handleUpdateSubmit(values, actions)}
+		validateOnBlur={false}
+		enableReinitialize={true}
+		initialValues={
+			// @ts-ignore
+		  {...activeImageItem}
+		}
+	  >
+		{({
+		  handleChange,
+		  values,
+		  handleSubmit,
+		  errors,
+		  isValid,
+		  isSubmitting,
+		  touched,
+		  handleBlur,
+		  setFieldTouched,
+		  handleReset,
+		}) => (
+			<>
+				<h4>
 								Attachment Details
 							</h4>
 							<div className='mediaLibraryBodyContainer-right-ImageDetails'>
 								<div className='mediaLibraryBodyContainer-right-ImageDetails-imageContainer'>
-									<img src='https://homebazarshibchar.com/images/library/thumbnail/600043-cartScreen.jpg' alt='img' />
+									<img src={activeImageItem['cover']} alt='img' />
 								</div>
 								<div className='mediaLibraryBodyContainer-right-ImageDetails-infoContainer'>
 									<h5 className='imageLibnameText'>
-										IMG_1104.jpg
+										{activeImageItem['name']}
 									</h5>
 									<h5>
-										April 20,1204
+										{activeImageItem['added']}
 									</h5>
-									<h5>
+									{/* <h5>
 										5000 X 500
-									</h5>
-									<h5 className='imageLibdeleteText'>
+									</h5> */}
+									<h5 
+									className='imageLibdeleteText'
+									onClick={() => handleDeleteImageFromImageLibrary(activeImageItem['id'])}
+									>
 										Delete parmanently
 									</h5>
 								</div>
 							</div>
-							<div>
-							<Input label='Title' />
-							<Input label='Alternate Text' />
-							<Input label='Caption' />
-							<Input label='Label' />
-							<div
-						style={{
-							marginTop: '20px'
-						}}
-					/>
-					<Button type='primary' onClick={() => console.log('createCategory')}>
+
+
+							<Input 
+							label='Alternate Text'
+							value={values.alt}
+							name='alt'
+							isError={(touched.alt && errors.alt) ||
+								(!isSubmitting && updateMediaLibrary.error['error']['alt'])}
+							
+								errorString={(touched.alt && errors.alt) ||
+									(!isSubmitting && updateMediaLibrary.error['error']['alt'])}
+							onChange={(e : any) => {
+								handleChange(e);
+								setFieldTouched('alt');
+								}}
+			   				/>
+
+
+<Input 
+							label='Title'
+							value={values.title}
+							name='title'
+							isError={(touched.title && errors.title) ||
+								(!isSubmitting && updateMediaLibrary.error['error']['title'])}
+							
+								errorString={(touched.title && errors.title) ||
+									(!isSubmitting && updateMediaLibrary.error['error']['title'])}
+							onChange={(e : any) => {
+								handleChange(e);
+								setFieldTouched('title');
+								}}
+			   				/>
+
+<Input 
+							label='Caption'
+							value={values.caption}
+							name='title'
+							isError={(touched.caption && errors.caption) ||
+								(!isSubmitting && updateMediaLibrary.error['error']['caption'])}
+							
+								errorString={(touched.caption && errors.caption) ||
+									(!isSubmitting && updateMediaLibrary.error['error']['caption'])}
+							onChange={(e : any) => {
+								handleChange(e);
+								setFieldTouched('caption');
+								}}
+			   				/>
+
+							<Button 
+							type='default'
+							onClick={(e : any) => handleSubmit(e)}
+							disabled={getisUpdateSubmitButtonDisabled(values, isValid)}
+							loading={isSubmitting}
+							style={{
+								// marginTop: '20px'
+							}}
+							 >
 						Update
 					</Button>
-							</div>
+
+
+
+			</>
+		  )}
+	  </Formik>
+
+
+						
+						
+								</>
+							)}
+
+							{!activeImageItem && (
+								<h3>
+									Select an image to preview details
+								</h3>
+							)}
+			
 						</div>
 		  </div>
 		  

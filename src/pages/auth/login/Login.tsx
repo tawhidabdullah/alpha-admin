@@ -30,8 +30,6 @@ const QuickEdit = ({  }: Props) => {
 	const [loginState, handleLoginFetch] = useHandleFetch({}, 'login');
 
 	const handleSubmit = async (values : any, actions : any) => {
-		console.log('ourDamnValues',values); 
-
 
 	  const updateCategoryRes = await handleLoginFetch({
 		body: {

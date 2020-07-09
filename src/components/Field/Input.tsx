@@ -25,10 +25,12 @@ const Demo = ({ label, type, defaultValue, value, onChange, disabled, isError, e
             </h3>
             <Form.Item
             validateStatus={isError ? "error" : ""}
+            // hasFeedback validateStatus="success"
             help={errorString}
             // rules={[{ required: true }]}
                 >
                      <Input
+                     allowClear 
                     name={name}
                     disabled={disabled}
                     value={value}

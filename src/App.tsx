@@ -68,9 +68,9 @@ const App = () => {
 									<ProductList />
 								</Route>
 
-								<Route path='/product/new' exact>
+								{/* <Route path='/product/new' exact>
 									<AddNewProduct />
-								</Route>
+								</Route> */}
 
 								<Route path='/tag' exact>
 									<TagList />

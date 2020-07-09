@@ -14,7 +14,7 @@
 		},
 		"ImageListFromLibrary": {
 			"url": "/admin/image",
-			"method": "post"
+			"method": "get"
 		},
 		"viewSingleImageFromLibrary": {
 			"url": "/admin/image/:id",
@@ -27,6 +27,22 @@
 		"viewImageSizeAndSettings": {
 			"url": "/admin/image/settings",
 			"method": "get"
+		},
+		"productList": {
+			"url": "/api/product",
+			"method": "get"
+		},
+		"addProduct": {
+			"url": "/admin/product/add",
+			"method": "post"
+		},
+		"updateProduct": {
+			"url": "/admin/product/update/:id",
+			"method": "post"
+		},
+		"deleteProduct": {
+			"url": "/admin/product/update/delete/:id",
+			"method": "post"
 		},
 		"categoryList": {
 			"url": "/api/category?subCategory=isSubCategory",
@@ -63,6 +79,10 @@
 		"login": {
 			"url": "/admin/auth/login",
 			"method": "post"
+		},
+		"attributeList": {
+			"url": "/admin/attributes",
+			"method": "get"
 		},
 		"logout": {
 			"url": "/admin/auth/logout",

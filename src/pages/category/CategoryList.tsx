@@ -178,7 +178,6 @@ const CategoryList = ({history}: Props) => {
 
   const handleOkAddNewCategory = (e: any) => {
     setAddNewCategoryVisible(false);
-  
   };
 
   const handleCancelAddNewCategory = (e: any) => {
@@ -240,9 +239,14 @@ const CategoryList = ({history}: Props) => {
 			</div>
 		</div>
 
+
+{categoryState.done && 
     <AddNewCategory 
           addNewCategoryVisible={addNewCategoryVisible} 
-          setAddNewCategoryVisible={setAddNewCategoryVisible} />
+          setAddNewCategoryVisible={setAddNewCategoryVisible}
+          categoryList={categoryState.data}
+          
+           />}
 
       
 
