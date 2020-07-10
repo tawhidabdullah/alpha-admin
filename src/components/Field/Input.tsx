@@ -6,7 +6,7 @@ const { TextArea } = Input;
 
 
 interface Props {
-    label: string;
+    label?: string;
     type?: string;
     defaultValue?:string;
     value?: string; 
@@ -15,21 +15,31 @@ interface Props {
     isError?: boolean; 
     errorString?: string; 
     name?:string;
+    addonBefore?:string;
 }
 
-const Demo = ({ label, type, defaultValue, value, onChange, disabled, isError, errorString,  name}: Props) => {
+const Demo = ({ addonBefore, label, type, defaultValue, value, onChange, disabled, isError, errorString,  name}: Props) => {
     return (
         <>
-            <h3 className='inputFieldLabel'>
-                {label}
-            </h3>
+        {label && (
+  <h3 className='inputFieldLabel'>
+  {label}
+</h3>
+        )}
+          
             <Form.Item
             validateStatus={isError ? "error" : ""}
             // hasFeedback validateStatus="success"
             help={errorString}
             // rules={[{ required: true }]}
                 >
+
                      <Input
+                     type={type}
+                     addonBefore={addonBefore}
+                     style={{
+                         borderRadius:'0'
+                     }}
                      allowClear 
                     name={name}
                     disabled={disabled}

@@ -1,5 +1,5 @@
 import React,{useState} from 'react';
-import { Modal  } from 'antd';
+import { Modal,notification   } from 'antd';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
@@ -7,13 +7,30 @@ import * as Yup from 'yup';
 import Input from '../../components/Field/Input';
 import TextArea from '../../components/Field/TextArea';
 import {useHandleFetch} from '../../hooks';
+import { CheckCircleOutlined } from '@ant-design/icons';
+
 
 const validationSchema = Yup.object().shape({
 	name: Yup.string().label('Name').required('Name is required').min(3, 'Name must have at least 3 characters'),
-	description: Yup.string().label('Description').required('Description is required')
 });
 
 
+const openSuccessNotification = () => {
+	notification.success({
+	  message: 'Product Updated',
+	  description: '',
+	  icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
+	});
+  };
+
+
+  const openErrorNotification = (message?: any) => {
+	notification.success({
+	  message: message || 'Something Went Wrong',
+	  description: '',
+	  icon: <CheckCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
+	});
+  };
 
 
 
@@ -21,13 +38,15 @@ interface Props {
 	category: any;
 	setvisible: any; 
 	visible: any;
+	setProductList?: any; 
+	productList?: any; 
 }
 
-const QuickEdit = ({ category, setvisible, visible }: Props) => {
+const QuickEdit = ({ category, setvisible, visible,setProductList , productList}: Props) => {
 	const [updateProductState, handleUpdateProductFetch] = useHandleFetch({}, 'updateProduct');
 
 	const handleSubmit = async (values : any, actions : any) => {
-	  const updateCategoryRes = await handleUpdateProductFetch({
+	  const updateProductRes = await handleUpdateProductFetch({
 		urlOptions: {
 			placeHolders: {
 			  id: values.id,
@@ -36,10 +55,34 @@ const QuickEdit = ({ category, setvisible, visible }: Props) => {
 		body: {
 			name: values.name,
 			description: values.description,
+			category: category.category,
+			pricing: category.pricing
 		},
 	  });
+
+	  // @ts-ignore
+	  if(updateProductRes && updateProductRes.status === 'ok'){
+		openSuccessNotification(); 
+
+		const positionInAttribute = () => {
+            return productList.map(item => item.id).indexOf(category.id);
+          }
+
+          const index = positionInAttribute();
+
+		  // @ts-ignore
+          const updatedItem = Object.assign({}, productList[index], { ...updateProductRes });
+          const updateProductList = [...productList.slice(0, index), updatedItem, ...productList.slice(index + 1)];
+          setProductList(updateProductList); 
+		
+	  }
+	  else {
+		openErrorNotification();
+	  }
+	  console.log('updateProductRes',updateProductRes)
 	
 	  actions.setSubmitting(false);
+	  setvisible(false)
 	};
 	
 
@@ -48,9 +91,8 @@ const QuickEdit = ({ category, setvisible, visible }: Props) => {
       };
 
 
-
 	  const getisSubmitButtonDisabled = (values,isValid) => {
-		if(!values.name || !values.description || !isValid){
+		if(!values.name || !isValid){
 			return true; 
 		}
 		return false; 

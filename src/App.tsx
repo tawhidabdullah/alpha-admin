@@ -11,6 +11,7 @@ import { PagesList, AddNewPage } from './pages/pages';
 import { AttributeList } from './pages/attribute';
 import { OrderList, AddNewOrder } from './pages/order';
 import { Component, ManageThemes, Image, Invoice, SiteInfo } from './pages/settings';
+import { Delivery } from './pages/delivery';
 import Login from './pages/auth/login';
 // import components
 import Sider from './layout/Sider';
@@ -98,6 +99,10 @@ const App = () => {
 
 								<Route path='/page' exact>
 									<PagesList />
+								</Route>
+
+								<Route path='/delivery' exact>
+									<Delivery />
 								</Route>
 
 								<Route path='/page/new' exact>

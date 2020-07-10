@@ -92,12 +92,52 @@
 			"url": "/admin/tag/update/delete/:id",
 			"method": "post"
 		},
+		"customerList": {
+			"url": "/admin/customer",
+			"method": "get"
+		},
+		"addCustomer": {
+			"url": "/admin/customer/add",
+			"method": "post"
+		},
+		"updateCustomer": {
+			"url": "/admin/customer/update/:id",
+			"method": "post"
+		},
+		"deleteCustomer": {
+			"url": "/admin/customer/update/delete/:id",
+			"method": "post"
+		},
+		"regionList": {
+			"url": "/admin/delivery",
+			"method": "get"
+		},
+		"addRegion": {
+			"url": "/admin/delivery/add",
+			"method": "post"
+		},
+		"updateRegion": {
+			"url": "/admin/delivery/update/:id",
+			"method": "post"
+		},
+		"deleteRegion": {
+			"url": "/admin/delivery/update/delete/:id",
+			"method": "post"
+		},
 		"login": {
 			"url": "/admin/auth/login",
 			"method": "post"
 		},
 		"attributeList": {
 			"url": "/admin/attributes",
+			"method": "get"
+		},
+		"countryList": {
+			"url": "/api/geo/country",
+			"method": "get"
+		},
+		"cityList": {
+			"url": "/api/geo/:country/city",
 			"method": "get"
 		},
 		"logout": {

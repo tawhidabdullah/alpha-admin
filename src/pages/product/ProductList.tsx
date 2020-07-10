@@ -1,9 +1,8 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {withRouter} from 'react-router-dom';
-import { Table, Badge, Menu, Dropdown, Space, Tag,Button, Input,Tooltip, Modal  } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined,EditFilled } from '@ant-design/icons';
+import {notification,Empty, Table, Badge, Menu, Dropdown, Space, Tag,Button, Input,Tooltip, Popconfirm   } from 'antd';
+import { CheckCircleOutlined, PlusOutlined, EditOutlined, DeleteOutlined,EditFilled } from '@ant-design/icons';
 
-import {AddNewCategory,QuickEdit} from "../category"
 
 /// import hooks
 import { useFetch, useHandleFetch } from "../../hooks";
@@ -11,25 +10,38 @@ import { useFetch, useHandleFetch } from "../../hooks";
 // import components
 import { DataTableSkeleton } from "../../components/Placeholders";
 import AddNewProduct from "./AddNewProduct";
+import QuickEdit from "./QuickEdit";
 
 const { Column, ColumnGroup } = Table;
 const { Search } = Input;
 
 
 
+const openSuccessNotification = () => {
+	notification.success({
+	  message: 'Product Deleted',
+	  description: '',
+	  icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
+	});
+  };
+
+
+
+
 
 interface myTableProps {
   data: any; 
+  setProductList: any; 
 } 
 
 
-const MyTable = ({data}: myTableProps) => {
+const MyTable = ({data,setProductList}: myTableProps) => {
     const [visible,setvisible] = useState(false);   
     const [activeCategoryForEdit,setactiveCategoryForEdit] = useState(false); 
     const [deleteProductState, handleDeleteProductFetch] = useHandleFetch({}, 'deleteProduct');
 
 
-      const handleDeleteCategory = async (id) => {
+      const handleDeleteProduct = async (id) => {
         const deleteProductRes = await handleDeleteProductFetch({
           urlOptions: {
             placeHolders: {
@@ -37,6 +49,13 @@ const MyTable = ({data}: myTableProps) => {
             }
             }
           });
+
+          // @ts-ignore
+          if(deleteProductRes && deleteProductRes.status === 'ok'){
+            openSuccessNotification(); 
+          }
+
+          console.log('deleteProductRes',deleteProductRes)
       }
       
 
@@ -78,6 +97,31 @@ const MyTable = ({data}: myTableProps) => {
            className='classnameofthecolumn'
          
             />
+
+<Column
+           title="Offer Price" 
+           dataIndex="offerPrice" 
+           key="id" 
+           className='classnameofthecolumn'
+         
+            />
+
+
+<Column
+           title="Price" 
+           dataIndex="price" 
+           key="id" 
+           className='classnameofthecolumn'
+         
+            />
+
+<Column
+           title="Unit" 
+           dataIndex="unit" 
+           key="id" 
+           className='classnameofthecolumn'
+         
+            />
           {/* <Column 
           
           className='classnameofthecolumn'
@@ -113,7 +157,9 @@ const MyTable = ({data}: myTableProps) => {
           render={(text, record : any) => (
             <Space size="middle">
             
-               <Tooltip placement="top" title='Quick Edit Category'>
+               <Tooltip 
+              
+               placement="top" title='Quick Edit Product'>
               <span className='iconSize' onClick={() => {
                 setvisible(true)
                 setactiveCategoryForEdit(record); 
@@ -125,17 +171,20 @@ const MyTable = ({data}: myTableProps) => {
 
 
              
-              <Tooltip placement="top" title='Delete Category'>
-            
+               <Popconfirm 
+               
+               onConfirm={() => handleDeleteProduct(record.id)}
+               title="Are you sure？" okText="Yes" cancelText="No">
+               <span 
+            className='iconSize iconSize-danger'
+            > 
+            <DeleteOutlined/>
+           </span>
+       
+  </Popconfirm>
 
-             <span 
-             className='iconSize iconSize-danger'
-             onClick={() => handleDeleteCategory(record.id)}
-             > 
-             <DeleteOutlined/>
-            </span>
+
             
-          </Tooltip>
              
             </Space>
           )}
@@ -145,6 +194,8 @@ const MyTable = ({data}: myTableProps) => {
     
 
     {activeCategoryForEdit &&   <QuickEdit 
+    productList={data}
+    setProductList={setProductList}
     setvisible={setvisible}
     visible={visible}
     category={activeCategoryForEdit}/>}
@@ -161,28 +212,36 @@ interface Props {
 
 const ProductList = ({history}: Props) => {
 
-    const productState = useFetch([], [], 'productList', {
-    urlOptions: {
-      params: {
-        isSubCategory: true,
-      },
-    },
-  });
 
+
+  const [productList,setProductList] = useState([]); 
+
+  const [productState, handleProductListFetch] = useHandleFetch({}, 'productList');
+
+
+  useEffect(()=>{
+   const setProducts = async () => {
+     const products = await handleProductListFetch({}); 
+     // @ts-ignore
+     setProductList(products); 
+   }
+   setProducts(); 
+  },[])
 
   
   const [addNewCategoryVisible,setAddNewCategoryVisible] = useState(false);   
 
-  const handleOkAddNewCategory = (e: any) => {
-    setAddNewCategoryVisible(false);
-  };
-
-  const handleCancelAddNewCategory = (e: any) => {
-    setAddNewCategoryVisible(false);
-  };
 
   console.log('productState',productState)
 
+
+  const handleSearch = (value) => {
+    if(productState.data.length > 0 ){
+      const newProductList = productState.data.filter(item => item.name.includes(value)); 
+      setProductList(newProductList); 
+    }
+     
+  }
 
 
 	return (
@@ -204,7 +263,7 @@ const ProductList = ({history}: Props) => {
             enterButton={false}
             className='searchbarClassName'
           placeholder="search products.."
-          onSearch={value => console.log(value)}
+          onSearch={value => handleSearch(value)}
           // style={{ width: 300 }}
         />
           </div>
@@ -215,8 +274,9 @@ const ProductList = ({history}: Props) => {
           onClick={() => setAddNewCategoryVisible(true)}
         >
         Add New
-            
-            </Button>
+      </Button>
+
+
             </div>
 
             <div className='categoryListContainer__afterHeader'>
@@ -228,11 +288,19 @@ const ProductList = ({history}: Props) => {
     /> */}
             </div>
 
-     
-			
+    
 			<div className='categoryListContainer__categoryList'>
-        {productState.done && productState.data.length > 0 && <MyTable data={productState.data} />}
+        {productState.done && productList.length > 0 && <MyTable 
+        setProductList={setProductList}
+        data={productList} />}
         {productState.isLoading && <DataTableSkeleton />}
+        {productState.done && !(productList.length > 0) && (
+			<div style={{
+				marginTop: '100px'
+			}}>
+				<Empty description='No Products found'  image={Empty.PRESENTED_IMAGE_SIMPLE} />
+			</div>
+		)}
 			</div>
 		</div>
 

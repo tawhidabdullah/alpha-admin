@@ -5,7 +5,7 @@ import * as Yup from 'yup';
 
 import {useHandleFetch} from '../../hooks';
 // import third party ui lib
-import { Upload, message, Switch, Select, Button, notification, Modal } from 'antd';
+import { Upload, message, Switch, Select, Button, notification, Modal,Tabs, Empty } from 'antd';
 
 import {
 	FileOutlined,
@@ -15,23 +15,25 @@ import {
 	RadiusBottomleftOutlined,
 	RadiusBottomrightOutlined,
 	DeleteOutlined,
+	EditOutlined,
 	FileAddOutlined,
-	PlusCircleOutlined
+	PlusCircleOutlined,
+	PlusOutlined
 } from '@ant-design/icons';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
 // import components
 import Input from '../../components/Field/Input';
-import InputSmall from '../../components/Field/InputSmall';
 import TextArea from '../../components/Field/TextArea';
 import MediaLibrary from "../../components/MediaLibrary";
 import Tags from "./Tags";
 import Brands from "./Brands";
 import Categories from "./Categories";
-import Attributes from "./Attributes";
-import AddAttributeValues from "../attribute/AddAttributeValues";
+import Pricing from "./Pricing";
 
+
+const { TabPane } = Tabs;
 
 
 
@@ -95,6 +97,7 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible,categor
 	const [categoryids,setcategoryIds] = useState([]); 
 	const [tagIds,setTagIds] = useState([]); 
 	const [brandId,setBrandId] = useState(''); 
+	const [pricing,setPricing] = useState([]); 
 	
 
 
@@ -121,6 +124,7 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible,categor
 			brand: brandId,
 			image: imagesIds,
 			cover: coverId,
+			pricing: pricing,
 			parent: setselectedParentId
 		},
 	  });
@@ -183,6 +187,14 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible,categor
 		console.log('selectedValue',value); 
 	  }
 
+
+	  const handleAddPricing = (priceItem) => {
+		
+		  setPricing([priceItem, ...pricing,])
+	  }
+
+
+	  console.log('pricing',pricing)
 
 	return (
 		<Formik
@@ -313,168 +325,141 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible,categor
 				Product Variation 
 			</h3>
 	 </div>
+
+
 	 <div className='addProductGridContainer__item-body'>
-		<div className='addProductGridContainer__item-body-variationCard'>
-			<div className='addProductGridContainer__item-body-variationCard-item'>
-				<h4>
-					Price
-				</h4>
-				<div className='addProductGridContainer__item-body-variationCard-item-container'>
-					<div className='addProductGridContainer__item-body-variationCard-item-container-left'>
-					<InputSmall 
-			   label='Regular'
-			   value={values.name}
-			   name='name'
-			   isError={(touched.name && errors.name) ||
-				  (!isSubmitting && addProductState.error['error']['name'])}
-			  
-				  errorString={(touched.name && errors.name) ||
-					  (!isSubmitting && addProductState.error['error']['name'])}
-			   onChange={(e : any) => {
-				  handleChange(e);
-				  setFieldTouched('name');
-				}}
-			   />
-					</div>
-					<div className='addProductGridContainer__item-body-variationCard-item-container-right'>
-					<InputSmall 
-			   label='Offer'
-			   value={values.name}
-			   name='name'
-			   isError={(touched.name && errors.name) ||
-				  (!isSubmitting && addProductState.error['error']['name'])}
-			  
-				  errorString={(touched.name && errors.name) ||
-					  (!isSubmitting && addProductState.error['error']['name'])}
-			   onChange={(e : any) => {
-				  handleChange(e);
-				  setFieldTouched('name');
-				}}
-			   />
-					</div>
-				</div>
-			</div>
 
-
-
-			<div className='addProductGridContainer__item-body-variationCard-item'>
-				<h4>
-					Stock
-				</h4>
-				<div className='addProductGridContainer__item-body-variationCard-item-container'>
-					<div className='addProductGridContainer__item-body-variationCard-item-container-left'>
-					<InputSmall 
-			   label='Available'
-			   value={values.name}
-			   name='name'
-			   isError={(touched.name && errors.name) ||
-				  (!isSubmitting && addProductState.error['error']['name'])}
-			  
-				  errorString={(touched.name && errors.name) ||
-					  (!isSubmitting && addProductState.error['error']['name'])}
-			   onChange={(e : any) => {
-				  handleChange(e);
-				  setFieldTouched('name');
-				}}
-			   />
-					</div>
-					<div className='addProductGridContainer__item-body-variationCard-item-container-right'>
-					<InputSmall 
-			   label='Minimum'
-			   value={values.name}
-			   name='name'
-			   isError={(touched.name && errors.name) ||
-				  (!isSubmitting && addProductState.error['error']['name'])}
-			  
-				  errorString={(touched.name && errors.name) ||
-					  (!isSubmitting && addProductState.error['error']['name'])}
-			   onChange={(e : any) => {
-				  handleChange(e);
-				  setFieldTouched('name');
-				}}
-			   />
-					</div>
-				</div>
-			</div>
-
-
-
-
-
-
-			<div className='addProductGridContainer__item-body-variationCard-item'>
-				<h4>
-					Attributes
-				</h4>
+	 <Tabs 
+	
+	 type='card'
+	 >
+          <TabPane tab="Add Pricing" key="1">
+				<Pricing handleAddPricing={handleAddPricing} />
+          </TabPane>
+          <TabPane tab="Pricing" key="2">
+				<div className='addProductGridContainer__item-body-pricingContainer'>
 				
+				{pricing.length > 0 && pricing.map(item => {
+					return (
+						<div className='addProductGridContainer__item-body-pricingContainer-item'>
+						<div className='addProductGridContainer__item-body-pricingContainer-item-edit'>
+							<span>
+							<EditOutlined />
+							</span>
+							<span className='d'>
+							<DeleteOutlined />
+							</span>
+						</div>
+						<div className='addProductGridContainer__item-body-pricingContainer-item-two'>
+						<div>
+					<h3>
+							Pricing
+						</h3>
+						<div className='addProductGridContainer__item-body-pricingContainer-item-body'>
 
-				<div className='addProductGridContainer__item-body-variationCard-item-attribute-contianer'>
-				<div className='addProductGridContainer__item-body-variationCard-item-attribute-contianer-item'>
-				<h3 className='inputFieldLabel-small'>
-               Name
-            </h3>
-			<Attributes />
-			<div style={{marginTop: '10px'}}></div>
-			<h3 className='inputFieldLabel-small'>
-               Values
-            </h3>
-<AddAttributeValues />
-				</div>
+							{item.price && item.price.offer && (
+								<div>
+								<h6>
+									offer
+								</h6>
+								<h4>
+									{item.price.offer}
+								</h4>
+								</div>
+							)}
+							
+
+							{item.price && item.price.regular && (
+								<div>
+								<h6>
+								regular
+								</h6>
+								<h4>
+									{item.price.regular}
+								</h4>
+								</div>
+							)}
+							
+						
+							
+						</div>
+					</div>
+
+					{item.stock && (
+									<div>
+									<h3>
+										Stock
+									</h3>
+									<div className='addProductGridContainer__item-body-pricingContainer-item-body'>
+										<div>
+										<h6>
+											available
+										</h6>
+										<h4>
+											{item.stock.available}
+										</h4>
+										</div>
+										
+										<div>
+										<h6>
+											minimum
+										</h6>
+										<h4>
+											{item.stock.minimum}
+										</h4>
+										</div>
+										
+									</div>
+									</div>
+							)}
+
+
 					
-				<div className='addProductGridContainer__item-body-variationCard-item-attribute-contianer-item'>
-				<h3 className='inputFieldLabel-small'>
-               Name
-            </h3>
-			<Attributes />
-			<div style={{marginTop: '10px'}}></div>
-			<h3 className='inputFieldLabel-small'>
-               Values
-            </h3>
-<AddAttributeValues />
+						</div>
+
+						<h3>
+							Attributes
+						</h3>
+						<div className='addProductGridContainer__item-body-pricingContainer-item-body'>
+							<div>
+							<h6>
+								color
+							</h6>
+							<h4>
+								black
+							</h4>
+							</div>
+							
+							<div>
+							<h6>
+								brand
+							</h6>
+							<h4>
+							apple
+							</h4>
+							</div>
+							
+						</div>
+					</div>
+					)
+				})}
+						
+
+						{!(pricing.length > 0) && <div style={{
+							width: '100%',
+							display: 'flex',
+							justifyContent: 'center'
+						}}>
+							<Empty description='No Pricing added'  image={Empty.PRESENTED_IMAGE_SIMPLE} />
+							</div>}
 				</div>
+          </TabPane>
+         
+        </Tabs>
 
-				<div className='addProductGridContainer__item-body-variationCard-item-attribute-contianer-item'>
-				<h3 className='inputFieldLabel-small'>
-               Name
-            </h3>
-			<Attributes />
-			<div style={{marginTop: '10px'}}></div>
-			<h3 className='inputFieldLabel-small'>
-               Values
-            </h3>
-<AddAttributeValues />
+				<div className='addProductGridContainer__item-body-container'>
+
 				</div>
-
-				<div className='addProductGridContainer__item-body-variationCard-item-attribute-contianer-item'>
-				<h3 className='inputFieldLabel-small'>
-               Name
-            </h3>
-			<Attributes />
-			<div style={{marginTop: '10px'}}></div>
-			<h3 className='inputFieldLabel-small'>
-               Values
-            </h3>
-<AddAttributeValues />
-				</div>
-
-				<div className='addProductGridContainer__item-body-variationCard-item-attribute-contianer-item'>
-				<h3 className='inputFieldLabel-small'>
-               Name
-            </h3>
-			<Attributes />
-			<div style={{marginTop: '10px'}}></div>
-			<h3 className='inputFieldLabel-small'>
-               Values
-            </h3>
-<AddAttributeValues />
-				</div>
-				</div>
-				<Button type="dashed" icon={<PlusCircleOutlined />}>Add Attribute</Button>
-			</div>
-
-
-
-		</div>
 		
 	 </div>
 	</div>

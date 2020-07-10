@@ -358,7 +358,9 @@ class Converter {
 					regularPrice: product.price && product.price['regular'],
 					offerPrice: product.price && product.price['offer'],
 					url: product.url,
-					unit: product.unit
+					unit: product.unit,
+					category: product.category,
+					pricing: product.pricing
 				};
 			});
 
@@ -411,6 +413,61 @@ class Converter {
 					name: brand.name && brand.name,
 					description: brand.description && brand.description,
 					cover: `${config['baseURL']}${brand.cover ? brand.cover.thumbnail : ''}`
+				};
+			});
+
+		return convertedData;
+	}
+
+	/**
+   * @public
+   * @method customerList convert api data from API to general format based on config server
+   * @param {Object} data response objectc from alpha
+   * @returns {Object}  converted data
+   */
+	async customerList(resData) {
+		const data = resData.data || [];
+
+		const convertedData =
+			data.length > 0 &&
+			data.map((customer) => {
+				return {
+					id: customer._id || '',
+					key: customer._id || '',
+					firstName: customer.firstName || '',
+					lastName: customer.lastName || '',
+					country: customer.country || '',
+					city: customer.city || '',
+					email: customer.email || '',
+					phone: customer.phone || '',
+					created: customer.created || ''
+				};
+			});
+
+		return convertedData;
+	}
+
+	/**
+   * @public
+   * @method regionList convert api data from API to general format based on config server
+   * @param {Object} data response objectc from alpha
+   * @returns {Object}  converted data
+   */
+	async regionList(data) {
+		const convertedData =
+			data.length > 0 &&
+			data.map((region) => {
+				return {
+					id: region._id || '',
+					key: region._id || '',
+					name: region.name || '',
+					pickUpLocation: region.pickUpLocation || '',
+					country: region.country || '',
+					countryCode: region.countryCode || '',
+					countryName: region.countryName || '',
+					city: region.city || '',
+					time: region.time || '',
+					charge: region.charge || {}
 				};
 			});
 
@@ -636,6 +693,42 @@ class Converter {
 					[]
 			}) ||
 			{};
+
+		return convertedData;
+	}
+
+	/**
+   * @public
+   * @method updateProduct convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+	async updateProduct(data) {
+		const convertedData = data;
+
+		if (data && data.updated) {
+			return {
+				...data.updated,
+				status: 'ok'
+			};
+		}
+
+		return convertedData;
+	}
+
+	/**
+   * @public
+   * @method deleteProduct convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+	async deleteProduct(data) {
+		const convertedData = data;
+		if (data && data.success) {
+			return {
+				status: 'ok'
+			};
+		}
 
 		return convertedData;
 	}
