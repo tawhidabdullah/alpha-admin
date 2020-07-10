@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {withRouter} from 'react-router-dom';
-import { Table, Badge, Menu, Dropdown, Space, Tag,Button, Input,Tooltip, Modal  } from 'antd';
+import { Table,Empty, Badge, Menu, Dropdown, Space, Tag,Button, Input,Tooltip, Modal  } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined,EditFilled } from '@ant-design/icons';
 
 
@@ -81,6 +81,14 @@ const MyTable = ({data}: myTableProps) => {
           <Column
            title="Name" 
            dataIndex="name" 
+           key="id" 
+           className='classnameofthecolumn'
+         
+            />
+
+<Column
+           title="Description" 
+           dataIndex="description" 
            key="id" 
            className='classnameofthecolumn'
          
@@ -168,13 +176,7 @@ interface Props {
 
 const CategoryList = ({history}: Props) => {
 
-    const brandState = useFetch([], [], 'brandList', {
-    urlOptions: {
-      params: {
-        isSubCategory: true,
-      },
-    },
-  });
+    const brandState = useFetch([], [], 'brandList', {});
 
 
   
@@ -211,7 +213,7 @@ const CategoryList = ({history}: Props) => {
           <Search
             enterButton={false}
             className='searchbarClassName'
-          placeholder="search categories.."
+          placeholder="search brands.."
           onSearch={value => console.log(value)}
           // style={{ width: 300 }}
         />
@@ -241,6 +243,13 @@ const CategoryList = ({history}: Props) => {
 			<div className='categoryListContainer__categoryList'>
         {brandState.done && brandState.data.length > 0 && <MyTable data={brandState.data} />}
         {brandState.isLoading && <DataTableSkeleton />}
+        {brandState.done && !(brandState.data.length > 0) && (
+			<div style={{
+				marginTop: '100px'
+			}}>
+				<Empty description='No Brands found'  image={Empty.PRESENTED_IMAGE_SIMPLE} />
+			</div>
+		)}
 			</div>
 		</div>
 

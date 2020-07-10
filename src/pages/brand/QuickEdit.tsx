@@ -24,11 +24,10 @@ interface Props {
 }
 
 const QuickEdit = ({ category, setvisible, visible }: Props) => {
-	const [updateCategoryState, handleUpdateCategoryFetch] = useHandleFetch({}, 'updateCategory');
+	const [updatebrandState, handleUpdateBrandFetch] = useHandleFetch({}, 'updateBrand');
 
 	const handleSubmit = async (values : any, actions : any) => {
-		console.log('ourDamnValues',values)
-	  const updateCategoryRes = await handleUpdateCategoryFetch({
+	  const updateBrandRes = await handleUpdateBrandFetch({
 		urlOptions: {
 			placeHolders: {
 			  id: values.id,
@@ -97,10 +96,10 @@ const QuickEdit = ({ category, setvisible, visible }: Props) => {
 			   value={values.name}
 			   name='name'
 			   isError={(touched.name && errors.name) ||
-				  (!isSubmitting && updateCategoryState.error['error']['name'])}
+				  (!isSubmitting && updatebrandState.error['error']['name'])}
 			  
 				  errorString={(touched.name && errors.name) ||
-					  (!isSubmitting && updateCategoryState.error['error']['name'])}
+					  (!isSubmitting && updatebrandState.error['error']['name'])}
 			   onChange={(e : any) => {
 				  handleChange(e);
 				  setFieldTouched('name');
@@ -111,10 +110,10 @@ const QuickEdit = ({ category, setvisible, visible }: Props) => {
 			   value={values.description}
 			   name='description'
 			   isError={(touched.description && errors.description) ||
-				  (!isSubmitting && updateCategoryState.error['error']['description'])}
+				  (!isSubmitting && updatebrandState.error['error']['description'])}
 			  
 				  errorString={(touched.description && errors.description) ||
-					  (!isSubmitting && updateCategoryState.error['error']['description'])}
+					  (!isSubmitting && updatebrandState.error['error']['description'])}
 			   onChange={(e : any) => {
 				  handleChange(e);
 				  setFieldTouched('description');

@@ -10,11 +10,9 @@ import { Upload, message, Switch, Select, Button, notification, Modal } from 'an
 import {
 	FileOutlined,
 	InboxOutlined,
-	RadiusUpleftOutlined,
-	RadiusUprightOutlined,
-	RadiusBottomleftOutlined,
-	RadiusBottomrightOutlined
 } from '@ant-design/icons';
+
+
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
@@ -66,13 +64,13 @@ interface Props {
 
 const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible }: Props) => {
 
-	const [addCategoryState, handleAddCategoryFetch] = useHandleFetch({}, 'addCategory');
+	const [addBrandState, handleAddBrandFetch] = useHandleFetch({}, 'addBrand');
 	const [visible,setvisible] = useState(false);   
 
 
 
 	const handleSubmit = async (values : any, actions : any) => {
-	  const addCategoryRes = await handleAddCategoryFetch({
+	  const addBrandRes = await handleAddBrandFetch({
 		
 		body: {
 			name: values.name,
@@ -142,7 +140,7 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible }: Props)
 			visible={addNewCategoryVisible}
 			onOk={(e : any) => handleSubmit(e)}
 			onCancel={handleCancel}
-			okText='Update'
+			okText='Create'
 			okButtonProps={{
 			loading: isSubmitting,
 			htmlType: "submit",
@@ -154,10 +152,10 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible }: Props)
 			   value={values.name}
 			   name='name'
 			   isError={(touched.name && errors.name) ||
-				  (!isSubmitting && addCategoryState.error['error']['name'])}
+				  (!isSubmitting && addBrandState.error['error']['name'])}
 			  
 				  errorString={(touched.name && errors.name) ||
-					  (!isSubmitting && addCategoryState.error['error']['name'])}
+					  (!isSubmitting && addBrandState.error['error']['name'])}
 			   onChange={(e : any) => {
 				  handleChange(e);
 				  setFieldTouched('name');
@@ -168,10 +166,10 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible }: Props)
 			   value={values.description}
 			   name='description'
 			   isError={(touched.description && errors.description) ||
-				  (!isSubmitting && addCategoryState.error['error']['description'])}
+				  (!isSubmitting && addBrandState.error['error']['description'])}
 			  
 				  errorString={(touched.description && errors.description) ||
-					  (!isSubmitting && addCategoryState.error['error']['description'])}
+					  (!isSubmitting && addBrandState.error['error']['description'])}
 			   onChange={(e : any) => {
 				  handleChange(e);
 				  setFieldTouched('description');

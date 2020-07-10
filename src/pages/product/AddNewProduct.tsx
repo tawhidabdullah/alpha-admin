@@ -37,16 +37,23 @@ import AddAttributeValues from "../attribute/AddAttributeValues";
 
 const validationSchema = Yup.object().shape({
 	name: Yup.string().label('Name').required('Name is required').min(3, 'Name must have at least 3 characters'),
-	description: Yup.string().label('Description').required('Description is required')
 });
 
 
 const initialValues = {
 	name:'',
 	description: '',
+	model: '',
+	unit: '',
+	regular: '',
+	offer: '',
+	available: '',
+	minimum: '',
 	image: [],
 	url: '',
-	cover: ''
+	cover: '',
+	pricing: [],
+
 }
 
 const { Dragger } = Upload;
@@ -77,7 +84,7 @@ interface Props {
 
 const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible,categoryList }: Props) => {
 
-	const [addCategoryState, handleAddCategoryFetch] = useHandleFetch({}, 'addCategory');
+	const [addProductState, handleAddProductFetch] = useHandleFetch({}, 'addProduct');
 	const [visible,setvisible] = useState(false);   
 	const [myImages,setmyImages] = useState(false);   
 	const [myThumbnailImage,setmyThumbnailImage] = useState(false);   
@@ -85,6 +92,10 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible,categor
 	const [isModalOpenForThumbnail,setisModalOpenForThumbnail] = useState(false); 
 	const [isModalOpenForImages,setisModalOpenForImages] = useState(false); 
 	const [selectedParentId,setselectedParentId] =useState(''); 
+	const [categoryids,setcategoryIds] = useState([]); 
+	const [tagIds,setTagIds] = useState([]); 
+	const [brandId,setBrandId] = useState(''); 
+	
 
 
 
@@ -98,11 +109,16 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible,categor
 	const coverId = myThumbnailImage ? myThumbnailImage[0] && myThumbnailImage[0].id: ''; 
 
 
-	  const addCategoryRes = await handleAddCategoryFetch({
+	  const addProductRes = await handleAddProductFetch({
 		
 		body: {
 			name: values.name,
 			description: values.description,
+			model: values.model,
+			unit: values.unit,
+			category: categoryids,
+			tags: tagIds,
+			brand: brandId,
 			image: imagesIds,
 			cover: coverId,
 			parent: setselectedParentId
@@ -228,10 +244,10 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible,categor
 			   value={values.name}
 			   name='name'
 			   isError={(touched.name && errors.name) ||
-				  (!isSubmitting && addCategoryState.error['error']['name'])}
+				  (!isSubmitting && addProductState.error['error']['name'])}
 			  
 				  errorString={(touched.name && errors.name) ||
-					  (!isSubmitting && addCategoryState.error['error']['name'])}
+					  (!isSubmitting && addProductState.error['error']['name'])}
 			   onChange={(e : any) => {
 				  handleChange(e);
 				  setFieldTouched('name');
@@ -242,10 +258,10 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible,categor
 			   value={values.description}
 			   name='description'
 			   isError={(touched.description && errors.description) ||
-				  (!isSubmitting && addCategoryState.error['error']['description'])}
+				  (!isSubmitting && addProductState.error['error']['description'])}
 			  
 				  errorString={(touched.description && errors.description) ||
-					  (!isSubmitting && addCategoryState.error['error']['description'])}
+					  (!isSubmitting && addProductState.error['error']['description'])}
 			   onChange={(e : any) => {
 				  handleChange(e);
 				  setFieldTouched('description');
@@ -254,36 +270,34 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible,categor
 
 <Input 
 			   label='Model Number'
-			   value={values.name}
-			   name='name'
-			   isError={(touched.name && errors.name) ||
-				  (!isSubmitting && addCategoryState.error['error']['name'])}
+			   value={values.model}
+			   name='model'
+			   isError={(touched.model && errors.model) ||
+				  (!isSubmitting && addProductState.error['error']['model'])}
 			  
-				  errorString={(touched.name && errors.name) ||
-					  (!isSubmitting && addCategoryState.error['error']['name'])}
+				  errorString={(touched.model && errors.model) ||
+					  (!isSubmitting && addProductState.error['error']['model'])}
 			   onChange={(e : any) => {
 				  handleChange(e);
-				  setFieldTouched('name');
+				  setFieldTouched('model');
 				}}
 			   />
 
 
 <Input 
 			   label='Unit'
-			   value={values.name}
-			   name='name'
-			   isError={(touched.name && errors.name) ||
-				  (!isSubmitting && addCategoryState.error['error']['name'])}
+			   value={values.unit}
+			   name='unit'
+			   isError={(touched.unit && errors.unit) ||
+				  (!isSubmitting && addProductState.error['error']['unit'])}
 			  
-				  errorString={(touched.name && errors.name) ||
-					  (!isSubmitting && addCategoryState.error['error']['name'])}
+				  errorString={(touched.unit && errors.unit) ||
+					  (!isSubmitting && addProductState.error['error']['unit'])}
 			   onChange={(e : any) => {
 				  handleChange(e);
-				  setFieldTouched('name');
+				  setFieldTouched('unit');
 				}}
 			   />
-
-
 
 	 </div>
 
@@ -292,9 +306,7 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible,categor
 	</div>
 
 	
-	<div className='addProductGridContainer__model'> 
-	model
-	</div>
+
 	<div className='addProductGridContainer__price'> 
 	 <div className='addProductGridContainer__item-header'>
 			<h3>
@@ -314,10 +326,10 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible,categor
 			   value={values.name}
 			   name='name'
 			   isError={(touched.name && errors.name) ||
-				  (!isSubmitting && addCategoryState.error['error']['name'])}
+				  (!isSubmitting && addProductState.error['error']['name'])}
 			  
 				  errorString={(touched.name && errors.name) ||
-					  (!isSubmitting && addCategoryState.error['error']['name'])}
+					  (!isSubmitting && addProductState.error['error']['name'])}
 			   onChange={(e : any) => {
 				  handleChange(e);
 				  setFieldTouched('name');
@@ -330,10 +342,10 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible,categor
 			   value={values.name}
 			   name='name'
 			   isError={(touched.name && errors.name) ||
-				  (!isSubmitting && addCategoryState.error['error']['name'])}
+				  (!isSubmitting && addProductState.error['error']['name'])}
 			  
 				  errorString={(touched.name && errors.name) ||
-					  (!isSubmitting && addCategoryState.error['error']['name'])}
+					  (!isSubmitting && addProductState.error['error']['name'])}
 			   onChange={(e : any) => {
 				  handleChange(e);
 				  setFieldTouched('name');
@@ -356,10 +368,10 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible,categor
 			   value={values.name}
 			   name='name'
 			   isError={(touched.name && errors.name) ||
-				  (!isSubmitting && addCategoryState.error['error']['name'])}
+				  (!isSubmitting && addProductState.error['error']['name'])}
 			  
 				  errorString={(touched.name && errors.name) ||
-					  (!isSubmitting && addCategoryState.error['error']['name'])}
+					  (!isSubmitting && addProductState.error['error']['name'])}
 			   onChange={(e : any) => {
 				  handleChange(e);
 				  setFieldTouched('name');
@@ -372,10 +384,10 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible,categor
 			   value={values.name}
 			   name='name'
 			   isError={(touched.name && errors.name) ||
-				  (!isSubmitting && addCategoryState.error['error']['name'])}
+				  (!isSubmitting && addProductState.error['error']['name'])}
 			  
 				  errorString={(touched.name && errors.name) ||
-					  (!isSubmitting && addCategoryState.error['error']['name'])}
+					  (!isSubmitting && addProductState.error['error']['name'])}
 			   onChange={(e : any) => {
 				  handleChange(e);
 				  setFieldTouched('name');
@@ -526,7 +538,7 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible,categor
 				</h3>
 			</div>
 			<div className='addProductGridContainer-rightItemContainer-body'>
-				<Categories/>
+				<Categories setcategoryIds={setcategoryIds}/>
 			</div>
 		</div>
 
@@ -540,7 +552,7 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible,categor
 				</h3>
 			</div>
 			<div className='addProductGridContainer-rightItemContainer-body'>
-				<Tags />
+				<Tags setTagIds={setTagIds}/>
 			</div>
 		</div>
 
@@ -553,7 +565,7 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible,categor
 				</h3>
 			</div>
 			<div className='addProductGridContainer-rightItemContainer-body'>
-				<Brands />
+				<Brands setBrandId={setBrandId}/>
 			</div>
 		</div>
 

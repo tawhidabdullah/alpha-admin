@@ -76,6 +76,22 @@
 			"url": "/admin/brand/update/delete/:id",
 			"method": "post"
 		},
+		"tagList": {
+			"url": "/api/tag",
+			"method": "get"
+		},
+		"addTag": {
+			"url": "/admin/tag/add",
+			"method": "post"
+		},
+		"updateTag": {
+			"url": "/admin/tag/update/:id",
+			"method": "post"
+		},
+		"deleteTag": {
+			"url": "/admin/tag/update/delete/:id",
+			"method": "post"
+		},
 		"login": {
 			"url": "/admin/auth/login",
 			"method": "post"

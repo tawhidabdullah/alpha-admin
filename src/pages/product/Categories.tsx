@@ -1,35 +1,78 @@
-import React, { useState } from 'react';
-
+import React, { useState, useEffect } from 'react';
+import { useFetch, useHandleFetch } from '../../hooks';
 import { Checkbox, Input } from 'antd';
 const CheckboxGroup = Checkbox.Group;
 
 const { Search } = Input;
 
-function onChange(e) {
-	console.log(`checked = ${e.target.checked}`);
+interface Props {
+	setcategoryIds?: any;
 }
 
-interface Props {}
-
-const Categories = (props: Props) => {
+const Categories = ({ setcategoryIds }: Props) => {
 	const [ checkedList, setcheckedList ] = useState([]);
-	const [ options, setoptions ] = useState([ 'Apple', 'Pear', 'Orange' ]);
+	const [ options, setoptions ] = useState([]);
 	const [ searchValue, setsearchValue ] = useState('');
 
-	const onChange = (checkedList) => {
-		setcheckedList(checkedList);
+	const [ categoryState, handleCategoryListFetch ] = useHandleFetch({}, 'categoryList');
+
+	useEffect(() => {
+		const setCategories = async () => {
+			const categoryListRes = await handleCategoryListFetch({
+				urlOptions: {
+					params: {
+						isSubCategory: false
+					}
+				}
+			});
+
+			// @ts-ignore
+			if (categoryListRes && categoryListRes.length > 0) {
+				// @ts-ignore
+				const categoryNames = categoryListRes.map((cat) => cat.name);
+				setoptions(categoryNames);
+			}
+			console.log('bloodyFcateorycategoryListRes', categoryListRes);
+		};
+
+		setCategories();
+	}, []);
+
+	const onChange = (checkList) => {
+		setcheckedList(checkList);
+
+		if (categoryState.done && categoryState.data.length > 0 && checkList.length > 0) {
+			const selectedCategoryIds = checkList.map((item) => {
+				const selectedcategory = categoryState.data.find(
+					(cat) => cat.name.toLowerCase() === item.toLowerCase()
+				);
+				if (selectedcategory) {
+					return selectedcategory.id;
+				}
+			});
+			setcategoryIds(selectedCategoryIds);
+		}
 	};
 
 	const onSearchChange = (e) => {
 		setsearchValue(e.target.value);
-		const newOptions =
-			options.length > 0
-				? options.filter((option) => {
-						return options.includes(searchValue);
-					})
-				: [];
 
-		setoptions(newOptions);
+		if (e.target.value === '') {
+			if (categoryState.data && categoryState.data.length > 0) {
+				// @ts-ignore
+				const categoryNames = categoryState.data.map((cat) => cat.name);
+				setoptions(categoryNames);
+			}
+		} else {
+			const newOptions =
+				options.length > 0
+					? options.filter((option) => {
+							return option.includes(searchValue);
+						})
+					: [];
+
+			setoptions(newOptions);
+		}
 	};
 
 	console.log('optons', options);
@@ -37,8 +80,14 @@ const Categories = (props: Props) => {
 		<div className='addProduct__categoryBoxContainer'>
 			<div className='addProduct__categoryBoxContainer-searchBox'>
 				<Search
+					width={'100%'}
+					style={{
+						height: '30px',
+						borderRadius: '3px !important',
+						borderColor: '#eee !important'
+					}}
 					size='middle'
-					placeholder='input search text'
+					placeholder='category name'
 					onSearch={(value) => console.log(value)}
 					onChange={onSearchChange}
 				/>

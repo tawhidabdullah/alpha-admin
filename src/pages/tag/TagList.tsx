@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 
 // import third party ui lib
-import { Upload, message, Switch, Select, Button, notification,Table, Space, Input as CoolInput,Tooltip, Modal } from 'antd';
+import { Empty, Upload, message, Switch, Select, Button, notification,Table, Space, Input as CoolInput,Tooltip, Modal } from 'antd';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
@@ -101,7 +101,7 @@ const MyTable = ({data}) => {
          
             />
 
-<Column
+		<Column
            title="Description" 
            dataIndex="description" 
            key="id" 
@@ -150,7 +150,8 @@ const MyTable = ({data}) => {
 
      
 
-		{activeCategoryForEdit &&   <QuickEdit 
+
+{activeCategoryForEdit &&   <QuickEdit 
     setvisible={setvisible}
     visible={visible}
     category={activeCategoryForEdit}/>}
@@ -182,7 +183,7 @@ const props = {
 interface Props {}
 
 const TagList = ({  }: Props) => {
-	const tagState = useFetch([], [], 'brandList', {
+	const tagState = useFetch([], [], 'tagList', {
 		urlOptions: {
 		  params: {
 			isSubCategory: true,
@@ -190,14 +191,14 @@ const TagList = ({  }: Props) => {
 		},
 	  });
 
-	  const [updateCategoryState, handleUpdateCategoryFetch] = useHandleFetch({}, 'updateCategory');
+	  const [addTagState, handleAddTagFetch] = useHandleFetch({}, 'addTag');
 	  const [addNewCategoryVisible,setAddNewCategoryVisible] = useState(false);   
 
 
 
 	  const handleSubmit = async (values : any, actions : any) => {
 		  console.log('ourDamnValues',values)
-		const updateCategoryRes = await handleUpdateCategoryFetch({
+		const addTagRes = await handleAddTagFetch({
 		  urlOptions: {
 			  placeHolders: {
 				id: values.id,
@@ -214,16 +215,12 @@ const TagList = ({  }: Props) => {
 	  
  
   
-  
-  
 		const getisSubmitButtonDisabled = (values,isValid) => {
 		  if(!values.name || !values.description || !isValid){
 			  return true; 
 		  }
 		  return false; 
 		}
-
-
 
 
   const handleOkAddNewCategory = (e: any) => {
@@ -234,6 +231,8 @@ const TagList = ({  }: Props) => {
   const handleCancelAddNewCategory = (e: any) => {
     setAddNewCategoryVisible(false);
   };
+
+
 
 	return (
 		<div className='site-layout-background' style={{ padding: '30px 20px 30px 20px', minHeight: 360 }}>
@@ -269,10 +268,10 @@ const TagList = ({  }: Props) => {
 			   value={values.name}
 			   name='name'
 			   isError={(touched.name && errors.name) ||
-				  (!isSubmitting && updateCategoryState.error['error']['name'])}
+				  (!isSubmitting && addTagState.error['error']['name'])}
 			  
 				  errorString={(touched.name && errors.name) ||
-					  (!isSubmitting && updateCategoryState.error['error']['name'])}
+					  (!isSubmitting && addTagState.error['error']['name'])}
 			   onChange={(e : any) => {
 				  handleChange(e);
 				  setFieldTouched('name');
@@ -283,10 +282,10 @@ const TagList = ({  }: Props) => {
 			   value={values.description}
 			   name='description'
 			   isError={(touched.description && errors.description) ||
-				  (!isSubmitting && updateCategoryState.error['error']['description'])}
+				  (!isSubmitting && addTagState.error['error']['description'])}
 			  
 				  errorString={(touched.description && errors.description) ||
-					  (!isSubmitting && updateCategoryState.error['error']['description'])}
+					  (!isSubmitting && addTagState.error['error']['description'])}
 			   onChange={(e : any) => {
 				  handleChange(e);
 				  setFieldTouched('description');
@@ -324,7 +323,7 @@ const TagList = ({  }: Props) => {
           <Search
             enterButton={false}
             className='searchbarClassName'
-          placeholder="search categories.."
+          placeholder="search tags.."
           onSearch={value => console.log(value)}
           // style={{ width: 300 }}
         />
@@ -354,6 +353,15 @@ const TagList = ({  }: Props) => {
 			<div className='categoryListContainer__categoryList'>
         {tagState.done && tagState.data.length > 0 && <MyTable data={tagState.data} />}
         {tagState.isLoading && <DataTableSkeleton />}
+
+
+		{tagState.done && !(tagState.data.length > 0) && (
+			<div style={{
+				marginTop: '50px'
+			}}>
+				<Empty description='No Tags found'  image={Empty.PRESENTED_IMAGE_SIMPLE} />
+			</div>
+		)}
 			</div>
 		</div>
 

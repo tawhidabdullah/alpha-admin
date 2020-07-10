@@ -410,7 +410,7 @@ class Converter {
 					key: brand._id || '',
 					name: brand.name && brand.name,
 					description: brand.description && brand.description,
-					cover: `${config['baseURL']}${brand.cover.thumbnail}`
+					cover: `${config['baseURL']}${brand.cover ? brand.cover.thumbnail : ''}`
 				};
 			});
 

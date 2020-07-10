@@ -1,32 +1,61 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useHandleFetch } from '../../hooks';
 import { Select } from 'antd';
 
-interface Props {}
+interface Props {
+	setBrandId?: any;
+}
 
 const { Option } = Select;
 
-function onChange(value) {
-	console.log(`selected ${value}`);
-}
+const Brands = ({ setBrandId }: Props) => {
+	const [ options, setoptions ] = useState([]);
+	const [ selectedBrandId, setSelectedBrandId ] = useState('');
+	const [ brandState, handleTagListFetch ] = useHandleFetch({}, 'brandList');
 
-function onBlur() {
-	console.log('blur');
-}
+	function onChange(value) {
+		setSelectedBrandId(value);
+		setBrandId(value);
+		console.log(`selected ${value}`);
+	}
 
-function onFocus() {
-	console.log('focus');
-}
+	function onBlur() {
+		console.log('blur');
+	}
 
-function onSearch(val) {
-	console.log('search:', val);
-}
+	function onFocus() {
+		console.log('focus');
+	}
 
-const Brands = (props: Props) => {
+	function onSearch(val) {
+		console.log('search:', val);
+	}
+
+	useEffect(() => {
+		const setBrands = async () => {
+			const brandListRes = await handleTagListFetch({});
+
+			// @ts-ignore
+			if (brandListRes && brandListRes.length > 0) {
+				// @ts-ignore
+				const brandOptions = brandListRes.map((brand) => {
+					return {
+						value: brand.id,
+						name: brand.name
+					};
+				});
+				setoptions(brandOptions);
+			}
+		};
+
+		setBrands();
+	}, []);
+
 	return (
 		<Select
 			showSearch
 			style={{ width: 200 }}
-			placeholder='Select a person'
+			placeholder='Select a Brand'
 			optionFilterProp='children'
 			onChange={onChange}
 			onFocus={onFocus}
@@ -34,9 +63,11 @@ const Brands = (props: Props) => {
 			onSearch={onSearch}
 			filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
 		>
-			<Option value='jack'>Jack</Option>
-			<Option value='lucy'>Lucy</Option>
-			<Option value='tom'>Tom</Option>
+			{brandState.done &&
+				brandState.data.length > 0 &&
+				options.map((option) => {
+					return <Option value={option.value}>{option.name}</Option>;
+				})}
 		</Select>
 	);
 };
