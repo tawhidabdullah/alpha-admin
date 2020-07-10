@@ -11,7 +11,6 @@ const Complete: React.FC = () =>  {
     const attributeList = useFetch([], [], 'attributeList', {});
 
     
-
     useEffect(()=>{
         if(attributeList.data && Object.keys(attributeList.data).length > 0){
             const options  = Object.keys(attributeList.data); 
@@ -22,14 +21,23 @@ const Complete: React.FC = () =>  {
             })
             setsuggesteOptions(manupulatedOptions); 
         }; 
-    },[attributeList.data])
+    },[attributeList.data]); 
+
+    
     
     
     console.log('suggestedOptions',suggestedOptions); 
 
     return (
         <>
-        
+         <AutoComplete
+    style={{ width: '150px' }}
+    options={suggestedOptions}
+    placeholder="try to type `b`"
+    filterOption={(inputValue, suggestedOption) =>
+        suggestedOption.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
+    }
+  />
     </>
     )
 }

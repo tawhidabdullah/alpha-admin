@@ -15,19 +15,22 @@ import {
 	RadiusBottomleftOutlined,
 	RadiusBottomrightOutlined,
 	DeleteOutlined,
-	FileAddOutlined
+	FileAddOutlined,
+	PlusCircleOutlined
 } from '@ant-design/icons';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
 // import components
 import Input from '../../components/Field/Input';
+import InputSmall from '../../components/Field/InputSmall';
 import TextArea from '../../components/Field/TextArea';
 import MediaLibrary from "../../components/MediaLibrary";
 import Tags from "./Tags";
 import Brands from "./Brands";
 import Categories from "./Categories";
 import Attributes from "./Attributes";
+import AddAttributeValues from "../attribute/AddAttributeValues";
 
 
 
@@ -299,7 +302,168 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible,categor
 			</h3>
 	 </div>
 	 <div className='addProductGridContainer__item-body'>
+		<div className='addProductGridContainer__item-body-variationCard'>
+			<div className='addProductGridContainer__item-body-variationCard-item'>
+				<h4>
+					Price
+				</h4>
+				<div className='addProductGridContainer__item-body-variationCard-item-container'>
+					<div className='addProductGridContainer__item-body-variationCard-item-container-left'>
+					<InputSmall 
+			   label='Regular'
+			   value={values.name}
+			   name='name'
+			   isError={(touched.name && errors.name) ||
+				  (!isSubmitting && addCategoryState.error['error']['name'])}
+			  
+				  errorString={(touched.name && errors.name) ||
+					  (!isSubmitting && addCategoryState.error['error']['name'])}
+			   onChange={(e : any) => {
+				  handleChange(e);
+				  setFieldTouched('name');
+				}}
+			   />
+					</div>
+					<div className='addProductGridContainer__item-body-variationCard-item-container-right'>
+					<InputSmall 
+			   label='Offer'
+			   value={values.name}
+			   name='name'
+			   isError={(touched.name && errors.name) ||
+				  (!isSubmitting && addCategoryState.error['error']['name'])}
+			  
+				  errorString={(touched.name && errors.name) ||
+					  (!isSubmitting && addCategoryState.error['error']['name'])}
+			   onChange={(e : any) => {
+				  handleChange(e);
+				  setFieldTouched('name');
+				}}
+			   />
+					</div>
+				</div>
+			</div>
+
+
+
+			<div className='addProductGridContainer__item-body-variationCard-item'>
+				<h4>
+					Stock
+				</h4>
+				<div className='addProductGridContainer__item-body-variationCard-item-container'>
+					<div className='addProductGridContainer__item-body-variationCard-item-container-left'>
+					<InputSmall 
+			   label='Available'
+			   value={values.name}
+			   name='name'
+			   isError={(touched.name && errors.name) ||
+				  (!isSubmitting && addCategoryState.error['error']['name'])}
+			  
+				  errorString={(touched.name && errors.name) ||
+					  (!isSubmitting && addCategoryState.error['error']['name'])}
+			   onChange={(e : any) => {
+				  handleChange(e);
+				  setFieldTouched('name');
+				}}
+			   />
+					</div>
+					<div className='addProductGridContainer__item-body-variationCard-item-container-right'>
+					<InputSmall 
+			   label='Minimum'
+			   value={values.name}
+			   name='name'
+			   isError={(touched.name && errors.name) ||
+				  (!isSubmitting && addCategoryState.error['error']['name'])}
+			  
+				  errorString={(touched.name && errors.name) ||
+					  (!isSubmitting && addCategoryState.error['error']['name'])}
+			   onChange={(e : any) => {
+				  handleChange(e);
+				  setFieldTouched('name');
+				}}
+			   />
+					</div>
+				</div>
+			</div>
+
+
+
+
+
+
+			<div className='addProductGridContainer__item-body-variationCard-item'>
+				<h4>
+					Attributes
+				</h4>
+				
+
+				<div className='addProductGridContainer__item-body-variationCard-item-attribute-contianer'>
+				<div className='addProductGridContainer__item-body-variationCard-item-attribute-contianer-item'>
+				<h3 className='inputFieldLabel-small'>
+               Name
+            </h3>
 			<Attributes />
+			<div style={{marginTop: '10px'}}></div>
+			<h3 className='inputFieldLabel-small'>
+               Values
+            </h3>
+<AddAttributeValues />
+				</div>
+					
+				<div className='addProductGridContainer__item-body-variationCard-item-attribute-contianer-item'>
+				<h3 className='inputFieldLabel-small'>
+               Name
+            </h3>
+			<Attributes />
+			<div style={{marginTop: '10px'}}></div>
+			<h3 className='inputFieldLabel-small'>
+               Values
+            </h3>
+<AddAttributeValues />
+				</div>
+
+				<div className='addProductGridContainer__item-body-variationCard-item-attribute-contianer-item'>
+				<h3 className='inputFieldLabel-small'>
+               Name
+            </h3>
+			<Attributes />
+			<div style={{marginTop: '10px'}}></div>
+			<h3 className='inputFieldLabel-small'>
+               Values
+            </h3>
+<AddAttributeValues />
+				</div>
+
+				<div className='addProductGridContainer__item-body-variationCard-item-attribute-contianer-item'>
+				<h3 className='inputFieldLabel-small'>
+               Name
+            </h3>
+			<Attributes />
+			<div style={{marginTop: '10px'}}></div>
+			<h3 className='inputFieldLabel-small'>
+               Values
+            </h3>
+<AddAttributeValues />
+				</div>
+
+				<div className='addProductGridContainer__item-body-variationCard-item-attribute-contianer-item'>
+				<h3 className='inputFieldLabel-small'>
+               Name
+            </h3>
+			<Attributes />
+			<div style={{marginTop: '10px'}}></div>
+			<h3 className='inputFieldLabel-small'>
+               Values
+            </h3>
+<AddAttributeValues />
+				</div>
+				</div>
+				<Button type="dashed" icon={<PlusCircleOutlined />}>Add Attribute</Button>
+			</div>
+
+
+
+		</div>
+		
 	 </div>
 	</div>
 	

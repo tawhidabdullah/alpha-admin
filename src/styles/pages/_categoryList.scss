@@ -173,6 +173,45 @@
 		}
 		&-body {
 			padding: 10px;
+
+			&-variationCard {
+				&-item {
+					h4 {
+						font-size: 14px;
+						font-weight: 600;
+						margin: 0;
+						padding: 0;
+						margin-bottom: 5px;
+						opacity: .8;
+					}
+					&-container {
+						display: flex;
+						&-left {
+							margin-right: 10px;
+							width: 49%;
+						}
+
+						&-right {
+							width: 49%;
+						}
+					}
+
+					&-attribute-contianer {
+						display: flex;
+						margin-top: 10px;
+						flex-wrap: wrap;
+
+						&-item {
+							margin-right: 10px;
+							margin-bottom: 10px;
+							border-radius: 3px;
+							padding: 10px;
+							box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
+							width: 184px;
+						}
+					}
+				}
+			}
 		}
 	}
 
