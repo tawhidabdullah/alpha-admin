@@ -18,13 +18,7 @@ const Categories = ({ setcategoryIds }: Props) => {
 
 	useEffect(() => {
 		const setCategories = async () => {
-			const categoryListRes = await handleCategoryListFetch({
-				urlOptions: {
-					params: {
-						isSubCategory: false
-					}
-				}
-			});
+			const categoryListRes = await handleCategoryListFetch({});
 
 			// @ts-ignore
 			if (categoryListRes && categoryListRes.length > 0) {
@@ -32,7 +26,6 @@ const Categories = ({ setcategoryIds }: Props) => {
 				const categoryNames = categoryListRes.map((cat) => cat.name);
 				setoptions(categoryNames);
 			}
-			console.log('bloodyFcateorycategoryListRes', categoryListRes);
 		};
 
 		setCategories();

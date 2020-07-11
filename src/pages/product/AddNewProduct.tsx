@@ -108,8 +108,6 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible,categor
 			return image.id;
 		}): []; 
 
-			// @ts-ignore
-	const coverId = myThumbnailImage ? myThumbnailImage[0] && myThumbnailImage[0].id: ''; 
 
 
 	  const addProductRes = await handleAddProductFetch({
@@ -123,7 +121,7 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible,categor
 			tags: tagIds,
 			brand: brandId,
 			image: imagesIds,
-			cover: coverId,
+			cover: imagesIds[0] ? imagesIds[0] : '',
 			pricing: pricing,
 			parent: setselectedParentId
 		},
