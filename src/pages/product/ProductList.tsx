@@ -311,7 +311,9 @@ const ProductList = ({history}: Props) => {
     <AddNewProduct 
           addNewCategoryVisible={addNewCategoryVisible} 
           setAddNewCategoryVisible={setAddNewCategoryVisible}
-          categoryList={productState.data}
+          productList={productState.data}
+          setProductList={setProductList}
+
           
            />}
 

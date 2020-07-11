@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React,{useState, useEffect} from 'react';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
@@ -18,7 +18,9 @@ import {
 	EditOutlined,
 	FileAddOutlined,
 	PlusCircleOutlined,
-	PlusOutlined
+	PlusOutlined,
+	CheckCircleOutlined,
+	CheckOutlined
 } from '@ant-design/icons';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -58,33 +60,33 @@ const initialValues = {
 
 }
 
-const { Dragger } = Upload;
-const { Option } = Select;
 
-const props = {
-	name: 'file',
-	multiple: true,
-	action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
-	onChange(info: any) {
-		const { status } = info.file;
-		if (status !== 'uploading') {
-			console.log(info.file, info.fileList);
-		}
-		if (status === 'done') {
-			message.success(`${info.file.name} file uploaded successfully.`);
-		} else if (status === 'error') {
-			message.error(`${info.file.name} file upload failed.`);
-		}
-	}
-};
+
+const openSuccessNotification = (message?: any) => {
+	notification.success({
+	  message: message || 'Product Created',
+	  description: '',
+	  icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
+	});
+  };
+
+
+  const openErrorNotification = (message?: any) => {
+	notification.success({
+	  message: message || 'Something Went Wrong',
+	  description: '',
+	  icon: <CheckCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
+	});
+  };
 
 interface Props {
 	addNewCategoryVisible: any; 
 	setAddNewCategoryVisible: any; 
-	categoryList?: any; 
+	productList?: any; 
+	setProductList?:any; 
 }
 
-const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible,categoryList }: Props) => {
+const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible,productList,setProductList }: Props) => {
 
 	const [addProductState, handleAddProductFetch] = useHandleFetch({}, 'addProduct');
 	const [visible,setvisible] = useState(false);   
@@ -127,9 +129,63 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible,categor
 		},
 	  });
 	
-	  actions.setSubmitting(false);
+
+
+	      // @ts-ignore
+		if(addProductRes && addProductRes.status === 'ok'){
+			openSuccessNotification(); 
+	
+			setProductList([...productList, {
+				id: addProductRes['id'] || '',
+				key: addProductRes['id'] || '',
+				name: addProductRes['name'] || '',
+				description: addProductRes['description'] || '',
+				// @ts-ignore
+				...addProductRes
+			}])
+			setAddNewCategoryVisible(false)
+		  }
+		  else {
+			openErrorNotification(); 
+		  }
+
+
+		  
+		  actions.resetForm();
+	      actions.setSubmitting(false);
+
+
 	};
 
+
+
+	useEffect(()=>{
+		if (!addProductState['isLoading']) {
+			const error = addProductState['error'];
+			if (error['isError'] && Object.keys(error['error']).length > 0) {
+			  
+	  
+			  const errors =
+				Object.values(error['error']).length > 0
+				  ? Object.values(error['error'])
+				  : [];
+			  errors.forEach((err, i) => {
+				if (typeof err === 'string') {
+				  openErrorNotification(err)
+				}
+				else if (typeof err === 'object') {
+				  if (err && Object.keys(err).length > 0) {
+					const errs = Object.values(err);
+					errs.forEach(err => {
+					  openErrorNotification(err)
+					})
+	  
+				  }
+				}
+			  });
+			}
+		  }
+	},[addProductState])
 
 
 	const onSwitchChange = (checked: any) => {
@@ -144,7 +200,7 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible,categor
 
 
 	const getisSubmitButtonDisabled = (values,isValid) => {
-		if(!values.name || !values.description || !isValid){
+		if(!values.name || !(pricing.length > 0) || !isValid){
 			return true; 
 		}
 		return false; 
@@ -188,7 +244,18 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible,categor
 
 	  const handleAddPricing = (priceItem) => {
 		
-		  setPricing([priceItem, ...pricing,])
+		  setPricing([{
+			  ...priceItem,
+			  id: pricing.length
+		  }, ...pricing])
+		  message.info('Product Pricing Added');
+	  }
+
+
+	  const handleDeletePricing = (id) => {
+		  const newPricing = pricing.filter(item => item.id !== id); 
+		  setPricing(newPricing); 
+		  message.info('Product Pricing Deleted');
 	  }
 
 
@@ -247,6 +314,10 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible,categor
 			<h3>
 				Product Information 
 			</h3>
+
+			<div className={values.name && values.name.length > 2 ? 'checkicon-active' : 'checkicon'}>
+				<CheckCircleOutlined />
+			</div>
 	 </div>
 	 <div className='addProductGridContainer__item-body'>
 	 <Input 
@@ -322,6 +393,10 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible,categor
 			<h3>
 				Product Variation 
 			</h3>
+
+			<div className={pricing && pricing.length > 0 ? 'checkicon-active' : 'checkicon'}>
+				<CheckCircleOutlined />
+			</div>
 	 </div>
 
 
@@ -334,17 +409,17 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible,categor
           <TabPane tab="Add Pricing" key="1">
 				<Pricing handleAddPricing={handleAddPricing} />
           </TabPane>
-          <TabPane tab="Pricing" key="2">
+          <TabPane tab="Pricing List" key="2">
 				<div className='addProductGridContainer__item-body-pricingContainer'>
 				
 				{pricing.length > 0 && pricing.map(item => {
 					return (
 						<div className='addProductGridContainer__item-body-pricingContainer-item'>
 						<div className='addProductGridContainer__item-body-pricingContainer-item-edit'>
-							<span>
+							{/* <span>
 							<EditOutlined />
-							</span>
-							<span className='d'>
+							</span> */}
+							<span className='d' onClick={() => handleDeletePricing(item.id)}>
 							<DeleteOutlined />
 							</span>
 						</div>
@@ -415,29 +490,31 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible,categor
 					
 						</div>
 
-						<h3>
+						{item.attribute
+						 && Object.keys(item.attribute).length > 0 && (
+							<>
+							<h3>
 							Attributes
 						</h3>
 						<div className='addProductGridContainer__item-body-pricingContainer-item-body'>
-							<div>
-							<h6>
-								color
-							</h6>
-							<h4>
-								black
-							</h4>
-							</div>
-							
-							<div>
-							<h6>
-								brand
-							</h6>
-							<h4>
-							apple
-							</h4>
-							</div>
-							
+						{item.attribute
+						 && Object.keys(item.attribute).length > 0
+						 && Object.keys(item.attribute).map(attributeItem => {
+							 return (
+								<div>
+								<h6>
+									{attributeItem}
+								</h6>
+								<h4>
+									{item.attribute[attributeItem]}
+								</h4>
+								</div>
+							 )
+						 })}		
 						</div>
+							</>
+						 )}
+
 					</div>
 					)
 				})}
@@ -519,6 +596,10 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible,categor
 				<h3>
 					Categories
 				</h3>
+
+			<div className={categoryids && categoryids.length > 0 ? 'checkicon-active' : 'checkicon'}>
+				<CheckCircleOutlined />
+			</div>
 			</div>
 			<div className='addProductGridContainer-rightItemContainer-body'>
 				<Categories setcategoryIds={setcategoryIds}/>

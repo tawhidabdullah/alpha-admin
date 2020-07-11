@@ -39,21 +39,18 @@ const openSuccessNotification = (message?: any) => {
 interface myTableProps {
   data: any; 
   setcategoryList?:any; 
+  history?: any; 
 } 
 
 
-const MyTable = ({data, setcategoryList}: myTableProps) => {
+const MyTable = ({data, setcategoryList, history}: myTableProps) => {
     const [visible,setvisible] = useState(false);   
     const [activeCategoryForEdit,setactiveCategoryForEdit] = useState(false); 
     const [deleteCategoryState, handleDeleteCategoryFetch] = useHandleFetch({}, 'deleteCategory');
 
+      console.log('activeCategoryForEdit',activeCategoryForEdit); 
 
-    
 
-      
-      console.log('activeCategoryForEdit',activeCategoryForEdit)
-
- 
       const handleDeleteCategory = async (id) => {
         const deleteCategoryRes = await handleDeleteCategoryFetch({
           urlOptions: {
@@ -92,9 +89,12 @@ const MyTable = ({data, setcategoryList}: myTableProps) => {
             
            className='classnameofthecolumn'
 
-            render={cover => (
+            render={(cover,record: any) => (
                 <>
-                <img src={cover} alt='cover img' style={{
+                <img src={cover} 
+                onClick={() => history.push(`/category/${record.name}`)}
+                alt='cover img' 
+                style={{
                     height: '40px',
                     width: '40px',
                     objectFit: "contain",
@@ -312,6 +312,7 @@ const CategoryList = ({history}: Props) => {
 			
 			<div className='categoryListContainer__categoryList'>
         {categoryState.done && categoryList.length > 0 && <MyTable 
+        history={history}
         setcategoryList={setcategoryList}
         data={categoryList} />}
         {categoryState.isLoading && <DataTableSkeleton />}

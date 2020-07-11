@@ -105,6 +105,13 @@ const Pricing = ({
 	  }
 
 
+	  const getiCreatePricingIsDisabled = () => {
+		  if(!price.regular || !stock.available){
+			  return true; 
+		  }
+		  else return false; 
+	  }
+
 	  console.log('attributeList',attributeList); 
 
 
@@ -116,12 +123,12 @@ const Pricing = ({
 
 				<div className='addProductGridContainer__item-body-variationCard-item'>
 				<h4>
-					Price
+					Price  
 				</h4>
 				<div className='addProductGridContainer__item-body-variationCard-item-container'>
 					<div className='addProductGridContainer__item-body-variationCard-item-container-left'>
 					<InputSmall 
-			   label='Regular'
+			   label='Regular  *'
 			   value={price.regular}
 			   name='regular'
 			   onChange={handlePriceChange}
@@ -147,7 +154,7 @@ const Pricing = ({
 				<div className='addProductGridContainer__item-body-variationCard-item-container'>
 					<div className='addProductGridContainer__item-body-variationCard-item-container-left'>
                     <InputSmall 
-			   label='Available'
+			   label='Available  *'
 			   value={stock.available}
 			   name='available'
 			   onChange={handleStockChange}
@@ -188,18 +195,31 @@ const Pricing = ({
 				<Button size='small' 
 				onClick={handleAddAttribute}
                 style={{
-					marginTop:'15px'
+					marginTop:'0px'
 				}} type="dashed" icon={<PlusOutlined />}>Add Attribute</Button>
 			</div>
 				</div>
 		</div>
         </div>
 
-        <Button 
-        onClick={handleSavePricing}
-        size='middle' style={{
-					marginTop:'15px'
-				}} type="default" icon={<CheckOutlined />}>Create Pricing </Button>
+
+		{/* <Button
+          // type="primary"
+         
+          icon={<PlusOutlined />}
+          onClick={() => setAddNewCategoryVisible(true)}
+        >
+        Add New
+      </Button> */}
+
+
+		<Button 
+		style={{
+			marginLeft: '10px'
+		}}
+          onClick={handleSavePricing}
+		disabled={getiCreatePricingIsDisabled()}
+		 icon={<CheckOutlined />}> Add New Pricing </Button>
         </>
     )
 }

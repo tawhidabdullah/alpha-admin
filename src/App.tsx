@@ -2,7 +2,7 @@ import React from 'react';
 
 // import pages
 import { Overview } from './pages/overview';
-import { CategoryList, AddNewCategory } from './pages/category';
+import { CategoryList, CategoryDetail } from './pages/category';
 import { BrandList, AddNewBrand } from './pages/brand';
 import { ProductList, AddNewProduct } from './pages/product';
 import { TagList, AddNewTag } from './pages/tag';
@@ -56,55 +56,46 @@ const App = () => {
 								<Route path='/category' exact>
 									<CategoryList />
 								</Route>
-
+								<Route path='/category/:name' exact>
+									<CategoryDetail />
+								</Route>
+								CategoryDetail
 								<Route path='/brand/new' exact>
 									<AddNewBrand />
 								</Route>
-
 								<Route path='/brand' exact>
 									<BrandList />
 								</Route>
-
 								<Route path='/product' exact>
 									<ProductList />
 								</Route>
-
 								{/* <Route path='/product/new' exact>
 									<AddNewProduct />
 								</Route> */}
-
 								<Route path='/tag' exact>
 									<TagList />
 								</Route>
-
 								<Route path='/product/new' exact>
 									<AddNewTag />
 								</Route>
-
 								<Route path='/attribute' exact>
 									<AttributeList />
 								</Route>
-
 								<Route path='/order' exact>
 									<OrderList />
 								</Route>
-
 								<Route path='/order/new' exact>
 									<AddNewOrder />
 								</Route>
-
 								<Route path='/customer' exact>
 									<CustomerList />
 								</Route>
-
 								<Route path='/page' exact>
 									<PagesList />
 								</Route>
-
 								<Route path='/delivery' exact>
 									<Delivery />
 								</Route>
-
 								<Route path='/page/new' exact>
 									<AddNewPage />
 								</Route>
@@ -120,7 +111,6 @@ const App = () => {
 								<Route path='/settings/invoice' exact>
 									<Invoice />
 								</Route>
-
 								<Route path='/settings/siteInfo' exact>
 									<SiteInfo />
 								</Route>
