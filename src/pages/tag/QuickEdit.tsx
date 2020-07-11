@@ -1,5 +1,5 @@
 import React,{useState} from 'react';
-import { Modal  } from 'antd';
+import { Modal, notification  } from 'antd';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
@@ -7,11 +7,32 @@ import * as Yup from 'yup';
 import Input from '../../components/Field/Input';
 import TextArea from '../../components/Field/TextArea';
 import {useHandleFetch} from '../../hooks';
+import { CheckCircleOutlined, PlusOutlined, EditOutlined, DeleteOutlined,EditFilled } from '@ant-design/icons';
+
 
 const validationSchema = Yup.object().shape({
 	name: Yup.string().label('Name').required('Name is required').min(3, 'Name must have at least 3 characters'),
 	description: Yup.string().label('Description').required('Description is required')
 });
+
+
+
+const openSuccessNotification = (message?: any) => {
+	notification.success({
+	  message: message || 'Tag Updated',
+	  description: '',
+	  icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
+	});
+  };
+
+
+  const openErrorNotification = (message?: any) => {
+	notification.success({
+	  message: message || 'Something Went Wrong',
+	  description: '',
+	  icon: <CheckCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
+	});
+  };
 
 
 
@@ -21,9 +42,12 @@ interface Props {
 	category: any;
 	setvisible: any; 
 	visible: any;
+	tagList: any; 
+setTagList: any; 
+
 }
 
-const QuickEdit = ({ category, setvisible, visible }: Props) => {
+const QuickEdit = ({ category, setvisible, visible, tagList, setTagList }: Props) => {
 	const [updateTagState, handleUpdateCategoryFetch] = useHandleFetch({}, 'updateTag');
 
 	const handleSubmit = async (values : any, actions : any) => {
@@ -39,14 +63,34 @@ const QuickEdit = ({ category, setvisible, visible }: Props) => {
 		},
 	  });
 	
-	  actions.setSubmitting(false);
+	 	  // @ts-ignore
+		   if(updateTagRes && updateTagRes.status === 'ok'){
+			openSuccessNotification(); 
+	
+			const positionInTag = () => {
+				return tagList.map(item => item.id).indexOf(category.id);
+			  }
+	
+			  const index = positionInTag();
+	
+			  // @ts-ignore
+			  const updatedItem = Object.assign({}, tagList[index], { ...updateTagRes });
+			  const updateTagList = [...tagList.slice(0, index), updatedItem, ...tagList.slice(index + 1)];
+			  setTagList(updateTagList); 
+			
+		  }
+		  else {
+			openErrorNotification();
+		  }
+		
+		  actions.setSubmitting(false);
+		  setvisible(false)
 	};
 	
 
 	const handleCancel = (e: any) => {
         setvisible(false);
       };
-
 
 
 	  const getisSubmitButtonDisabled = (values,isValid) => {

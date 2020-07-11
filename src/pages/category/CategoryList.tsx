@@ -1,7 +1,7 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {withRouter} from 'react-router-dom';
-import { Table, Badge, Menu, Dropdown, Space, Tag,Button, Input,Tooltip, Modal  } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined,EditFilled } from '@ant-design/icons';
+import { Table, Empty, notification,  Space, Tag,Button, Input,Tooltip, Popconfirm  } from 'antd';
+import { PlusOutlined, EditOutlined, DeleteOutlined,CheckCircleOutlined } from '@ant-design/icons';
 
 import {AddNewCategory,QuickEdit} from "../category"
 
@@ -15,18 +15,40 @@ const { Column, ColumnGroup } = Table;
 const { Search } = Input;
 
 
+const openSuccessNotification = (message?: any) => {
+	notification.success({
+	  message: message || 'Tag Created',
+	  description: '',
+	  icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
+	});
+  };
+
+
+  const openErrorNotification = (message?: any) => {
+	notification.success({
+	  message: message || 'Something Went Wrong',
+	  description: '',
+	  icon: <CheckCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
+	});
+  };
+
+
+
 
 
 interface myTableProps {
   data: any; 
+  setcategoryList?:any; 
 } 
 
 
-const MyTable = ({data}: myTableProps) => {
+const MyTable = ({data, setcategoryList}: myTableProps) => {
     const [visible,setvisible] = useState(false);   
     const [activeCategoryForEdit,setactiveCategoryForEdit] = useState(false); 
     const [deleteCategoryState, handleDeleteCategoryFetch] = useHandleFetch({}, 'deleteCategory');
 
+
+    
 
       
       console.log('activeCategoryForEdit',activeCategoryForEdit)
@@ -40,6 +62,13 @@ const MyTable = ({data}: myTableProps) => {
             }
             }
           });
+
+          	  // @ts-ignore
+		  if(deleteCategoryRes && deleteCategoryRes.status === 'ok'){
+			  openSuccessNotification('Deleted Category'); 
+			  const newCategoryList =  data.filter(item => item.id !== id);
+			  setcategoryList(newCategoryList); 
+		  }
       }
       
 
@@ -77,6 +106,24 @@ const MyTable = ({data}: myTableProps) => {
           <Column
            title="Name" 
            dataIndex="name" 
+           key="id" 
+           className='classnameofthecolumn'
+         
+            />
+
+
+<Column
+           title="Desctription" 
+           dataIndex="desctription" 
+           key="id" 
+           className='classnameofthecolumn'
+         
+            />
+
+
+<Column
+           title="Sub Cateogory" 
+           dataIndex="subCount" 
            key="id" 
            className='classnameofthecolumn'
          
@@ -127,18 +174,22 @@ const MyTable = ({data}: myTableProps) => {
                </Tooltip>
 
 
-             
-              <Tooltip placement="top" title='Delete Category'>
-            
 
-             <span 
+               <Popconfirm 
+               
+               onConfirm={() => handleDeleteCategory(record.id)}
+               title="Are you sure？" okText="Yes" cancelText="No">
+           
+		   <span 
              className='iconSize iconSize-danger'
-             onClick={() => handleDeleteCategory(record.id)}
              > 
              <DeleteOutlined/>
             </span>
-            
-          </Tooltip>
+       
+           </Popconfirm>
+
+
+       
              
             </Space>
           )}
@@ -148,6 +199,8 @@ const MyTable = ({data}: myTableProps) => {
     
 
     {activeCategoryForEdit &&   <QuickEdit 
+    setcategoryList={setcategoryList}
+    categoryList={data}
     setvisible={setvisible}
     visible={visible}
     category={activeCategoryForEdit}/>}
@@ -164,13 +217,26 @@ interface Props {
 
 const CategoryList = ({history}: Props) => {
 
-    const categoryState = useFetch([], [], 'categoryList', {
-    urlOptions: {
-      params: {
-        isSubCategory: true,
+
+  
+
+  const [categoryState, handleCategoryListFetch] = useHandleFetch({}, 'categoryList');
+  const [categoryList,setcategoryList] = useState([]); 
+
+  useEffect(()=>{
+   const setCategories = async () => {
+     const categories = await handleCategoryListFetch({
+      urlOptions: {
+        params: {
+          isSubCategory: true,
+        },
       },
-    },
-  });
+     }); 
+     // @ts-ignore
+     setcategoryList(categories); 
+   }
+   setCategories(); 
+  },[])
 
 
   
@@ -185,6 +251,18 @@ const CategoryList = ({history}: Props) => {
   };
 
   console.log('categoryState',categoryState)
+
+
+
+  
+  
+  const handleSearch = (value) => {
+    if(categoryState.data.length > 0 ){
+      const newCategoryList = categoryState.data.filter(item => item.name.includes(value)); 
+      setcategoryList(newCategoryList); 
+    }
+     
+  }
 
 
 
@@ -207,8 +285,7 @@ const CategoryList = ({history}: Props) => {
             enterButton={false}
             className='searchbarClassName'
           placeholder="search categories.."
-          onSearch={value => console.log(value)}
-          // style={{ width: 300 }}
+          onSearch={value => handleSearch(value)}
         />
           </div>
             <Button
@@ -234,8 +311,18 @@ const CategoryList = ({history}: Props) => {
      
 			
 			<div className='categoryListContainer__categoryList'>
-        {categoryState.done && categoryState.data.length > 0 && <MyTable data={categoryState.data} />}
+        {categoryState.done && categoryList.length > 0 && <MyTable 
+        setcategoryList={setcategoryList}
+        data={categoryList} />}
         {categoryState.isLoading && <DataTableSkeleton />}
+
+        {categoryState.done && !(categoryList.length > 0) && (
+			<div style={{
+				marginTop: '50px'
+			}}>
+				<Empty description='No Category found'  image={Empty.PRESENTED_IMAGE_SIMPLE} />
+			</div>
+		)}
 			</div>
 		</div>
 
@@ -245,6 +332,7 @@ const CategoryList = ({history}: Props) => {
           addNewCategoryVisible={addNewCategoryVisible} 
           setAddNewCategoryVisible={setAddNewCategoryVisible}
           categoryList={categoryState.data}
+          setcategoryList={setcategoryList}
           
            />}
 

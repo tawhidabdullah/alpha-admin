@@ -58,9 +58,9 @@ const SiderComponent = (props: any) => {
 				</SubMenu>
 
 				<SubMenu key='sub2' icon={<BranchesOutlined />} title='Brand'>
-					<Menu.Item key='4'>
+					{/* <Menu.Item key='4'>
 						<Link to='/brand/new'>Add Brand</Link>
-					</Menu.Item>
+					</Menu.Item> */}
 					<Menu.Item key='5'>
 						<Link to='/brand'>List Brand</Link>
 					</Menu.Item>
@@ -79,20 +79,11 @@ const SiderComponent = (props: any) => {
 					<Menu.Item key='2'>
 						<Link to='/category'>List Categories</Link>
 					</Menu.Item>
-					<Menu.Item key='3'>
-						<Link to='/category/new'>Add Category</Link>
-					</Menu.Item>
-					<Menu.Item key='4'>
-						<Link to='/brand/new'>Add Brand</Link>
-					</Menu.Item>
+
 					<Menu.Item key='5'>
 						<Link to='/brand'>List Brand</Link>
 					</Menu.Item>
 				</SubMenu>
-
-				<Menu.Item key='8' icon={<FilterOutlined />}>
-					<Link to='/attribute'>Attributes</Link>
-				</Menu.Item>
 
 				<Menu.Item key='9' icon={<TagsOutlined />}>
 					<Link to='/tag'>Tags</Link>

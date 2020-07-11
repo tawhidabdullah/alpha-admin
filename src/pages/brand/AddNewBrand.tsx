@@ -10,6 +10,9 @@ import { Upload, message, Switch, Select, Button, notification, Modal } from 'an
 import {
 	FileOutlined,
 	InboxOutlined,
+	FileAddOutlined, 
+	DeleteOutlined,
+	CheckCircleOutlined
 } from '@ant-design/icons';
 
 
@@ -21,12 +24,28 @@ import Input from '../../components/Field/Input';
 import TextArea from '../../components/Field/TextArea';
 import MediaLibrary from "../../components/MediaLibrary";
 
-
-
 const validationSchema = Yup.object().shape({
 	name: Yup.string().label('Name').required('Name is required').min(3, 'Name must have at least 3 characters'),
-	description: Yup.string().label('Description').required('Description is required')
 });
+
+
+
+const openSuccessNotification = (message?: any) => {
+	notification.success({
+	  message: message || 'Brand Created',
+	  description: '',
+	  icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
+	});
+  };
+
+
+  const openErrorNotification = (message?: any) => {
+	notification.success({
+	  message: message || 'Something Went Wrong',
+	  description: '',
+	  icon: <CheckCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
+	});
+  };
 
 
 const initialValues = {
@@ -37,51 +56,65 @@ const initialValues = {
 	cover: ''
 }
 
-const { Dragger } = Upload;
-const { Option } = Select;
 
-const props = {
-	name: 'file',
-	multiple: true,
-	action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
-	onChange(info: any) {
-		const { status } = info.file;
-		if (status !== 'uploading') {
-			console.log(info.file, info.fileList);
-		}
-		if (status === 'done') {
-			message.success(`${info.file.name} file uploaded successfully.`);
-		} else if (status === 'error') {
-			message.error(`${info.file.name} file upload failed.`);
-		}
-	}
-};
 
 interface Props {
 	addNewCategoryVisible?: any; 
 	setAddNewCategoryVisible?: any; 
+	brandList?:any; 
+	setBrandList?:any; 
+
 }
 
-const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible }: Props) => {
+const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, brandList, setBrandList }: Props) => {
 
 	const [addBrandState, handleAddBrandFetch] = useHandleFetch({}, 'addBrand');
 	const [visible,setvisible] = useState(false);   
-
+	const [myImages,setmyImages] = useState(false);  
+	const [visibleMedia,setvisibleMedia] = useState(false);  
 
 
 	const handleSubmit = async (values : any, actions : any) => {
+
+			// @ts-ignore
+			const imagesIds = myImages ? myImages.map(image => {
+				return image.id;
+			}): []; 
+
+
 	  const addBrandRes = await handleAddBrandFetch({
 		
 		body: {
 			name: values.name,
 			description: values.description,
 			type: values.type,
-			image: [],
-			cover: ''
+			image: imagesIds,
+			cover: imagesIds[0] ? imagesIds[0] : '',
 		},
 	  });
+
+	     // @ts-ignore
+		if(addBrandRes && addBrandRes.status === 'ok'){
+			openSuccessNotification(); 
 	
+			setBrandList([...brandList, {
+				id: addBrandRes['id'] || '',
+				key: addBrandRes['id'] || '',
+				name: addBrandRes['name'] || '',
+				description: addBrandRes['description'] || '',
+				// @ts-ignore
+				...addBrandRes
+			}])
+		  }
+		  else {
+			openErrorNotification(); 
+		  }
+
+
+		  setAddNewCategoryVisible(false);
+		  actions.resetForm();
 	  actions.setSubmitting(false);
+	
 	};
 
 
@@ -105,6 +138,15 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible }: Props)
 
 
 
+
+	  const handleImagesDelete = (id) => {
+		// @ts-ignore
+		const newImages = myImages && myImages.filter(image => {
+			return image.id !== id; 
+		})
+
+		setmyImages(newImages); 
+	}
 
 
 
@@ -176,42 +218,61 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible }: Props)
 				}}
 				 />
 
-			<div
+<div
 				style={{
 					marginTop: '20px'
 				}}
 			/>
+	
+
 			<div className='addproductSection-left-header'>
 				<h3 className='inputFieldLabel'>Images</h3>
-				<div  onClick={()=> setvisible(true)}>
+				{/* <div  >
 					<FileOutlined />
 					<span>Media Center</span>
-				</div>
+				</div> */}
 			</div>
-			<div>
-				<Dragger
-					style={{
-						background: '#fff'
-					}}
-					{...props}
-				>
-					<p className='ant-upload-drag-icon'>
-						<InboxOutlined />
-					</p>
-					<p className='ant-upload-text'>Click or drag file to this area to upload</p>
-					<p className='ant-upload-hint'>
-						Support for a single or bulk upload. Strictly prohibit from uploading company data or other band
-						files
-					</p>
-				</Dragger>
-			</div>
+			<div className='aboutToUploadImagesContainer'>
+				{myImages &&
+				// @ts-ignore
+				 myImages.length > 0 &&  myImages.map(image => {
+					 return (
+						 <div className='aboutToUploadImagesContainer__item'>
+							 <div 
+							 onClick={() => handleImagesDelete(image.id)}
+							 className='aboutToUploadImagesContainer__item-overlay'>
+								 <DeleteOutlined />
+							 </div>
+							 <img src={image.cover} alt={image.alt} />
+						 </div>
+					 )
+				 })}
+
+				<div 
+				onClick={()=> {
+					setvisibleMedia(true); 
+				}}
+				className='aboutToUploadImagesContainer__uploadItem'>
+					<FileAddOutlined />
+											{/* <h5>
+												Select From Library
+											</h5> */}
+										</div>
+							
+							</div>
+
+
 
 
   </Modal>
 			  
 			  	<MediaLibrary
-		setvisible={setvisible}
-		 visible={visible}/>
+		setvisible={setvisibleMedia}
+		 visible={visibleMedia}
+		 setmyImages={setmyImages}
+		 isModalOpenForImages={true}
+		
+		 />
 			</>
 		  )}
 	  </Formik>

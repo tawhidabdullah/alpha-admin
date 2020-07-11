@@ -1,7 +1,7 @@
-import React, {useState} from 'react';
+import React, {useState,useEffect} from 'react';
 import {withRouter} from 'react-router-dom';
-import { Table,Empty, Badge, Menu, Dropdown, Space, Tag,Button, Input,Tooltip, Modal  } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined,EditFilled } from '@ant-design/icons';
+import { Table,Empty, Popconfirm, Space, Tag,Button, Input,Tooltip, Modal, notification  } from 'antd';
+import { PlusOutlined, EditOutlined, DeleteOutlined,EditFilled,CheckCircleOutlined } from '@ant-design/icons';
 
 
 
@@ -19,14 +19,34 @@ const { Column, ColumnGroup } = Table;
 const { Search } = Input;
 
 
+const openSuccessNotification = (message?: any) => {
+	notification.success({
+	  message: message || 'Tag Created',
+	  description: '',
+	  icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
+	});
+  };
+
+
+  const openErrorNotification = (message?: any) => {
+	notification.success({
+	  message: message || 'Something Went Wrong',
+	  description: '',
+	  icon: <CheckCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
+	});
+  };
+
+
+
 
 
 interface myTableProps {
   data: any; 
+  setBrandList: any; 
 } 
 
 
-const MyTable = ({data}: myTableProps) => {
+const MyTable = ({data,setBrandList}: myTableProps) => {
     const [visible,setvisible] = useState(false);   
     const [activeCategoryForEdit,setactiveCategoryForEdit] = useState(false); 
     const [deleteBrandState, handleDeleteBrandFetch] = useHandleFetch({}, 'deleteBrand');
@@ -36,7 +56,7 @@ const MyTable = ({data}: myTableProps) => {
       console.log('activeCategoryForEdit',activeCategoryForEdit)
 
  
-      const handleDeleteCategory = async (id) => {
+      const handleDeleteBrand = async (id) => {
         const deleteBrandRes = await handleDeleteBrandFetch({
           urlOptions: {
             placeHolders: {
@@ -44,6 +64,13 @@ const MyTable = ({data}: myTableProps) => {
             }
             }
           });
+
+            // @ts-ignore
+		  if(deleteBrandRes && deleteBrandRes.status === 'ok'){
+			  openSuccessNotification('Deleted Brand'); 
+			  const newBrandList =  data.filter(item => item.id !== id);
+			  setBrandList(newBrandList); 
+		  }
       }
       
 
@@ -139,19 +166,21 @@ const MyTable = ({data}: myTableProps) => {
                </Tooltip>
 
 
-             
-              <Tooltip placement="top" title='Delete Brand'>
-            
 
-             <span 
+ 
+               <Popconfirm 
+               
+               onConfirm={() => handleDeleteBrand(record.id)}
+               title="Are you sure？" okText="Yes" cancelText="No">
+           
+           <span 
              className='iconSize iconSize-danger'
-             onClick={() => handleDeleteCategory(record.id)}
              > 
              <DeleteOutlined/>
             </span>
-            
-          </Tooltip>
-             
+           </Popconfirm>
+
+
             </Space>
           )}
         />
@@ -160,6 +189,8 @@ const MyTable = ({data}: myTableProps) => {
     
 
     {activeCategoryForEdit &&   <QuickEdit 
+    brandList={data}
+    setBrandList={setBrandList}
     setvisible={setvisible}
     visible={visible}
     category={activeCategoryForEdit}/>}
@@ -176,7 +207,21 @@ interface Props {
 
 const CategoryList = ({history}: Props) => {
 
-    const brandState = useFetch([], [], 'brandList', {});
+
+  const [brandList,setBrandList] = useState([]);
+
+  
+  const [brandState, handlebrandListFetch] = useHandleFetch({}, 'brandList');
+
+
+  useEffect(()=>{
+   const setBrands = async () => {
+     const brands = await handlebrandListFetch({}); 
+     // @ts-ignore
+     setBrandList(brands); 
+   }
+   setBrands(); 
+  },[])
 
 
   
@@ -190,6 +235,19 @@ const CategoryList = ({history}: Props) => {
   const handleCancelAddNewCategory = (e: any) => {
     setAddNewCategoryVisible(false);
   };
+
+
+    
+  const handleSearch = (value) => {
+    if(brandState.data.length > 0 ){
+      const newBrandList = brandState.data.filter(item => item.name.includes(value)); 
+      setBrandList(newBrandList); 
+    }
+     
+  }
+
+
+
 
   console.log('brandState',brandState)
 
@@ -241,9 +299,11 @@ const CategoryList = ({history}: Props) => {
      
 			
 			<div className='categoryListContainer__categoryList'>
-        {brandState.done && brandState.data.length > 0 && <MyTable data={brandState.data} />}
+        {brandState.done && brandList.length > 0 && <MyTable 
+          setBrandList={setBrandList}
+        data={brandList} />}
         {brandState.isLoading && <DataTableSkeleton />}
-        {brandState.done && !(brandState.data.length > 0) && (
+        {brandState.done && !(brandList.length > 0) && (
 			<div style={{
 				marginTop: '100px'
 			}}>
@@ -255,11 +315,11 @@ const CategoryList = ({history}: Props) => {
 
     <AddNewBrand 
           addNewCategoryVisible={addNewCategoryVisible} 
-          setAddNewCategoryVisible={setAddNewCategoryVisible} />
+          setAddNewCategoryVisible={setAddNewCategoryVisible} 
+          setBrandList={setBrandList}
+          brandList={brandList}
+          />
 
-      
-
-        
     </>
 	);
 };

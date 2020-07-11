@@ -16,7 +16,8 @@ import {
 	RadiusBottomrightOutlined,
 	DeleteOutlined,
 	FileAddOutlined,
-	PlusOutlined
+	PlusOutlined,
+	CheckCircleOutlined
 } from '@ant-design/icons';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -28,6 +29,27 @@ import DeliveryCharge from './DeliveryCharge';
 
 
 const { Option } = Select;
+
+
+const openSuccessNotification = (message?: any) => {
+	notification.success({
+	  message: message || 'Category Updated',
+	  description: '',
+	  icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
+	});
+  };
+
+
+  const openErrorNotification = (message?: any) => {
+	notification.success({
+	  message: message || 'Something Went Wrong',
+	  description: '',
+	  icon: <CheckCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
+	});
+  };
+
+
+
 
 
 
@@ -62,10 +84,11 @@ const initialValues = {
 interface Props {
 	addNewCategoryVisible: any; 
 	setAddNewCategoryVisible: any; 
-	categoryList?: any; 
+	regionList?: any; 
+	setRegionList?: any; 
 }
 
-const AddNewRegion = ({ addNewCategoryVisible, setAddNewCategoryVisible,categoryList }: Props) => {
+const AddNewRegion = ({ addNewCategoryVisible, setAddNewCategoryVisible,regionList,setRegionList }: Props) => {
 
     const [addRegionState, handleRegionFetch] = useHandleFetch({}, 'addRegion');
     const [selectedCountryValue,setselectedCountryValue] = useState(''); 
@@ -112,6 +135,25 @@ const AddNewRegion = ({ addNewCategoryVisible, setAddNewCategoryVisible,category
 				},
 			  });
 
+
+			   // @ts-ignore
+		if(addRegionRes && addRegionRes.status === 'ok'){
+			openSuccessNotification(); 
+	
+			setRegionList([...regionList, {
+				id: addRegionRes['id'] || '',
+				key: addRegionRes['id'] || '',
+				name: addRegionRes['name'] || '',
+				// @ts-ignore
+				...addRegionRes
+			}])
+		  }
+		  else {
+			openErrorNotification(); 
+		  }
+
+
+
 		}
 		else {
 			const addRegionRes = await handleRegionFetch({
@@ -125,10 +167,30 @@ const AddNewRegion = ({ addNewCategoryVisible, setAddNewCategoryVisible,category
 					charge: {}
 				},
 			  });
+
+
+			  		   // @ts-ignore
+		if(addRegionRes && addRegionRes.status === 'ok'){
+			openSuccessNotification(); 
+	
+			setRegionList([...regionList, {
+				id: addRegionRes['id'] || '',
+				key: addRegionRes['id'] || '',
+				name: addRegionRes['name'] || '',
+				// @ts-ignore
+				...addRegionRes
+			}])
+		  }
+		  else {
+			openErrorNotification(); 
+		  }
+
 		}
 	 
 	
-	  actions.setSubmitting(false);
+		setAddNewCategoryVisible(false)
+		actions.resetForm();
+	actions.setSubmitting(false);
 	};
 
 

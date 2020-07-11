@@ -1,7 +1,8 @@
 import React,{useState, useEffect} from 'react';
-import { Modal, Select  } from 'antd';
+import { Modal, Select, notification } from 'antd';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
+import {CheckCircleOutlined } from '@ant-design/icons';
 
 // import components
 import Input from '../../components/Field/Input';
@@ -28,13 +29,34 @@ const validationSchema = Yup.object().shape({
   });
 
 
+
+  const openSuccessNotification = (message?: any) => {
+	notification.success({
+	  message: message || 'Tag Created',
+	  description: '',
+	  icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
+	});
+  };
+
+
+  const openErrorNotification = (message?: any) => {
+	notification.success({
+	  message: message || 'Something Went Wrong',
+	  description: '',
+	  icon: <CheckCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
+	});
+  };
+
+
 interface Props {
 	customer: any;
 	setvisible: any; 
 	visible: any;
+	regionList?:any;
+	setRegionList?:any; 
 }
 
-const QuickEdit = ({ customer, setvisible, visible }: Props) => {
+const QuickEdit = ({ customer, setvisible, visible, setRegionList, regionList }: Props) => {
 	const [updateRegionState, handleUpdateRegionFetch] = useHandleFetch({}, 'updateRegion');
 
 
@@ -70,8 +92,30 @@ const QuickEdit = ({ customer, setvisible, visible }: Props) => {
 				charge : {}
 			},
 		  });
+
+		   // @ts-ignore
+		   if(addRegionRes && addRegionRes.status === 'ok'){
+			openSuccessNotification(); 
 	
-	  actions.setSubmitting(false);
+			const positionInTag = () => {
+				return regionList.map(item => item.id).indexOf(customer.id);
+			  }
+	
+			  const index = positionInTag();
+	
+			  // @ts-ignore
+			  const updatedItem = Object.assign({}, regionList[index], { ...addRegionRes });
+			  const updateRegionList = [...regionList.slice(0, index), updatedItem, ...regionList.slice(index + 1)];
+			  setRegionList(updateRegionList); 
+			
+		  }
+		  else {
+			openErrorNotification();
+		  }
+		
+		  actions.setSubmitting(false);
+		  setvisible(false)
+
 	};
 
 	
@@ -146,11 +190,10 @@ const QuickEdit = ({ customer, setvisible, visible }: Props) => {
 
 	  const getisSubmitButtonDisabled = (values,isValid) => {
 		if(!isValid ||
-            !values.firstName ||
-            !values.lastName ||
-            !values.password ||
-            !values.phone ||
-            !values.address1){
+            !values.name ||
+            !values.pickUpLocation ||
+            !values.time ){ 
+	
 			return true; 
 		}
 		return false; 

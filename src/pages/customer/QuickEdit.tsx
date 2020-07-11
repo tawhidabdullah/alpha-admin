@@ -1,7 +1,11 @@
 import React,{useState, useEffect} from 'react';
-import { Modal, Select  } from 'antd';
+import { Modal, Select,notification  } from 'antd';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
+
+import { PlusOutlined, EditOutlined, DeleteOutlined,EditFilled, CheckCircleOutlined } from '@ant-design/icons';
+
+
 
 // import components
 import Input from '../../components/Field/Input';
@@ -37,6 +41,26 @@ const validationSchema = Yup.object().shape({
 
 
 
+  
+const openSuccessNotification = (message?: any) => {
+	notification.success({
+	  message: message || 'Tag Created',
+	  description: '',
+	  icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
+	});
+  };
+
+
+  const openErrorNotification = (message?: any) => {
+	notification.success({
+	  message: message || 'Something Went Wrong',
+	  description: '',
+	  icon: <CheckCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
+	});
+  };
+
+
+
 
 
 
@@ -44,9 +68,12 @@ interface Props {
 	customer: any;
 	setvisible: any; 
 	visible: any;
+	customerList?: any; 
+	setCustomerList?:any
+
 }
 
-const QuickEdit = ({ customer, setvisible, visible }: Props) => {
+const QuickEdit = ({ customer, setvisible, visible, customerList, setCustomerList }: Props) => {
 	const [updateCustomerState, handleUpdateCustomerFetch] = useHandleFetch({}, 'updateCustomer');
 
 
@@ -89,7 +116,29 @@ const QuickEdit = ({ customer, setvisible, visible }: Props) => {
 		},
 	  });
 	
-	  actions.setSubmitting(false);
+
+	   	  // @ts-ignore
+			 if(updateCustomerRes && updateCustomerRes.status === 'ok'){
+				openSuccessNotification(); 
+		
+				const positionInTag = () => {
+					return customerList.map(item => item.id).indexOf(customer.id);
+				  }
+		
+				  const index = positionInTag();
+		
+				  // @ts-ignore
+				  const updatedItem = Object.assign({}, tagList[index], { ...updateCustomerRes });
+				  const updateTagList = [...customerList.slice(0, index), updatedItem, ...customerList.slice(index + 1)];
+				  setCustomerList(updateTagList); 
+				
+			  }
+			  else {
+				openErrorNotification();
+			  }
+			
+			  actions.setSubmitting(false);
+			  setvisible(false)
 	};
 	
 

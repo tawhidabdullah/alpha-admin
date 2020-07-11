@@ -1,5 +1,5 @@
 import React,{useState} from 'react';
-import { Modal  } from 'antd';
+import { Modal, notification  } from 'antd';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
@@ -7,11 +7,32 @@ import * as Yup from 'yup';
 import Input from '../../components/Field/Input';
 import TextArea from '../../components/Field/TextArea';
 import {useHandleFetch} from '../../hooks';
+import { CheckCircleOutlined } from '@ant-design/icons';
+
 
 const validationSchema = Yup.object().shape({
 	name: Yup.string().label('Name').required('Name is required').min(3, 'Name must have at least 3 characters'),
-	description: Yup.string().label('Description').required('Description is required')
 });
+
+
+
+
+const openSuccessNotification = (message?: any) => {
+	notification.success({
+	  message: message || 'Tag Updated',
+	  description: '',
+	  icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
+	});
+  };
+
+
+  const openErrorNotification = (message?: any) => {
+	notification.success({
+	  message: message || 'Something Went Wrong',
+	  description: '',
+	  icon: <CheckCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
+	});
+  };
 
 
 
@@ -21,9 +42,12 @@ interface Props {
 	category: any;
 	setvisible: any; 
 	visible: any;
+	brandList: any; 
+	setBrandList?: any; 
+
 }
 
-const QuickEdit = ({ category, setvisible, visible }: Props) => {
+const QuickEdit = ({ category, setvisible, visible, brandList, setBrandList }: Props) => {
 	const [updatebrandState, handleUpdateBrandFetch] = useHandleFetch({}, 'updateBrand');
 
 	const handleSubmit = async (values : any, actions : any) => {
@@ -38,8 +62,33 @@ const QuickEdit = ({ category, setvisible, visible }: Props) => {
 			description: values.description,
 		},
 	  });
+
+	  
+	 	  // @ts-ignore
+		   if(updateBrandRes && updateBrandRes.status === 'ok'){
+			openSuccessNotification(); 
 	
-	  actions.setSubmitting(false);
+			const positionInBrand = () => {
+				return brandList.map(item => item.id).indexOf(category.id);
+			  }
+	
+			  const index = positionInBrand();
+	
+			  // @ts-ignore
+			  const updatedItem = Object.assign({}, brandList[index], { ...updateBrandRes });
+			  const updateBrandList = [...brandList.slice(0, index), updatedItem, ...brandList.slice(index + 1)];
+			  setBrandList(updateBrandList); 
+			
+		  }
+		  else {
+			openErrorNotification();
+		  }
+		
+		  actions.setSubmitting(false);
+		  setvisible(false)
+
+
+	
 	};
 	
 
@@ -50,7 +99,7 @@ const QuickEdit = ({ category, setvisible, visible }: Props) => {
 
 
 	  const getisSubmitButtonDisabled = (values,isValid) => {
-		if(!values.name || !values.description || !isValid){
+		if(!values.name || !isValid){
 			return true; 
 		}
 		return false; 

@@ -1,7 +1,7 @@
-import React, {useState} from 'react';
+import React, {useState,useEffect} from 'react';
 import {withRouter} from 'react-router-dom';
-import { Table, Badge, Menu, Dropdown, Space, Tag,Button, Input,Tooltip, Modal  } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined,EditFilled } from '@ant-design/icons';
+import { Table, Badge, Menu, Dropdown, notification, Space, Tag,Button, Input,Tooltip, Modal , Empty, Popconfirm} from 'antd';
+import { PlusOutlined, EditOutlined, DeleteOutlined,EditFilled, CheckCircleOutlined } from '@ant-design/icons';
 
 
 /// import hooks
@@ -17,17 +17,40 @@ const { Search } = Input;
 
 
 
+const openSuccessNotification = (message?: any) => {
+	notification.success({
+	  message: message || 'Tag Created',
+	  description: '',
+	  icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
+	});
+  };
+
+
+  const openErrorNotification = (message?: any) => {
+	notification.success({
+	  message: message || 'Something Went Wrong',
+	  description: '',
+	  icon: <CheckCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
+	});
+  };
+
+
+
+
 
 interface myTableProps {
   data: any; 
+  setCustomerList?:any; 
 } 
 
 
-const MyTable = ({data}: myTableProps) => {
+const MyTable = ({data,setCustomerList}: myTableProps) => {
     const [visible,setvisible] = useState(false);   
     const [activeCategoryForEdit,setactiveCategoryForEdit] = useState(false); 
+
+
     const [deleteCustomerState, handleDeleteCustomerFetch] = useHandleFetch({}, 'deleteCustomer');
-      const handleDeleteCategory = async (id) => {
+      const handleDeleteCustomer = async (id) => {
         const deleteCustomerRes = await handleDeleteCustomerFetch({
           urlOptions: {
             placeHolders: {
@@ -35,6 +58,14 @@ const MyTable = ({data}: myTableProps) => {
             }
             }
           });
+
+
+           // @ts-ignore
+		  if(deleteCustomerRes && deleteCustomerRes.status === 'ok'){
+			  openSuccessNotification('Deleted Customer'); 
+			  const newCustomerList =  data.filter(item => item.id !== id);
+			  setCustomerList(newCustomerList); 
+		  }
       }
       
 
@@ -152,17 +183,20 @@ const MyTable = ({data}: myTableProps) => {
 
 
              
-              <Tooltip placement="top" title='Delete Customer'>
-            
 
-             <span 
+              
+               <Popconfirm 
+               
+               onConfirm={() => handleDeleteCustomer(record.id)}
+               title="Are you sure？" okText="Yes" cancelText="No">
+           
+           <span 
              className='iconSize iconSize-danger'
-             onClick={() => handleDeleteCategory(record.id)}
              > 
              <DeleteOutlined/>
             </span>
-            
-          </Tooltip>
+       
+           </Popconfirm>
              
             </Space>
           )}
@@ -172,6 +206,8 @@ const MyTable = ({data}: myTableProps) => {
     
 
     {activeCategoryForEdit &&   <QuickEdit 
+    customerList={data}
+    setCustomerList={setCustomerList}
     setvisible={setvisible}
     visible={visible}
     customer={activeCategoryForEdit}/>}
@@ -188,10 +224,37 @@ interface Props {
 
 const CustomerList = ({history}: Props) => {
 
-    const customerState = useFetch([], [], 'customerList', { });
 
+    const [customerList,setCustomerList] = useState([]); 
+
+    const [customerState, handleCustomerListFetch] = useHandleFetch({}, 'customerList');
+  
+  
+    useEffect(()=>{
+     const setCustomers = async () => {
+       const customers = await handleCustomerListFetch({}); 
+       // @ts-ignore
+       setCustomerList(customers); 
+     }
+     setCustomers(); 
+    },[])
+
+
+    
 
   
+  const handleSearch = (value) => {
+    if(customerState.data.length > 0 ){
+      const newCustomerList = customerState.data.filter(item => item.name.includes(value)); 
+      setCustomerList(newCustomerList); 
+    }
+     
+  }
+
+
+
+    
+
   const [addNewCategoryVisible,setAddNewCategoryVisible] = useState(false);   
 
   console.log('customerState',customerState)
@@ -217,7 +280,7 @@ const CustomerList = ({history}: Props) => {
             enterButton={false}
             className='searchbarClassName'
           placeholder="search customer.."
-          onSearch={value => console.log(value)}
+          onSearch={value =>handleSearch(value)}
           // style={{ width: 300 }}
         />
           </div>
@@ -244,17 +307,27 @@ const CustomerList = ({history}: Props) => {
      
 			
 			<div className='categoryListContainer__categoryList'>
-        {customerState.done && customerState.data.length > 0 && <MyTable data={customerState.data} />}
+        {customerState.done && customerList.length > 0 && <MyTable
+        setCustomerList={setCustomerList}
+         data={customerList} />}
         {customerState.isLoading && <DataTableSkeleton />}
+        {customerState.done && !(customerList.length > 0) && (
+			<div style={{
+				marginTop: '50px'
+			}}>
+				<Empty description='No Tags found'  image={Empty.PRESENTED_IMAGE_SIMPLE} />
+			</div>
+		)}
 			</div>
 		</div>
 
 
 {customerState.done && 
     <AddNewCustomer 
+    setCustomerList={setCustomerList}
           addNewCategoryVisible={addNewCategoryVisible} 
           setAddNewCategoryVisible={setAddNewCategoryVisible}
-          categoryList={customerState.data}
+          customerList={customerState.data}
           
            />}
 

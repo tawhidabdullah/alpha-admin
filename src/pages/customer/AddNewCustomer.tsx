@@ -15,7 +15,8 @@ import {
 	RadiusBottomleftOutlined,
 	RadiusBottomrightOutlined,
 	DeleteOutlined,
-	FileAddOutlined
+	FileAddOutlined,
+	CheckCircleOutlined
 } from '@ant-design/icons';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -68,15 +69,35 @@ const initialValues = {
   };
   
 
+  const openSuccessNotification = (message?: any) => {
+	notification.success({
+	  message: message || 'Tag Created',
+	  description: '',
+	  icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
+	});
+  };
+
+
+  const openErrorNotification = (message?: any) => {
+	notification.success({
+	  message: message || 'Something Went Wrong',
+	  description: '',
+	  icon: <CheckCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
+	});
+  };
+
+
+
 
 
 interface Props {
 	addNewCategoryVisible: any; 
 	setAddNewCategoryVisible: any; 
-	categoryList?: any; 
+	customerList?: any; 
+	setCustomerList?:any; 
 }
 
-const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible,categoryList }: Props) => {
+const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible,customerList,setCustomerList }: Props) => {
 
     const [addCustomerState, handleAddCustomerFetch] = useHandleFetch({}, 'addCustomer');
     const [selectedCountryValue,setselectedCountryValue] = useState(''); 
@@ -114,6 +135,24 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible,catego
             city: selectedCityValue,
 		},
 	  });
+
+
+	    // @ts-ignore
+		if(addCustomerRes && addCustomerRes.status === 'ok'){
+			openSuccessNotification(); 
+	
+			setCustomerList([...customerList, {
+				id: addCustomerRes['id'] || '',
+				key: addCustomerRes['id'] || '',
+				// @ts-ignore
+				...addCustomerRes
+			}])
+		  }
+		  else {
+			openErrorNotification(); 
+		  }
+		  setAddNewCategoryVisible(false)
+		  actions.resetForm();
 	
 	  actions.setSubmitting(false);
 	};

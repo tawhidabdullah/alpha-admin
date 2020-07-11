@@ -1,7 +1,7 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {withRouter} from 'react-router-dom';
-import { Table, Badge, Menu, Dropdown, Space, Tag,Button, Input,Tooltip, Modal  } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined,EditFilled } from '@ant-design/icons';
+import { Table, Badge, Menu, Dropdown, Space, Tag,Button, Input,Tooltip, Modal, notification, Popconfirm, Empty } from 'antd';
+import { PlusOutlined, EditOutlined, DeleteOutlined,EditFilled,CheckCircleOutlined } from '@ant-design/icons';
 
 
 /// import hooks
@@ -9,7 +9,7 @@ import { useFetch, useHandleFetch } from "../../hooks";
 
 // import components
 import { DataTableSkeleton } from "../../components/Placeholders";
-import AddNewCustomer from "./AddNewRegion";
+import AddNewRegion from "./AddNewRegion";
 import QuickEdit from "./QuickEdit";
 
 const { Column, ColumnGroup } = Table;
@@ -17,17 +17,40 @@ const { Search } = Input;
 
 
 
+const openSuccessNotification = (message?: any) => {
+	notification.success({
+	  message: message || 'Tag Created',
+	  description: '',
+	  icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
+	});
+  };
+
+
+  const openErrorNotification = (message?: any) => {
+	notification.success({
+	  message: message || 'Something Went Wrong',
+	  description: '',
+	  icon: <CheckCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
+	});
+  };
+
+
+
+
 
 interface myTableProps {
   data: any; 
+  setRegionList: any; 
 } 
 
 
-const MyTable = ({data}: myTableProps) => {
+const MyTable = ({data,setRegionList}: myTableProps) => {
     const [visible,setvisible] = useState(false);   
     const [activeCategoryForEdit,setactiveCategoryForEdit] = useState(false); 
     const [deleteRegionState, handleDeleteRegioFetch] = useHandleFetch({}, 'deleteRegion');
-      const handleDeleteCategory = async (id) => {
+
+
+      const handleDeleteRegion = async (id) => {
         const deleteRegionRes = await handleDeleteRegioFetch({
           urlOptions: {
             placeHolders: {
@@ -35,6 +58,14 @@ const MyTable = ({data}: myTableProps) => {
             }
             }
           });
+
+            // @ts-ignore
+		  if(deleteRegionRes && deleteRegionRes.status === 'ok'){
+			  openSuccessNotification('Deleted Region'); 
+			  const newRegionList =  data.filter(item => item.id !== id);
+			  setRegionList(newRegionList); 
+		  }
+
       }
       
 
@@ -152,18 +183,23 @@ const MyTable = ({data}: myTableProps) => {
                </Tooltip>
 
 
-             
-              <Tooltip placement="top" title='Delete Region'>
-            
 
-             <span 
+   
+               <Popconfirm 
+               
+               onConfirm={() => handleDeleteRegion(record.id)}
+               title="Are you sure？" okText="Yes" cancelText="No">
+           
+           <span 
              className='iconSize iconSize-danger'
-             onClick={() => handleDeleteCategory(record.id)}
              > 
              <DeleteOutlined/>
             </span>
-            
-          </Tooltip>
+       
+           </Popconfirm>
+
+
+             
              
             </Space>
           )}
@@ -175,7 +211,13 @@ const MyTable = ({data}: myTableProps) => {
     {activeCategoryForEdit &&   <QuickEdit 
     setvisible={setvisible}
     visible={visible}
-    customer={activeCategoryForEdit}/>}
+    customer={activeCategoryForEdit}
+    regionList={data}
+    setRegionList={setRegionList}
+
+    />
+
+    }
     
     
     </>
@@ -189,13 +231,40 @@ interface Props {
 
 const CustomerList = ({history}: Props) => {
 
-    const regionState = useFetch([], [], 'regionList', { });
+    const [regionList,setRegionList] = useState([]); 
+
+    const [regionState, handleRegionListFetch] = useHandleFetch({}, 'regionList');
+  
+  
+    useEffect(()=>{
+     const setRegions = async () => {
+       const regions = await handleRegionListFetch({}); 
+       // @ts-ignore
+       setRegionList(regions); 
+     }
+     setRegions(); 
+    },[])
+
+
 
 
   
   const [addNewCategoryVisible,setAddNewCategoryVisible] = useState(false);   
 
   console.log('regionState',regionState)
+
+
+  const handleSearch = (value) => {
+    if(regionState.data.length > 0 ){
+      const newTagList = regionState.data.filter(item => item.name.includes(value)); 
+      setRegionList(newTagList); 
+    }
+     
+  }
+
+
+
+
 
 
 
@@ -218,7 +287,7 @@ const CustomerList = ({history}: Props) => {
             enterButton={false}
             className='searchbarClassName'
           placeholder="search regions.."
-          onSearch={value => console.log(value)}
+          onSearch={value => handleSearch(value)}
           // style={{ width: 300 }}
         />
           </div>
@@ -245,18 +314,29 @@ const CustomerList = ({history}: Props) => {
      
 			
 			<div className='categoryListContainer__categoryList'>
-        {regionState.done && regionState.data.length > 0 && <MyTable data={regionState.data} />}
+        {regionState.done && regionList.length > 0 && <MyTable 
+        setRegionList={setRegionList}
+        data={regionList} />}
         {regionState.isLoading && <DataTableSkeleton />}
+
+        {regionState.done && !(regionList.length > 0) && (
+			<div style={{
+				marginTop: '50px'
+			}}>
+				<Empty description='No Region found'  image={Empty.PRESENTED_IMAGE_SIMPLE} />
+			</div>
+		)}
+        
 			</div>
 		</div>
 
 
 {regionState.done && 
-    <AddNewCustomer 
+    <AddNewRegion 
           addNewCategoryVisible={addNewCategoryVisible} 
           setAddNewCategoryVisible={setAddNewCategoryVisible}
-          categoryList={regionState.data}
-          
+          regionList={regionState.data}
+          setRegionList={setRegionList}
            />}
 
       

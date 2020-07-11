@@ -5,7 +5,7 @@ import * as Yup from 'yup';
 
 import {useHandleFetch} from '../../hooks';
 // import third party ui lib
-import { Upload, message, Switch, Select, Button, notification, Modal } from 'antd';
+import { Upload,  message, Switch, Select, Button, notification, Modal } from 'antd';
 
 import {
 	FileOutlined,
@@ -15,7 +15,8 @@ import {
 	RadiusBottomleftOutlined,
 	RadiusBottomrightOutlined,
 	DeleteOutlined,
-	FileAddOutlined
+	FileAddOutlined,
+	CheckCircleOutlined
 } from '@ant-design/icons';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -29,8 +30,27 @@ import MediaLibrary from "../../components/MediaLibrary";
 
 const validationSchema = Yup.object().shape({
 	name: Yup.string().label('Name').required('Name is required').min(3, 'Name must have at least 3 characters'),
-	description: Yup.string().label('Description').required('Description is required')
 });
+
+const openSuccessNotification = (message?: any) => {
+	notification.success({
+	  message: message || 'Category Updated',
+	  description: '',
+	  icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
+	});
+  };
+
+
+  const openErrorNotification = (message?: any) => {
+	notification.success({
+	  message: message || 'Something Went Wrong',
+	  description: '',
+	  icon: <CheckCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
+	});
+  };
+
+
+
 
 
 const initialValues = {
@@ -65,9 +85,10 @@ interface Props {
 	addNewCategoryVisible: any; 
 	setAddNewCategoryVisible: any; 
 	categoryList?: any; 
+	setcategoryList?:any; 
 }
 
-const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible,categoryList }: Props) => {
+const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible,categoryList,setcategoryList }: Props) => {
 
 	const [addCategoryState, handleAddCategoryFetch] = useHandleFetch({}, 'addCategory');
 	const [visible,setvisible] = useState(false);   
@@ -86,21 +107,38 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible,catego
 			return image.id;
 		}): []; 
 
-			// @ts-ignore
-	const coverId = myThumbnailImage ? myThumbnailImage[0] && myThumbnailImage[0].id: ''; 
-
-
 	  const addCategoryRes = await handleAddCategoryFetch({
 		
 		body: {
 			name: values.name,
 			description: values.description,
 			image: imagesIds,
-			cover: coverId,
+			cover: imagesIds[0] ? imagesIds[0] : '',
 			parent: setselectedParentId
 		},
 	  });
 	
+
+	    // @ts-ignore
+		if(addCategoryRes && addCategoryRes.status === 'ok'){
+			openSuccessNotification(); 
+	
+			setcategoryList([...categoryList, {
+				id: addCategoryRes['id'] || '',
+				key: addCategoryRes['id'] || '',
+				name: addCategoryRes['name'] || '',
+				description: addCategoryRes['description'] || '',
+				// @ts-ignore
+				...addCategoryRes
+			}])
+		  }
+		  else {
+			openErrorNotification(); 
+		  }
+
+
+		  setvisible(false)
+		  actions.resetForm();
 	  actions.setSubmitting(false);
 	};
 
@@ -262,54 +300,8 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible,catego
 					marginTop: '20px'
 				}}
 			/>
-			<div className='addproductSection-left-header'>
-				<h3 className='inputFieldLabel'>Thumbnail Image</h3>
-				{/* <div  >
-					<FileOutlined />
-					<span>Media Center</span>
-				</div> */}
-			</div>
-			<div className='aboutToUploadImagesContainer'>
-				{myThumbnailImage &&
-				// @ts-ignore
-				myThumbnailImage.length > 0 &&  myThumbnailImage.slice(0,1).map(image => {
-					 return (
-						 <div className='aboutToUploadImagesContainer__item aboutToUploadImagesContainer__item-thumbnail'>
-							 <div 
-							 onClick={() => handleThumbnailImageDelete(image.id)}
-							 className='aboutToUploadImagesContainer__item-overlay'>
-								 <DeleteOutlined />
-							 </div>
-							 <img src={image.cover} alt={image.alt} />
-						 </div>
-					 )
-				 })}
+	
 
-
-{!myThumbnailImage && (
-	<div 
-	onClick={()=> {
-		setvisible(true); 
-		setisModalOpenForImages(false); 
-		setisModalOpenForThumbnail(true); 
-	}}
-	className='aboutToUploadImagesContainer__uploadItem aboutToUploadImagesContainer__uploadItem-thumbnail'>
-		<FileAddOutlined />
-		<h5>
-			Select From Library
-		</h5>
-	 </div>
-)}
-					
-			
-			</div>
-
-
-			<div
-				style={{
-					marginTop: '20px'
-				}}
-			/>
 			<div className='addproductSection-left-header'>
 				<h3 className='inputFieldLabel'>Images</h3>
 				{/* <div  >

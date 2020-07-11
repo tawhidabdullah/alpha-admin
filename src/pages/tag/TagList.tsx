@@ -1,7 +1,7 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 
 // import third party ui lib
-import { Empty, Upload, message, Switch, Select, Button, notification,Table, Space, Input as CoolInput,Tooltip, Modal } from 'antd';
+import { Empty, Popconfirm, Upload, message, Switch, Select, Button, notification,Table, Space, Input as CoolInput,Tooltip, Modal } from 'antd';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
@@ -16,7 +16,8 @@ import {
 	RadiusBottomrightOutlined,
 	PlusOutlined,
 	DeleteOutlined,
-	EditOutlined
+	EditOutlined,
+	CheckCircleOutlined
 } from '@ant-design/icons';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -35,9 +36,27 @@ import QuickEdit from "./QuickEdit"
 
 
 
+const openSuccessNotification = (message?: any) => {
+	notification.success({
+	  message: message || 'Tag Created',
+	  description: '',
+	  icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
+	});
+  };
+
+
+  const openErrorNotification = (message?: any) => {
+	notification.success({
+	  message: message || 'Something Went Wrong',
+	  description: '',
+	  icon: <CheckCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
+	});
+  };
+
+
+
 const validationSchema = Yup.object().shape({
 	name: Yup.string().label('Name').required('Name is required').min(3, 'Name must have at least 3 characters'),
-	description: Yup.string().label('Description').required('Description is required')
 });
 
 
@@ -52,20 +71,33 @@ const { Search } = CoolInput;
 
 
 
-const MyTable = ({data}) => {
+const MyTable = ({data,setTagList}) => {
     const [visible,setvisible] = useState(false);   
 	const [activeCategoryForEdit,setactiveCategoryForEdit] = useState(false); 
-    const [deleteTagState, handleDeleteTagFetch] = useHandleFetch({}, 'deleteTag');
+	const [deleteTagState, handleDeleteTagFetch] = useHandleFetch({}, 'deleteTag');
+	
 
 
-	const handleDeleteCategory = async (id) => {
+	const handleDeleteTag = async (id) => {
         const deleteTagRes = await handleDeleteTagFetch({
           urlOptions: {
             placeHolders: {
               id,
             }
             }
-          });
+		  });
+		  
+		  console.log('deleteTagRes',deleteTagRes)
+
+
+		  // @ts-ignore
+		  if(deleteTagRes && deleteTagRes.status === 'ok'){
+			  openSuccessNotification('Deleted Tag'); 
+			  const newtagList =  data.filter(item => item.id !== id);
+			  setTagList(newtagList); 
+		  }
+
+		 
       }
 
 
@@ -128,18 +160,24 @@ const MyTable = ({data}) => {
                </Tooltip>
 
 
-             
-              <Tooltip placement="top" title='Delete Tag'>
-            
 
-             <span 
+             
+               <Popconfirm 
+               
+               onConfirm={() => handleDeleteTag(record.id)}
+               title="Are you sure？" okText="Yes" cancelText="No">
+           
+		   <span 
              className='iconSize iconSize-danger'
-             onClick={() => handleDeleteCategory(record.id)}
              > 
              <DeleteOutlined/>
             </span>
-            
-          </Tooltip>
+       
+           </Popconfirm>
+
+
+             
+             
              
             </Space>
           )}
@@ -152,6 +190,8 @@ const MyTable = ({data}) => {
 
 
 {activeCategoryForEdit &&   <QuickEdit 
+tagList={data}
+setTagList={setTagList}
     setvisible={setvisible}
     visible={visible}
     category={activeCategoryForEdit}/>}
@@ -162,34 +202,25 @@ const MyTable = ({data}) => {
 
 
 
-
-const props = {
-	name: 'file',
-	multiple: true,
-	action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
-	onChange(info: any) {
-		const { status } = info.file;
-		if (status !== 'uploading') {
-			console.log(info.file, info.fileList);
-		}
-		if (status === 'done') {
-			message.success(`${info.file.name} file uploaded successfully.`);
-		} else if (status === 'error') {
-			message.error(`${info.file.name} file upload failed.`);
-		}
-	}
-};
-
 interface Props {}
 
 const TagList = ({  }: Props) => {
-	const tagState = useFetch([], [], 'tagList', {
-		urlOptions: {
-		  params: {
-			isSubCategory: true,
-		  },
-		},
-	  });
+
+
+  const [tagList,setTagList] = useState([]); 
+
+  const [tagState, handleTagListFetch] = useHandleFetch({}, 'tagList');
+
+
+  useEffect(()=>{
+   const setTags = async () => {
+     const tags = await handleTagListFetch({}); 
+     // @ts-ignore
+     setTagList(tags); 
+   }
+   setTags(); 
+  },[])
+
 
 	  const [addTagState, handleAddTagFetch] = useHandleFetch({}, 'addTag');
 	  const [addNewCategoryVisible,setAddNewCategoryVisible] = useState(false);   
@@ -197,7 +228,6 @@ const TagList = ({  }: Props) => {
 
 
 	  const handleSubmit = async (values : any, actions : any) => {
-		  console.log('ourDamnValues',values)
 		const addTagRes = await handleAddTagFetch({
 		  urlOptions: {
 			  placeHolders: {
@@ -209,14 +239,27 @@ const TagList = ({  }: Props) => {
 			  description: values.description,
 		  },
 		});
-	  
+	  console.log('addTagRes',addTagRes)
+
+	  // @ts-ignore
+	  if(addTagRes && addTagRes.status === 'ok'){
+		openSuccessNotification(); 
+
+		setTagList([...tagList, {
+			id: addTagRes['id'] || '',
+			key: addTagRes['id'] || '',
+			name: addTagRes['name'] || '',
+			description: addTagRes['description'] || '',
+		}])
+	  }
 		actions.setSubmitting(false);
+		actions.resetForm();
 	  };
 	  
  
   
 		const getisSubmitButtonDisabled = (values,isValid) => {
-		  if(!values.name || !values.description || !isValid){
+		  if(!values.name  || !isValid){
 			  return true; 
 		  }
 		  return false; 
@@ -231,6 +274,17 @@ const TagList = ({  }: Props) => {
   const handleCancelAddNewCategory = (e: any) => {
     setAddNewCategoryVisible(false);
   };
+
+
+  
+  const handleSearch = (value) => {
+    if(tagState.data.length > 0 ){
+      const newTagList = tagState.data.filter(item => item.name.includes(value)); 
+      setTagList(newTagList); 
+    }
+     
+  }
+
 
 
 
@@ -261,9 +315,10 @@ const TagList = ({  }: Props) => {
 		  handleBlur,
 		  setFieldTouched,
 		  handleReset,
+		  
 		}) => (
 			<>
-  <Input 
+          <Input 
 			   label='Title'
 			   value={values.name}
 			   name='name'
@@ -324,8 +379,7 @@ const TagList = ({  }: Props) => {
             enterButton={false}
             className='searchbarClassName'
           placeholder="search tags.."
-          onSearch={value => console.log(value)}
-          // style={{ width: 300 }}
+		  onSearch={value => handleSearch(value)}
         />
           </div>
             {/* <Button
@@ -351,11 +405,13 @@ const TagList = ({  }: Props) => {
      
 			
 			<div className='categoryListContainer__categoryList'>
-        {tagState.done && tagState.data.length > 0 && <MyTable data={tagState.data} />}
+		{tagState.done && tagList.length > 0 && <MyTable
+		setTagList={setTagList}
+		 data={tagList} />}
         {tagState.isLoading && <DataTableSkeleton />}
 
 
-		{tagState.done && !(tagState.data.length > 0) && (
+		{tagState.done && !(tagList.length > 0) && (
 			<div style={{
 				marginTop: '50px'
 			}}>

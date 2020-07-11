@@ -21,6 +21,10 @@ class Converter {
 					name: category.name && category.name,
 					description: category.description && category.description,
 					cover: category.cover ? `${config['baseURL']}${category.cover.thumbnail}` : null,
+					subCount:
+						category.subCategory.length === 1
+							? category.subCategory[0] && category.subCategory[0].name ? category.subCategory.length : 0
+							: category.subCategory.length,
 					...(category.subCategory &&
 					category.subCategory.length > 0 &&
 					category.subCategory[0] &&
@@ -718,11 +722,299 @@ class Converter {
 
 	/**
    * @public
+   * @method updateTag convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+	async updateTag(data) {
+		const convertedData = data;
+
+		if (data && data.updated) {
+			return {
+				...data.updated,
+				status: 'ok'
+			};
+		}
+
+		return convertedData;
+	}
+
+	/**
+   * @public
+   * @method updateBrand convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+	async updateBrand(data) {
+		const convertedData = data;
+
+		if (data && data.updated) {
+			return {
+				...data.updated,
+				status: 'ok'
+			};
+		}
+
+		return convertedData;
+	}
+
+	/**
+   * @public
+   * @method updateCategory convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+	async updateCategory(data) {
+		const convertedData = data;
+
+		if (data && data.updated) {
+			return {
+				...data.updated,
+				status: 'ok'
+			};
+		}
+
+		return convertedData;
+	}
+
+	/**
+   * @public
+   * @method updateCustomer convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+	async updateCustomer(data) {
+		const convertedData = data;
+
+		if (data && data.updated) {
+			return {
+				...data.updated,
+				status: 'ok'
+			};
+		}
+
+		return convertedData;
+	}
+
+	/**
+   * @public
+   * @method updateRegion convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+	async updateRegion(data) {
+		const convertedData = data;
+
+		if (data && data.updated) {
+			return {
+				...data.updated,
+				status: 'ok'
+			};
+		}
+
+		return convertedData;
+	}
+
+	/**
+   * @public
    * @method deleteProduct convert api data from API to general format based on config server
    * @param {Object} data response objectc from wc
    * @returns {Object}  converted data
    */
 	async deleteProduct(data) {
+		const convertedData = data;
+		if (data && data.success) {
+			return {
+				status: 'ok'
+			};
+		}
+
+		return convertedData;
+	}
+
+	/**
+   * @public
+   * @method addTag convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+	async addTag(data) {
+		const convertedData = data;
+		if (data && data.inserted) {
+			return {
+				...data.inserted[0],
+				status: 'ok'
+			};
+		}
+
+		return convertedData;
+	}
+
+	/**
+   * @public
+   * @method addCategory convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+	async addCategory(data) {
+		const convertedData = data;
+		if (data && data.inserted) {
+			return {
+				...data.inserted[0],
+				status: 'ok'
+			};
+		}
+
+		return convertedData;
+	}
+
+	/**
+   * @public
+   * @method addProduct convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+	async addProduct(data) {
+		const convertedData = data;
+		if (data && data.inserted) {
+			return {
+				...data.inserted[0],
+				status: 'ok'
+			};
+		}
+
+		return convertedData;
+	}
+
+	/**
+   * @public
+   * @method addBrand convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+	async addBrand(data) {
+		const convertedData = data;
+		if (data && data.inserted) {
+			return {
+				...data.inserted[0],
+				status: 'ok'
+			};
+		}
+
+		return convertedData;
+	}
+
+	/**
+   * @public
+   * @method addCustomer convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+	async addCustomer(data) {
+		const convertedData = data;
+		if (data && data.inserted) {
+			return {
+				...data.inserted[0],
+				status: 'ok'
+			};
+		}
+
+		return convertedData;
+	}
+
+	/**
+   * @public
+   * @method addRegion convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+	async addRegion(data) {
+		const convertedData = data;
+		if (data && data.inserted) {
+			return {
+				...data.inserted[0],
+				status: 'ok'
+			};
+		}
+
+		return convertedData;
+	}
+
+	/**
+   * @public
+   * @method deleteTag convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+	async deleteTag(data) {
+		const convertedData = data;
+		if (data && data.success) {
+			return {
+				status: 'ok'
+			};
+		}
+
+		return convertedData;
+	}
+
+	/**
+   * @public
+   * @method deleteCustomer convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+	async deleteCustomer(data) {
+		const convertedData = data;
+		if (data && data.success) {
+			return {
+				status: 'ok'
+			};
+		}
+
+		return convertedData;
+	}
+
+	/**
+   * @public
+   * @method deleteBrand convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+	async deleteBrand(data) {
+		const convertedData = data;
+		if (data && data.success) {
+			return {
+				status: 'ok'
+			};
+		}
+
+		return convertedData;
+	}
+
+	/**
+   * @public
+   * @method deleteCategory convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+	async deleteCategory(data) {
+		const convertedData = data;
+		if (data && data.success) {
+			return {
+				status: 'ok'
+			};
+		}
+
+		return convertedData;
+	}
+
+	/**
+   * @public
+   * @method deleteRegion convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+	async deleteRegion(data) {
 		const convertedData = data;
 		if (data && data.success) {
 			return {

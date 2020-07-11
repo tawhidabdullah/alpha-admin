@@ -53,6 +53,8 @@ const MyTable = ({data,setProductList}: myTableProps) => {
           // @ts-ignore
           if(deleteProductRes && deleteProductRes.status === 'ok'){
             openSuccessNotification(); 
+            const newProductList =  data.filter(item => item.id !== id);
+            setProductList(newProductList); 
           }
 
           console.log('deleteProductRes',deleteProductRes)
