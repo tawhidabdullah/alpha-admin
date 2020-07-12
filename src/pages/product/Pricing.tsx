@@ -190,13 +190,15 @@ const Pricing = ({
 				attribute={attribute}
 				 attributeList={attributeList} setAttributeList={setAttributeList}/> 
 			})}
-			
-				</div>
 				<Button size='small' 
 				onClick={handleAddAttribute}
                 style={{
+					width: '180px',
+					minHeight:'75px',
 					marginTop:'0px'
 				}} type="dashed" icon={<PlusOutlined />}>Add Attribute</Button>
+				</div>
+			
 			</div>
 				</div>
 		</div>

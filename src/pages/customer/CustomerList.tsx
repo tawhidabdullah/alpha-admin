@@ -1,8 +1,8 @@
 import React, {useState,useEffect} from 'react';
 import {withRouter} from 'react-router-dom';
-import { Table, Badge, Menu, Dropdown, notification, Space, Tag,Button, Input,Tooltip, Modal , Empty, Popconfirm} from 'antd';
+import { Table, Badge, Menu, Dropdown, notification, Space, Tag,Button, Input,Tooltip, Modal , Popconfirm} from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined,EditFilled, CheckCircleOutlined } from '@ant-design/icons';
-
+import Moment from 'react-moment';
 
 /// import hooks
 import { useFetch, useHandleFetch } from "../../hooks";
@@ -11,7 +11,7 @@ import { useFetch, useHandleFetch } from "../../hooks";
 import { DataTableSkeleton } from "../../components/Placeholders";
 import AddNewCustomer from "./AddNewCustomer";
 import QuickEdit from "./QuickEdit";
-
+import Empty from "../../components/Empty";
 const { Column, ColumnGroup } = Table;
 const { Search } = Input;
 
@@ -131,7 +131,17 @@ const MyTable = ({data,setCustomerList}: myTableProps) => {
            dataIndex="created" 
            key="id" 
            className='classnameofthecolumn'
-         
+           render={(text, record : any) => (
+            <Space size="middle">
+            
+            <h5>
+              <Moment>
+                {text}
+              </Moment>
+            </h5>
+             
+            </Space>
+          )}
             />
 
 
@@ -312,11 +322,7 @@ const CustomerList = ({history}: Props) => {
          data={customerList} />}
         {customerState.isLoading && <DataTableSkeleton />}
         {customerState.done && !(customerList.length > 0) && (
-			<div style={{
-				marginTop: '50px'
-			}}>
-				<Empty description='No Tags found'  image={Empty.PRESENTED_IMAGE_SIMPLE} />
-			</div>
+			<Empty title='No Region found'  />
 		)}
 			</div>
 		</div>

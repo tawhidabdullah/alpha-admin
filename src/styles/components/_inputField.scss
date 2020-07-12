@@ -30,9 +30,23 @@
 
 .inputclassName {
 	border-radius: 3px !important;
-	border-color: #eee !important;
+	// border-color: #eee !important;
 }
 
+.ant-input {
+	border: 1px solid #eee ;
+}
+
+.ant-select-single:not(.ant-select-customize-input) .ant-select-selector {
+	border: 1px solid #eee;
+}
+
+.selectClassName {
+	margin-bottom: 0 !important;
+}
+.ant-form-item {
+    margin-bottom: -10px !important;
+}
 .addproductSectionContainer {
 	display: grid;
 	grid-gap: 20px;
@@ -355,6 +369,12 @@
 	margin-bottom: 12px !important;
 }
 
+.ant-form-item > .ant-col > .ant-form-item-control-input > .ant-form-item-control-input-content > 
+.ant-select 
+{
+	margin-bottom: -15px !important;
+}
+
 // double row inputs
 
 .dubbleRowInputs {
@@ -364,4 +384,13 @@
 		width: 48%;
 		margin-right: 10px;
 	}
+}
+
+
+// ant form inputs
+.ant-form-item-has-error
+ .ant-input:not([disabled]):hover,
+  .ant-form-item-has-error 
+  .ant-input-affix-wrapper:not([disabled]):hover {
+    border-color: #ff4d4f !important;
 }

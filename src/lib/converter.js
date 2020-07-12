@@ -9,7 +9,6 @@ class Converter {
    * @returns {Object}  converted data
    */
 	async categoryList(resData) {
-		console.log('resData', resData);
 		const data = resData.data || [];
 
 		const formatedData =
@@ -26,9 +25,9 @@ class Converter {
 							? category.subCategory[0] && category.subCategory[0].name ? category.subCategory.length : 0
 							: category.subCategory.length,
 					...(category.subCategory &&
-					category.subCategory.length > 0 &&
-					category.subCategory[0] &&
-					category.subCategory[0]['name'] && {
+						category.subCategory.length > 0 &&
+						category.subCategory[0] &&
+						category.subCategory[0]['name'] && {
 						children: category.subCategory.map((subCat) => {
 							return {
 								id: subCat._id || '',
@@ -44,6 +43,45 @@ class Converter {
 
 		return formatedData;
 	}
+
+
+	/**
+* @public
+* @method categorySelectist convert api data from API to general format based on config server
+* @param {Object} data response objectc from alpha
+* @returns {Object}  converted data
+*/
+	async categorySelectist(resData) {
+		const data = resData.data || [];
+
+		const formatedData =
+			data.length > 0 &&
+			data.map((category) => {
+				return {
+					id: category._id || '',
+					key: category._id || '',
+					title: category.name && category.name,
+					...(category.subCategory &&
+						category.subCategory.length > 0 &&
+						category.subCategory[0] &&
+						category.subCategory[0]['name'] && {
+						children: category.subCategory.map((subCat) => {
+							return {
+								id: subCat._id || '',
+								key: subCat._id,
+								title: subCat.name && subCat.name,
+								cover: subCat.cover ? `${config['baseURL']}${subCat.cover.thumbnail ? subCat.cover.thumbnail : ""}` : ''
+							};
+						})
+					})
+				};
+			});
+
+		return formatedData;
+	}
+
+
+
 
 	/**
    * @public
@@ -722,6 +760,25 @@ class Converter {
 
 	/**
    * @public
+   * @method updateImageFromLibrary convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+	async updateImageFromLibrary(data) {
+		const convertedData = data;
+
+		if (data && data.updated) {
+			return {
+				...data.updated,
+				status: 'ok'
+			};
+		}
+
+		return convertedData;
+	}
+
+	/**
+   * @public
    * @method updateTag convert api data from API to general format based on config server
    * @param {Object} data response objectc from wc
    * @returns {Object}  converted data
@@ -822,6 +879,23 @@ class Converter {
    * @returns {Object}  converted data
    */
 	async deleteProduct(data) {
+		const convertedData = data;
+		if (data && data.success) {
+			return {
+				status: 'ok'
+			};
+		}
+
+		return convertedData;
+	}
+
+	/**
+   * @public
+   * @method deleteImageFromLibrary convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+	async deleteImageFromLibrary(data) {
 		const convertedData = data;
 		if (data && data.success) {
 			return {
@@ -1040,13 +1114,13 @@ class Converter {
 			subCategory:
 				data.subCategory.length > 0 && data.subCategory[0] && data.subCategory[0]['name']
 					? data.subCategory.map((subCat) => {
-							return {
-								id: subCat._id || '',
-								name: subCat.name && subCat.name,
-								description: subCat.description && subCat.description,
-								cover: subCat.cover ? `${config['baseURL']}${subCat.cover.medium}` : ''
-							};
-						})
+						return {
+							id: subCat._id || '',
+							name: subCat.name && subCat.name,
+							description: subCat.description && subCat.description,
+							cover: subCat.cover ? `${config['baseURL']}${subCat.cover.medium}` : ''
+						};
+					})
 					: [],
 			image:
 				(data.image && data.image.length > 0 && data.image.map((img) => `${config.baseURL}${img.medium}`)) || []

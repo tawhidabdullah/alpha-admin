@@ -1,11 +1,11 @@
-import React,{useState} from 'react';
+import React, { useState } from 'react';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
 
-import {useHandleFetch} from '../../hooks';
+import { useHandleFetch } from '../../hooks';
 // import third party ui lib
-import { Upload,  message, Switch, Select, Button, notification, Modal } from 'antd';
+import { Upload, message, Switch, Select, Button, notification, Modal } from 'antd';
 
 import {
 	FileOutlined,
@@ -34,27 +34,27 @@ const validationSchema = Yup.object().shape({
 
 const openSuccessNotification = (message?: any) => {
 	notification.success({
-	  message: message || 'Category Updated',
-	  description: '',
-	  icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
+		message: message || 'Category Updated',
+		description: '',
+		icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
 	});
-  };
+};
 
 
-  const openErrorNotification = (message?: any) => {
+const openErrorNotification = (message?: any) => {
 	notification.success({
-	  message: message || 'Something Went Wrong',
-	  description: '',
-	  icon: <CheckCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
+		message: message || 'Something Went Wrong',
+		description: '',
+		icon: <CheckCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
 	});
-  };
+};
 
 
 
 
 
 const initialValues = {
-	name:'',
+	name: '',
 	description: '',
 	image: [],
 	url: '',
@@ -82,47 +82,47 @@ const props = {
 };
 
 interface Props {
-	addNewCategoryVisible: any; 
-	setAddNewCategoryVisible: any; 
-	categoryList?: any; 
-	setcategoryList?:any; 
+	addNewCategoryVisible: any;
+	setAddNewCategoryVisible: any;
+	categoryList?: any;
+	setcategoryList?: any;
 }
 
-const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible,categoryList,setcategoryList }: Props) => {
+const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, categoryList, setcategoryList }: Props) => {
 
 	const [addCategoryState, handleAddCategoryFetch] = useHandleFetch({}, 'addCategory');
-	const [visible,setvisible] = useState(false);   
-	const [myImages,setmyImages] = useState(false);   
-	const [myThumbnailImage,setmyThumbnailImage] = useState(false);   
-	const [isparentCategoryChecked,setisparentcategoryChecked] = useState(true); 
-	const [isModalOpenForThumbnail,setisModalOpenForThumbnail] = useState(false); 
-	const [isModalOpenForImages,setisModalOpenForImages] = useState(false); 
-	const [selectedParentId,setselectedParentId] =useState(''); 
+	const [visible, setvisible] = useState(false);
+	const [myImages, setmyImages] = useState(false);
+	const [myThumbnailImage, setmyThumbnailImage] = useState(false);
+	const [isparentCategoryChecked, setisparentcategoryChecked] = useState(true);
+	const [isModalOpenForThumbnail, setisModalOpenForThumbnail] = useState(false);
+	const [isModalOpenForImages, setisModalOpenForImages] = useState(false);
+	const [selectedParentId, setselectedParentId] = useState('');
 
 
 
-	const handleSubmit = async (values : any, actions : any) => {
+	const handleSubmit = async (values: any, actions: any) => {
 		// @ts-ignore
 		const imagesIds = myImages ? myImages.map(image => {
 			return image.id;
-		}): []; 
+		}) : [];
 
-	  const addCategoryRes = await handleAddCategoryFetch({
-		
-		body: {
-			name: values.name,
-			description: values.description,
-			image: imagesIds,
-			cover: imagesIds[0] ? imagesIds[0] : '',
-			parent: setselectedParentId
-		},
-	  });
-	
+		const addCategoryRes = await handleAddCategoryFetch({
 
-	    // @ts-ignore
-		if(addCategoryRes && addCategoryRes.status === 'ok'){
-			openSuccessNotification(); 
-	
+			body: {
+				name: values.name,
+				description: values.description,
+				image: imagesIds,
+				cover: imagesIds[0] ? imagesIds[0] : '',
+				parent: setselectedParentId
+			},
+		});
+
+
+		// @ts-ignore
+		if (addCategoryRes && addCategoryRes.status === 'ok') {
+			openSuccessNotification();
+
 			setcategoryList([...categoryList, {
 				id: addCategoryRes['id'] || '',
 				key: addCategoryRes['id'] || '',
@@ -131,15 +131,17 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible,catego
 				// @ts-ignore
 				...addCategoryRes
 			}])
-		  }
-		  else {
-			openErrorNotification(); 
-		  }
+			actions.resetForm();
+			setvisible(false)
+		}
+		else {
+			openErrorNotification();
+		}
 
 
-		  setvisible(false)
-		  actions.resetForm();
-	  actions.setSubmitting(false);
+
+
+		actions.setSubmitting(false);
 	};
 
 
@@ -151,213 +153,213 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible,catego
 
 
 	const handleCancel = (e: any) => {
-        setAddNewCategoryVisible(false);
-      };
+		setAddNewCategoryVisible(false);
+	};
 
 
-	const getisSubmitButtonDisabled = (values,isValid) => {
-		if(!values.name || !values.description || !isValid){
-			return true; 
+	const getisSubmitButtonDisabled = (values, isValid) => {
+		if (!values.name || !values.description || !isValid) {
+			return true;
 		}
-		return false; 
-	  }
+		return false;
+	}
 
 
-	  const handleImagesDelete = (id) => {
-		  // @ts-ignore
-		  const newImages = myImages && myImages.filter(image => {
-			  return image.id !== id; 
-		  })
+	const handleImagesDelete = (id) => {
+		// @ts-ignore
+		const newImages = myImages && myImages.filter(image => {
+			return image.id !== id;
+		})
 
-		  setmyImages(newImages); 
-	  }
-
-
-	  const handleThumbnailImageDelete = (id) => {
-		    // @ts-ignore
-			const newImages = myThumbnailImage && myThumbnailImage.filter(image => {
-				return image.id !== id; 
-			})
-
-			if(newImages.length >  0){
-				setmyThumbnailImage(newImages); 
-
-			}
-  			else setmyThumbnailImage(false);
-	  }
+		setmyImages(newImages);
+	}
 
 
+	const handleThumbnailImageDelete = (id) => {
+		// @ts-ignore
+		const newImages = myThumbnailImage && myThumbnailImage.filter(image => {
+			return image.id !== id;
+		})
+
+		if (newImages.length > 0) {
+			setmyThumbnailImage(newImages);
+
+		}
+		else setmyThumbnailImage(false);
+	}
 
 
-	  console.log('isparentCategoryChecked', isparentCategoryChecked); 
 
 
-	  const onChangeSelect = (value) => {
-		setselectedParentId(value); 
-		console.log('selectedValue',value); 
-	  }
+	console.log('isparentCategoryChecked', isparentCategoryChecked);
+
+
+	const onChangeSelect = (value) => {
+		setselectedParentId(value);
+		console.log('selectedValue', value);
+	}
 
 
 	return (
 		<Formik
-		onSubmit={(values, actions) => handleSubmit(values, actions)}
-		validationSchema={validationSchema}
-		validateOnBlur={false}
-		enableReinitialize={true}
-		initialValues={
-		  {...initialValues}
-		}
-	  >
-		{({
-		  handleChange,
-		  values,
-		  handleSubmit,
-		  errors,
-		  isValid,
-		  isSubmitting,
-		  touched,
-		  handleBlur,
-		  setFieldTouched,
-		  handleReset,
-		}) => (
-			<>
-			<Modal
-			style={{
-				top: '40px'
-			}}
-			title="Add New Category"
-			visible={addNewCategoryVisible}
-			onOk={(e : any) => handleSubmit(e)}
-			onCancel={handleCancel}
-			okText='Create'
-			okButtonProps={{
-			loading: isSubmitting,
-			htmlType: "submit",
-			disabled: getisSubmitButtonDisabled(values, isValid)
-			}}
-  >
-			<Input 
-			   label='Title'
-			   value={values.name}
-			   name='name'
-			   isError={(touched.name && errors.name) ||
-				  (!isSubmitting && addCategoryState.error['error']['name'])}
-			  
-				  errorString={(touched.name && errors.name) ||
-					  (!isSubmitting && addCategoryState.error['error']['name'])}
-			   onChange={(e : any) => {
-				  handleChange(e);
-				  setFieldTouched('name');
-				}}
-			   />
-			  <TextArea
-			   label='Description' 
-			   value={values.description}
-			   name='description'
-			   isError={(touched.description && errors.description) ||
-				  (!isSubmitting && addCategoryState.error['error']['description'])}
-			  
-				  errorString={(touched.description && errors.description) ||
-					  (!isSubmitting && addCategoryState.error['error']['description'])}
-			   onChange={(e : any) => {
-				  handleChange(e);
-				  setFieldTouched('description');
-				}}
-				 />
+			onSubmit={(values, actions) => handleSubmit(values, actions)}
+			validationSchema={validationSchema}
+			validateOnBlur={false}
+			enableReinitialize={true}
+			initialValues={
+				{ ...initialValues }
+			}
+		>
+			{({
+				handleChange,
+				values,
+				handleSubmit,
+				errors,
+				isValid,
+				isSubmitting,
+				touched,
+				handleBlur,
+				setFieldTouched,
+				handleReset,
+			}) => (
+					<>
+						<Modal
+							style={{
+								top: '40px'
+							}}
+							title="Add New Category"
+							visible={addNewCategoryVisible}
+							onOk={(e: any) => handleSubmit(e)}
+							onCancel={handleCancel}
+							okText='Create'
+							okButtonProps={{
+								loading: isSubmitting,
+								htmlType: "submit",
+								disabled: getisSubmitButtonDisabled(values, isValid)
+							}}
+						>
+							<Input
+								label='Title'
+								value={values.name}
+								name='name'
+								isError={(touched.name && errors.name) ||
+									(!isSubmitting && addCategoryState.error['error']['name'])}
 
-<div className='switchLabelContainer'>
-				<Switch defaultChecked onChange={onSwitchChange} />
-				<div className='switchLabelContainer-textContainer'>
-					<h4 className='switchLabelContainer-label'>Top level Category</h4>
-					<h5 className='switchLabelContainer-desc'>Disable to select a Parent Category</h5>
-				</div>
-			</div>
-			
-			{!isparentCategoryChecked && (
-				<>
-				<h3 className='inputFieldLabel'>Parent Category</h3>
-			<Select
-				showSearch
-				style={{ width: 300 }}
-				placeholder='Select a Parent Category'
-				optionFilterProp='children'
-				onChange={onChangeSelect}
-				// onFocus={onFocus}
-				// onBlur={onBlur}
-				// onSearch={onSearch}
-				filterOption={(input, option: any) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-			>
-				{categoryList.length > 0 && categoryList.map(category => {
-					return <Option value={category.id}>{category.name}</Option>
-				})}
-				
-			
-			</Select>
-				</>
-			)}
-					<div
-				style={{
-					marginTop: '20px'
-				}}
-			/>
-	
+								errorString={(touched.name && errors.name) ||
+									(!isSubmitting && addCategoryState.error['error']['name'])}
+								onChange={(e: any) => {
+									handleChange(e);
+									setFieldTouched('name');
+								}}
+							/>
+							<TextArea
+								label='Description'
+								value={values.description}
+								name='description'
+								isError={(touched.description && errors.description) ||
+									(!isSubmitting && addCategoryState.error['error']['description'])}
 
-			<div className='addproductSection-left-header'>
-				<h3 className='inputFieldLabel'>Images</h3>
-				{/* <div  >
+								errorString={(touched.description && errors.description) ||
+									(!isSubmitting && addCategoryState.error['error']['description'])}
+								onChange={(e: any) => {
+									handleChange(e);
+									setFieldTouched('description');
+								}}
+							/>
+
+							<div className='switchLabelContainer'>
+								<Switch defaultChecked onChange={onSwitchChange} />
+								<div className='switchLabelContainer-textContainer'>
+									<h4 className='switchLabelContainer-label'>Top level Category</h4>
+									<h5 className='switchLabelContainer-desc'>Disable to select a Parent Category</h5>
+								</div>
+							</div>
+
+							{!isparentCategoryChecked && (
+								<>
+									<h3 className='inputFieldLabel'>Parent Category</h3>
+									<Select
+										showSearch
+										style={{ width: 300 }}
+										placeholder='Select a Parent Category'
+										optionFilterProp='children'
+										onChange={onChangeSelect}
+										// onFocus={onFocus}
+										// onBlur={onBlur}
+										// onSearch={onSearch}
+										filterOption={(input, option: any) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+									>
+										{categoryList.length > 0 && categoryList.map(category => {
+											return <Option value={category.id}>{category.name}</Option>
+										})}
+
+
+									</Select>
+								</>
+							)}
+							<div
+								style={{
+									marginTop: '20px'
+								}}
+							/>
+
+
+							<div className='addproductSection-left-header'>
+								<h3 className='inputFieldLabel'>Images</h3>
+								{/* <div  >
 					<FileOutlined />
 					<span>Media Center</span>
 				</div> */}
-			</div>
-			<div className='aboutToUploadImagesContainer'>
-				{myImages &&
-				// @ts-ignore
-				 myImages.length > 0 &&  myImages.map(image => {
-					 return (
-						 <div className='aboutToUploadImagesContainer__item'>
-							 <div 
-							 onClick={() => handleImagesDelete(image.id)}
-							 className='aboutToUploadImagesContainer__item-overlay'>
-								 <DeleteOutlined />
-							 </div>
-							 <img src={image.cover} alt={image.alt} />
-						 </div>
-					 )
-				 })}
+							</div>
+							<div className='aboutToUploadImagesContainer'>
+								{myImages &&
+									// @ts-ignore
+									myImages.length > 0 && myImages.map(image => {
+										return (
+											<div className='aboutToUploadImagesContainer__item'>
+												<div
+													onClick={() => handleImagesDelete(image.id)}
+													className='aboutToUploadImagesContainer__item-overlay'>
+													<DeleteOutlined />
+												</div>
+												<img src={image.cover} alt={image.alt} />
+											</div>
+										)
+									})}
 
-				<div 
-				onClick={()=> {
-					setvisible(true); 
-					setisModalOpenForImages(true); 
-					setisModalOpenForThumbnail(false); 
-				}}
-				className='aboutToUploadImagesContainer__uploadItem'>
-					<FileAddOutlined />
-											{/* <h5>
+								<div
+									onClick={() => {
+										setvisible(true);
+										setisModalOpenForImages(true);
+										setisModalOpenForThumbnail(false);
+									}}
+									className='aboutToUploadImagesContainer__uploadItem'>
+									<FileAddOutlined />
+									{/* <h5>
 												Select From Library
 											</h5> */}
-										</div>
-							
+								</div>
+
 							</div>
 
 
-  </Modal>
-			  
-			  	<MediaLibrary
-		setvisible={setvisible}
-		 visible={visible}
-		 setmyImages={setmyImages}
-		 setmyThumbnailImage={setmyThumbnailImage}
-		 isModalOpenForThumbnail={isModalOpenForThumbnail}
-		 isModalOpenForImages={isModalOpenForImages}
-		 
-		 />
-			</>
-		  )}
-	  </Formik>
+						</Modal>
+
+						<MediaLibrary
+							setvisible={setvisible}
+							visible={visible}
+							setmyImages={setmyImages}
+							setmyThumbnailImage={setmyThumbnailImage}
+							isModalOpenForThumbnail={isModalOpenForThumbnail}
+							isModalOpenForImages={isModalOpenForImages}
+
+						/>
+					</>
+				)}
+		</Formik>
 
 
-		
+
 
 	);
 };

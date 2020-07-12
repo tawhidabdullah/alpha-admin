@@ -1,7 +1,7 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 
 // import third party ui lib
-import { Empty, Popconfirm, Upload, message, Switch, Select, Button, notification,Table, Space, Input as CoolInput,Tooltip, Modal } from 'antd';
+import { Empty, Popconfirm, Upload, message, Switch, Select, Button, notification, Table, Space, Input as CoolInput, Tooltip, Modal } from 'antd';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
@@ -38,20 +38,20 @@ import QuickEdit from "./QuickEdit"
 
 const openSuccessNotification = (message?: any) => {
 	notification.success({
-	  message: message || 'Tag Created',
-	  description: '',
-	  icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
+		message: message || 'Tag Created',
+		description: '',
+		icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
 	});
-  };
+};
 
 
-  const openErrorNotification = (message?: any) => {
+const openErrorNotification = (message?: any) => {
 	notification.success({
-	  message: message || 'Something Went Wrong',
-	  description: '',
-	  icon: <CheckCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
+		message: message || 'Something Went Wrong',
+		description: '',
+		icon: <CheckCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
 	});
-  };
+};
 
 
 
@@ -71,219 +71,220 @@ const { Search } = CoolInput;
 
 
 
-const MyTable = ({data,setTagList}) => {
-    const [visible,setvisible] = useState(false);   
-	const [activeCategoryForEdit,setactiveCategoryForEdit] = useState(false); 
+const MyTable = ({ data, setTagList }) => {
+	const [visible, setvisible] = useState(false);
+	const [activeCategoryForEdit, setactiveCategoryForEdit] = useState(false);
 	const [deleteTagState, handleDeleteTagFetch] = useHandleFetch({}, 'deleteTag');
-	
+
 
 
 	const handleDeleteTag = async (id) => {
-        const deleteTagRes = await handleDeleteTagFetch({
-          urlOptions: {
-            placeHolders: {
-              id,
-            }
-            }
-		  });
-		  
-		  console.log('deleteTagRes',deleteTagRes)
+		const deleteTagRes = await handleDeleteTagFetch({
+			urlOptions: {
+				placeHolders: {
+					id,
+				}
+			}
+		});
+
+		console.log('deleteTagRes', deleteTagRes)
 
 
-		  // @ts-ignore
-		  if(deleteTagRes && deleteTagRes.status === 'ok'){
-			  openSuccessNotification('Deleted Tag'); 
-			  const newtagList =  data.filter(item => item.id !== id);
-			  setTagList(newtagList); 
-		  }
-
-		 
-      }
+		// @ts-ignore
+		if (deleteTagRes && deleteTagRes.status === 'ok') {
+			openSuccessNotification('Deleted Tag');
+			const newtagList = data.filter(item => item.id !== id);
+			setTagList(newtagList);
+		}
 
 
-    const handleOk = (e: any) => {
-        setvisible(false);
-      
-      };
-    
-      const handleCancel = (e: any) => {
-        setvisible(false);
-      };
+	}
 
-      
 
-    return (
-        <>
-         <Table 
-        // expandable={{
-        //     expandedRowRender: record => <p style={{ margin: 0 }}>{record.name}</p>,
-        //     rowExpandable: record => record.name !== 'Not Expandable',
-        //   }}
-        // bordered={true}
-        size='small'
-        // pagination={false}
-        dataSource={data}
-        >
+	const handleOk = (e: any) => {
+		setvisible(false);
 
-          <Column
-           title="Name" 
-           dataIndex="name" 
-           key="id" 
-           className='classnameofthecolumn'
-         
-            />
+	};
 
-		<Column
-           title="Description" 
-           dataIndex="description" 
-           key="id" 
-           className='classnameofthecolumn'
-         
-            />
-        <Column
-        
-        className='classnameofthecolumn'
-          title=""
-          key="action"
-          align='right'
-          render={(text, record : any) => (
-            <Space size="middle">
-            
-               <Tooltip placement="top" title='Quick Edit Tag'>
-              <span className='iconSize' onClick={() => {
-                setvisible(true)
-                setactiveCategoryForEdit(record); 
-              }}> 
-              <EditOutlined />
-            
-              </span>
-               </Tooltip>
+	const handleCancel = (e: any) => {
+		setvisible(false);
+	};
 
 
 
-             
-               <Popconfirm 
-               
-               onConfirm={() => handleDeleteTag(record.id)}
-               title="Are you sure？" okText="Yes" cancelText="No">
-           
-		   <span 
-             className='iconSize iconSize-danger'
-             > 
-             <DeleteOutlined/>
-            </span>
-       
-           </Popconfirm>
+	return (
+		<>
+			<Table
+				// expandable={{
+				//     expandedRowRender: record => <p style={{ margin: 0 }}>{record.name}</p>,
+				//     rowExpandable: record => record.name !== 'Not Expandable',
+				//   }}
+				// bordered={true}
+				size='small'
+				// pagination={false}
+				dataSource={data}
+			>
+
+				<Column
+					title="Name"
+					dataIndex="name"
+					key="id"
+					className='classnameofthecolumn'
+
+				/>
+
+				<Column
+					title="Description"
+					dataIndex="description"
+					key="id"
+					className='classnameofthecolumn'
+
+				/>
+				<Column
+
+					className='classnameofthecolumn'
+					title=""
+					key="action"
+					align='right'
+					render={(text, record: any) => (
+						<Space size="middle">
+
+							<Tooltip placement="top" title='Quick Edit Tag'>
+								<span className='iconSize' onClick={() => {
+									setvisible(true)
+									setactiveCategoryForEdit(record);
+								}}>
+									<EditOutlined />
+
+								</span>
+							</Tooltip>
 
 
-             
-             
-             
-            </Space>
-          )}
-        />
-      </Table>
+
+
+							<Popconfirm
+
+								onConfirm={() => handleDeleteTag(record.id)}
+								title="Are you sure？" okText="Yes" cancelText="No">
+
+								<span
+									className='iconSize iconSize-danger'
+								>
+									<DeleteOutlined />
+								</span>
+
+							</Popconfirm>
 
 
 
-     
 
 
-{activeCategoryForEdit &&   <QuickEdit 
-tagList={data}
-setTagList={setTagList}
-    setvisible={setvisible}
-    visible={visible}
-    category={activeCategoryForEdit}/>}
-    </>
-    )
+						</Space>
+					)}
+				/>
+			</Table>
+
+
+
+
+
+
+			{activeCategoryForEdit && <QuickEdit
+				tagList={data}
+				setTagList={setTagList}
+				setvisible={setvisible}
+				visible={visible}
+				category={activeCategoryForEdit} />}
+		</>
+	)
 }
 
 
 
 
-interface Props {}
+interface Props { }
 
-const TagList = ({  }: Props) => {
-
-
-  const [tagList,setTagList] = useState([]); 
-
-  const [tagState, handleTagListFetch] = useHandleFetch({}, 'tagList');
+const TagList = ({ }: Props) => {
 
 
-  useEffect(()=>{
-   const setTags = async () => {
-     const tags = await handleTagListFetch({}); 
-     // @ts-ignore
-     setTagList(tags); 
-   }
-   setTags(); 
-  },[])
+	const [tagList, setTagList] = useState([]);
+
+	const [tagState, handleTagListFetch] = useHandleFetch({}, 'tagList');
 
 
-	  const [addTagState, handleAddTagFetch] = useHandleFetch({}, 'addTag');
-	  const [addNewCategoryVisible,setAddNewCategoryVisible] = useState(false);   
+	useEffect(() => {
+		const setTags = async () => {
+			const tags = await handleTagListFetch({});
+			// @ts-ignore
+			setTagList(tags);
+		}
+		setTags();
+	}, [])
+
+
+	const [addTagState, handleAddTagFetch] = useHandleFetch({}, 'addTag');
+	const [addNewCategoryVisible, setAddNewCategoryVisible] = useState(false);
 
 
 
-	  const handleSubmit = async (values : any, actions : any) => {
+	const handleSubmit = async (values: any, actions: any) => {
 		const addTagRes = await handleAddTagFetch({
-		  urlOptions: {
-			  placeHolders: {
-				id: values.id,
-			  }
+			urlOptions: {
+				placeHolders: {
+					id: values.id,
+				}
 			},
-		  body: {
-			  name: values.name,
-			  description: values.description,
-		  },
+			body: {
+				name: values.name,
+				description: values.description,
+			},
 		});
-	  console.log('addTagRes',addTagRes)
+		console.log('addTagRes', addTagRes)
 
-	  // @ts-ignore
-	  if(addTagRes && addTagRes.status === 'ok'){
-		openSuccessNotification(); 
+		// @ts-ignore
+		if (addTagRes && addTagRes.status === 'ok') {
+			openSuccessNotification();
 
-		setTagList([...tagList, {
-			id: addTagRes['id'] || '',
-			key: addTagRes['id'] || '',
-			name: addTagRes['name'] || '',
-			description: addTagRes['description'] || '',
-		}])
-	  }
+			setTagList([...tagList, {
+				id: addTagRes['id'] || '',
+				key: addTagRes['id'] || '',
+				name: addTagRes['name'] || '',
+				description: addTagRes['description'] || '',
+			}])
+			actions.resetForm();
+		}
 		actions.setSubmitting(false);
-		actions.resetForm();
-	  };
-	  
- 
-  
-		const getisSubmitButtonDisabled = (values,isValid) => {
-		  if(!values.name  || !isValid){
-			  return true; 
-		  }
-		  return false; 
+
+	};
+
+
+
+	const getisSubmitButtonDisabled = (values, isValid) => {
+		if (!values.name || !isValid) {
+			return true;
+		}
+		return false;
+	}
+
+
+	const handleOkAddNewCategory = (e: any) => {
+		setAddNewCategoryVisible(false);
+
+	};
+
+	const handleCancelAddNewCategory = (e: any) => {
+		setAddNewCategoryVisible(false);
+	};
+
+
+
+	const handleSearch = (value) => {
+		if (tagState.data.length > 0) {
+			const newTagList = tagState.data.filter(item => item.name.includes(value));
+			setTagList(newTagList);
 		}
 
-
-  const handleOkAddNewCategory = (e: any) => {
-    setAddNewCategoryVisible(false);
-  
-  };
-
-  const handleCancelAddNewCategory = (e: any) => {
-    setAddNewCategoryVisible(false);
-  };
-
-
-  
-  const handleSearch = (value) => {
-    if(tagState.data.length > 0 ){
-      const newTagList = tagState.data.filter(item => item.name.includes(value)); 
-      setTagList(newTagList); 
-    }
-     
-  }
+	}
 
 
 
@@ -295,94 +296,94 @@ const TagList = ({  }: Props) => {
 			</div>
 			<div className='addproductSectionContainer addproductSectionContainer-tags'>
 				<div className='addproductSection addproductSection-left'>
-				<Formik
-		onSubmit={(values, actions) => handleSubmit(values, actions)}
-		validationSchema={validationSchema}
-		validateOnBlur={false}
-		enableReinitialize={true}
-		initialValues={
-		  {...initialValues}
-		}
-	  >
-		{({
-		  handleChange,
-		  values,
-		  handleSubmit,
-		  errors,
-		  isValid,
-		  isSubmitting,
-		  touched,
-		  handleBlur,
-		  setFieldTouched,
-		  handleReset,
-		  
-		}) => (
-			<>
-          <Input 
-			   label='Title'
-			   value={values.name}
-			   name='name'
-			   isError={(touched.name && errors.name) ||
-				  (!isSubmitting && addTagState.error['error']['name'])}
-			  
-				  errorString={(touched.name && errors.name) ||
-					  (!isSubmitting && addTagState.error['error']['name'])}
-			   onChange={(e : any) => {
-				  handleChange(e);
-				  setFieldTouched('name');
-				}}
-			   />
-			  <TextArea
-			   label='Description' 
-			   value={values.description}
-			   name='description'
-			   isError={(touched.description && errors.description) ||
-				  (!isSubmitting && addTagState.error['error']['description'])}
-			  
-				  errorString={(touched.description && errors.description) ||
-					  (!isSubmitting && addTagState.error['error']['description'])}
-			   onChange={(e : any) => {
-				  handleChange(e);
-				  setFieldTouched('description');
-				}}
-				 />
+					<Formik
+						onSubmit={(values, actions) => handleSubmit(values, actions)}
+						validationSchema={validationSchema}
+						validateOnBlur={false}
+						enableReinitialize={true}
+						initialValues={
+							{ ...initialValues }
+						}
+					>
+						{({
+							handleChange,
+							values,
+							handleSubmit,
+							errors,
+							isValid,
+							isSubmitting,
+							touched,
+							handleBlur,
+							setFieldTouched,
+							handleReset,
+
+						}) => (
+								<>
+									<Input
+										label='Title'
+										value={values.name}
+										name='name'
+										isError={(touched.name && errors.name) ||
+											(!isSubmitting && addTagState.error['error']['name'])}
+
+										errorString={(touched.name && errors.name) ||
+											(!isSubmitting && addTagState.error['error']['name'])}
+										onChange={(e: any) => {
+											handleChange(e);
+											setFieldTouched('name');
+										}}
+									/>
+									<TextArea
+										label='Description'
+										value={values.description}
+										name='description'
+										isError={(touched.description && errors.description) ||
+											(!isSubmitting && addTagState.error['error']['description'])}
+
+										errorString={(touched.description && errors.description) ||
+											(!isSubmitting && addTagState.error['error']['description'])}
+										onChange={(e: any) => {
+											handleChange(e);
+											setFieldTouched('description');
+										}}
+									/>
 
 
-				  	<Button 
-							type='primary'
-							onClick={(e: any) => handleSubmit(e)}
-							disabled={getisSubmitButtonDisabled(values,isValid)}
-							loading={isSubmitting}
-							
-							 >
-						Create
+									<Button
+										type='primary'
+										onClick={(e: any) => handleSubmit(e)}
+										disabled={getisSubmitButtonDisabled(values, isValid)}
+										loading={isSubmitting}
+
+									>
+										Create
 					</Button>
-			</>
-		  )}
-	  </Formik>
+								</>
+							)}
+					</Formik>
 
 
 				</div>
-                <div className='addproductSection addproductSection-right'> 
+				<div className='addproductSection addproductSection-right'>
 
-				<div className='categoryListContainer'>
-            <div className='categoryListContainer__header'>
-           
+					<div className='categoryListContainer'>
+						<div className='categoryListContainer__header'>
 
-          <div className='categoryListContainer__header-searchBar-tag'>
-          {/* <h2 className='categoryListContainer__header-title'>
+
+							<div className='categoryListContainer__header-searchBar-tag'>
+								{/* <h2 className='categoryListContainer__header-title'>
             Brand
             </h2> */}
 
 
-          <Search
-            enterButton={false}
-            className='searchbarClassName'
-          placeholder="search tags.."
-		  onSearch={value => handleSearch(value)}
-        />
-          </div>
-            {/* <Button
+								<Search
+									enterButton={false}
+									className='searchbarClassName'
+									placeholder="search tags.."
+									onSearch={value => handleSearch(value)}
+								/>
+							</div>
+							{/* <Button
           // type="primary"
           className='btnPrimaryClassNameoutline'
           icon={<PlusOutlined />}
@@ -391,37 +392,37 @@ const TagList = ({  }: Props) => {
         Add New
             
             </Button> */}
-            </div>
+						</div>
 
-            <div className='categoryListContainer__afterHeader'>
-            {/* <Search
+						<div className='categoryListContainer__afterHeader'>
+							{/* <Search
       placeholder="search categories.."
       size="large"
       onSearch={value => console.log(value)}
       style={{ width: 300 }}
     /> */}
-            </div>
-
-     
-			
-			<div className='categoryListContainer__categoryList'>
-		{tagState.done && tagList.length > 0 && <MyTable
-		setTagList={setTagList}
-		 data={tagList} />}
-        {tagState.isLoading && <DataTableSkeleton />}
+						</div>
 
 
-		{tagState.done && !(tagList.length > 0) && (
-			<div style={{
-				marginTop: '50px'
-			}}>
-				<Empty description='No Tags found'  image={Empty.PRESENTED_IMAGE_SIMPLE} />
-			</div>
-		)}
-			</div>
-		</div>
 
-                </div>
+						<div className='categoryListContainer__categoryList'>
+							{tagState.done && tagList.length > 0 && <MyTable
+								setTagList={setTagList}
+								data={tagList} />}
+							{tagState.isLoading && <DataTableSkeleton />}
+
+
+							{tagState.done && !(tagList.length > 0) && (
+								<div style={{
+									marginTop: '50px'
+								}}>
+									<Empty description='No Tags found' image={Empty.PRESENTED_IMAGE_SIMPLE} />
+								</div>
+							)}
+						</div>
+					</div>
+
+				</div>
 			</div>
 		</div>
 	);

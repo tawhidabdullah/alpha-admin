@@ -298,7 +298,7 @@ const ProductList = ({history}: Props) => {
         {productState.isLoading && <DataTableSkeleton />}
         {productState.done && !(productList.length > 0) && (
 			<div style={{
-				marginTop: '100px'
+				marginTop: '200px'
 			}}>
 				<Empty description='No Products found'  image={Empty.PRESENTED_IMAGE_SIMPLE} />
 			</div>

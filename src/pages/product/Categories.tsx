@@ -1,20 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { useFetch, useHandleFetch } from '../../hooks';
-import { Checkbox, Input } from 'antd';
+import { Checkbox, Input, Tree } from 'antd';
 const CheckboxGroup = Checkbox.Group;
-
 const { Search } = Input;
+
+
+
 
 interface Props {
 	setcategoryIds?: any;
 }
 
 const Categories = ({ setcategoryIds }: Props) => {
-	const [ checkedList, setcheckedList ] = useState([]);
-	const [ options, setoptions ] = useState([]);
-	const [ searchValue, setsearchValue ] = useState('');
+	const [options, setoptions] = useState([]);
+	const [searchValue, setsearchValue] = useState('');
 
-	const [ categoryState, handleCategoryListFetch ] = useHandleFetch({}, 'categoryList');
+	const [categoryState, handleCategoryListFetch] = useHandleFetch({}, 'categorySelectist');
 
 	useEffect(() => {
 		const setCategories = async () => {
@@ -23,28 +24,20 @@ const Categories = ({ setcategoryIds }: Props) => {
 			// @ts-ignore
 			if (categoryListRes && categoryListRes.length > 0) {
 				// @ts-ignore
-				const categoryNames = categoryListRes.map((cat) => cat.name);
-				setoptions(categoryNames);
+				setoptions(categoryListRes);
 			}
 		};
 
 		setCategories();
 	}, []);
 
-	const onChange = (checkList) => {
-		setcheckedList(checkList);
+	const onSelect = (selectedKeys, info) => {
+		console.log('selectedKeys', selectedKeys, info);
+	};
 
-		if (categoryState.done && categoryState.data.length > 0 && checkList.length > 0) {
-			const selectedCategoryIds = checkList.map((item) => {
-				const selectedcategory = categoryState.data.find(
-					(cat) => cat.name.toLowerCase() === item.toLowerCase()
-				);
-				if (selectedcategory) {
-					return selectedcategory.id;
-				}
-			});
-			setcategoryIds(selectedCategoryIds);
-		}
+
+	const onCheck = (checkedKeys, info) => {
+		setcategoryIds(checkedKeys);
 	};
 
 	const onSearchChange = (e) => {
@@ -60,8 +53,8 @@ const Categories = ({ setcategoryIds }: Props) => {
 			const newOptions =
 				options.length > 0
 					? options.filter((option) => {
-							return option.includes(searchValue);
-						})
+						return option.toLowerCase().includes(searchValue.toLowerCase());
+					})
 					: [];
 
 			setoptions(newOptions);
@@ -69,6 +62,8 @@ const Categories = ({ setcategoryIds }: Props) => {
 	};
 
 	console.log('optons', options);
+
+
 	return (
 		<div className='addProduct__categoryBoxContainer'>
 			<div className='addProduct__categoryBoxContainer-searchBox'>
@@ -86,7 +81,21 @@ const Categories = ({ setcategoryIds }: Props) => {
 				/>
 			</div>
 
-			<CheckboxGroup options={options} value={checkedList} onChange={onChange} />
+			<div style={{
+				marginLeft: "-20px",
+			}}>
+				<Tree
+
+					checkable
+					onSelect={onSelect}
+					onCheck={onCheck}
+					treeData={options}
+					defaultExpandAll={true}
+				/>
+			</div>
+
+
+			{/* <CheckboxGroup options={options} value={checkedList} onChange={onChange} /> */}
 		</div>
 	);
 };

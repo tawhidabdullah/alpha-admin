@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {withRouter} from 'react-router-dom';
-import { Table, Badge, Menu, Dropdown, Space, Tag,Button, Input,Tooltip, Modal, notification, Popconfirm, Empty } from 'antd';
+import { Table, Badge, Menu, Dropdown, Space, Tag,Button, Input,Tooltip, Modal, notification, Popconfirm } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined,EditFilled,CheckCircleOutlined } from '@ant-design/icons';
 
 
@@ -11,6 +11,7 @@ import { useFetch, useHandleFetch } from "../../hooks";
 import { DataTableSkeleton } from "../../components/Placeholders";
 import AddNewRegion from "./AddNewRegion";
 import QuickEdit from "./QuickEdit";
+import Empty from "../../components/Empty";
 
 const { Column, ColumnGroup } = Table;
 const { Search } = Input;
@@ -320,11 +321,7 @@ const CustomerList = ({history}: Props) => {
         {regionState.isLoading && <DataTableSkeleton />}
 
         {regionState.done && !(regionList.length > 0) && (
-			<div style={{
-				marginTop: '50px'
-			}}>
-				<Empty description='No Region found'  image={Empty.PRESENTED_IMAGE_SIMPLE} />
-			</div>
+		<Empty title='No Region found'  />
 		)}
         
 			</div>

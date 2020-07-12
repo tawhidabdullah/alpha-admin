@@ -33,7 +33,7 @@
 			padding: 0;
 			text-transform: uppercase;
 			margin-right: 20px;
-			margin-left: 15px;
+			margin-left: 9px;
 		}
 	}
 
@@ -417,6 +417,7 @@
 	flex-direction: column;
 	align-items: flex-start;
 	justify-content: flex-start;
+	overflow-x: hidden;
 
 	&-searchBox {
 		margin-bottom: 10px;
@@ -456,4 +457,9 @@
 .checkicon-active {
 	font-size: 18px;
 	color: rgba(0, 128, 0, 0.5);
+}
+
+.checkicon-error {
+	font-size: 18px;
+	color: rgba(255, 0, 0, 0.493);
 }

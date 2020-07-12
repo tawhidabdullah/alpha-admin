@@ -48,6 +48,10 @@
 			"url": "/api/category?subCategory=isSubCategory",
 			"method": "get"
 		},
+		"categorySelectist": {
+			"url": "/api/category?subCategory=isSubCategory",
+			"method": "get"
+		},
 		"addCategory": {
 			"url": "/admin/category/add",
 			"method": "post"
@@ -122,6 +126,86 @@
 		},
 		"deleteRegion": {
 			"url": "/admin/delivery/update/delete/:id",
+			"method": "post"
+		},
+		"orderList": {
+			"url": "/admin/order",
+			"method": "get"
+		},
+		"addOrder": {
+			"url": "/admin/order/add",
+			"method": "post"
+		},
+		"updateOrder": {
+			"url": "/admin/order/update/:id",
+			"method": "post"
+		},
+		"orderDetail": {
+			"url": "/admin/order/:id",
+			"method": "post"
+		},
+		"deleteOrder": {
+			"url": "/admin/delivery/order/delete/:id",
+			"method": "post"
+		},
+		"componentList": {
+			"url": "/admin/component",
+			"method": "get"
+		},
+		"addComponent": {
+			"url": "/admin/component/add",
+			"method": "post"
+		},
+		"updateComponent": {
+			"url": "/admin/order/component/:id",
+			"method": "post"
+		},
+		"componentDetail": {
+			"url": "/admin/component/:id",
+			"method": "post"
+		},
+		"deleteComponent": {
+			"url": "/admin/delivery/component/delete/:id",
+			"method": "post"
+		},
+		"themeList": {
+			"url": "/admin/theme",
+			"method": "post"
+		},
+		"addTheme": {
+			"url": "/admin/theme/add",
+			"method": "post"
+		},
+		"activeTheme": {
+			"url": "/admin/theme/update/activate/:id",
+			"method": "get"
+		},
+		"themeDetail": {
+			"url": "/admin/theme/:id",
+			"method": "post"
+		},
+		"deletetheme": {
+			"url": "/admin/theme/update/delete/:id",
+			"method": "post"
+		},
+		"siteSettings": {
+			"url": "/admin/settings/site",
+			"method": "post"
+		},
+		"updateSiteSettings": {
+			"url": "/admin/settings/update/site",
+			"method": "post"
+		},
+		"updateSiteLogoAndIcon": {
+			"url": "/admin/settings/update/logo",
+			"method": "get"
+		},
+		"updateInvoiceSettings": {
+			"url": "/admin/settings/update/invoice",
+			"method": "post"
+		},
+		"invoiceSettingsDetail": {
+			"url": "/admin/settings/invoice",
 			"method": "post"
 		},
 		"login": {

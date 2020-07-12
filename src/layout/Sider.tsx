@@ -23,7 +23,7 @@ const { Header, Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
 
 const SiderComponent = (props: any) => {
-	const [ collapsed, setcollapsed ] = useState(false);
+	const [collapsed, setcollapsed] = useState(false);
 	const onCollapse = (collapsed: any) => {
 		console.log(collapsed);
 		setcollapsed(collapsed);
@@ -43,7 +43,7 @@ const SiderComponent = (props: any) => {
 					ALPHA
 				</Title>
 			</div>
-			<Menu selectable={true} defaultSelectedKeys={[ '1' ]} mode='inline'>
+			<Menu selectable={true} defaultSelectedKeys={['1']} mode='inline'>
 				<Menu.Item key='1' icon={<PieChartOutlined />}>
 					<Link to='/'>Dashboard</Link>
 				</Menu.Item>
@@ -97,9 +97,9 @@ const SiderComponent = (props: any) => {
 					<Menu.Item key='11'>
 						<Link to='/order'>List Orders</Link>
 					</Menu.Item>
-					<Menu.Item key='12'>
+					{/* <Menu.Item key='12'>
 						<Link to='/order/new'>Add Order</Link>
-					</Menu.Item>
+					</Menu.Item> */}
 				</SubMenu>
 
 				<Menu.Item key='13' icon={<TeamOutlined />}>
