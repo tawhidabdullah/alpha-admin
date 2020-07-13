@@ -52,12 +52,12 @@ interface Props {
     customer: any;
     setvisible: any;
     visible: any;
-    regionList?: any;
-    setRegionList?: any;
+    orderList?: any;
+    setOrderList?: any;
 }
 
-const QuickEdit = ({ customer, setvisible, visible, setRegionList, regionList }: Props) => {
-    const [updateRegionState, handleUpdateRegionFetch] = useHandleFetch({}, 'updateRegion');
+const QuickEdit = ({ customer, setvisible, visible, setOrderList, orderList }: Props) => {
+    const [updateOrderState, handleUpdateOrderFetch] = useHandleFetch({}, 'updateOrder');
 
 
     const [selectedCountryValue, setselectedCountryValue] = useState('');
@@ -81,7 +81,7 @@ const QuickEdit = ({ customer, setvisible, visible, setRegionList, regionList }:
     const handleSubmit = async (values: any, actions: any) => {
         console.log('selectedCityValue', selectedCityValue)
 
-        const addRegionRes = await handleUpdateRegionFetch({
+        const addRegionRes = await handleUpdateOrderFetch({
 
             body: {
                 name: values.name,
@@ -98,15 +98,15 @@ const QuickEdit = ({ customer, setvisible, visible, setRegionList, regionList }:
             openSuccessNotification();
 
             const positionInTag = () => {
-                return regionList.map(item => item.id).indexOf(customer.id);
+                return orderList.map(item => item.id).indexOf(customer.id);
             }
 
             const index = positionInTag();
 
             // @ts-ignore
-            const updatedItem = Object.assign({}, regionList[index], { ...addRegionRes });
-            const updateRegionList = [...regionList.slice(0, index), updatedItem, ...regionList.slice(index + 1)];
-            setRegionList(updateRegionList);
+            const updatedItem = Object.assign({}, orderList[index], { ...addRegionRes });
+            const updateRegionList = [...orderList.slice(0, index), updatedItem, ...orderList.slice(index + 1)];
+            setOrderList(updateRegionList);
 
         }
         else {
@@ -247,10 +247,10 @@ const QuickEdit = ({ customer, setvisible, visible, setRegionList, regionList }:
                                         value={values.name}
                                         name='name'
                                         isError={(touched.name && errors.name) ||
-                                            (!isSubmitting && updateRegionState.error['error']['name'])}
+                                            (!isSubmitting && updateOrderState.error['error']['name'])}
 
                                         errorString={(touched.name && errors.name) ||
-                                            (!isSubmitting && updateRegionState.error['error']['name'])}
+                                            (!isSubmitting && updateOrderState.error['error']['name'])}
                                         onChange={(e: any) => {
                                             handleChange(e);
                                             setFieldTouched('name');
@@ -263,10 +263,10 @@ const QuickEdit = ({ customer, setvisible, visible, setRegionList, regionList }:
                                         value={values.pickUpLocation}
                                         name='pickUpLocation'
                                         isError={(touched.pickUpLocation && errors.pickUpLocation) ||
-                                            (!isSubmitting && updateRegionState.error['error']['pickUpLocation'])}
+                                            (!isSubmitting && updateOrderState.error['error']['pickUpLocation'])}
 
                                         errorString={(touched.pickUpLocation && errors.pickUpLocation) ||
-                                            (!isSubmitting && updateRegionState.error['error']['pickUpLocation'])}
+                                            (!isSubmitting && updateOrderState.error['error']['pickUpLocation'])}
                                         onChange={(e: any) => {
                                             handleChange(e);
                                             setFieldTouched('pickUpLocation');
@@ -294,10 +294,10 @@ const QuickEdit = ({ customer, setvisible, visible, setRegionList, regionList }:
                                     value={values.time}
                                     name='time'
                                     isError={(touched.time && errors.time) ||
-                                        (!isSubmitting && updateRegionState.error['error']['time'])}
+                                        (!isSubmitting && updateOrderState.error['error']['time'])}
 
                                     errorString={(touched.time && errors.time) ||
-                                        (!isSubmitting && updateRegionState.error['error']['time'])}
+                                        (!isSubmitting && updateOrderState.error['error']['time'])}
                                     onChange={(e: any) => {
                                         handleChange(e);
                                         setFieldTouched('time');

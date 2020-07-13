@@ -170,7 +170,7 @@
 		},
 		"themeList": {
 			"url": "/admin/theme",
-			"method": "post"
+			"method": "get"
 		},
 		"addTheme": {
 			"url": "/admin/theme/add",

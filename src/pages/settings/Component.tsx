@@ -1,12 +1,18 @@
-import React, {useState} from 'react';
-import { Collapse, Button, Tooltip, Upload, Modal } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Collapse, Button, Tooltip, Upload, Modal,Input } from 'antd';
 import { CaretRightOutlined, PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 
 // import components
-import Input from '../../components/Field/Input';
+import InputField from '../../components/Field/Input';
+import Empty from '../../components/Empty';
 import ComponentImageUpload from './ComponentImageUpload';
-
+import {useHandleFetch} from '../../hooks';
+import { DataTableSkeleton } from "../../components/Placeholders";
+import AddNewComponent from "./AddNewComponent";
 const { Panel } = Collapse;
+const { Search } = Input;
+
+
 
 const text = `
   A dog is a type of domesticated animal.
@@ -23,7 +29,7 @@ function getBase64(file: any) {
 	});
 }
 
-interface Props {}
+interface Props { }
 
 const genExtra = () => (
 	<div
@@ -66,8 +72,8 @@ const genExtraForGroup = (setvisible: any) => (
 			<PlusOutlined
 				onClick={(event) => {
 					// If you don't want click extra trigger collapse, you can prevent this:
-                    // event.stopPropagation();
-                    setvisible(true);
+					// event.stopPropagation();
+					setvisible(true);
 				}}
 			/>
 		</Tooltip>
@@ -104,154 +110,110 @@ const genExtraForGroup = (setvisible: any) => (
 
 const Component = (props: Props) => {
 
-    
-    const [visible,setvisible] = useState(false);   
-    const [groupVisible,setgroupVisible] = useState(false);   
-    
+
+	const [visible, setvisible] = useState(false);
+	const [groupVisible, setgroupVisible] = useState(false);
+
+
+	
+	const [componentState, handleComponentListFetch] = useHandleFetch({}, 'componentList');
+	const [componentList,setComponentList] = useState([]); 
+  
+	useEffect(()=>{
+	 const setComponents = async () => {
+	   const categories = await handleComponentListFetch({}); 
+	   // @ts-ignore
+	   setComponentList(categories); 
+	 }
+	 setComponents(); 
+	},[])
+
+	
+
+	const handleSearch = (value) => {
+		if(componentState.data.length > 0 ){
+		  const newComponentList = componentState.data.filter(item => item.name.toLowerCase().includes(value.toLowerCase())); 
+		  setComponentList(newComponentList); 
+		}
+		 
+	  }
+	
 
 
 
-    const handleOk = (e: any) => {
-        setvisible(false);
-      
-      };
-    
-      const handleCancel = (e: any) => {
-        setvisible(false);
-      };
-      const handleOkGroup = (e: any) => {
-        setgroupVisible(false);
-      
-      };
-    
-      const handleCancelGroup = (e: any) => {
-        setgroupVisible(false);
-      };
 
 
-      
+	const handleOk = (e: any) => {
+		setvisible(false);
 
+	};
+
+	const handleCancel = (e: any) => {
+		setvisible(false);
+	};
+	const handleOkGroup = (e: any) => {
+		setgroupVisible(false);
+
+	};
+
+	const handleCancelGroup = (e: any) => {
+		setgroupVisible(false);
+	};
 
 
 	return (
-<>
-<div className='site-layout-background' style={{ padding: '30px 50px 30px 50px', minHeight: 360 }}>
-			<div className='addproductSectionContainer addproductSectionContainer-components'>
-				<div className='addproductSection addproductSection-left'>
-					<div className='addproductSectionTitleContainer'>
-						<h2 className='addprouctSectionTitle'>Components</h2>
-						<Tooltip placement='top' title='Add new Single Component'>
-                            <Button 
-                            onClick={()=> setvisible(true)}
-                            type='link' icon={<PlusOutlined />}>
-								Add New
-							</Button>
-						</Tooltip>
-					</div>
+		<>
+		    <div className='categoryListContainer'>
+            <div className='categoryListContainer__header'>
+           
 
-					<div className='componentsItemContainer'>
-						<div className='componentsItemContainer-item'>
-							<Collapse
-								accordion={false}
-								bordered={false}
-								expandIconPosition='left'
-								expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}
-								className='site-collapse-custom-collapse'
-							>
-								<Panel header='Bkash' key='1' className='site-collapse-custom-panel' extra={genExtra()}>
-									<Input label='Component Name' />
-									<Input label='Target URL' />
-									<Input label='Heading' />
-									<Input label='Text' />
-									<h3 className='inputFieldLabel'>Image</h3>
-									<div
-										style={{
-											marginTop: '10px',
-											marginBottom: '10px'
-										}}
-									>
-										<ComponentImageUpload />
-									</div>
+          <div className='categoryListContainer__header-searchBar'>
+          <h2 className='categoryListContainer__header-title'>
+            Components
+            </h2>
 
-									<Button size='large' type='primary'>
-										Save
-									</Button>
-								</Panel>
-							</Collapse>
-						</div>
 
-						<div className='componentsItemContainer-item'>
-							<Collapse
-								accordion={false}
-								bordered={false}
-								expandIconPosition='left'
-								expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}
-								className='site-collapse-custom-collapse'
-							>
-								<Panel header='Rocket' key='' className='site-collapse-custom-panel' extra={genExtra()}>
-									<Input label='Component Name' />
-									<Input label='Target URL' />
-									<Input label='Heading' />
-									<Input label='Text' />
-									<h3 className='inputFieldLabel'>Image</h3>
-									<div
-										style={{
-											marginTop: '10px',
-											marginBottom: '10px'
-										}}
-									>
-										<ComponentImageUpload />
-									</div>
+          <Search
+            enterButton={false}
+            className='searchbarClassName'
+          placeholder="search components.."
+          onSearch={value => handleSearch(value)}
+        />
+          </div>
+            <Button
+          // type="primary"
+          className='btnPrimaryClassNameoutline'
+          icon={<PlusOutlined />}
+		  onClick={() => setgroupVisible(true)}
+        >
+        Add New
+            
+            </Button>
+            </div>
 
-									<Button size='large' type='primary'>
-										Save
-									</Button>
-								</Panel>
-							</Collapse>
-						</div>
+            <div className='categoryListContainer__afterHeader'>
+ 
+            </div>
 
-						<div className='componentsItemContainer-item'>
-							<Collapse
-								accordion={false}
-								bordered={false}
-								expandIconPosition='left'
-								expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}
-								className='site-collapse-custom-collapse'
-							>
-								<Panel header='Nagad' key='1' className='site-collapse-custom-panel' extra={genExtra()}>
-									<Input label='Component Name' />
-									<Input label='Target URL' />
-									<Input label='Heading' />
-									<Input label='Text' />
-									<h3 className='inputFieldLabel'>Image</h3>
-									<div
-										style={{
-											marginTop: '10px',
-											marginBottom: '10px'
-										}}
-									>
-										<ComponentImageUpload />
-									</div>
+     
+			
+			<div className='categoryListContainer__categoryList'>
+     
+        {componentState.isLoading && <DataTableSkeleton />}
 
-									<Button size='large' type='primary'>
-										Save
-									</Button>
-								</Panel>
-							</Collapse>
-						</div>
-					</div>
-				</div>
-				<div className='addproductSection addproductSection-right'>
-					<div className='addproductSectionTitleContainer'>
-						<h2 className='addprouctSectionTitle'>Group Components</h2>
-						<Tooltip placement='top' title='Add new Group Component'>
-                            <Button 
-                            onClick={() => setgroupVisible(true)}
-                            type='link' icon={<PlusOutlined />}>
-								Add New
-							</Button>
-						</Tooltip>
-					</div>
+        {componentState.done && !(componentList.length > 0) && (
+			<div style={{
+				marginTop: '50px'
+			}}>
+				<Empty title='No Component found' />
+			</div>
+		)}
+
+		{componentState.done && componentList.length > 0 && (
+				<div className='addproductSectionContainer addproductSectionContainer-components'>
+
+				<div className='addproductSectionContainer-components__item'>
+
 
 					<div className='groupComponentsContainer'>
 						<div className='groupComponentsContainer-item'>
@@ -287,10 +249,10 @@ const Component = (props: Props) => {
 															className='site-collapse-custom-panel'
 															extra={genExtra()}
 														>
-															<Input label='Component Name' />
-															<Input label='Target URL' />
-															<Input label='Heading' />
-															<Input label='Text' />
+															<InputField label='Component Name' />
+															<InputField label='Target URL' />
+															<InputField label='Heading' />
+															<InputField label='Text' />
 															<h3 className='inputFieldLabel'>Image</h3>
 															<div
 																style={{
@@ -303,7 +265,7 @@ const Component = (props: Props) => {
 
 															<Button size='large' type='primary'>
 																Save
-															</Button>
+														</Button>
 														</Panel>
 													</Collapse>
 												</div>
@@ -324,10 +286,10 @@ const Component = (props: Props) => {
 															className='site-collapse-custom-panel'
 															extra={genExtra()}
 														>
-															<Input label='Component Name' />
-															<Input label='Target URL' />
-															<Input label='Heading' />
-															<Input label='Text' />
+															<InputField label='Component Name' />
+															<InputField label='Target URL' />
+															<InputField label='Heading' />
+															<InputField label='Text' />
 															<h3 className='inputFieldLabel'>Image</h3>
 															<div
 																style={{
@@ -340,7 +302,7 @@ const Component = (props: Props) => {
 
 															<Button size='large' type='primary'>
 																Save
-															</Button>
+														</Button>
 														</Panel>
 													</Collapse>
 												</div>
@@ -361,10 +323,10 @@ const Component = (props: Props) => {
 															className='site-collapse-custom-panel'
 															extra={genExtra()}
 														>
-															<Input label='Component Name' />
-															<Input label='Target URL' />
-															<Input label='Heading' />
-															<Input label='Text' />
+															<InputField label='Component Name' />
+															<InputField label='Target URL' />
+															<InputField label='Heading' />
+															<InputField label='Text' />
 															<h3 className='inputFieldLabel'>Image</h3>
 															<div
 																style={{
@@ -377,7 +339,7 @@ const Component = (props: Props) => {
 
 															<Button size='large' type='primary'>
 																Save
-															</Button>
+														</Button>
 														</Panel>
 													</Collapse>
 												</div>
@@ -390,44 +352,28 @@ const Component = (props: Props) => {
 					</div>
 				</div>
 			</div>
+		)}
+			</div>
 		</div>
-        <Modal
-          title="Add new Component"
-          visible={visible}
-          onOk={handleOk}
-		  onCancel={handleCancel}
-		 footer={null}
-		  okText='Done'
-        >
-            	<Input label='Component Name' />
-									<Input label='Target URL' />
-									<Input label='Heading' />
-									<Input label='Text' />
-									<h3 className='inputFieldLabel'>Image</h3>
-									<div
-										style={{
-											marginTop: '10px',
-											marginBottom: '10px'
-										}}
-									>
-										<ComponentImageUpload />
-									</div>
 
-									<Button size='large' type='primary'>
-										Save
-									</Button>
-        </Modal>
 
-        <Modal
-          title="Add New Group Component"
-          visible={groupVisible}
-          onOk={handleOkGroup}
-		  onCancel={handleCancelGroup}
-		 footer={null}
-		  okText='Done'
-        >
-            	<Input label='Group Component Name' />
-                {/* <Input label='Target URL' />
+		<AddNewComponent 
+          addNewCategoryVisible={groupVisible} 
+          setAddNewCategoryVisible={setgroupVisible} 
+          setComponentList={setComponentList}
+          componentList={componentList}
+          />
+
+			<Modal
+				title="Add New Group Component"
+				visible={false}
+				onOk={handleOkGroup}
+				onCancel={handleCancelGroup}
+				footer={null}
+				okText='Done'
+			>
+				<InputField label='Group Component Name' />
+				{/* <Input label='Target URL' />
                 <Input label='Heading' />
                 <Input label='Text' />
                 <h3 className='inputFieldLabel'>Image</h3>
@@ -439,12 +385,12 @@ const Component = (props: Props) => {
                 >
                     <ComponentImageUpload />
                 </div> */}
-
-                <Button size='large' type='primary'>
-                    Save
-                </Button>
-        </Modal>
-</>
+{/* 
+				<Button size='large' type='primary'>
+					Save
+                </Button> */}
+			</Modal>
+		</>
 	);
 };
 

@@ -61,7 +61,14 @@
 }
 
 .addproductSectionContainer-components {
-	grid-template-columns: .5fr .5fr;
+	display: flex;
+	justify-content: space-around;
+	flex-wrap: wrap;
+
+
+	&__item {
+		width: 500px;
+	}
 }
 
 .sidebar {
@@ -393,4 +400,53 @@
   .ant-form-item-has-error 
   .ant-input-affix-wrapper:not([disabled]):hover {
     border-color: #ff4d4f !important;
+}
+
+
+// component items container
+.componentItemsContainer {
+	display: flex;
+	flex-wrap: wrap;
+	&__item {
+		width: 190px; 
+		min-width: 290px; 
+		background-color: #fff;
+		box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.08);
+		padding: 10px;
+		border-radius: 4px;
+		margin-bottom: 15px;
+		margin-right: 15px;
+	}
+}
+
+
+.siteInfoContainer {
+	background-color: #fff;
+	margin: 20px; 
+	padding: 10px; 
+	box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.08);
+	color: #22292e;
+
+	h2 {
+		margin: 0;
+		padding: 0;
+	}
+
+	&__item {
+		padding-top: 10px;
+		width: 90%;
+		display: flex;
+		flex-wrap: wrap;
+
+		&-item {
+			margin-right: 10px;
+			width:48%;
+
+			&-left {
+				width:48%;
+			
+			}
+		}
+	}
+	
 }

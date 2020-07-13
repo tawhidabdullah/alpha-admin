@@ -758,6 +758,27 @@ class Converter {
 		return convertedData;
 	}
 
+
+	/**
+* @public
+* @method updateComponent convert api data from API to general format based on config server
+* @param {Object} data response objectc from wc
+* @returns {Object}  converted data
+*/
+	async updateComponent(data) {
+		const convertedData = data;
+
+		if (data && data.updated) {
+			return {
+				...data.updated,
+				status: 'ok'
+			};
+		}
+
+		return convertedData;
+	}
+
+
 	/**
    * @public
    * @method updateImageFromLibrary convert api data from API to general format based on config server
@@ -977,6 +998,26 @@ class Converter {
 
 		return convertedData;
 	}
+	/**
+   * @public
+   * @method addComponent convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+	async addComponent(data) {
+		const convertedData = data;
+		if (data && data.inserted) {
+			return {
+				...data.inserted[0],
+				status: 'ok'
+			};
+		}
+
+		return convertedData;
+	}
+
+
+
 
 	/**
    * @public
@@ -1047,6 +1088,25 @@ class Converter {
 
 		return convertedData;
 	}
+
+
+	/**
+* @public
+* @method deleteComponent convert api data from API to general format based on config server
+* @param {Object} data response objectc from wc
+* @returns {Object}  converted data
+*/
+	async deleteComponent(data) {
+		const convertedData = data;
+		if (data && data.success) {
+			return {
+				status: 'ok'
+			};
+		}
+
+		return convertedData;
+	}
+
 
 	/**
    * @public

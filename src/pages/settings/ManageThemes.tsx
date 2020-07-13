@@ -1,137 +1,150 @@
-import React, {useState} from 'react';
-import { Table, Badge, Menu, Dropdown, Space, Tag, Button, Input, Tooltip, Modal, Card, Avatar } from 'antd';
-import { CloudUploadOutlined, DeleteOutlined, CheckOutlined, CheckCircleTwoTone } from '@ant-design/icons';
-
-interface Props {}
-
-const ManageThemes = (props: Props) => {
-	const [visible,setvisible] = useState(false);   
+import React, {useState, useEffect} from 'react';
+import {withRouter} from 'react-router-dom';
+import { Button, Input,Tooltip, Modal, notification, Popconfirm } from 'antd';
+import { PlusOutlined, EditOutlined, DeleteOutlined,EditFilled,CheckCircleOutlined } from '@ant-design/icons';
 
 
-	
+/// import hooks
+import { useFetch, useHandleFetch } from "../../hooks";
 
-    const handleOk = (e: any) => {
-        setvisible(false);
-      
-      };
-    
-      const handleCancel = (e: any) => {
-        setvisible(false);
-	  };
-	  
+// import components
+import { DataTableSkeleton } from "../../components/Placeholders";
+import AddNewTheme from "./AddNewTheme";
+
+import Empty from "../../components/Empty";
+
+const { Search } = Input;
+
+
+
+const openSuccessNotification = (message?: any) => {
+	notification.success({
+	  message: message || 'Tag Created',
+	  description: '',
+	  icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
+	});
+  };
+
+
+  const openErrorNotification = (message?: any) => {
+	notification.success({
+	  message: message || 'Something Went Wrong',
+	  description: '',
+	  icon: <CheckCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
+	});
+  };
+
+
+
+interface Props {
+    history: any; 
+}
+
+const CustomerList = ({history}: Props) => {
+
+    const [themeList,setThemeList] = useState([]); 
+
+    const [themeState, handleThemeListFetch] = useHandleFetch({}, 'themeList');
+  
+  
+    useEffect(()=>{
+     const setThemes = async () => {
+       const themes = await handleThemeListFetch({}); 
+       // @ts-ignore
+       setThemeList(themes); 
+     }
+     setThemes(); 
+    },[])
+
+
+
+
+  
+  const [addNewCategoryVisible,setAddNewCategoryVisible] = useState(false);   
+
+  console.log('orderState',themeState)
+
+
+  const handleSearch = (value) => {
+    if(themeState.data.length > 0 ){
+      const newThemeList = themeState.data.filter(item => item.name.includes(value)); 
+      setThemeList(newThemeList); 
+    }
+     
+  }
+
+
+
+
+
+
 
 	return (
 		<>
-		<div className='categoryListContainer'>
-			<div className='categoryListContainer__header'>
-				<h2 className='categoryListContainer__header-title'>Uploaded Themes</h2>
-				<Tooltip placement='top' title='Add new Themes'>
-					<Button 
-					type='primary'
-					 icon={<CloudUploadOutlined />} onClick={() => setvisible(true)}>
-						Add New
-					</Button>
-				</Tooltip>
-			</div>
+    {/* <h2 className='containerPageTitle'>
+      Categories
+    </h2> */}
+    <div className='categoryListContainer'>
+            <div className='categoryListContainer__header'>
+           
 
-			<div className='categoryListContainer__bodyContainerList'>
-				<div className='categoryListContainer__bodyContainerList-item'>
-					<Badge count={<CheckCircleTwoTone style={{ color: '#3FA3FF' }} />}>
-						<div className='categoryListContainer__bodyContainerList-item-top'>
-							<img
-								alt='theme img'
-								src='https://homebazarshibchar.com/images/homeBazar.zip-thumb-homebazarLogo.jpg'
-							/>
-						</div>
-						<div className='categoryListContainer__bodyContainerList-item-body'>
-							<h3>Home Bazar</h3>
+          <div className='categoryListContainer__header-searchBar'>
+          <h2 className='categoryListContainer__header-title'>
+		 Themes
+ 
+            </h2>
 
-							<div
-								style={{
-									display: 'flex',
-									justifyContent: 'space-between'
-								}}
-							>
-								<Tooltip placement='top' title='Active this theme'>
-									<Button
-										size='small'
-										type='primary'
-										icon={<CheckOutlined />}
-										onClick={() => console.log('upload thme')}
-									>
-										Set Active
-									</Button>
-								</Tooltip>
 
-								<Tooltip placement='top' title='Delete theme'>
-									<Button
-										size='small'
-										type='link'
-										danger={true}
-										icon={<DeleteOutlined />}
-										onClick={() => console.log('upload thme')}
-									>
-										{/* Delete */}
-									</Button>
-								</Tooltip>
-							</div>
-						</div>
-					</Badge>
-				</div>
+          <Search
+            enterButton={false}
+            className='searchbarClassName'
+          placeholder="search themes.."
+          onSearch={value => handleSearch(value)}
+          // style={{ width: 300 }}
+        />
+          </div>
+            <Button
+          // type="primary"
+          className='btnPrimaryClassNameoutline'
+          icon={<PlusOutlined />}
+          onClick={() => setAddNewCategoryVisible(true)}
+        >
+        Add New
+            
+            </Button>
+            </div>
 
-				<div className='categoryListContainer__bodyContainerList-item'>
-					<div className='categoryListContainer__bodyContainerList-item-top'>
-						<img
-							alt='theme img'
-							src='https://homebazarshibchar.com/images/homeBazar.zip-thumb-homebazarLogo.jpg'
-						/>
-					</div>
-					<div className='categoryListContainer__bodyContainerList-item-body'>
-						<h3>Home Bazar</h3>
+            <div className='categoryListContainer__afterHeader'>
 
-						<div
-							style={{
-								display: 'flex',
-								justifyContent: 'space-between'
-							}}
-						>
-							<Tooltip placement='top' title='Active this theme'>
-								<Button
-									size='small'
-									type='primary'
-									icon={<CheckOutlined />}
-									onClick={() => console.log('upload thme')}
-								>
-									Set Active
-								</Button>
-							</Tooltip>
+            </div>
 
-							<Tooltip placement='top' title='Delete theme'>
-								<Button
-									size='small'
-									type='link'
-									danger={true}
-									icon={<DeleteOutlined />}
-									onClick={() => console.log('upload thme')}
-								>
-									{/* Delete */}
-								</Button>
-							</Tooltip>
-						</div>
-					</div>
-				</div>
+     
+			
+			<div className='categoryListContainer__categoryList'>
+        {themeState.done && themeList.length > 0 && (
+			<> </>
+		)}
+
+
+        {themeState.isLoading && <DataTableSkeleton />}
+
+        {themeState.done && !(themeList.length > 0) && (
+        <Empty title='No Theme found'  />
+        )}
+        
 			</div>
 		</div>
-		<Modal
-          title="Add new Theme"
-          visible={visible}
-          onOk={handleOk}
-		  onCancel={handleCancel}
-		 footer={null}
-		  okText='Done'
-        ></Modal>
-		</>
+
+
+    {themeState.done && 
+    <AddNewTheme 
+          addNewCategoryVisible={addNewCategoryVisible} 
+          setAddNewCategoryVisible={setAddNewCategoryVisible}
+          themeList={themeState.data}
+          setThemeList={setThemeList}
+           />}
+    </>
 	);
 };
 
-export default ManageThemes;
+export default withRouter(CustomerList);

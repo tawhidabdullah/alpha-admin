@@ -83,13 +83,13 @@ const initialValues = {
 interface Props {
 	addNewCategoryVisible: any;
 	setAddNewCategoryVisible: any;
-	regionList?: any;
-	setRegionList?: any;
+	orderList?: any;
+	setOrderList?: any;
 }
 
-const AddNewRegion = ({ addNewCategoryVisible, setAddNewCategoryVisible, regionList, setRegionList }: Props) => {
+const AddNewOrder = ({ addNewCategoryVisible, setAddNewCategoryVisible, orderList, setOrderList }: Props) => {
 
-	const [addRegionState, handleRegionFetch] = useHandleFetch({}, 'addRegion');
+	const [addOrderState, handleOrderFetch] = useHandleFetch({}, 'addOrder');
 	const [selectedCountryValue, setselectedCountryValue] = useState('');
 	const [selectedCityValue, setselectedCityValue] = useState('');
 
@@ -112,7 +112,7 @@ const AddNewRegion = ({ addNewCategoryVisible, setAddNewCategoryVisible, regionL
 	const handleSubmit = async (values: any, actions: any) => {
 		console.log('selectedCityValue', selectedCityValue)
 
-		const addRegionRes = await handleRegionFetch({
+		const addRegionRes = await handleOrderFetch({
 
 			body: {
 				name: values.name,
@@ -129,7 +129,7 @@ const AddNewRegion = ({ addNewCategoryVisible, setAddNewCategoryVisible, regionL
 		if (addRegionRes && addRegionRes.status === 'ok') {
 			openSuccessNotification();
 
-			setRegionList([...regionList, {
+			setOrderList([...orderList, {
 				id: addRegionRes['id'] || '',
 				key: addRegionRes['id'] || '',
 				name: addRegionRes['name'] || '',
@@ -264,7 +264,7 @@ const AddNewRegion = ({ addNewCategoryVisible, setAddNewCategoryVisible, regionL
 								margin: '0',
 								padding: '10px'
 							}}
-							title="Add New Region"
+							title="Add New Order"
 							visible={addNewCategoryVisible}
 							onOk={(e: any) => handleSubmit(e)}
 							onCancel={handleCancel}
@@ -284,10 +284,10 @@ const AddNewRegion = ({ addNewCategoryVisible, setAddNewCategoryVisible, regionL
 										value={values.name}
 										name='name'
 										isError={(touched.name && errors.name) ||
-											(!isSubmitting && addRegionState.error['error']['name'])}
+											(!isSubmitting && addOrderState.error['error']['name'])}
 
 										errorString={(touched.name && errors.name) ||
-											(!isSubmitting && addRegionState.error['error']['name'])}
+											(!isSubmitting && addOrderState.error['error']['name'])}
 										onChange={(e: any) => {
 											handleChange(e);
 											setFieldTouched('name');
@@ -300,10 +300,10 @@ const AddNewRegion = ({ addNewCategoryVisible, setAddNewCategoryVisible, regionL
 										value={values.pickUpLocation}
 										name='pickUpLocation'
 										isError={(touched.pickUpLocation && errors.pickUpLocation) ||
-											(!isSubmitting && addRegionState.error['error']['pickUpLocation'])}
+											(!isSubmitting && addOrderState.error['error']['pickUpLocation'])}
 
 										errorString={(touched.pickUpLocation && errors.pickUpLocation) ||
-											(!isSubmitting && addRegionState.error['error']['pickUpLocation'])}
+											(!isSubmitting && addOrderState.error['error']['pickUpLocation'])}
 										onChange={(e: any) => {
 											handleChange(e);
 											setFieldTouched('pickUpLocation');
@@ -331,10 +331,10 @@ const AddNewRegion = ({ addNewCategoryVisible, setAddNewCategoryVisible, regionL
 									value={values.time}
 									name='time'
 									isError={(touched.time && errors.time) ||
-										(!isSubmitting && addRegionState.error['error']['time'])}
+										(!isSubmitting && addOrderState.error['error']['time'])}
 
 									errorString={(touched.time && errors.time) ||
-										(!isSubmitting && addRegionState.error['error']['time'])}
+										(!isSubmitting && addOrderState.error['error']['time'])}
 									onChange={(e: any) => {
 										handleChange(e);
 										setFieldTouched('time');
@@ -422,4 +422,4 @@ const AddNewRegion = ({ addNewCategoryVisible, setAddNewCategoryVisible, regionL
 	);
 };
 
-export default AddNewRegion;
+export default AddNewOrder;

@@ -60,6 +60,7 @@ interface Props {
 	isModalOpenForThumbnail?: boolean;
 	isModalOpenForImages?: boolean;
 	myImages?: any;
+	myThumbnailImage?: any
 }
 
 const MediaLibrary = ({
@@ -70,6 +71,7 @@ const MediaLibrary = ({
 	isModalOpenForThumbnail,
 	setmyThumbnailImage,
 	myImages,
+	myThumbnailImage,
 	...rest
 }: Props) => {
 
@@ -174,7 +176,8 @@ const MediaLibrary = ({
 			setisDoneOk(true);
 		}
 		else {
-			setmyThumbnailImage(selectedimages)
+			setmyThumbnailImage(selectedimages);
+			setisDoneOk(true);
 		}
 		setvisible(false);
 
@@ -186,10 +189,17 @@ const MediaLibrary = ({
 
 
 	useEffect(() => {
-		if (isDoneOk) {
+		if (isDoneOk && isModalOpenForImages) {
 			setselectedImages([...myImages]);
 		}
 	}, [myImages, isDoneOk])
+
+	useEffect(() => {
+		if (isDoneOk) {
+			console.log('myThumbnail', myThumbnailImage)
+			// setselectedImages([...myThumbnailImage]);
+		}
+	}, [myThumbnailImage, isDoneOk])
 
 	const uploadProps = {
 		//  listType: 'picture',

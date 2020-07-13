@@ -41,18 +41,18 @@ const openSuccessNotification = (message?: any) => {
 
 interface myTableProps {
   data: any; 
-  setRegionList: any; 
+  setOrderList: any; 
 } 
 
 
-const MyTable = ({data,setRegionList}: myTableProps) => {
+const MyTable = ({data,setOrderList}: myTableProps) => {
     const [visible,setvisible] = useState(false);   
     const [activeCategoryForEdit,setactiveCategoryForEdit] = useState(false); 
-    const [deleteRegionState, handleDeleteRegioFetch] = useHandleFetch({}, 'deleteRegion');
+    const [deleteOrderState, handleDeleteOrderFetch] = useHandleFetch({}, 'deleteOrder');
 
 
       const handleDeleteRegion = async (id) => {
-        const deleteRegionRes = await handleDeleteRegioFetch({
+        const deleteOrderRes = await handleDeleteOrderFetch({
           urlOptions: {
             placeHolders: {
               id,
@@ -61,10 +61,10 @@ const MyTable = ({data,setRegionList}: myTableProps) => {
           });
 
             // @ts-ignore
-		  if(deleteRegionRes && deleteRegionRes.status === 'ok'){
-			  openSuccessNotification('Deleted Region'); 
-			  const newRegionList =  data.filter(item => item.id !== id);
-			  setRegionList(newRegionList); 
+		  if(deleteOrderRes && deleteOrderRes.status === 'ok'){
+			  openSuccessNotification('Deleted Order'); 
+			  const newOrderList =  data.filter(item => item.id !== id);
+			  setOrderList(newOrderList); 
 		  }
 
       }
@@ -213,8 +213,8 @@ const MyTable = ({data,setRegionList}: myTableProps) => {
     setvisible={setvisible}
     visible={visible}
     customer={activeCategoryForEdit}
-    regionList={data}
-    setRegionList={setRegionList}
+    orderList={data}
+    setOrderList={setOrderList}
 
     />
 
@@ -232,18 +232,18 @@ interface Props {
 
 const CustomerList = ({history}: Props) => {
 
-    const [regionList,setRegionList] = useState([]); 
+    const [orderList,setOrderList] = useState([]); 
 
-    const [regionState, handleRegionListFetch] = useHandleFetch({}, 'regionList');
+    const [orderState, handleRegionListFetch] = useHandleFetch({}, 'orderList');
   
   
     useEffect(()=>{
-     const setRegions = async () => {
+     const setOrders = async () => {
        const regions = await handleRegionListFetch({}); 
        // @ts-ignore
-       setRegionList(regions); 
+       setOrderList(regions); 
      }
-     setRegions(); 
+     setOrders(); 
     },[])
 
 
@@ -252,13 +252,13 @@ const CustomerList = ({history}: Props) => {
   
   const [addNewCategoryVisible,setAddNewCategoryVisible] = useState(false);   
 
-  console.log('regionState',regionState)
+  console.log('orderState',orderState)
 
 
   const handleSearch = (value) => {
-    if(regionState.data.length > 0 ){
-      const newTagList = regionState.data.filter(item => item.name.includes(value)); 
-      setRegionList(newTagList); 
+    if(orderState.data.length > 0 ){
+      const newOrderList = orderState.data.filter(item => item.name.includes(value)); 
+      setOrderList(newOrderList); 
     }
      
   }
@@ -315,12 +315,12 @@ const CustomerList = ({history}: Props) => {
      
 			
 			<div className='categoryListContainer__categoryList'>
-        {regionState.done && regionList.length > 0 && <MyTable 
-        setRegionList={setRegionList}
-        data={regionList} />}
-        {regionState.isLoading && <DataTableSkeleton />}
+        {orderState.done && orderList.length > 0 && <MyTable 
+        setOrderList={orderList}
+        data={orderList} />}
+        {orderState.isLoading && <DataTableSkeleton />}
 
-        {regionState.done && !(regionList.length > 0) && (
+        {orderState.done && !(orderList.length > 0) && (
         <Empty title='No Order found'  />
         )}
         
@@ -328,12 +328,12 @@ const CustomerList = ({history}: Props) => {
 		</div>
 
 
-{regionState.done && 
+{orderState.done && 
     <AddNewOrder 
           addNewCategoryVisible={addNewCategoryVisible} 
           setAddNewCategoryVisible={setAddNewCategoryVisible}
-          regionList={regionState.data}
-          setRegionList={setRegionList}
+          orderList={orderState.data}
+          setOrderList={setOrderList}
            />}
 
       
