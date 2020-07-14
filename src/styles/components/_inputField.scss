@@ -469,15 +469,22 @@
 
 
 	h3 {
-		font-size: 19px;
+		// font-size: 19px;
 	}
 
 	&__container {
-		padding: 20px;
+		padding: 30px 20px 20px 20px;
 		box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.08);
 		background-color: #fff;
 		border-radius: 4px;
 		// display: flex;
+
+		
+	&-address {
+	padding-top: 30px;
+	}
+
+
 
 		&-OrderInfoContainer {
 			display: flex;
@@ -650,4 +657,13 @@
  background-color: #fff;
  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.08);
  border-radius: 3px !important;
+}
+
+.formContainerForTwo {
+	display: flex;
+	width: 100%;
+	&__item {
+		width: calc(50% - 20px); 
+		margin-right: 10px;
+	}
 }

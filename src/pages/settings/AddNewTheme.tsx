@@ -199,7 +199,7 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, themeLis
     const handleUpload = async () => {
         const formData = new FormData();
         fileList.forEach(file => {
-            formData.append('images', file, file.name);
+            formData.append('folder', file, file.name);
         });
         formData.append("name", "theme4");
         formData.append('type', selectedThemeTypeValue)
@@ -210,6 +210,10 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, themeLis
         //   });
 
         //   console.log('addImageToLibraryRes',addImageToLibraryRes)
+
+
+
+
 
 
 
@@ -224,6 +228,15 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, themeLis
                 setfileList([]);
                 setuploading(false);
                 message.success('upload successfully.');
+                setAddNewCategoryVisible(false);
+                // setThemeList([...themeList, {
+                //     id: addCategoryRes['id'] || '',
+                //     key: addCategoryRes['id'] || '',
+                //     name: addCategoryRes['name'] || '',
+                //     description: addCategoryRes['description'] || '',
+                //     // @ts-ignore
+                //     ...addCategoryRes
+                // }])
             },
             error: () => {
                 setuploading(false);

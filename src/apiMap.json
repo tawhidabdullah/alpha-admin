@@ -182,7 +182,7 @@
 		},
 		"activeTheme": {
 			"url": "/admin/theme/update/activate/:id",
-			"method": "get"
+			"method": "post"
 		},
 		"themeDetail": {
 			"url": "/admin/theme/:id",

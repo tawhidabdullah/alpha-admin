@@ -1,7 +1,12 @@
 import React, {useState, useEffect} from 'react';
 import {withRouter} from 'react-router-dom';
-import { Button, Input,Tooltip, Modal, notification, Popconfirm } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined,EditFilled,CheckCircleOutlined } from '@ant-design/icons';
+import { Button, Input,Tooltip, Modal, notification, Popconfirm,Badge} from 'antd';
+import { 
+  PlusOutlined, EditOutlined, 
+  DeleteOutlined,EditFilled,
+  CheckOutlined,
+  CheckCircleOutlined,
+  CheckCircleTwoTone } from '@ant-design/icons';
 
 
 /// import hooks
@@ -45,8 +50,11 @@ const CustomerList = ({history}: Props) => {
     const [themeList,setThemeList] = useState([]); 
 
     const [themeState, handleThemeListFetch] = useHandleFetch({}, 'themeList');
+    const [activeThemeState, handleActiveThemeFetch] = useHandleFetch({}, 'activeTheme');
+    const [updateDeleteThemeState, handleDeleteThemeFetch] = useHandleFetch({}, 'deletetheme');
   
-  
+
+    
     useEffect(()=>{
      const setThemes = async () => {
        const themes = await handleThemeListFetch({}); 
@@ -75,6 +83,48 @@ const CustomerList = ({history}: Props) => {
 
 
 
+
+  const handleActiveTheme = async (id) => {
+    const activeThemeRes = await handleActiveThemeFetch({
+      urlOptions: {
+        placeHolders: {
+          id,
+        }
+        }
+      });
+
+        // @ts-ignore
+  if(activeThemeRes && activeThemeRes.status === 'ok'){
+    openSuccessNotification('Theme activated'); 
+   
+  }
+  else {
+    openErrorNotification("Couldn't activate the theme, Something went wrong")
+  }
+     
+     
+  }
+
+
+  const handleDeleteTheme = async (id) => {
+    const deleteThemeRes = await handleDeleteThemeFetch({
+      urlOptions: {
+        placeHolders: {
+          id,
+        }
+        }
+      });
+
+        // @ts-ignore
+  if(deleteThemeRes && deleteThemeRes.status === 'ok'){
+    openSuccessNotification('Theme Deleted'); 
+    const newThemeList =  themeList.filter(item => item.id !== id);
+    setThemeList(newThemeList); 
+  }
+  else {
+  openErrorNotification("Couldn't delete, Something went wrong")
+  }
+  }
 
 
 
@@ -122,7 +172,71 @@ const CustomerList = ({history}: Props) => {
 			
 			<div className='categoryListContainer__categoryList'>
         {themeState.done && themeList.length > 0 && (
-			<> </>
+   
+   <div className='categoryListContainer__bodyContainerList'>
+		
+          {themeState.data.map(theme => {
+            return (
+              <div className='categoryListContainer__bodyContainerList-item'>
+              <Badge count={<CheckCircleTwoTone style={{ color: '#3FA3FF' }} />}>
+                <div className='categoryListContainer__bodyContainerList-item-top'>
+                  <img
+                    alt='theme img'
+                    src='https://homebazarshibchar.com/images/homeBazar.zip-thumb-homebazarLogo.jpg'
+                  />
+                </div>
+                <div className='categoryListContainer__bodyContainerList-item-body'>
+                  <h3> {theme.name} </h3>
+     
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between'
+                    }}
+                  >
+                    <Tooltip placement='top' title='Active this theme'>
+                    <Button
+                   size='small'
+                   className='btnPrimaryClassNameoutline'
+                   icon={<CheckOutlined />}
+                   onClick={() => handleActiveTheme(theme.id)}
+                  >
+                  Set Active
+                 
+                 </Button>
+     
+     
+                      
+                    </Tooltip>
+     
+                    <Tooltip placement='top' title='Delete theme'>
+                    <Popconfirm 
+               
+               onConfirm={() => handleDeleteTheme(theme.id)}
+               title="Are you sure？" okText="Yes" cancelText="No">
+           
+           <Button
+                        size='small'
+                        type='link'
+                        danger={true}
+                        icon={<DeleteOutlined />}
+                      >
+                        
+                        </Button>
+           </Popconfirm>
+
+
+                     
+     
+                        
+                        </Tooltip>
+                      </div>
+                    </div>
+                  </Badge>
+                </div>
+            )
+          })}
+         </div>
 		)}
 
 
@@ -132,6 +246,7 @@ const CustomerList = ({history}: Props) => {
         <Empty title='No Theme found'  />
         )}
         
+
 			</div>
 		</div>
 

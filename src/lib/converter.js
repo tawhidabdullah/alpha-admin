@@ -490,6 +490,29 @@ class Converter {
 	}
 
 
+	/**
+* @public
+* @method themeList convert api data from API to general format based on config server
+* @param {Object} data response objectc from alpha
+* @returns {Object}  converted data
+*/
+	async themeList(resData) {
+		const data = resData || [];
+
+		const convertedData =
+			data.length > 0 &&
+			data.map((theme) => {
+				return {
+					id: theme._id || '',
+					key: theme._id || '',
+					name: theme.name || '',
+					added: theme.added || '',
+				};
+			});
+
+		return convertedData;
+	}
+
 
 	/**
    * @public
@@ -1014,6 +1037,26 @@ class Converter {
 		return convertedData;
 	}
 
+
+	/**
+* @public
+* @method addTheme convert api data from API to general format based on config server
+* @param {Object} data response objectc from wc
+* @returns {Object}  converted data
+*/
+	async addTheme(data) {
+		const convertedData = data;
+		if (data && data.inserted) {
+			return {
+				...data.inserted[0],
+				status: 'ok'
+			};
+		}
+
+		return convertedData;
+	}
+
+
 	/**
    * @public
    * @method addBrand convert api data from API to general format based on config server
@@ -1104,6 +1147,42 @@ class Converter {
 
 		return convertedData;
 	}
+
+
+	/**
+* @public
+* @method activeTheme convert api data from API to general format based on config server
+* @param {Object} data response objectc from wc
+* @returns {Object}  converted data
+*/
+	async activeTheme(data) {
+		const convertedData = data;
+		if (data && data.success) {
+			return {
+				status: 'ok'
+			};
+		}
+
+		return convertedData;
+	}
+
+	/**
+   * @public
+   * @method deletetheme convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+	async deletetheme(data) {
+		const convertedData = data;
+		if (data && data.success) {
+			return {
+				status: 'ok'
+			};
+		}
+
+		return convertedData;
+	}
+
 
 	/**
    * @public
