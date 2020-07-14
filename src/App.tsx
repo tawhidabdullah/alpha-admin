@@ -84,9 +84,9 @@ const App = () => {
 								<Route path='/order' exact>
 									<OrderList />
 								</Route>
-								{/* <Route path='/order/new' exact>
+								<Route path='/order/new' exact>
 									<AddNewOrder />
-								</Route> */}
+								</Route>
 								<Route path='/customer' exact>
 									<CustomerList />
 								</Route>

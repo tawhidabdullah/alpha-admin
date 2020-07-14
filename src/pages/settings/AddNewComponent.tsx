@@ -34,7 +34,7 @@ const validationSchema = Yup.object().shape({
 
 const openSuccessNotification = (message?: any) => {
     notification.success({
-        message: message || 'Brand Created',
+        message: message || 'Component Created',
         description: '',
         icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
     });
@@ -85,7 +85,6 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, componen
         // @ts-ignore
         if (addComponentRes && addComponentRes.status === 'ok') {
             openSuccessNotification();
-
             setComponentList([...componentList, {
                 id: addComponentRes['id'] || '',
                 key: addComponentRes['id'] || '',

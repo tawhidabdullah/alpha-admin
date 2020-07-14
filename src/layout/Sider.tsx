@@ -97,9 +97,9 @@ const SiderComponent = (props: any) => {
 					<Menu.Item key='11'>
 						<Link to='/order'>List Orders</Link>
 					</Menu.Item>
-					{/* <Menu.Item key='12'>
+					<Menu.Item key='12'>
 						<Link to='/order/new'>Add Order</Link>
-					</Menu.Item> */}
+					</Menu.Item>
 				</SubMenu>
 
 				<Menu.Item key='13' icon={<TeamOutlined />}>

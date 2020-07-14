@@ -100,6 +100,10 @@
 			"url": "/admin/customer",
 			"method": "get"
 		},
+		"productDetailById": {
+			"url": "/api/product/:id",
+			"method": "get"
+		},
 		"addCustomer": {
 			"url": "/admin/customer/add",
 			"method": "post"
@@ -145,7 +149,7 @@
 			"method": "post"
 		},
 		"deleteOrder": {
-			"url": "/admin/delivery/order/delete/:id",
+			"url": "/admin/order/update/delete/:id",
 			"method": "post"
 		},
 		"componentList": {
@@ -157,7 +161,7 @@
 			"method": "post"
 		},
 		"updateComponent": {
-			"url": "/admin/order/component/:id",
+			"url": "/admin/component/update/:id",
 			"method": "post"
 		},
 		"componentDetail": {
@@ -165,7 +169,7 @@
 			"method": "post"
 		},
 		"deleteComponent": {
-			"url": "/admin/delivery/component/delete/:id",
+			"url": "/admin/component/update/delete/:id",
 			"method": "post"
 		},
 		"themeList": {

@@ -296,7 +296,7 @@ const CustomerList = ({history}: Props) => {
           // type="primary"
           className='btnPrimaryClassNameoutline'
           icon={<PlusOutlined />}
-          onClick={() => setAddNewCategoryVisible(true)}
+          onClick={() => history.push('/order/new')}
         >
         Add New
             
@@ -328,13 +328,13 @@ const CustomerList = ({history}: Props) => {
 		</div>
 
 
-{orderState.done && 
+{/* {orderState.done && 
     <AddNewOrder 
           addNewCategoryVisible={addNewCategoryVisible} 
           setAddNewCategoryVisible={setAddNewCategoryVisible}
           orderList={orderState.data}
           setOrderList={setOrderList}
-           />}
+           />} */}
 
       
 

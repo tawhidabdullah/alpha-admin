@@ -489,6 +489,39 @@ class Converter {
 		return convertedData;
 	}
 
+
+
+	/**
+   * @public
+   * @method componentList convert api data from API to general format based on config server
+   * @param {Object} data response objectc from alpha
+   * @returns {Object}  converted data
+   */
+	async componentList(resData) {
+		const components = resData.components || {};
+
+		if (components && components.length > 0) {
+			const convertedData =
+				components.length > 0 &&
+				components.map((component) => {
+					return {
+						id: component._id || '',
+						key: component._id || '',
+						name: component.name || '',
+						items: component.items || []
+					};
+				});
+
+			return convertedData;
+		}
+
+		return [];
+	}
+
+
+
+
+
 	/**
    * @public
    * @method regionList convert api data from API to general format based on config server
@@ -695,7 +728,7 @@ class Converter {
 				regularPrice: data.price && data.price['regular'],
 				offerPrice: data.price && data.price['offer'],
 				url: data.url,
-				cover: `${config['baseURL']}${data.cover.medium}`,
+				cover: `${config['baseURL']}${data.cover.thumbnail && data.cover.thumbnail}`,
 				unit: data.unit,
 				category:
 					(data.category &&

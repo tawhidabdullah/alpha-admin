@@ -5,7 +5,7 @@ import * as Yup from 'yup';
 
 import { useHandleFetch } from '../../hooks';
 // import third party ui lib
-import { Upload, message, Switch, Select, Button, notification, Modal, Empty } from 'antd';
+import { Upload, message, Switch, Select, Button, notification, Modal, Empty, Steps } from 'antd';
 
 import {
 	FileOutlined,
@@ -17,7 +17,7 @@ import {
 	DeleteOutlined,
 	FileAddOutlined,
 	PlusOutlined,
-	CheckCircleOutlined
+	CheckCircleOutlined,
 } from '@ant-design/icons';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -25,10 +25,13 @@ import 'react-quill/dist/quill.snow.css';
 // import components
 import Input from '../../components/Field/Input';
 import TextArea from '../../components/Field/TextArea';
+import AddNewOrderSummary from './AddNewOrderSummary';
+import CustomersId from './CustomersId';
+import AddProducts from './AddProducts';
 
 
 const { Option } = Select;
-
+const { Step } = Steps;
 
 const openSuccessNotification = (message?: any) => {
 	notification.success({
@@ -78,20 +81,45 @@ const initialValues = {
 };
 
 
+const steps = [
+	{
+		title: 'Order Information',
+		content: '',
+		description: 'Add Customer & Products'
+	},
+	{
+		title: 'Billing Address',
+
+	},
+	{
+		title: 'Shipping Address',
+		content: '',
+	},
+	{
+		title: 'Payment Details',
+		content: '',
+	},
+	{
+		title: 'Review your Order',
+		content: '',
+	},
+];
+
+
 
 
 interface Props {
-	addNewCategoryVisible: any;
-	setAddNewCategoryVisible: any;
-	orderList?: any;
-	setOrderList?: any;
+
 }
 
-const AddNewOrder = ({ addNewCategoryVisible, setAddNewCategoryVisible, orderList, setOrderList }: Props) => {
+const AddNewOrder = ({ }: Props) => {
 
 	const [addOrderState, handleOrderFetch] = useHandleFetch({}, 'addOrder');
 	const [selectedCountryValue, setselectedCountryValue] = useState('');
 	const [selectedCityValue, setselectedCityValue] = useState('');
+	const [productIds, setProductIds] = useState([]);
+	const [productList, setProductList] = useState([]);
+	const [customerId, setCustomerId] = useState([]);
 
 	const [countryOptions, setcountryOptions] = useState([]);
 	const [cityOptions, setcityOptions] = useState([]);
@@ -105,8 +133,19 @@ const AddNewOrder = ({ addNewCategoryVisible, setAddNewCategoryVisible, orderLis
 
 	const [countryList, setCountryList] = useState([]);
 	const [cityList, setCityList] = useState([]);
+	const [current, setCurrent] = useState(0);
 
 
+	const next = () => {
+		const newCurrent = current + 1;
+		setCurrent(newCurrent);
+	}
+
+
+	const prev = () => {
+		const newCurrent = current - 1;
+		setCurrent(newCurrent);
+	}
 
 
 	const handleSubmit = async (values: any, actions: any) => {
@@ -129,14 +168,7 @@ const AddNewOrder = ({ addNewCategoryVisible, setAddNewCategoryVisible, orderLis
 		if (addRegionRes && addRegionRes.status === 'ok') {
 			openSuccessNotification();
 
-			setOrderList([...orderList, {
-				id: addRegionRes['id'] || '',
-				key: addRegionRes['id'] || '',
-				name: addRegionRes['name'] || '',
-				// @ts-ignore
-				...addRegionRes
-			}])
-			setAddNewCategoryVisible(false)
+
 			actions.resetForm();
 		}
 		else {
@@ -207,10 +239,6 @@ const AddNewOrder = ({ addNewCategoryVisible, setAddNewCategoryVisible, orderLis
 
 
 
-	const handleCancel = (e: any) => {
-		setAddNewCategoryVisible(false);
-	};
-
 
 	const getisSubmitButtonDisabled = (values, isValid) => {
 		if (!isValid ||
@@ -229,6 +257,30 @@ const AddNewOrder = ({ addNewCategoryVisible, setAddNewCategoryVisible, orderLis
 
 	};
 
+
+
+	useEffect(() => {
+
+		if (productIds.length > 0) {
+
+			// const isExistsInProductList =
+			const productsOfids = productIds.map(item => {
+				return {
+					_id: item,
+					variation: '5f0a8f0e10cf2f1dc280d915',
+					quantity: 1
+				}
+			});
+
+			setProductList([...productsOfids]);
+		}
+		else {
+			setProductList([]);
+		}
+		console.log('productIds', productIds)
+
+
+	}, [productIds])
 
 
 
@@ -255,162 +307,50 @@ const AddNewOrder = ({ addNewCategoryVisible, setAddNewCategoryVisible, orderLis
 				handleReset,
 			}) => (
 					<>
-						<Modal
-							style={{
-								top: '40px'
-							}}
+						<div className='addOrderContainer'>
+							<h3>
+								Add New Order
+							</h3>
+							<div className='addOrderContainer__container'>
+								<Steps current={current}>
+									{steps.map(item => (
+										<Step
+											key={item.title}
+											title={item.title} description={item.description} />
+									))}
+								</Steps>
 
-							bodyStyle={{
-								margin: '0',
-								padding: '10px'
-							}}
-							title="Add New Order"
-							visible={addNewCategoryVisible}
-							onOk={(e: any) => handleSubmit(e)}
-							onCancel={handleCancel}
-							okText='Create'
-							okButtonProps={{
-								loading: isSubmitting,
-								htmlType: "submit",
-								disabled: getisSubmitButtonDisabled(values, isValid)
-							}}
-						>
-
-
-							<div className='dubbleRowInputs'>
-								<div className='dubbleRowInputs__item'>
-									<Input
-										label='Name'
-										value={values.name}
-										name='name'
-										isError={(touched.name && errors.name) ||
-											(!isSubmitting && addOrderState.error['error']['name'])}
-
-										errorString={(touched.name && errors.name) ||
-											(!isSubmitting && addOrderState.error['error']['name'])}
-										onChange={(e: any) => {
-											handleChange(e);
-											setFieldTouched('name');
-										}}
-									/>
+								{current === 0 && (
+									<div className='addOrderContainer__container-OrderInfoContainer'>
+										<div className='addOrderContainer__container-OrderInfoContainer-left'>
+											<h4 className='inputFieldLabel'>
+												Customer
+											</h4>
+											<CustomersId setCustomerId={setCustomerId} />
+											<div style={{
+												marginTop: '15px'
+											}}></div>
+											<h4 className='inputFieldLabel'>
+												Products
+											</h4>
+											<AddProducts setProductIds={setProductIds} />
+										</div>
+										<div className='addOrderContainer__container-OrderInfoContainer-right'>
+											<AddNewOrderSummary
+												setProductList={setProductList}
+												productList={productList} />
+										</div>
+									</div>
+								)}
+								{/* <div className='addOrderContainer__container-left'>
+								
 								</div>
-								<div className='dubbleRowInputs__item'>
-									<Input
-										label='Pick up Location'
-										value={values.pickUpLocation}
-										name='pickUpLocation'
-										isError={(touched.pickUpLocation && errors.pickUpLocation) ||
-											(!isSubmitting && addOrderState.error['error']['pickUpLocation'])}
-
-										errorString={(touched.pickUpLocation && errors.pickUpLocation) ||
-											(!isSubmitting && addOrderState.error['error']['pickUpLocation'])}
-										onChange={(e: any) => {
-											handleChange(e);
-											setFieldTouched('pickUpLocation');
-										}}
-									/>
-								</div>
-
-
-
+								<div className='addOrderContainer__container-right'>
+									<AddNewOrderSummary />
+								</div> */}
 
 							</div>
-
-
-
-
-
-
-
-
-							<div style={{
-								marginRight: '10px'
-							}}>
-								<Input
-									label='Time'
-									value={values.time}
-									name='time'
-									isError={(touched.time && errors.time) ||
-										(!isSubmitting && addOrderState.error['error']['time'])}
-
-									errorString={(touched.time && errors.time) ||
-										(!isSubmitting && addOrderState.error['error']['time'])}
-									onChange={(e: any) => {
-										handleChange(e);
-										setFieldTouched('time');
-									}}
-								/>
-							</div>
-
-
-
-							<div className='dubbleRowInputs'>
-								<div className='dubbleRowInputs__item'>
-									<h3 className='inputFieldLabel'>
-										Country
-            </h3>
-									<Select
-										notFoundContent={<Empty description='No Country Found' image={Empty.PRESENTED_IMAGE_SIMPLE} />}
-										showSearch
-										style={{ width: '100%' }}
-										placeholder='Select a Country'
-										optionFilterProp='children'
-										onChange={onChangeCountry}
-										filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-									>
-										{countryListState.done &&
-											countryListState.data.length > 0 &&
-											countryOptions.map((option) => {
-												return <Option value={option.value}>{option.name}</Option>;
-											})}
-									</Select>
-								</div>
-								<div className='dubbleRowInputs__item'>
-									<h3 className='inputFieldLabel'>
-										City
-            </h3>
-									<Select
-										notFoundContent={<Empty description='First Select a Country' image={Empty.PRESENTED_IMAGE_SIMPLE} />}
-										mode="multiple"
-										showSearch
-										style={{ width: '100%' }}
-										placeholder='Select a city'
-										optionFilterProp='children'
-										onChange={onChangeCity}
-										filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-									>
-										{cityListState.done &&
-											cityListState.data.length > 0 &&
-											cityOptions.map((option) => {
-												return <Option value={option.value}>{option.name}</Option>;
-											})}
-									</Select>
-								</div>
-
-							</div>
-
-
-							<div style={{
-								marginTop: '12px'
-							}}></div>
-							<h3 className='inputFieldLabel'>
-								Delivery Charges
-            </h3>
-
-
-
-
-							<div style={{
-								marginTop: '5px',
-							}}></div>
-							<Button size='middle'
-								onClick={handleAddDeliveryCharge}
-								type="dashed" icon={<PlusOutlined />}>Add Charge</Button>
-
-						</Modal>
-
-
-
+						</div>
 
 					</>
 				)}
