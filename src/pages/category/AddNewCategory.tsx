@@ -5,7 +5,7 @@ import * as Yup from 'yup';
 
 import { useHandleFetch } from '../../hooks';
 // import third party ui lib
-import { Upload, message, Switch, Select, Button, notification, Modal } from 'antd';
+import { Upload, message, Switch, Select, notification, Modal } from 'antd';
 
 import {
 	FileOutlined,

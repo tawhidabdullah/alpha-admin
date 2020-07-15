@@ -184,7 +184,7 @@ const CustomerList = ({history}: Props) => {
                   <div className='categoryListContainer__bodyContainerList-item-top'>
                   <img
                     alt='theme img'
-                    src='https://homebazarshibchar.com/images/homeBazar.zip-thumb-homebazarLogo.jpg'
+                    src={theme.thumbnail}
                   />
                 </div>
                 <div className='categoryListContainer__bodyContainerList-item-body'>
