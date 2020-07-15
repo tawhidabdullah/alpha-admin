@@ -13,7 +13,9 @@ import {
     FileAddOutlined,
     DeleteOutlined,
     CheckCircleOutlined,
-    ArrowUpOutlined
+    ArrowUpOutlined,
+    LoadingOutlined,
+    PlusOutlined
 } from '@ant-design/icons';
 
 
@@ -83,6 +85,9 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, themeLis
     const [selectedThemeTypeValue, setselectedThemeTypeValue] = useState('');
     const [fileList, setfileList] = useState([]);
     const [uploading, setuploading] = useState(false);
+    const [loadingThumnail, setLoadingThumbnail] = useState(false);
+    const [imageUrl, setImageUrl] = useState('');
+    const [name, setname] = useState('')
 
 
 
@@ -90,34 +95,49 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, themeLis
 
     const handleSubmit = async () => {
 
+        const formData = new FormData();
+        fileList.forEach(file => {
+            formData.append('folder', file, file.name);
+        });
+        formData.append("name", name);
+        formData.append('type', selectedThemeTypeValue)
+        formData.append('thumbnail', imageUrl)
+
+
 
         const addThemeRes = await handleAddthemeFetch({
 
-            body: {
-
-
-            },
+            body: formData,
         });
 
         // @ts-ignore
         if (addThemeRes && addThemeRes.status === 'ok') {
-            openSuccessNotification();
 
             setThemeList([...themeList, {
                 id: addThemeRes['id'] || '',
                 key: addThemeRes['id'] || '',
                 name: addThemeRes['name'] || '',
-                description: addThemeRes['description'] || '',
+                thumbnail: addThemeRes['thumbnail'] || '',
+                path: addThemeRes['path'] || '',
+                added: addThemeRes['added'] || '',
                 // @ts-ignore
                 ...addThemeRes
             }]);
+
+            setfileList([]);
+            setuploading(false);
+            openSuccessNotification('Theme Uploaded!')
+            setAddNewCategoryVisible(false);
+            setname('');
+            setselectedThemeTypeValue('');
+
 
 
 
             setAddNewCategoryVisible(false);
         }
         else {
-            openErrorNotification();
+            openErrorNotification('Theme upload failed, Something went wrong');
         }
 
     };
@@ -188,6 +208,7 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, themeLis
 
         },
         beforeUpload: file => {
+            console.log('file', file)
             setfileList(filelist => {
                 return [...fileList, file]
             })
@@ -201,8 +222,10 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, themeLis
         fileList.forEach(file => {
             formData.append('folder', file, file.name);
         });
-        formData.append("name", "theme4");
+        formData.append("name", name);
         formData.append('type', selectedThemeTypeValue)
+        formData.append('thumbnail', imageUrl)
+
         setuploading(true);
 
         //  const addImageToLibraryRes = awAddait handleMediaLibraryFetch({
@@ -227,8 +250,13 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, themeLis
             success: () => {
                 setfileList([]);
                 setuploading(false);
-                message.success('upload successfully.');
+                openSuccessNotification('Theme Uploaded!')
                 setAddNewCategoryVisible(false);
+                setname('');
+                setselectedThemeTypeValue('');
+                setThemeList([...themeList, {
+
+                }])
                 // setThemeList([...themeList, {
                 //     id: addCategoryRes['id'] || '',
                 //     key: addCategoryRes['id'] || '',
@@ -240,13 +268,60 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, themeLis
             },
             error: () => {
                 setuploading(false);
+                openErrorNotification('Theme Upload failed!')
                 message.error('upload failed.');
             },
         });
     };
 
 
+    function getBase64(img, callback) {
+        const reader = new FileReader();
+        reader.addEventListener('load', () => callback(reader.result));
+        reader.readAsDataURL(img);
+    }
 
+    function beforeUpload(file) {
+        console.log('beforeUpload', file)
+        const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+        if (!isJpgOrPng) {
+            message.error('You can only upload JPG/PNG file!');
+        }
+        const isLt2M = file.size / 1024 / 1024 < 2;
+        if (!isLt2M) {
+            message.error('Image must smaller than 2MB!');
+        }
+
+
+        getBase64(file, imageUrl => {
+            setImageUrl(imageUrl)
+            setLoadingThumbnail(false)
+        })
+
+        return false;
+    }
+
+
+
+
+
+
+
+
+
+    console.log('imageUrl', imageUrl)
+
+
+
+    const uploadButton = (
+        <div>
+            {loadingThumnail ? <LoadingOutlined /> : <PlusOutlined />}
+            <div className="ant-upload-text">Upload</div>
+        </div>
+    );
+
+
+    console.log('addThemeState', addThemeState)
 
     return (
         <>
@@ -256,7 +331,7 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, themeLis
                 }}
                 title="Add New Theme"
                 visible={addNewCategoryVisible}
-                onOk={handleUpload}
+                onOk={handleSubmit}
                 onCancel={handleCancel}
                 okText='Upload Theme'
                 okButtonProps={{
@@ -271,45 +346,27 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, themeLis
                 }}
             >
 
-                <div className='addproductSection-left-header'>
-                    <h3 className='inputFieldLabel'>Thumbnail Image</h3>
-                    {/* <div  >
-					<FileOutlined />
-					<span>Media Center</span>
-				</div> */}
-                </div>
-                <div className='aboutToUploadImagesContainer'>
-                    {myThumbnailImage &&
-                        // @ts-ignore
-                        myThumbnailImage.length > 0 && myThumbnailImage.slice(0, 1).map(image => {
-                            return (
-                                <div className='aboutToUploadImagesContainer__item aboutToUploadImagesContainer__item-thumbnail'>
-                                    <div
-                                        onClick={() => handleThumbnailImageDelete(image.id)}
-                                        className='aboutToUploadImagesContainer__item-overlay'>
-                                        <DeleteOutlined />
-                                    </div>
-                                    <img src={image.cover} alt={image.alt} />
-                                </div>
-                            )
-                        })}
+                <Input
+                    label='Name'
+                    value={name}
+                    name='name'
+                    onChange={(e: any) => setname(e.target.value)}
+                />
 
 
-                    <div
-                        onClick={() => {
-                            setvisibleMedia(true);
-                            setisModalOpenForThumbnail(true);
-                        }}
-                        className='aboutToUploadImagesContainer__uploadItem aboutToUploadImagesContainer__uploadItem-thumbnail'>
-                        <FileAddOutlined />
-                        <h5>
-                            {/* Select From Library */}
-                        </h5>
-                    </div>
+                <h3 className='inputFieldLabel'>Thumbnail Image</h3>
+                <Upload
+                    name="avatar"
+                    listType="picture-card"
+                    className="avatar-uploader"
+                    showUploadList={false}
+                    beforeUpload={beforeUpload}
+                    multiple={false}
+                >
+                    {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
+                </Upload>
 
-                </div>
-
-                <div style={{ marginTop: '15px' }}></div>
+                {/* <div style={{ marginTop: '15px' }}></div> */}
 
                 <h3 className='inputFieldLabel'>
                     Theme Type
@@ -339,8 +396,13 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, themeLis
                 <div style={{
                     marginTop: '20px'
                 }}></div>
+                <h3 className='inputFieldLabel'>
+                    Theme Folder (.zip)
+									</h3>
+
 
                 <Dragger
+                    multiple={false}
                     className='upload-list-inline'
                     listType='picture'
                     style={{
@@ -357,6 +419,13 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, themeLis
                         other band files
 							</p>
                 </Dragger>
+
+                {addThemeState.error['error']['folder'] && (
+                    <p style={{
+                        color: 'rgba(255, 0, 0, 0.507)'
+                    }}>{addThemeState.error['error']['folder']}</p>
+                )}
+
 
 
 
@@ -377,3 +446,9 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, themeLis
 };
 
 export default AddNewBrand;
+
+
+
+
+
+

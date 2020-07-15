@@ -132,7 +132,7 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, categ
 				...addCategoryRes
 			}])
 			actions.resetForm();
-			setvisible(false)
+			setAddNewCategoryVisible(false)
 		}
 		else {
 			openErrorNotification();
@@ -349,6 +349,7 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, categ
 							setvisible={setvisible}
 							visible={visible}
 							setmyImages={setmyImages}
+							myImages={myImages}
 							setmyThumbnailImage={setmyThumbnailImage}
 							isModalOpenForThumbnail={isModalOpenForThumbnail}
 							isModalOpenForImages={isModalOpenForImages}

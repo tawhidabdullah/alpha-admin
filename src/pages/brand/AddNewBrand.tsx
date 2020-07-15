@@ -272,6 +272,7 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, brandLis
 							setvisible={setvisibleMedia}
 							visible={visibleMedia}
 							setmyImages={setmyImages}
+							myImages={myImages}
 							isModalOpenForImages={true}
 
 						/>

@@ -178,8 +178,10 @@ const CustomerList = ({history}: Props) => {
           {themeState.data.map(theme => {
             return (
               <div className='categoryListContainer__bodyContainerList-item'>
-              <Badge count={<CheckCircleTwoTone style={{ color: '#3FA3FF' }} />}>
-                <div className='categoryListContainer__bodyContainerList-item-top'>
+              {/* <Badge count={<CheckCircleTwoTone style={{ color: '#3FA3FF' }} />}>
+               
+                  </Badge> */}
+                  <div className='categoryListContainer__bodyContainerList-item-top'>
                   <img
                     alt='theme img'
                     src='https://homebazarshibchar.com/images/homeBazar.zip-thumb-homebazarLogo.jpg'
@@ -232,7 +234,6 @@ const CustomerList = ({history}: Props) => {
                         </Tooltip>
                       </div>
                     </div>
-                  </Badge>
                 </div>
             )
           })}

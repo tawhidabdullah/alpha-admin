@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {withRouter} from 'react-router-dom';
-import { Table, Empty, notification,  Space, Tag,Button, Input,Tooltip, Popconfirm  } from 'antd';
+import { Table, notification,  Space, Tag,Button, Input,Tooltip, Popconfirm  } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined,CheckCircleOutlined } from '@ant-design/icons';
 
 import {AddNewCategory,QuickEdit} from "../category"
@@ -10,6 +10,7 @@ import { useFetch, useHandleFetch } from "../../hooks";
 
 // import components
 import { DataTableSkeleton } from "../../components/Placeholders";
+import Empty from "../../components/Empty";
 
 const { Column, ColumnGroup } = Table;
 const { Search } = Input;
@@ -92,7 +93,7 @@ const MyTable = ({data, setcategoryList, history}: myTableProps) => {
             render={(cover,record: any) => (
                 <>
                 <img src={cover} 
-                onClick={() => history.push(`/category/${record.name}`)}
+                // onClick={() => history.push(`/category/${record.name}`)}
                 alt='cover img' 
                 style={{
                     height: '40px',
@@ -321,7 +322,7 @@ const CategoryList = ({history}: Props) => {
 			<div style={{
 				marginTop: '50px'
 			}}>
-				<Empty description='No Category found'  image={Empty.PRESENTED_IMAGE_SIMPLE} />
+				<Empty title='No Category found'   />
 			</div>
 		)}
 			</div>
