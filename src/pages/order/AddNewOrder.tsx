@@ -65,7 +65,7 @@ const validationSchema = Yup.object().shape({
 		.required()
 		.min(2, 'First name must have at least 2 characters '),
 	lastName: Yup.string()
-		.label('Lastname')
+		.label('Last name')
 		.required()
 		.min(2, 'Last name must have at least 2 characters '),
 	phone: Yup.string()
@@ -455,17 +455,7 @@ const AddNewOrder = ({ }: Props) => {
 													}}
 												/>
 											</div>
-
-
-
-
 										</div>
-
-
-
-
-
-
 
 
 										<div className='dubbleRowInputs'>
@@ -801,7 +791,7 @@ const AddNewOrder = ({ }: Props) => {
 										className='btnPrimaryClassNameoutline'
 										type="primary" onClick={() => prev()}
 									>
-										Previous  <CaretLeftOutlined />
+										<CaretLeftOutlined />	Previous
 
 									</Button>
 
@@ -812,7 +802,7 @@ const AddNewOrder = ({ }: Props) => {
 										style={{
 											marginTop: '10px'
 										}}
-										// type="primary"
+
 										className='btnPrimaryClassNameoutline'
 										type="primary" onClick={() => next()}
 									>

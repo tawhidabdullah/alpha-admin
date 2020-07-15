@@ -1149,6 +1149,25 @@ class Converter {
 	}
 
 
+
+	/**
+   * @public
+   * @method logout convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+	async logout(data) {
+		const convertedData = data;
+		if (data && data.success) {
+			return {
+				status: 'ok'
+			};
+		}
+
+		return convertedData;
+	}
+
+
 	/**
 * @public
 * @method activeTheme convert api data from API to general format based on config server

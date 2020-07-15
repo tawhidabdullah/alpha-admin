@@ -516,16 +516,21 @@
 			align-items: center;
 
 			h3 {
-				color: #222;
-				font-size: 16px;
+				color: #1890ff;
+				font-size: 14px;
 				margin-bottom: 15px;
 				margin-left: 17px;
 				text-align: left;
+				font-weight: 400;
+				background-color: rgba(28, 39, 192, 0.11) !important;
+				padding: 2px 20px 2px 20px;
+				border-radius: 25px;
+				
 
 				span {
 					margin-right: 10px;
-					font-size: 16px;
-					color: #555;
+					font-size: 14px;
+					color: #1890ff;
 				}
 			}
 		} 
@@ -618,12 +623,12 @@
 	border-radius: 35px;
 }
 .cart-item-quantityCounter .fa-chevron-up {
-	margin-bottom: 10px;
+	margin-bottom: 17px;
 	color: #aaa;
 	font-size: 14px;
 }
 .cart-item-quantityCounter .fa-chevron-down {
-	margin-top: 10px;
+	margin-top: 5px;
 	color: #aaa;
 	font-size: 14px;
 }

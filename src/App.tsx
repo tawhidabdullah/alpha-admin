@@ -17,19 +17,72 @@ import Login from './pages/auth/login';
 import Sider from './layout/Sider';
 
 // import third party ui libraries
-import { Layout } from 'antd';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { Layout, notification } from 'antd';
+import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
+import Title from 'antd/lib/typography/Title';
 
+import { useHandleFetch } from "./hooks";
+import {
+	FileOutlined,
+	InboxOutlined,
+	RadiusUpleftOutlined,
+	RadiusUprightOutlined,
+	RadiusBottomleftOutlined,
+	RadiusBottomrightOutlined,
+	DeleteOutlined,
+	FileAddOutlined,
+	CheckCircleOutlined,
+	LogoutOutlined
+} from '@ant-design/icons';
+import { cursorTo } from 'readline';
 const { Header, Content, Footer } = Layout;
 
+
+const openSuccessNotification = (message?: any) => {
+	notification.success({
+		message: message || 'Category Updated',
+		description: '',
+		icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
+	});
+};
+
+
+const openErrorNotification = (message?: any) => {
+	notification.success({
+		message: message || 'Something Went Wrong',
+		description: '',
+		icon: <CheckCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
+	});
+};
+
+
+
+
+
 const App = () => {
+
+
+	const [logoutState, handleLogoutFetch] = useHandleFetch({}, 'logout');
+
+
+	const handleLogout = async () => {
+		const logoutRes = await handleLogoutFetch({});
+
+		//@ts-ignore
+		if (logoutRes && logoutRes.status === 'ok') {
+			openSuccessNotification('Loged out successfully');
+
+		}
+
+	};
+
 	return (
 		<Router>
-			<Switch>
+			{/* <Switch>
 				<Route path='/login' exact>
 					<Login />
 				</Route>
-			</Switch>
+			</Switch> */}
 			<Switch>
 				<Layout style={{ minHeight: '100vh' }}>
 					<Sider />
@@ -40,9 +93,49 @@ const App = () => {
 								background: '#fff',
 								borderBottom: '1px solid #fafafa',
 								borderLeft: '1px solid #fafafa',
-								height: '50px'
+								height: '50px',
+								display: 'flex',
+								justifyContent: 'space-between'
 							}}
-						/>
+						>
+							<Title
+								style={{ color: '#0072EA', marginTop: '10px', marginLeft: '-20px' }}
+								level={4}>
+								Express Ticket
+				          </Title>
+
+
+							<div
+								onClick={() => handleLogout()}
+								style={{
+									marginTop: '-8px',
+									marginRight: '-28px'
+								}}>
+
+								<span style={{
+									marginLeft: '10px',
+									fontWeight: 500,
+									backgroundColor: 'rgba(28, 39, 192, 0.11)',
+									borderRadius: '25px',
+									color: '#1890ff',
+									padding: '2px 20px',
+									cursor: 'pointer'
+
+
+								}}>
+									<LogoutOutlined />
+									<span style={{
+										marginLeft: '10px',
+
+									}}>
+										logout
+									</span>
+
+								</span>
+
+
+							</div>
+						</Header>
 						<Content
 							hasSider={true}
 							style={{
@@ -50,6 +143,13 @@ const App = () => {
 							}}
 						>
 							<Switch>
+								<Route
+									exact
+									path='/'
+									render={() => <Redirect to='/product' />}
+								/>
+
+
 								<Route path='/' exact>
 									<Overview />
 								</Route>
@@ -116,7 +216,7 @@ const App = () => {
 								</Route>
 							</Switch>
 						</Content>
-						<Footer style={{ textAlign: 'center' }}>
+						<Footer style={{ textAlign: 'center', background: '#fafafa', color: '#1890ff' }}>
 							© 2020 The Alpha E-commerce Engine - Developed By Lotus Technology Development.
 						</Footer>
 					</Layout>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Link, Switch, withRouter } from 'react-router-dom';
 import { Layout, Menu, Upload, message } from 'antd';
-import Title from 'antd/lib/typography/Title';
+
 
 import {
 	PieChartOutlined,
@@ -29,6 +29,8 @@ const SiderComponent = (props: any) => {
 		setcollapsed(collapsed);
 	};
 
+
+
 	return (
 		<Sider collapsible collapsed={collapsed} onCollapse={onCollapse} theme='light'>
 			<div
@@ -39,11 +41,9 @@ const SiderComponent = (props: any) => {
 					width: '100%'
 				}}
 			>
-				<Title style={{ color: '#0072EA' }} level={4}>
-					ALPHA
-				</Title>
+
 			</div>
-			<Menu selectable={true} defaultSelectedKeys={['1']} mode='inline'>
+			<Menu selectable={true} defaultSelectedKeys={['2']} mode='inline'>
 				<Menu.Item key='1' icon={<PieChartOutlined />}>
 					<Link to='/'>Dashboard</Link>
 				</Menu.Item>
@@ -72,9 +72,9 @@ const SiderComponent = (props: any) => {
 					title='Product'
 					onTitleClick={() => props.history.push('/product')}
 				>
-					<Menu.Item key='6'>
+					{/* <Menu.Item key='6'>
 						<Link to='/product/new'>Add Product</Link>
-					</Menu.Item>
+					</Menu.Item> */}
 
 					<Menu.Item key='2'>
 						<Link to='/category'>List Categories</Link>
@@ -123,15 +123,15 @@ const SiderComponent = (props: any) => {
 				</SubMenu>
 
 				<SubMenu key='sub7' icon={<SettingOutlined />} title='Settings'>
-					<Menu.Item key='19'>
+					{/* <Menu.Item key='19'>
 						<Link to='/settings/siteInfo'>Site information</Link>
-					</Menu.Item>
+					</Menu.Item> */}
 					<Menu.Item key='20'>
 						<Link to='/settings/themes'>Manage themes</Link>
 					</Menu.Item>
-					<Menu.Item key='21'>
+					{/* <Menu.Item key='21'>
 						<Link to='/settings/image'>Image</Link>
-					</Menu.Item>
+					</Menu.Item> */}
 					<Menu.Item key='22'>
 						<Link to='/settings/invoice'>Invoice</Link>
 					</Menu.Item>
