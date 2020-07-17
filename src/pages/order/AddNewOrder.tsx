@@ -20,7 +20,8 @@ import {
 	CheckCircleOutlined,
 	CaretRightOutlined,
 	CaretLeftOutlined,
-	CaretRightFilled
+	CaretRightFilled,
+	UserOutlined
 } from '@ant-design/icons';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -356,6 +357,14 @@ const AddNewOrder = ({ }: Props) => {
 								{current === 0 && (
 									<div className='addOrderContainer__container-OrderInfoContainer'>
 										<div className='addOrderContainer__container-OrderInfoContainer-left'>
+											<h3 className='addOrderContainer-sectionTitle'>
+
+												<span>
+													<UserOutlined />
+												</span>
+                                            Customers And products
+                                           </h3>
+
 											<h4 className='inputFieldLabel'>
 												Customer
 											</h4>

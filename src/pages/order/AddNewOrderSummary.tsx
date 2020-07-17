@@ -40,7 +40,11 @@ const AddNewOrderSummary = ({
                 })}
 
                 {!(productList.length > 0) && (
-                    <Empty title='No Product Added' height={150} />
+                    <div style={{
+                        marginLeft: '32px'
+                    }}>
+                        <Empty title='No Product Added' height={150} />
+                    </div>
                 )}
 
             </div>

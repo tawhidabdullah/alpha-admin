@@ -535,6 +535,8 @@
 			}
 		} 
 
+
+
 		// &-left {
 		// 	width: 70%;
 		// }
@@ -677,4 +679,26 @@
 // input feild
 .ant-upload.ant-upload-select-picture-card {
 	background-color: #fff !important;
+}
+
+
+.addOrderContainer-sectionTitle {
+	color: #1890ff;
+	font-size: 14px;
+	margin-bottom: 15px;
+	text-align: left;
+	font-weight: 400;
+	background-color: rgba(82, 92, 236, 0.068) !important;
+	padding: 2px 20px 2px 20px;
+	border-radius: 25px;
+	display: inline-block;
+
+
+	span {
+		margin-right: 5px;
+		font-size: 14px;
+		color: #1890ff;
+	}
+
+	
 }

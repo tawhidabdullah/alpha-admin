@@ -9,12 +9,38 @@ import { store } from './state/store';
 // import the main files of styles
 import './styles/_main.scss';
 
-ReactDOM.render(
-	<ReduxProvider store={store}>
-		<App />
-	</ReduxProvider>,
-	document.getElementById('root')
-);
+
+// importing react hot loader for hot loading
+import { AppContainer } from 'react-hot-loader';
+
+
+
+
+// Wrap the rendering in a function:
+const render = () => {
+	ReactDOM.render(
+		<ReduxProvider store={store}>
+			<AppContainer>
+				<App />
+			</AppContainer>
+		</ReduxProvider>,
+		document.getElementById('root')
+	);
+};
+
+
+// Render once
+render();
+
+
+
+// Webpack Hot Module Replacement API
+if (module['hot']) {
+	module['hot'].accept('./App', () => {
+		render();
+	});
+}
+
 
 /*
 import React from 'react';

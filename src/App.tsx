@@ -73,8 +73,15 @@ const App = () => {
 			openSuccessNotification('Loged out successfully');
 
 		}
+		else {
+			openErrorNotification("Couldn't logout, Something went wrong");
+		}
 
 	};
+
+
+
+
 
 	return (
 		<Router>
@@ -114,8 +121,8 @@ const App = () => {
 
 								<span style={{
 									marginLeft: '10px',
-									fontWeight: 500,
-									backgroundColor: 'rgba(28, 39, 192, 0.11)',
+									fontWeight: 600,
+									// backgroundColor: 'rgba(28, 39, 152, 0.1)',
 									borderRadius: '25px',
 									color: '#1890ff',
 									padding: '2px 20px',
