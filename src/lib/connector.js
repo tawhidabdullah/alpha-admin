@@ -28,18 +28,30 @@ class Connector {
 
     // configuring options for fetch request
 
+    console.log('itemShit', item);
+
+
     this.options = {
       ...this.options,
       method: api.method,
       credentials: 'include',
       headers: new Headers({
-        'Content-Type': 'application/json',
+        ...(item !== 'addTheme' && {
+          'Content-Type': 'application/json',
+        }),
         // "Content-Type": "application/x-www-form-urlencoded",
         ...(options.headers && {
           ...options.headers,
         }),
       }),
-      body: api.method !== 'get' ? JSON.stringify(options.body) : null,
+
+      ...(item !== 'addTheme' ? {
+        body: api.method !== 'get' ? JSON.stringify(options.body) : null,
+      } : {
+          body: api.method !== 'get' ? options.body : null,
+
+        }),
+
     };
 
     //*replace variable parts in url with actual data if params exists |or| just return the url

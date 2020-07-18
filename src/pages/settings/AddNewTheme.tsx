@@ -105,6 +105,10 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, themeLis
 
 
 
+
+
+
+
         const addThemeRes = await handleAddthemeFetch({
 
             body: formData,
