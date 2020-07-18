@@ -45,7 +45,7 @@ const SiderComponent = (props: any) => {
 			</div>
 			<Menu selectable={true} mode='inline'>
 				<Menu.Item key='1' icon={<PieChartOutlined />}>
-					<Link to='/'>Dashboard</Link>
+					<Link to='/admin'>Dashboard</Link>
 				</Menu.Item>
 
 				{/* <SubMenu key='sub1' icon={<TagOutlined />} title='Category'>
@@ -66,34 +66,29 @@ const SiderComponent = (props: any) => {
 					key='sub3'
 					icon={<GoldOutlined />}
 					title='Product'
-					onTitleClick={() => props.history.push('/product')}
+				// onTitleClick={() => props.history.push('/product')}
 				>
 					<Menu.Item key='6'>
-						<Link to='/product'>List Products</Link>
+						<Link to='/admin/product'>List Products</Link>
 					</Menu.Item>
 
 
 
 
 					<Menu.Item key='9' icon={<TagsOutlined />}>
-						<Link to='/tag'>Tags</Link>
+						<Link to='/admin/tag'>Tags</Link>
 
 					</Menu.Item>
 
-					<SubMenu key='sub1' icon={<TagOutlined />} title='Category'>
-						<Menu.Item key='2'>
-							<Link to='/category'>List Categories</Link>
-						</Menu.Item>
-
-					</SubMenu>
+					<Menu.Item key='2' icon={<TagOutlined />}>
+						<Link to='/admin/category'>Categories</Link>
+					</Menu.Item>
 
 
-					<SubMenu key='sub2' icon={<BranchesOutlined />} title='Brand'>
+					<Menu.Item key='5' icon={<BranchesOutlined />}>
+						<Link to='/admin/brand'>Brands</Link>
+					</Menu.Item>
 
-						<Menu.Item key='5'>
-							<Link to='/brand'>List Brand</Link>
-						</Menu.Item>
-					</SubMenu>
 
 
 				</SubMenu>
@@ -103,20 +98,20 @@ const SiderComponent = (props: any) => {
 				</Menu.Item> */}
 
 				<Menu.Item key='10' icon={<CarOutlined />}>
-					<Link to='/delivery'>Delivery</Link>
+					<Link to='/admin/delivery'>Delivery</Link>
 				</Menu.Item>
 
 				<SubMenu key='sub4' icon={<ShoppingCartOutlined />} title='Orders'>
 					<Menu.Item key='11'>
-						<Link to='/order'>List Orders</Link>
+						<Link to='/admin/order'>List Orders</Link>
 					</Menu.Item>
 					<Menu.Item key='12'>
-						<Link to='/order/new'>Add Order</Link>
+						<Link to='/admin/order/new'>Add Order</Link>
 					</Menu.Item>
 				</SubMenu>
 
 				<Menu.Item key='13' icon={<TeamOutlined />}>
-					<Link to='/customer'>Customer</Link>
+					<Link to='/admin/customer'>Customer</Link>
 				</Menu.Item>
 
 				<SubMenu key='sub5' icon={<MailOutlined />} title='Email'>
@@ -128,28 +123,28 @@ const SiderComponent = (props: any) => {
 
 				<SubMenu key='sub6' icon={<FileOutlined />} title='Pages'>
 					<Menu.Item key='17'>
-						<Link to='/page/new'> Add new Page</Link>
+						<Link to='/admin/page/new'> Add new Page</Link>
 					</Menu.Item>
 					<Menu.Item key='18'>
-						<Link to='/page'> List Pages</Link>
+						<Link to='/admin/page'> List Pages</Link>
 					</Menu.Item>
 				</SubMenu>
 
 				<SubMenu key='sub7' icon={<SettingOutlined />} title='Settings'>
 					<Menu.Item key='19'>
-						<Link to='/settings/siteInfo'>Site information</Link>
+						<Link to='/admin/settings/siteInfo'>Site information</Link>
 					</Menu.Item>
 					<Menu.Item key='20'>
-						<Link to='/settings/themes'>Manage themes</Link>
+						<Link to='/admin/settings/themes'>Manage themes</Link>
 					</Menu.Item>
 					{/* <Menu.Item key='21'>
 						<Link to='/settings/image'>Image</Link>
 					</Menu.Item> */}
 					<Menu.Item key='22'>
-						<Link to='/settings/invoice'>Invoice</Link>
+						<Link to='/admin/settings/invoice'>Invoice</Link>
 					</Menu.Item>
 					<Menu.Item key='23'>
-						<Link to='/settings/components'>Components</Link>
+						<Link to='/admin/settings/components'>Components</Link>
 					</Menu.Item>
 				</SubMenu>
 			</Menu>

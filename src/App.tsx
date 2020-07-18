@@ -108,8 +108,8 @@ const App = () => {
 							<Title
 								style={{ color: '#0072EA', marginTop: '10px', marginLeft: '-20px' }}
 								level={4}>
-								Express Ticket
-				          </Title>
+								Admin
+				             </Title>
 
 
 							<div
@@ -153,72 +153,72 @@ const App = () => {
 								<Route
 									exact
 									path='/'
-									render={() => <Redirect to='/product' />}
+									render={() => <Redirect to='/admin/product' />}
 								/>
 
 
-								<Route path='/' exact>
+								<Route path='/admin' exact>
 									<Overview />
 								</Route>
-								<Route path='/category' exact>
+								<Route path='/admin/category' exact>
 									<CategoryList />
 								</Route>
-								<Route path='/category/:name' exact>
+								<Route path='/admin/category/:name' exact>
 									<CategoryDetail />
 								</Route>
-								CategoryDetail
-								<Route path='/brand/new' exact>
+								{/* CategoryDetail */}
+								<Route path='/admin/brand/new' exact>
 									<AddNewBrand />
 								</Route>
-								<Route path='/brand' exact>
+								<Route path='/admin/brand' exact>
 									<BrandList />
 								</Route>
-								<Route path='/product' exact>
+								<Route path='/admin/product' exact>
 									<ProductList />
 								</Route>
 								{/* <Route path='/product/new' exact>
 									<AddNewProduct />
 								</Route> */}
-								<Route path='/tag' exact>
+								<Route path='/admin/tag' exact>
 									<TagList />
 								</Route>
-								<Route path='/product/new' exact>
+								<Route path='/admin/product/new' exact>
 									<AddNewTag />
 								</Route>
-								<Route path='/attribute' exact>
+								<Route path='/admin/attribute' exact>
 									<AttributeList />
 								</Route>
-								<Route path='/order' exact>
+								<Route path='/admin/order' exact>
 									<OrderList />
 								</Route>
-								<Route path='/order/new' exact>
+								<Route path='/admin/order/new' exact>
 									<AddNewOrder />
 								</Route>
-								<Route path='/customer' exact>
+								<Route path='/admin/customer' exact>
 									<CustomerList />
 								</Route>
-								<Route path='/page' exact>
+								<Route path='/admin/page' exact>
 									<PagesList />
 								</Route>
-								<Route path='/delivery' exact>
+								<Route path='/admin/delivery' exact>
 									<Delivery />
 								</Route>
-								<Route path='/page/new' exact>
+								<Route path='/admin/page/new' exact>
 									<AddNewPage />
 								</Route>
-								<Route path='/settings/components' exact>
+								<Route path='/admin/settings/components' exact>
 									<Component />
 								</Route>
-								<Route path='/settings/image' exact>
+								<Route path='/admin/settings/image' exact>
 									<Image />
 								</Route>
-								<Route path='/settings/themes' exact>
+								<Route path='/admin/settings/themes' exact>
 									<ManageThemes />
 								</Route>
-								<Route path='/settings/invoice' exact>
+								<Route path='/admin/settings/invoice' exact>
 									<Invoice />
 								</Route>
-								<Route path='/settings/siteInfo' exact>
+								<Route path='/admin/settings/siteInfo' exact>
 									<SiteInfo />
 								</Route>
 							</Switch>
