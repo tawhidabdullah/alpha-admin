@@ -43,28 +43,24 @@ const SiderComponent = (props: any) => {
 			>
 
 			</div>
-			<Menu selectable={true} defaultSelectedKeys={['2']} mode='inline'>
+			<Menu selectable={true} mode='inline'>
 				<Menu.Item key='1' icon={<PieChartOutlined />}>
 					<Link to='/'>Dashboard</Link>
 				</Menu.Item>
 
-				<SubMenu key='sub1' icon={<TagOutlined />} title='Category'>
+				{/* <SubMenu key='sub1' icon={<TagOutlined />} title='Category'>
 					<Menu.Item key='2'>
 						<Link to='/category'>List Categories</Link>
 					</Menu.Item>
-					{/* <Menu.Item key='3'>
-						<Link to='/category/new'>Add Category</Link>
-					</Menu.Item> */}
-				</SubMenu>
 
-				<SubMenu key='sub2' icon={<BranchesOutlined />} title='Brand'>
-					{/* <Menu.Item key='4'>
-						<Link to='/brand/new'>Add Brand</Link>
-					</Menu.Item> */}
+				</SubMenu> */}
+
+				{/* <SubMenu key='sub2' icon={<BranchesOutlined />} title='Brand'>
+
 					<Menu.Item key='5'>
 						<Link to='/brand'>List Brand</Link>
 					</Menu.Item>
-				</SubMenu>
+				</SubMenu> */}
 
 				<SubMenu
 					key='sub3'
@@ -72,22 +68,39 @@ const SiderComponent = (props: any) => {
 					title='Product'
 					onTitleClick={() => props.history.push('/product')}
 				>
-					{/* <Menu.Item key='6'>
-						<Link to='/product/new'>Add Product</Link>
-					</Menu.Item> */}
-
-					<Menu.Item key='2'>
-						<Link to='/category'>List Categories</Link>
+					<Menu.Item key='6'>
+						<Link to='/product'>List Products</Link>
 					</Menu.Item>
 
-					<Menu.Item key='5'>
-						<Link to='/brand'>List Brand</Link>
+
+
+
+					<Menu.Item key='9' icon={<TagsOutlined />}>
+						<Link to='/tag'>Tags</Link>
+
 					</Menu.Item>
+
+					<SubMenu key='sub1' icon={<TagOutlined />} title='Category'>
+						<Menu.Item key='2'>
+							<Link to='/category'>List Categories</Link>
+						</Menu.Item>
+
+					</SubMenu>
+
+
+					<SubMenu key='sub2' icon={<BranchesOutlined />} title='Brand'>
+
+						<Menu.Item key='5'>
+							<Link to='/brand'>List Brand</Link>
+						</Menu.Item>
+					</SubMenu>
+
+
 				</SubMenu>
 
-				<Menu.Item key='9' icon={<TagsOutlined />}>
+				{/* <Menu.Item key='9' icon={<TagsOutlined />}>
 					<Link to='/tag'>Tags</Link>
-				</Menu.Item>
+				</Menu.Item> */}
 
 				<Menu.Item key='10' icon={<CarOutlined />}>
 					<Link to='/delivery'>Delivery</Link>
