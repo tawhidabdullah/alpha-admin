@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
@@ -20,7 +20,7 @@ import TextArea from '../../components/Field/TextArea';
 import MediaLibrary from "../../components/MediaLibrary";
 
 const validationSchema = Yup.object().shape({
-    name: Yup.string().label('Name').required('Name is required').min(3, 'Name must have at least 3 characters'),
+    invoiceTitle: Yup.string().label('Title').required('Invoice title is required')
 });
 
 
@@ -62,19 +62,34 @@ interface Props {
 const UpdateSiteinfo = ({ }: Props) => {
 
     const [updateInfovSettingsState, handleUpdateInvoiceSettingsFetch] = useHandleFetch({}, 'updateInvoiceSettings');
+    const [InvoiceSettingsState, handlSiteInvoiceSettingsFetch] = useHandleFetch({}, 'invoiceSettingsDetail');
+
+
+
+    useEffect(() => {
+        const getSiteSettings = async () => {
+            const siteSettingsRes = await handlSiteInvoiceSettingsFetch({});
+
+            console.log('siteSettingsRes', siteSettingsRes)
+        }
+        getSiteSettings();
+    }, [updateInfovSettingsState])
+
+
+
 
 
     const handleSubmit = async (values: any, actions: any) => {
-
+        console.log('fuckInvoice')
 
         const updateInvoiceRes = await handleUpdateInvoiceSettingsFetch({
 
             body: {
                 invoiceTitle: values.invoiceTitle,
-                address: values.values.address,
-                phone: values.values.phone,
-                email: values.values.email,
-                additionalText: values.values.additionalText
+                address: values.address,
+                phone: values.phone,
+                email: values.email,
+                additionalText: values.additionalText
 
             },
         });
@@ -109,10 +124,21 @@ const UpdateSiteinfo = ({ }: Props) => {
 
 
     const getisSubmitButtonDisabled = (values, isValid) => {
-        if (!values.name && !values.description || !isValid) {
+        if (!values.invoiceTitle || !isValid) {
             return true;
         }
         return false;
+    }
+
+
+
+    const getInitialValues = () => {
+        if (InvoiceSettingsState.data && Object.keys(InvoiceSettingsState.data).length > 0) {
+            return { ...InvoiceSettingsState.data }
+        }
+        else {
+            return initialValues
+        }
     }
 
 
@@ -124,10 +150,9 @@ const UpdateSiteinfo = ({ }: Props) => {
         <Formik
             onSubmit={(values, actions) => handleSubmit(values, actions)}
             validationSchema={validationSchema}
-            validateOnBlur={false}
             enableReinitialize={true}
             initialValues={
-                { ...initialValues }
+                getInitialValues()
             }
         >
             {({
@@ -143,6 +168,7 @@ const UpdateSiteinfo = ({ }: Props) => {
                 handleReset,
             }) => (
                     <>
+                        {console.log('goddamnErrors', errors)}
                         <div className='siteInfoContainer__item'>
                             <div className='siteInfoContainer__item-item'>
                                 <Input
@@ -232,7 +258,11 @@ const UpdateSiteinfo = ({ }: Props) => {
 
                         </div>
 
-                        <Button type='primary'>
+                        <Button
+                            onClick={(e: any) => handleSubmit(e)}
+                            loading={isSubmitting}
+                            disabled={getisSubmitButtonDisabled(values, isValid)}
+                            type='primary'>
                             Update
                         </Button>
                     </>

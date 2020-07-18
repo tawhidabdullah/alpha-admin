@@ -1290,6 +1290,90 @@ class Converter {
 		return convertedData;
 	}
 
+
+
+	/**
+   * @public
+   * @method siteSettings convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+	async siteSettings(resData) {
+		const convertedData = resData;
+
+		if (resData.data) {
+			return {
+				...resData.data
+			}
+		}
+
+		return convertedData;
+	}
+
+
+	/**
+* @public
+* @method updateSiteSettings convert api data from API to general format based on config server
+* @param {Object} data response objectc from wc
+* @returns {Object}  converted data
+*/
+	async updateSiteSettings(data) {
+
+		if (data['updated']) {
+			return {
+				status: 'ok'
+			}
+		}
+
+		return data;
+	}
+
+	/**
+* @public
+* @method updateInvoiceSettings convert api data from API to general format based on config server
+* @param {Object} data response objectc from wc
+* @returns {Object}  converted data
+*/
+	async updateInvoiceSettings(data) {
+
+		if (data['updated']) {
+			return {
+				status: 'ok'
+			}
+		}
+
+		return data;
+	}
+
+
+
+	/**
+   * @public
+   * @method invoiceSettingsDetail convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+	async invoiceSettingsDetail(resData) {
+		const convertedData = resData;
+
+		if (resData.data) {
+			return {
+				...resData.data
+			}
+		}
+
+		return convertedData;
+	}
+
+
+
+
+
+
+
+
+
+
 	/**
    * @public
    * @method categoryDetail convert api data from API to general format based on config server

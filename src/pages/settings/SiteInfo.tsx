@@ -157,138 +157,109 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, brandLis
 
 
 	return (
-		<Formik
-			onSubmit={(values, actions) => handleSubmit(values, actions)}
-			validationSchema={validationSchema}
-			validateOnBlur={false}
-			enableReinitialize={true}
-			initialValues={
-				{ ...initialValues }
-			}
-		>
-			{({
-				handleChange,
-				values,
-				handleSubmit,
-				errors,
-				isValid,
-				isSubmitting,
-				touched,
-				handleBlur,
-				setFieldTouched,
-				handleReset,
-			}) => (
-					<>
-						<div className='siteInfoContainer'>
-							<h2>
-								Site Settings
-							</h2>
+		<>
+			<div className='siteInfoContainer'>
+				<h2>
+					Site Settings
+			</h2>
 
-							<Tabs defaultActiveKey="1" >
-								<TabPane tab="Site Info" key="1">
-									<AdminSiteInfo />
-								</TabPane>
-								<TabPane tab="Logo & Icon" key="2">
-									<div style={{
-										display: 'flex',
-										alignItems: 'center'
-									}}>
-										<div style={{
-											marginRight: '30px'
-										}}>
-											<h3 className='inputFieldLabel'>Site Logo</h3>
-											<div className='aboutToUploadImagesContainer'>
-												{myImages &&
-													// @ts-ignore
-													myImages.length > 0 && myImages.map(image => {
-														return (
-															<div className='aboutToUploadImagesContainer__item'>
-																<div
-																	onClick={() => handleImagesDelete(image.id)}
-																	className='aboutToUploadImagesContainer__item-overlay'>
-																	<DeleteOutlined />
-																</div>
-																<img src={image.cover} alt={image.alt} />
-															</div>
-														)
-													})}
-
-												<div
-													onClick={() => {
-														setvisibleMedia(true);
-													}}
-													className='aboutToUploadImagesContainer__uploadItem'>
-													<FileAddOutlined />
-
+				<Tabs defaultActiveKey="1" >
+					<TabPane tab="Site Info" key="1">
+						<AdminSiteInfo />
+					</TabPane>
+					{/* <TabPane tab="Logo & Icon" key="2">
+						<div style={{
+							display: 'flex',
+							alignItems: 'center'
+						}}>
+							<div style={{
+								marginRight: '30px'
+							}}>
+								<h3 className='inputFieldLabel'>Site Logo</h3>
+								<div className='aboutToUploadImagesContainer'>
+									{myImages &&
+										// @ts-ignore
+										myImages.length > 0 && myImages.map(image => {
+											return (
+												<div className='aboutToUploadImagesContainer__item'>
+													<div
+														onClick={() => handleImagesDelete(image.id)}
+														className='aboutToUploadImagesContainer__item-overlay'>
+														<DeleteOutlined />
+													</div>
+													<img src={image.cover} alt={image.alt} />
 												</div>
+											)
+										})}
 
-											</div>
-										</div>
+									<div
+										onClick={() => {
+											setvisibleMedia(true);
+										}}
+										className='aboutToUploadImagesContainer__uploadItem'>
+										<FileAddOutlined />
 
-										<div style={{
-											// marginTop: '15px'
-										}}>
-											<h3 className='inputFieldLabel'>Site Icon</h3>
-											<div className='aboutToUploadImagesContainer'>
-												{myImages &&
-													// @ts-ignore
-													myImages.length > 0 && myImages.map(image => {
-														return (
-															<div className='aboutToUploadImagesContainer__item'>
-																<div
-																	onClick={() => handleImagesDelete(image.id)}
-																	className='aboutToUploadImagesContainer__item-overlay'>
-																	<DeleteOutlined />
-																</div>
-																<img src={image.cover} alt={image.alt} />
-															</div>
-														)
-													})}
-
-												<div
-													onClick={() => {
-														setvisibleMedia(true);
-													}}
-													className='aboutToUploadImagesContainer__uploadItem'>
-													<FileAddOutlined />
-
-												</div>
-
-											</div>
-										</div>
 									</div>
 
+								</div>
+							</div>
 
-								</TabPane>
+							<div style={{
+								// marginTop: '15px'
+							}}>
+								<h3 className='inputFieldLabel'>Site Icon</h3>
+								<div className='aboutToUploadImagesContainer'>
+									{myImages &&
+										// @ts-ignore
+										myImages.length > 0 && myImages.map(image => {
+											return (
+												<div className='aboutToUploadImagesContainer__item'>
+													<div
+														onClick={() => handleImagesDelete(image.id)}
+														className='aboutToUploadImagesContainer__item-overlay'>
+														<DeleteOutlined />
+													</div>
+													<img src={image.cover} alt={image.alt} />
+												</div>
+											)
+										})}
 
+									<div
+										onClick={() => {
+											setvisibleMedia(true);
+										}}
+										className='aboutToUploadImagesContainer__uploadItem'>
+										<FileAddOutlined />
 
-								<TabPane tab="Invoice Information" key="3">
+									</div>
 
-									<SiteInfoInvoice />
-								</TabPane>
-
-							</Tabs>
-
-
-
-
-
+								</div>
+							</div>
 						</div>
 
 
-
-						<MediaLibrary
-							setvisible={setvisibleMedia}
-							visible={visibleMedia}
-							setmyImages={setmyImages}
-							isModalOpenForImages={true}
-
-						/>
-					</>
-				)}
-		</Formik>
+					</TabPane> */}
 
 
+					<TabPane tab="Invoice Information" key="2">
+
+						<SiteInfoInvoice />
+					</TabPane>
+
+				</Tabs>
+
+			</div>
+
+
+
+			<MediaLibrary
+				setvisible={setvisibleMedia}
+				visible={visibleMedia}
+				setmyImages={setmyImages}
+				isModalOpenForImages={true}
+
+			/>
+		</>
 
 
 	);

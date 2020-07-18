@@ -123,9 +123,9 @@ const SiderComponent = (props: any) => {
 				</SubMenu>
 
 				<SubMenu key='sub7' icon={<SettingOutlined />} title='Settings'>
-					{/* <Menu.Item key='19'>
+					<Menu.Item key='19'>
 						<Link to='/settings/siteInfo'>Site information</Link>
-					</Menu.Item> */}
+					</Menu.Item>
 					<Menu.Item key='20'>
 						<Link to='/settings/themes'>Manage themes</Link>
 					</Menu.Item>

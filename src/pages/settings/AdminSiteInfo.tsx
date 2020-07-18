@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
@@ -19,8 +19,16 @@ import Input from '../../components/Field/Input';
 import TextArea from '../../components/Field/TextArea';
 import MediaLibrary from "../../components/MediaLibrary";
 
+
+
 const validationSchema = Yup.object().shape({
-    name: Yup.string().label('Name').required('Name is required').min(3, 'Name must have at least 3 characters'),
+    title: Yup.string()
+        .label('Title')
+        .required('Site title can not be empty'),
+    adminEmail: Yup.string()
+        .label('Admin Email')
+        .required('Admin Email can not be empty'),
+
 });
 
 
@@ -59,12 +67,26 @@ interface Props {
 const UpdateSiteinfo = ({ }: Props) => {
 
     const [UpdateSiteSettingsState, handleUpdateSiteSettingsFetch] = useHandleFetch({}, 'updateSiteSettings');
+    const [siteSettingsState, handlSiteSettingsFetch] = useHandleFetch({}, 'siteSettings');
 
+
+
+    useEffect(() => {
+        const getSiteSettings = async () => {
+            const siteSettingsRes = await handlSiteSettingsFetch({});
+
+            console.log('siteSettingsRes', siteSettingsRes)
+        }
+        getSiteSettings();
+    }, [UpdateSiteSettingsState])
+
+
+    console.log('siteSettingsState', siteSettingsState);
 
     const handleSubmit = async (values: any, actions: any) => {
 
 
-        const addBrandRes = await handleUpdateSiteSettingsFetch({
+        const addSiteInfoRes = await handleUpdateSiteSettingsFetch({
 
             body: {
                 title: values.title,
@@ -74,7 +96,7 @@ const UpdateSiteinfo = ({ }: Props) => {
         });
 
         // @ts-ignore
-        if (addBrandRes && addBrandRes.status === 'ok') {
+        if (addSiteInfoRes && addSiteInfoRes.status === 'ok') {
             openSuccessNotification();
 
 
@@ -105,7 +127,7 @@ const UpdateSiteinfo = ({ }: Props) => {
 
 
     const getisSubmitButtonDisabled = (values, isValid) => {
-        if (!values.name && !values.description || !isValid) {
+        if (!values.title || !values.adminEmail || !isValid) {
             return true;
         }
         return false;
@@ -115,15 +137,24 @@ const UpdateSiteinfo = ({ }: Props) => {
 
 
 
+    const getInitialValues = () => {
+        if (siteSettingsState.data && Object.keys(siteSettingsState.data).length > 0) {
+            return { ...siteSettingsState.data }
+        }
+        else {
+            return initialValues
+        }
+    }
+
+
+
 
     return (
         <Formik
             onSubmit={(values, actions) => handleSubmit(values, actions)}
-            validationSchema={validationSchema}
-            validateOnBlur={false}
             enableReinitialize={true}
             initialValues={
-                { ...initialValues }
+                getInitialValues()
             }
         >
             {({
@@ -139,6 +170,7 @@ const UpdateSiteinfo = ({ }: Props) => {
                 handleReset,
             }) => (
                     <>
+                        {console.log('errors', errors)}
                         <div className='siteInfoContainer__item'>
                             <div className='siteInfoContainer__item-item'>
                                 <Input
@@ -176,7 +208,7 @@ const UpdateSiteinfo = ({ }: Props) => {
                                 <Input
                                     label='Admin Email'
                                     value={values.adminEmail}
-                                    name='name'
+                                    name='adminEmail'
                                     isError={(touched.adminEmail && errors.adminEmail) ||
                                         (!isSubmitting && UpdateSiteSettingsState.error['error']['adminEmail'])}
 
@@ -192,12 +224,18 @@ const UpdateSiteinfo = ({ }: Props) => {
 
                         </div>
 
-                        <Button type='primary'>
+                        <Button
+                            type='primary'
+                            onClick={(e: any) => handleSubmit(e)}
+                            loading={isSubmitting}
+                            disabled={getisSubmitButtonDisabled(values, isValid)}
+
+                        >
                             Update
                         </Button>
                     </>
                 )}
-        </Formik>
+        </Formik >
 
 
 

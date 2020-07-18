@@ -194,7 +194,7 @@
 		},
 		"siteSettings": {
 			"url": "/admin/settings/site",
-			"method": "post"
+			"method": "get"
 		},
 		"updateSiteSettings": {
 			"url": "/admin/settings/update/site",
@@ -210,7 +210,7 @@
 		},
 		"invoiceSettingsDetail": {
 			"url": "/admin/settings/invoice",
-			"method": "post"
+			"method": "get"
 		},
 		"login": {
 			"url": "/admin/auth/login",
