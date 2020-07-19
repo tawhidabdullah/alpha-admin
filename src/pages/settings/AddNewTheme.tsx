@@ -100,9 +100,7 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, themeLis
             formData.append('folder', file, file.name);
         });
         formData.append("name", name);
-        formData.append('type', selectedThemeTypeValue)
         formData.append('thumbnail', imageUrl)
-
 
 
 
@@ -227,7 +225,6 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, themeLis
             formData.append('folder', file, file.name);
         });
         formData.append("name", name);
-        formData.append('type', selectedThemeTypeValue)
         formData.append('thumbnail', imageUrl)
 
         setuploading(true);
@@ -355,6 +352,9 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, themeLis
                     value={name}
                     name='name'
                     onChange={(e: any) => setname(e.target.value)}
+                    isError={addThemeState.error['error']['name']}
+
+                    errorString={addThemeState.error['error']['name']}
                 />
 
 
@@ -369,31 +369,6 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, themeLis
                 >
                     {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
                 </Upload>
-
-                {/* <div style={{ marginTop: '15px' }}></div> */}
-
-                <h3 className='inputFieldLabel'>
-                    Theme Type
-									</h3>
-
-
-                <Form.Item
-                    validateStatus={(addThemeState.error['error']['type']) ? "error" : ""}
-                    help={addThemeState.error['error']['type']}
-                // noStyle={true}
-                >
-                    <Select
-                        style={{ width: '100%' }}
-                        placeholder='Select a Theme type'
-                        optionFilterProp='children'
-                        onChange={onChangeThemeType}
-                        filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                    >
-                        <Option value={'spa'}> API Based Template (React/Angular/Vue) </Option>
-                        <Option value={'template'}> Alpha Template </Option>
-                    </Select>
-
-                </Form.Item>
 
 
 

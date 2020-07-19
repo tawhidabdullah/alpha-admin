@@ -16,7 +16,10 @@ import {
 	ShoppingCartOutlined,
 	MailOutlined,
 	SettingOutlined,
-	InboxOutlined
+	InboxOutlined,
+	SlidersOutlined,
+	DesktopOutlined,
+	RadarChartOutlined
 } from '@ant-design/icons';
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -52,7 +55,6 @@ const SiderComponent = (props: any) => {
 					<Menu.Item key='2'>
 						<Link to='/category'>List Categories</Link>
 					</Menu.Item>
-
 				</SubMenu> */}
 
 				{/* <SubMenu key='sub2' icon={<BranchesOutlined />} title='Brand'>
@@ -68,7 +70,9 @@ const SiderComponent = (props: any) => {
 					title='Product'
 				// onTitleClick={() => props.history.push('/product')}
 				>
-					<Menu.Item key='6'>
+					<Menu.Item
+						icon={<RadarChartOutlined />}
+						key='6'>
 						<Link to='/admin/product'>List Products</Link>
 					</Menu.Item>
 
@@ -130,22 +134,30 @@ const SiderComponent = (props: any) => {
 					</Menu.Item>
 				</SubMenu>
 
+				<Menu.Item
+					icon={<DesktopOutlined />}
+					key='20'>
+					<Link to='/admin/settings/themes'>Themes</Link>
+				</Menu.Item>
+
+				<Menu.Item key='23'
+					icon={<SlidersOutlined />}
+				>
+					<Link to='/admin/settings/components'>Components</Link>
+				</Menu.Item>
+
 				<SubMenu key='sub7' icon={<SettingOutlined />} title='Settings'>
 					<Menu.Item key='19'>
 						<Link to='/admin/settings/siteInfo'>Site information</Link>
 					</Menu.Item>
-					<Menu.Item key='20'>
-						<Link to='/admin/settings/themes'>Manage themes</Link>
-					</Menu.Item>
+
 					{/* <Menu.Item key='21'>
 						<Link to='/settings/image'>Image</Link>
 					</Menu.Item> */}
 					<Menu.Item key='22'>
 						<Link to='/admin/settings/invoice'>Invoice</Link>
 					</Menu.Item>
-					<Menu.Item key='23'>
-						<Link to='/admin/settings/components'>Components</Link>
-					</Menu.Item>
+
 				</SubMenu>
 			</Menu>
 		</Sider>

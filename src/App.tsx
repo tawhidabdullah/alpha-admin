@@ -85,11 +85,11 @@ const App = () => {
 
 	return (
 		<Router>
-			{/* <Switch>
-				<Route path='/login' exact>
+			<Switch>
+				<Route path='/admin/login' exact>
 					<Login />
 				</Route>
-			</Switch> */}
+			</Switch>
 			<Switch>
 				<Layout style={{ minHeight: '100vh' }}>
 					<Sider />
@@ -153,6 +153,11 @@ const App = () => {
 								<Route
 									exact
 									path='/'
+									render={() => <Redirect to='/admin' />}
+								/>
+								<Route
+									exact
+									path='/admin'
 									render={() => <Redirect to='/admin/product' />}
 								/>
 
