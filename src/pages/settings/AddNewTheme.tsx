@@ -1,45 +1,48 @@
 import React, { useState } from 'react';
-import { Formik } from 'formik';
-import * as Yup from 'yup';
+
+// import third libraries
+import { Upload, message, notification, Modal } from 'antd';
+// import { Formik } from 'formik';
+// import * as Yup from 'yup';
 import reqwest from 'reqwest';
 
+
+
+// import hooks
 import { useHandleFetch } from '../../hooks';
-// import third party ui lib
-import { Upload, message, Switch, Select, Button, notification, Modal, Form } from 'antd';
+
+
+// import configs
+import config from "../../config.json";
+
 
 import {
-    FileOutlined,
     InboxOutlined,
-    FileAddOutlined,
-    DeleteOutlined,
     CheckCircleOutlined,
-    ArrowUpOutlined,
     LoadingOutlined,
     PlusOutlined
 } from '@ant-design/icons';
 
 
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+// import ReactQuill from 'react-quill';
+// import 'react-quill/dist/quill.snow.css';
 
 // import components
 import Input from '../../components/Field/Input';
-import TextArea from '../../components/Field/TextArea';
 import MediaLibrary from "../../components/MediaLibrary";
 
 
-const { Option } = Select;
 const { Dragger } = Upload;
 
 
-const validationSchema = Yup.object().shape({
-    name: Yup.string().label('Name').required('Name is required').min(3, 'Name must have at least 3 characters'),
-});
+// const validationSchema = Yup.object().shape({
+//     name: Yup.string().label('Name').required('Name is required').min(3, 'Name must have at least 3 characters'),
+// });
 
 
 
 const openSuccessNotification = (message?: any) => {
-    notification.success({
+    notification.error({
         message: message || 'Brand Created',
         description: '',
         icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
@@ -77,7 +80,6 @@ interface Props {
 const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, themeList, setThemeList }: Props) => {
 
     const [addThemeState, handleAddthemeFetch] = useHandleFetch({}, 'addTheme');
-    const [visible, setvisible] = useState(false);
     const [myImages, setmyImages] = useState(false);
     const [visibleMedia, setvisibleMedia] = useState(false);
     const [myThumbnailImage, setmyThumbnailImage] = useState([]);
@@ -238,7 +240,7 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, themeLis
 
         // You can use any AJAX library you like
         reqwest({
-            url: 'http://localhost:5000/admin/theme/add',
+            url: `${config.baseURL}/admin/theme/add`,
             method: 'post',
             processData: false,
             data: formData,
@@ -304,8 +306,6 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, themeLis
             <div className="ant-upload-text">Upload</div>
         </div>
     );
-
-
 
     return (
         <>
