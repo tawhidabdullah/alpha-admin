@@ -172,7 +172,7 @@ const props = {
 	onChange(info: any) {
 		const { status } = info.file;
 		if (status !== 'uploading') {
-			console.log(info.file, info.fileList);
+			// console.log(info.file, info.fileList);
 		}
 		if (status === 'done') {
 			message.success(`${info.file.name} file uploaded successfully.`);
@@ -199,7 +199,6 @@ const AttributeList = ({  }: Props) => {
 
 
 	  const handleSubmit = async (values : any, actions : any) => {
-		  console.log('ourDamnValues',values)
 		const updateCategoryRes = await handleUpdateCategoryFetch({
 		  urlOptions: {
 			  placeHolders: {

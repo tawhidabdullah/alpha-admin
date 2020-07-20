@@ -94,11 +94,6 @@ const AddNewBrand = ({ addNewCategoryVisible,
     };
 
 
-    const onSwitchChange = (checked: any) => {
-        console.log(checked);
-    };
-
-
     const handleCancel = (e: any) => {
         setAddNewCategoryVisible(false);
     };

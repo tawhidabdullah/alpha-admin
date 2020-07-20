@@ -28,7 +28,6 @@ class Connector {
 
     // configuring options for fetch request
 
-    console.log('itemShit', item);
 
 
     this.options = {

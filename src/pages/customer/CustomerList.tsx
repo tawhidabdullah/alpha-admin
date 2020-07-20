@@ -267,7 +267,7 @@ const CustomerList = ({history}: Props) => {
 
   const [addNewCategoryVisible,setAddNewCategoryVisible] = useState(false);   
 
-  console.log('customerState',customerState)
+  // console.log('customerState',customerState)
 
 
 

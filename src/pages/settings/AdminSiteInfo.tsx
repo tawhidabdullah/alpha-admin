@@ -75,13 +75,13 @@ const UpdateSiteinfo = ({ }: Props) => {
         const getSiteSettings = async () => {
             const siteSettingsRes = await handlSiteSettingsFetch({});
 
-            console.log('siteSettingsRes', siteSettingsRes)
+            // console.log('siteSettingsRes', siteSettingsRes)
         }
         getSiteSettings();
     }, [UpdateSiteSettingsState])
 
 
-    console.log('siteSettingsState', siteSettingsState);
+    // console.log('siteSettingsState', siteSettingsState);
 
     const handleSubmit = async (values: any, actions: any) => {
 
@@ -170,7 +170,6 @@ const UpdateSiteinfo = ({ }: Props) => {
                 handleReset,
             }) => (
                     <>
-                        {console.log('errors', errors)}
                         <div className='siteInfoContainer__item'>
                             <div className='siteInfoContainer__item-item'>
                                 <Input

@@ -27,7 +27,6 @@ const QuickEdit = ({ category, setvisible, visible }: Props) => {
 	const [updateCategoryState, handleUpdateCategoryFetch] = useHandleFetch({}, 'updateCategory');
 
 	const handleSubmit = async (values : any, actions : any) => {
-		console.log('ourDamnValues',values)
 	  const updateCategoryRes = await handleUpdateCategoryFetch({
 		urlOptions: {
 			placeHolders: {

@@ -9,26 +9,26 @@ interface Props {
 const { Option } = Select;
 
 const Brands = ({ setBrandId }: Props) => {
-	const [ options, setoptions ] = useState([]);
-	const [ selectedBrandId, setSelectedBrandId ] = useState('');
-	const [ brandState, handleTagListFetch ] = useHandleFetch({}, 'brandList');
+	const [options, setoptions] = useState([]);
+	const [selectedBrandId, setSelectedBrandId] = useState('');
+	const [brandState, handleTagListFetch] = useHandleFetch({}, 'brandList');
 
 	function onChange(value) {
 		setSelectedBrandId(value);
 		setBrandId(value);
-		console.log(`selected ${value}`);
+		// console.log(`selected ${value}`);
 	}
 
 	function onBlur() {
-		console.log('blur');
+		// console.log('blur');
 	}
 
 	function onFocus() {
-		console.log('focus');
+		// console.log('focus');
 	}
 
 	function onSearch(val) {
-		console.log('search:', val);
+		// console.log('search:', val);
 	}
 
 	useEffect(() => {

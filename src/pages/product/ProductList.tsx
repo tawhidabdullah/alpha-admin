@@ -57,7 +57,7 @@ const MyTable = ({ data, setProductList }: myTableProps) => {
       setProductList(newProductList);
     }
 
-    console.log('deleteProductRes', deleteProductRes)
+    // console.log('deleteProductRes', deleteProductRes)
   }
 
 
@@ -261,7 +261,7 @@ const ProductList = ({ history }: Props) => {
   const [addNewCategoryVisible, setAddNewCategoryVisible] = useState(false);
 
 
-  console.log('productState', productState)
+  // console.log('productState', productState)
 
 
   const handleSearch = (value) => {

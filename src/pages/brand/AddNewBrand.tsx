@@ -122,7 +122,7 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, brandLis
 
 
 	const onSwitchChange = (checked: any) => {
-		console.log(checked);
+		// console.log(checked);
 	};
 
 

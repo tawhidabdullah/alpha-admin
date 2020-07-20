@@ -146,10 +146,6 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, themeLis
 
 
 
-    const onSwitchChange = (checked: any) => {
-        console.log(checked);
-    };
-
 
     const handleCancel = (e: any) => {
         setAddNewCategoryVisible(false);
@@ -210,7 +206,6 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, themeLis
 
         },
         beforeUpload: file => {
-            console.log('file', file)
             setfileList(filelist => {
                 return [...fileList, file]
             })
@@ -283,7 +278,6 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, themeLis
     }
 
     function beforeUpload(file) {
-        console.log('beforeUpload', file)
         const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
         if (!isJpgOrPng) {
             message.error('You can only upload JPG/PNG file!');
@@ -304,16 +298,6 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, themeLis
 
 
 
-
-
-
-
-
-
-    console.log('imageUrl', imageUrl)
-
-
-
     const uploadButton = (
         <div>
             {loadingThumnail ? <LoadingOutlined /> : <PlusOutlined />}
@@ -322,7 +306,6 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, themeLis
     );
 
 
-    console.log('addThemeState', addThemeState)
 
     return (
         <>

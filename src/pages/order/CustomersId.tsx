@@ -16,19 +16,19 @@ const Brands = ({ setCustomerId }: Props) => {
     function onChange(value) {
         setSelectedBrandId(value);
         setCustomerId(value);
-        console.log(`selected ${value}`);
+        // console.log(`selected ${value}`);
     }
 
     function onBlur() {
-        console.log('blur');
+        // console.log('blur');
     }
 
     function onFocus() {
-        console.log('focus');
+        // console.log('focus');
     }
 
     function onSearch(val) {
-        console.log('search:', val);
+        // console.log('search:', val);
     }
 
     useEffect(() => {

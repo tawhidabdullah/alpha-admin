@@ -169,7 +169,7 @@ const AddNewOrder = ({ }: Props) => {
 
 
 	const handleSubmit = async (values: any, actions: any) => {
-		console.log('selectedCityValue', selectedCityValue)
+		// console.log('selectedCityValue', selectedCityValue)
 
 		const addRegionRes = await handleOrderFetch({
 
@@ -310,13 +310,13 @@ const AddNewOrder = ({ }: Props) => {
 		else {
 			setProductList([]);
 		}
-		console.log('productIds', productIds)
+		// console.log('productIds', productIds)
 
 
 	}, [productIds])
 
 
-	console.log('productList', productList)
+	// console.log('productList', productList)
 
 	return (
 		<Formik

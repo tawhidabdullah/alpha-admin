@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Formik } from 'formik';
-import * as Yup from 'yup';
-import Moment from 'react-moment';
-// import third party ui lib
+
+
+
+
+// import libraries
 import { Upload, Button, Modal, Tabs, message, notification, Popconfirm } from 'antd';
 import reqwest from 'reqwest';
-
+import { Formik } from 'formik';
+import Moment from 'react-moment';
+// import * as Yup from 'yup';
 
 
 import {
@@ -20,6 +23,7 @@ import 'react-quill/dist/quill.snow.css';
 
 // import components
 import Input from '../../components/Field/Input';
+import Empty from '../../components/Empty';
 
 // import hooks
 import { useHandleFetch } from "../../hooks";
@@ -49,9 +53,6 @@ const openErrorNotification = (message?: any) => {
 
 
 
-
-
-
 interface Props {
 	visible: boolean;
 	setvisible: (isVisible: any) => void;
@@ -62,6 +63,7 @@ interface Props {
 	myImages?: any;
 	myThumbnailImage?: any
 }
+
 
 const MediaLibrary = ({
 	visible,
@@ -117,7 +119,7 @@ const MediaLibrary = ({
 			setLocalImageList(imageListRes);
 		}
 
-		console.log('imageListRes', imageListRes);
+		// console.log('imageListRes', imageListRes);
 	}
 
 
@@ -133,7 +135,6 @@ const MediaLibrary = ({
 	const handleUpload = async () => {
 		const formData = new FormData();
 		fileList.forEach(file => {
-			console.log('filt', file.name);
 			formData.append('images', file, file.name);
 		});
 
@@ -196,7 +197,7 @@ const MediaLibrary = ({
 
 	useEffect(() => {
 		if (isDoneOk) {
-			console.log('myThumbnail', myThumbnailImage)
+			// console.log('myThumbnail', myThumbnailImage)
 			// setselectedImages([...myThumbnailImage]);
 		}
 	}, [myThumbnailImage, isDoneOk])
@@ -309,7 +310,7 @@ const MediaLibrary = ({
 		return false;
 	}
 
-	console.log('selectedimages', selectedimages)
+	// console.log('selectedimages', selectedimages)
 	return (
 		<>
 			<Modal
@@ -348,8 +349,7 @@ const MediaLibrary = ({
 											</p>
 											<p className='ant-upload-text'>Click or drag file to this area to upload</p>
 											<p className='ant-upload-hint'>
-												Support for a single or bulk upload. Strictly prohibit from uploading company data or
-												other band files
+												Support for a single or bulk upload.
 							</p>
 										</Dragger>
 									</div>
@@ -394,6 +394,18 @@ const MediaLibrary = ({
 												</div>
 											)
 										})}
+
+
+									{imageListFromLibraryState.done && !(localImageList.length > 0) && (
+										<div style={{
+											display: 'flex',
+											justifyContent: 'center',
+											width: '100%'
+										}}>
+
+											<Empty title='No Image Found in the library' />
+										</div>
+									)}
 
 								</div>
 							</TabPane>
@@ -538,9 +550,19 @@ const MediaLibrary = ({
 						)}
 
 						{!activeImageItem && (
-							<h3>
-								Select an image to preview details
-							</h3>
+							<div style={{
+								height: '100%',
+								display: "flex",
+								justifyContent: "center",
+								alignItems: "center",
+							}}>
+								<h4 style={{
+									textAlign: "center",
+									fontSize: "14px"
+								}}>
+									Select an image to preview details
+							</h4>
+							</div>
 						)}
 
 					</div>

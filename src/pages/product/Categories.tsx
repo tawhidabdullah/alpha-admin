@@ -32,7 +32,7 @@ const Categories = ({ setcategoryIds }: Props) => {
 	}, []);
 
 	const onSelect = (selectedKeys, info) => {
-		console.log('selectedKeys', selectedKeys, info);
+		// console.log('selectedKeys', selectedKeys, info);
 	};
 
 
@@ -61,7 +61,7 @@ const Categories = ({ setcategoryIds }: Props) => {
 		}
 	};
 
-	console.log('optons', options);
+	// console.log('optons', options);
 
 
 	return (

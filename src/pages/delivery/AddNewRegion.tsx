@@ -115,7 +115,7 @@ const AddNewRegion = ({ addNewCategoryVisible, setAddNewCategoryVisible, regionL
 
 
 	const handleSubmit = async (values: any, actions: any) => {
-		console.log('selectedCityValue', selectedCityValue)
+		// console.log('selectedCityValue', selectedCityValue)
 
 		if (deliveryChargeList.length > 0) {
 			const charge = {};
@@ -289,7 +289,7 @@ const AddNewRegion = ({ addNewCategoryVisible, setAddNewCategoryVisible, regionL
 
 
 
-	console.log('deliveryChargeList', deliveryChargeList)
+	// console.log('deliveryChargeList', deliveryChargeList)
 	return (
 		<Formik
 			onSubmit={(values, actions) => handleSubmit(values, actions)}

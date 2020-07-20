@@ -60,7 +60,6 @@ const Complete = ({ setAttributeList, attributeList, attribute }) => {
 
 
     const handleAttributeSelect = (value) => {
-        console.log('handleAttributeSelect', value);
 
         if (attributeLisState && Object.keys(attributeLisState.data).length > 0) {
             if (attributeLisState.data[value]) {

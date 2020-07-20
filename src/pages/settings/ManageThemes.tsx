@@ -70,7 +70,6 @@ const CustomerList = ({history}: Props) => {
   
   const [addNewCategoryVisible,setAddNewCategoryVisible] = useState(false);   
 
-  console.log('orderState',themeState)
 
 
   const handleSearch = (value) => {

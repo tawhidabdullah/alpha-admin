@@ -53,7 +53,6 @@ const MyTable = ({data,setBrandList}: myTableProps) => {
 
 
       
-      console.log('activeCategoryForEdit',activeCategoryForEdit)
 
  
       const handleDeleteBrand = async (id) => {
@@ -249,7 +248,6 @@ const CategoryList = ({history}: Props) => {
 
 
 
-  console.log('brandState',brandState)
 
 
 

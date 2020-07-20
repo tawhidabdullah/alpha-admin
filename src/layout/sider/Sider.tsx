@@ -28,7 +28,7 @@ const { SubMenu } = Menu;
 const SiderComponent = (props: any) => {
     const [collapsed, setcollapsed] = useState(false);
     const onCollapse = (collapsed: any) => {
-        console.log(collapsed);
+        // console.log(collapsed);
         setcollapsed(collapsed);
     };
 

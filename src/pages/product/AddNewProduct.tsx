@@ -64,10 +64,8 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 	const [visible, setvisible] = useState(false);
 	const [myImages, setmyImages] = useState(false);
 	const [myThumbnailImage, setmyThumbnailImage] = useState(false);
-	const [isparentCategoryChecked, setisparentcategoryChecked] = useState(true);
 	const [isModalOpenForThumbnail, setisModalOpenForThumbnail] = useState(false);
 	const [isModalOpenForImages, setisModalOpenForImages] = useState(false);
-	const [selectedParentId, setselectedParentId] = useState('');
 	const [categoryids, setcategoryIds] = useState([]);
 	const [tagIds, setTagIds] = useState([]);
 	const [brandId, setBrandId] = useState('');
@@ -97,7 +95,6 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 				image: imagesIds,
 				cover: imagesIds[0] ? imagesIds[0] : '',
 				pricing: pricing,
-				parent: setselectedParentId
 			},
 		});
 
@@ -202,14 +199,6 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 
 
 
-	console.log('addProductState', addProductState);
-
-
-	const onChangeSelect = (value) => {
-		setselectedParentId(value);
-		console.log('selectedValue', value);
-	}
-
 
 	const handleAddPricing = (priceItem) => {
 
@@ -228,7 +217,6 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 	}
 
 
-	console.log('pricing', pricing);
 
 	const isCategoryInValid = () => {
 		if (addProductState.error['error']['category'] && !categoryids && categoryids.length) {
@@ -369,7 +357,7 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 									<div className='addProductGridContainer__price'>
 										<div className='addProductGridContainer__item-header'>
 											<h3>
-												Product Variation
+												Product Pricing
 			</h3>
 
 											<div className={pricing && pricing.length > 0 ? 'checkicon-active' : 'checkicon'}>
@@ -384,7 +372,7 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 
 												type='card'
 											>
-												<TabPane tab="Add Pricing" key="1">
+												<TabPane tab="Add Variation" key="1">
 													<Pricing handleAddPricing={handleAddPricing} />
 												</TabPane>
 												<TabPane tab="Pricing List" key="2">

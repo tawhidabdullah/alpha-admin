@@ -87,7 +87,6 @@ const MyTable = ({ data, setTagList }) => {
 			}
 		});
 
-		console.log('deleteTagRes', deleteTagRes)
 
 
 		// @ts-ignore
@@ -240,7 +239,6 @@ const TagList = ({ }: Props) => {
 				description: values.description,
 			},
 		});
-		console.log('addTagRes', addTagRes)
 
 		// @ts-ignore
 		if (addTagRes && addTagRes.status === 'ok') {
@@ -397,14 +395,12 @@ const TagList = ({ }: Props) => {
 
 						<div className='categoryListContainer__afterHeader'>
 							{/* <Search
-      placeholder="search categories.."
-      size="large"
-      onSearch={value => console.log(value)}
-      style={{ width: 300 }}
-    /> */}
+								placeholder="search categories.."
+								size="large"
+								onSearch={value => console.log(value)}
+								style={{ width: 300 }}
+								/> */}
 						</div>
-
-
 
 						<div className='categoryListContainer__categoryList'>
 							{tagState.done && tagList.length > 0 && <MyTable

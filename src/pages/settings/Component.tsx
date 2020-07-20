@@ -391,7 +391,6 @@ const Component = (props) => {
 				openErrorNotification();
 			  }
 	};
-	console.log('componentList',componentList); 
 
 	return (
 		<>

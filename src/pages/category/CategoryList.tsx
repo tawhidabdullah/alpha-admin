@@ -49,7 +49,7 @@ const MyTable = ({data, setcategoryList, history}: myTableProps) => {
     const [activeCategoryForEdit,setactiveCategoryForEdit] = useState(false); 
     const [deleteCategoryState, handleDeleteCategoryFetch] = useHandleFetch({}, 'deleteCategory');
 
-      console.log('activeCategoryForEdit',activeCategoryForEdit); 
+      // console.log('activeCategoryForEdit',activeCategoryForEdit); 
 
 
       const handleDeleteCategory = async (id) => {
@@ -251,12 +251,10 @@ const CategoryList = ({history}: Props) => {
     setAddNewCategoryVisible(false);
   };
 
-  console.log('categoryState',categoryState)
-
-
+  // console.log('categoryState',categoryState); 
 
   
-  
+
   const handleSearch = (value) => {
     if(categoryState.data.length > 0 ){
       const newCategoryList = categoryState.data.filter(item => item.name.includes(value)); 

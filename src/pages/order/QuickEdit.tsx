@@ -79,7 +79,7 @@ const QuickEdit = ({ customer, setvisible, visible, setOrderList, orderList }: P
 
 
     const handleSubmit = async (values: any, actions: any) => {
-        console.log('selectedCityValue', selectedCityValue)
+        // console.log('selectedCityValue', selectedCityValue)
 
         const addRegionRes = await handleUpdateOrderFetch({
 

@@ -137,9 +137,6 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, componen
 
 
 
-    const onSwitchChange = (checked: any) => {
-        console.log(checked);
-    };
 
 
     const handleCancel = (e: any) => {
@@ -172,7 +169,6 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, componen
 
 
 
-    console.log('itemsList', itemsList)
     return (
         <Formik
             onSubmit={(values, actions) => handleSubmit(values, actions)}

@@ -64,7 +64,7 @@ const Tags = ({
     }
 
 
-    console.log('selectedOpions', selectedOpions);
+    // console.log('selectedOpions', selectedOpions);
 
 
     return (

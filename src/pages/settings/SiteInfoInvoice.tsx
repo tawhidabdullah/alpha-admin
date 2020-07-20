@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
@@ -17,7 +17,7 @@ import 'react-quill/dist/quill.snow.css';
 // import components
 import Input from '../../components/Field/Input';
 import TextArea from '../../components/Field/TextArea';
-import MediaLibrary from "../../components/MediaLibrary";
+// import MediaLibrary from "../../components/MediaLibrary";
 
 const validationSchema = Yup.object().shape({
     invoiceTitle: Yup.string().label('Title').required('Invoice title is required')
@@ -70,17 +70,14 @@ const UpdateSiteinfo = ({ }: Props) => {
         const getSiteSettings = async () => {
             const siteSettingsRes = await handlSiteInvoiceSettingsFetch({});
 
-            console.log('siteSettingsRes', siteSettingsRes)
+            // console.log('siteSettingsRes', siteSettingsRes)
         }
         getSiteSettings();
     }, [updateInfovSettingsState])
 
 
 
-
-
     const handleSubmit = async (values: any, actions: any) => {
-        console.log('fuckInvoice')
 
         const updateInvoiceRes = await handleUpdateInvoiceSettingsFetch({
 
@@ -168,7 +165,6 @@ const UpdateSiteinfo = ({ }: Props) => {
                 handleReset,
             }) => (
                     <>
-                        {console.log('goddamnErrors', errors)}
                         <div className='siteInfoContainer__item'>
                             <div className='siteInfoContainer__item-item'>
                                 <Input
