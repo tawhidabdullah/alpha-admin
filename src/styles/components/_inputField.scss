@@ -703,3 +703,19 @@
 
 	
 }
+
+
+// ant menu styles
+.ant-menu-inline {
+	border: none !important;
+}
+
+
+
+
+
+
+
+.ant-menu-vertical .ant-menu-item::after, .ant-menu-vertical-left .ant-menu-item::after, .ant-menu-vertical-right .ant-menu-item::after, .ant-menu-inline .ant-menu-item::after {
+	border-right: none;
+}

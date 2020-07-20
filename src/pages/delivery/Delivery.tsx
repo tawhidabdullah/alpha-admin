@@ -173,6 +173,7 @@ const MyTable = ({data,setRegionList}: myTableProps) => {
           render={(text, record : any) => (
             <Space size="middle">
             
+            <a href='##'>
                <Tooltip placement="top" title='Quick Edit Region'>
               <span className='iconSize' onClick={() => {
                 setvisible(true)
@@ -182,7 +183,7 @@ const MyTable = ({data,setRegionList}: myTableProps) => {
             
               </span>
                </Tooltip>
-
+</a>
 
 
    

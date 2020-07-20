@@ -163,7 +163,7 @@ const MyTable = ({data, setcategoryList, history}: myTableProps) => {
           align='right'
           render={(text, record : any) => (
             <Space size="middle">
-            
+              <a href='##'>
                <Tooltip placement="top" title='Quick Edit Category'>
               <span className='iconSize' onClick={() => {
                 setvisible(true)
@@ -173,7 +173,7 @@ const MyTable = ({data, setcategoryList, history}: myTableProps) => {
             
               </span>
                </Tooltip>
-
+               </a>
 
 
                <Popconfirm 

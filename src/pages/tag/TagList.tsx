@@ -149,16 +149,17 @@ const MyTable = ({ data, setTagList }) => {
 					render={(text, record: any) => (
 						<Space size="middle">
 
-							<Tooltip placement="top" title='Quick Edit Tag'>
-								<span className='iconSize' onClick={() => {
-									setvisible(true)
-									setactiveCategoryForEdit(record);
-								}}>
-									<EditOutlined />
+							<a href='##'>
+								<Tooltip placement="top" title='Quick Edit Tag'>
+									<span className='iconSize' onClick={() => {
+										setvisible(true)
+										setactiveCategoryForEdit(record);
+									}}>
+										<EditOutlined />
 
-								</span>
-							</Tooltip>
-
+									</span>
+								</Tooltip>
+							</a>
 
 
 

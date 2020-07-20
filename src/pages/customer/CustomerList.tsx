@@ -180,7 +180,7 @@ const MyTable = ({data,setCustomerList}: myTableProps) => {
           align='right'
           render={(text, record : any) => (
             <Space size="middle">
-            
+              <a href='##'>
                <Tooltip placement="top" title='Quick Edit Customer'>
               <span className='iconSize' onClick={() => {
                 setvisible(true)
@@ -190,7 +190,7 @@ const MyTable = ({data,setCustomerList}: myTableProps) => {
             
               </span>
                </Tooltip>
-
+               </a>
 
              
 

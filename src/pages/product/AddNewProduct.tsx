@@ -1,43 +1,33 @@
 import React, { useState, useEffect } from 'react';
+
+// import hooks 
+import { useHandleFetch } from '../../hooks';
+
+
+// import libraries 
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-
-
-import { useHandleFetch } from '../../hooks';
-// import third party ui lib
-import { Upload, message, Tooltip, notification, Modal, Tabs, Empty } from 'antd';
-
+import { message, Tooltip, notification, Modal, Tabs, Empty } from 'antd';
 import {
-	FileOutlined,
-	InboxOutlined,
-	RadiusUpleftOutlined,
-	RadiusUprightOutlined,
-	RadiusBottomleftOutlined,
-	RadiusBottomrightOutlined,
 	DeleteOutlined,
-	EditOutlined,
 	FileAddOutlined,
-	PlusCircleOutlined,
-	PlusOutlined,
 	CheckCircleOutlined,
-	CheckOutlined
 } from '@ant-design/icons';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+
+// import ReactQuill from 'react-quill';
+// import 'react-quill/dist/quill.snow.css';
 
 // import components
 import Input from '../../components/Field/Input';
 import TextArea from '../../components/Field/TextArea';
 import MediaLibrary from "../../components/MediaLibrary";
+import { openSuccessNotification, openErrorNotification } from "../../components/Notification";
 import Tags from "./Tags";
 import Brands from "./Brands";
 import Categories from "./Categories";
 import Pricing from "./Pricing";
 
-
 const { TabPane } = Tabs;
-
-
 
 const validationSchema = Yup.object().shape({
 	name: Yup.string().label('Name').required('Name is required').min(3, 'Name must have at least 3 characters'),
@@ -60,24 +50,6 @@ const initialValues = {
 
 }
 
-
-
-const openSuccessNotification = (message?: any) => {
-	notification.success({
-		message: message || 'Product Created',
-		description: '',
-		icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
-	});
-};
-
-
-const openErrorNotification = (message?: any) => {
-	notification.success({
-		message: message || 'Something Went Wrong',
-		description: '',
-		icon: <CheckCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
-	});
-};
 
 interface Props {
 	addNewCategoryVisible: any;
@@ -133,7 +105,7 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 
 		// @ts-ignore
 		if (addProductRes && addProductRes.status === 'ok') {
-			openSuccessNotification();
+			openSuccessNotification('Product Created');
 
 			setProductList([...productList, {
 				id: addProductRes['id'] || '',
@@ -186,12 +158,6 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 			}
 		}
 	}, [addProductState])
-
-
-	const onSwitchChange = (checked: any) => {
-		setisparentcategoryChecked(checked)
-		console.log(checked);
-	};
 
 
 	const handleCancel = (e: any) => {

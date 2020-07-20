@@ -12,7 +12,7 @@
 
 		&-searchBar {
 			// flex: 1;
-			width: 40%;
+			width: 50%;
 			// margin: 0 20px;
 			display: flex;
 			align-items: center;
@@ -28,10 +28,10 @@
 
 		&-title {
 			font-weight: 600;
-			font-size: 18px;
+			font-size: 19px;
 			margin: 0;
 			padding: 0;
-			text-transform: uppercase;
+			// text-transform: uppercase;
 			margin-right: 20px;
 			margin-left: 9px;
 		}
@@ -93,7 +93,21 @@
 
 .searchbarClassName {
 	border: 1px solid #f7f7f7 !important;
+	// background-color: #f1f4f6 !important;
+	border-radius: 30px;
+	height: 35px !important;
+	
+
+
+
 }
+
+ .ant-input-affix-wrapper > input.ant-input {
+	// background-color: #f1f4f6 !important;
+	font-size: 13px !important;
+	border: none !important;
+}
+
 
 .btnPrimaryClassName {
 	border: none !important;
@@ -108,9 +122,9 @@
 	box-shadow: none !important;
 	color: #3fa6f9 !important;
 	background-color: #4da9f500 !important;
-	box-shadow: 0px 1px 1px -1px rgba(0, 0, 0, 0.1), 0px 1px 1px 0px rgba(0, 0, 0, 0.11),
-		0px 1px 1px 0px rgba(0, 0, 0, .11) !important;
+    box-shadow: 0 0.125rem 0.625rem rgba(227, 231, 250, 0.4), 0 0.0625rem 0.125rem rgba(206, 220, 233, 0.5) !important;
 	transition: box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1) !important;
+	border-radius: 15px !important;
 }
 
 .btnPrimaryClassNameoutline:active {
@@ -462,4 +476,30 @@
 .checkicon-error {
 	font-size: 18px;
 	color: rgba(255, 0, 0, 0.493);
+}
+
+
+.ant-table-content table th:first-child{
+	background-color: #fff !important;
+  }
+
+  .ant-table-content table th:last-child{
+	background-color: #fff !important;
+  }
+
+.ant-table-thead tr  {
+    // box-shadow: 0 0.125rem 0.625rem rgba(227, 231, 250, 0.4), 0 0.0625rem 0.125rem rgba(206, 220, 233, 0.5) !important;
+	
+	// border-radius: 30px;
+}
+
+.ant-table-thead tr th {
+	// color: #188fffbb !important;
+	font-size: 13px !important;
+	color: #4444 !important;
+	font-weight: 600 !important;
+	// background-color: #f3f9fc62 !important; 	
+	border-radius: 30px;
+	// padding: 0px 10px !important;
+	// display: inline-block !important;	
 }

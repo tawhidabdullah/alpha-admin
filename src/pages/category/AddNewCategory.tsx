@@ -45,7 +45,7 @@ const openSuccessNotification = (message?: any) => {
 
 
 const openErrorNotification = (message?: any) => {
-	notification.success({
+	notification.error({
 		message: message || 'Something Went Wrong',
 		description: '',
 		icon: <CheckCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
@@ -117,14 +117,14 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, categ
 				description: values.description,
 				image: imagesIds,
 				cover: imagesIds[0] ? imagesIds[0] : '',
-				parent: setselectedParentId
+				parent: selectedParentId
 			},
 		});
 
 
 		// @ts-ignore
 		if (addCategoryRes && addCategoryRes.status === 'ok') {
-			openSuccessNotification();
+			openSuccessNotification('Category Created!');
 
 			setcategoryList([...categoryList, {
 				id: addCategoryRes['id'] || '',
@@ -161,7 +161,7 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, categ
 
 
 	const getisSubmitButtonDisabled = (values, isValid) => {
-		if (!values.name || !values.description || !isValid) {
+		if (!values.name || !isValid) {
 			return true;
 		}
 		return false;
