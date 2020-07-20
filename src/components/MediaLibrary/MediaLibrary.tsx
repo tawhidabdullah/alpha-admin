@@ -28,6 +28,9 @@ import Empty from '../../components/Empty';
 // import hooks
 import { useHandleFetch } from "../../hooks";
 
+// import configs
+import config from "../../config.json";
+
 const { Dragger } = Upload;
 const { TabPane } = Tabs;
 
@@ -150,7 +153,7 @@ const MediaLibrary = ({
 
 		// You can use any AJAX library you like
 		reqwest({
-			url: 'http://localhost:5000/admin/image/add',
+			url: `${config.baseURL}/admin/image/add`,
 			method: 'post',
 			processData: false,
 			data: formData,
@@ -204,6 +207,7 @@ const MediaLibrary = ({
 
 	const uploadProps = {
 		//  listType: 'picture',
+		multiple: true,
 		onRemove: file => {
 			setfileList(filelist => {
 				const index = fileList.indexOf(file);
@@ -350,7 +354,7 @@ const MediaLibrary = ({
 											<p className='ant-upload-text'>Click or drag file to this area to upload</p>
 											<p className='ant-upload-hint'>
 												Support for a single or bulk upload.
-							</p>
+						                	</p>
 										</Dragger>
 									</div>
 								</div>
