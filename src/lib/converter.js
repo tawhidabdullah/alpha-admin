@@ -531,7 +531,17 @@ class Converter {
 						id: component._id || '',
 						key: component._id || '',
 						name: component.name || '',
-						items: component.items || []
+						items: component.items.length > 0 ? component.items.map(item => {
+							return {
+								...item,
+								image: item.image.length > 0 ? item.image.map(img => {
+									return {
+										cover: `${config['baseURL']}${img.thumbnail ? img.thumbnail : ""}`,
+										id: img._id,
+									}
+								}) : []
+							}
+						}) : []
 					};
 				});
 

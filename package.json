@@ -16,6 +16,7 @@
     "@types/redux": "^3.6.0",
     "@types/yup": "^0.29.3",
     "antd": "^4.3.4",
+    "craco-less": "^1.17.0",
     "formik": "^2.1.4",
     "isomorphic-fetch": "^2.2.1",
     "node-sass": "^4.13.1",
@@ -33,6 +34,7 @@
     "redux": "^4.0.5",
     "redux-persist": "^6.0.0",
     "reqwest": "^2.0.5",
+    "styled-components": "^5.1.1",
     "typescript": "^3.7.5",
     "yup": "^0.29.1"
   },

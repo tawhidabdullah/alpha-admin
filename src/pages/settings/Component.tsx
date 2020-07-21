@@ -31,7 +31,7 @@ const openSuccessNotification = (message?: any) => {
 
 
 const openErrorNotification = (message?: any) => {
-    notification.success({
+    notification.error({
         message: message || 'Something Went Wrong',
         description: '',
         icon: <CheckCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
@@ -62,32 +62,44 @@ const genExtra = (updateComponentByDeleting,component,id) => (
 			display: 'flex'
 		}}
 	>
+		
 		<Tooltip placement='top' title='Edit Component'>
-			<EditOutlined
+		<a href='##'>
+	<EditOutlined
 				onClick={(event) => {
 					// If you don't want click extra trigger collapse, you can prevent this:
 					// event.stopPropagation();
 				}}
 			/>
+		</a>
+		
+			
 		</Tooltip>
+		
 
 		<div
 			style={{
 				marginLeft: '15px'
 			}}
 		/>
+		   <a href='##' style={{
+				   color:'rgb(241, 67, 67)'
+			   }}>
+		 
 			<Popconfirm 
                
                onConfirm={() => updateComponentByDeleting(id,component)}
                title="Are you sure？" okText="Yes" cancelText="No">
-           
+       
 		   <DeleteOutlined
 				onClick={(event) => {
 					// If you don't want click extra trigger collapse, you can prevent this:
 					event.stopPropagation();
 				}}
 			/>
+			
            </Popconfirm>
+		   </a>
 	</div>
 );
 
@@ -98,6 +110,7 @@ const genExtraForGroup = (setitemVisible: any, handleDeleteComponent:any, id: an
 		}}
 	>
 		<Tooltip placement='top' title='Add new item Component'>
+		<a href='##'>
 			<PlusOutlined
 				onClick={(event) => {
 					// If you don't want click extra trigger collapse, you can prevent this:
@@ -106,6 +119,7 @@ const genExtraForGroup = (setitemVisible: any, handleDeleteComponent:any, id: an
 					setComponentId(id)
 				}}
 			/>
+			</a>
 		</Tooltip>
 
 		<div
@@ -114,12 +128,14 @@ const genExtraForGroup = (setitemVisible: any, handleDeleteComponent:any, id: an
 			}}
 		/>
 		<Tooltip placement='top' title='Edit Component'>
+		<a href='##'>
 			<EditOutlined
 				onClick={(event) => {
 					// If you don't want click extra trigger collapse, you can prevent this:
 					// event.stopPropagation();
 				}}
 			/>
+			</a>
 		</Tooltip>
 
 		<div
@@ -127,6 +143,10 @@ const genExtraForGroup = (setitemVisible: any, handleDeleteComponent:any, id: an
 				marginLeft: '15px'
 			}}
 		/>
+		   <a href='##' style={{
+				   color:'rgb(241, 67, 67)'
+			   }}>
+		 
 		<Popconfirm 
                
                onConfirm={() => handleDeleteComponent(id)}
@@ -138,8 +158,11 @@ const genExtraForGroup = (setitemVisible: any, handleDeleteComponent:any, id: an
 					event.stopPropagation();
 				}}
 			/>
+			
+		
+		
            </Popconfirm>
-
+		   </a>
 
 			
 	</div>
@@ -163,9 +186,9 @@ const Component = (props) => {
   
 	useEffect(()=>{
 	 const setComponents = async () => {
-	   const categories = await handleComponentListFetch({}); 
+	   const components = await handleComponentListFetch({}); 
 	   // @ts-ignore
-	   setComponentList(categories); 
+	   setComponentList(components); 
 	 }
 	 setComponents(); 
 	},[])
@@ -236,13 +259,33 @@ const Component = (props) => {
       
           const componentIndex = positionInComponents();
       
-          const itemIndex = positionInItemsOfComponent();
+		  const itemIndex = positionInItemsOfComponent();
+		  
+
+		  const manupulatedLocalComponentForTheReq = localComponentItem.image.length > 0 ? 
+		  {
+			...localComponentItem,
+			image: localComponentItem.image.length > 0 ? localComponentItem.image.map(img => img.id) : []
+		}
+		  : localComponentItem;
       
           const updatedItems = [
             ...component.items.slice(0, itemIndex),
             localComponentItem,
             ...component.items.slice(itemIndex + 1)
-          ];
+		  ];
+		  
+		  const manupulatedUpdatedItems = [
+            ...component.items.slice(0, itemIndex),
+            manupulatedLocalComponentForTheReq,
+            ...component.items.slice(itemIndex + 1)
+		  ];
+		  
+		
+		  const manupulatedUpdatedItem = Object.assign({}, componentList[componentIndex], {
+            ...component,
+            items: manupulatedUpdatedItems
+          });
       
           const updatedItem = Object.assign({}, componentList[componentIndex], {
             ...component,
@@ -265,7 +308,7 @@ const Component = (props) => {
 				}
 			  },
 			body: {
-				...updatedItem,
+				...manupulatedUpdatedItem,
 				groupName: updatedItem.name
 			},
 		  });
@@ -391,6 +434,9 @@ const Component = (props) => {
 				openErrorNotification();
 			  }
 	};
+
+
+	console.log('componentState',componentState)
 
 	return (
 		<>

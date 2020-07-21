@@ -5,14 +5,19 @@ import * as Yup from 'yup';
 
 import { useHandleFetch } from '../../hooks';
 // import third party ui lib
-import { Upload, message, Switch, Select, Button, notification, Modal } from 'antd';
+import { Upload, message, Switch, Select, Button, notification, Modal, Tooltip } from 'antd';
 
 import {
 	FileOutlined,
 	InboxOutlined,
 	FileAddOutlined,
 	DeleteOutlined,
-	CheckCircleOutlined
+	CheckCircleOutlined,
+	CloseOutlined,
+	CheckOutlined,
+	InfoCircleOutlined,
+	PlusOutlined,
+	FileImageFilled
 } from '@ant-design/icons';
 
 
@@ -40,7 +45,7 @@ const openSuccessNotification = (message?: any) => {
 
 
 const openErrorNotification = (message?: any) => {
-	notification.success({
+	notification.error({
 		message: message || 'Something Went Wrong',
 		description: '',
 		icon: <CheckCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
@@ -72,6 +77,7 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, brandLis
 	const [visible, setvisible] = useState(false);
 	const [myImages, setmyImages] = useState(false);
 	const [visibleMedia, setvisibleMedia] = useState(false);
+	const [coverImageId, setCoverImageId] = useState('');
 
 
 	const handleSubmit = async (values: any, actions: any) => {
@@ -89,7 +95,7 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, brandLis
 				description: values.description,
 				type: values.type,
 				image: imagesIds,
-				cover: imagesIds[0] ? imagesIds[0] : '',
+				cover: coverImageId || imagesIds[0] ? imagesIds[0] : '',
 			},
 		});
 
@@ -227,41 +233,80 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, brandLis
 							/>
 
 
-							<div className='addproductSection-left-header'>
+							<div className='addproductSection-left-header'
+
+								style={{
+									marginBottom: '-5px'
+								}}
+							>
 								<h3 className='inputFieldLabel'>Images</h3>
 								{/* <div  >
 					<FileOutlined />
 					<span>Media Center</span>
 				</div> */}
 							</div>
+
+
 							<div className='aboutToUploadImagesContainer'>
 								{myImages &&
 									// @ts-ignore
-									myImages.length > 0 && myImages.map(image => {
+									myImages.length > 0 && myImages.map((image, index) => {
 										return (
 											<div className='aboutToUploadImagesContainer__item'>
 												<div
-													onClick={() => handleImagesDelete(image.id)}
-													className='aboutToUploadImagesContainer__item-overlay'>
-													<DeleteOutlined />
+													className='aboutToUploadImagesContainer__item-imgContainer'
+													onClick={() => setCoverImageId(image.id)}
+												>
+													<img src={image.cover} alt={image.alt} />
 												</div>
-												<img src={image.cover} alt={image.alt} />
+
+												<span
+													onClick={() => handleImagesDelete(image.id)}
+													className='aboutToUploadImagesContainer__item-remove'>
+													<CloseOutlined />
+												</span>
+
+
+												{coverImageId === image.id ? (
+													<span className='aboutToUploadImagesContainer__item-cover'>
+														<CheckOutlined />
+													</span>
+												) : !coverImageId && index === 0 && (
+													<span className='aboutToUploadImagesContainer__item-cover'>
+														<CheckOutlined />
+													</span>
+												)}
+
+
 											</div>
 										)
 									})}
 
-								<div
-									onClick={() => {
-										setvisibleMedia(true);
-									}}
-									className='aboutToUploadImagesContainer__uploadItem'>
-									<FileAddOutlined />
-									{/* <h5>
-												Select From Library
-											</h5> */}
-								</div>
+
+								<Tooltip
+									title={'Attach images'}>
+
+									<div
+										onClick={() => {
+											setvisibleMedia(true);
+										}}
+										className='aboutToUploadImagesContainer__uploadItem'>
+										{/* <FileAddOutlined />
+													<FileImageTwoTone />
+													<FileImageOutlined /> */}
+										<FileImageFilled />
+										{/* <h5>
+												     Select From Library
+											<     /h5> */}
+										<span className='aboutToUploadImagesContainer__uploadItem-plus'>
+											<PlusOutlined />
+										</span>
+									</div>
+								</Tooltip>
 
 							</div>
+
+
 
 
 

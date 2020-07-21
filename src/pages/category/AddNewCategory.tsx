@@ -5,12 +5,17 @@ import * as Yup from 'yup';
 
 import { useHandleFetch } from '../../hooks';
 // import third party ui lib
-import { Switch, Select, notification, Modal } from 'antd';
+import { Switch, Select, notification, Modal, Tooltip } from 'antd';
 
 import {
 	DeleteOutlined,
 	FileAddOutlined,
-	CheckCircleOutlined
+	FileImageFilled,
+	PlusOutlined,
+	CheckCircleOutlined,
+	CloseOutlined,
+	CheckOutlined,
+	InfoCircleOutlined
 } from '@ant-design/icons';
 
 
@@ -77,6 +82,8 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, categ
 	const [isModalOpenForThumbnail, setisModalOpenForThumbnail] = useState(false);
 	const [isModalOpenForImages, setisModalOpenForImages] = useState(false);
 	const [selectedParentId, setselectedParentId] = useState('');
+	const [coverImageId, setCoverImageId] = useState('');
+
 
 
 
@@ -92,7 +99,7 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, categ
 				name: values.name,
 				description: values.description,
 				image: imagesIds,
-				cover: imagesIds[0] ? imagesIds[0] : '',
+				cover: coverImageId || imagesIds[0] ? imagesIds[0] : '',
 				parent: selectedParentId
 			},
 		});
@@ -243,10 +250,14 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, categ
 								}}
 							/>
 
+							<div style={{
+								marginTop: '25px'
+							}}></div>
+
 							<div className='switchLabelContainer'>
 								<Switch defaultChecked onChange={onSwitchChange} />
 								<div className='switchLabelContainer-textContainer'>
-									<h4 className='switchLabelContainer-label'>Top level Category</h4>
+									<h5 >Top level Category</h5>
 									<h5 className='switchLabelContainer-desc'>Disable to select a Parent Category</h5>
 								</div>
 							</div>
@@ -280,41 +291,75 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, categ
 							/>
 
 
-							<div className='addproductSection-left-header'>
+							<div className='addproductSection-left-header' style={{
+								marginBottom: '-5px'
+							}}>
 								<h3 className='inputFieldLabel'>Images</h3>
-								{/* <div  >
-					<FileOutlined />
-					<span>Media Center</span>
-				</div> */}
+								<Tooltip
+									placement="left" title={'Click on the image to select cover image, By default 1st image is selected as cover'}>
+									<a href='###'>
+										<InfoCircleOutlined />
+									</a>
+								</Tooltip>
 							</div>
 							<div className='aboutToUploadImagesContainer'>
 								{myImages &&
 									// @ts-ignore
-									myImages.length > 0 && myImages.map(image => {
+									myImages.length > 0 && myImages.map((image, index) => {
 										return (
 											<div className='aboutToUploadImagesContainer__item'>
 												<div
-													onClick={() => handleImagesDelete(image.id)}
-													className='aboutToUploadImagesContainer__item-overlay'>
-													<DeleteOutlined />
+													className='aboutToUploadImagesContainer__item-imgContainer'
+													onClick={() => setCoverImageId(image.id)}
+												>
+													<img src={image.cover} alt={image.alt} />
 												</div>
-												<img src={image.cover} alt={image.alt} />
+
+												<span
+													onClick={() => handleImagesDelete(image.id)}
+													className='aboutToUploadImagesContainer__item-remove'>
+													<CloseOutlined />
+												</span>
+
+
+												{coverImageId === image.id ? (
+													<span className='aboutToUploadImagesContainer__item-cover'>
+														<CheckOutlined />
+													</span>
+												) : !coverImageId && index === 0 && (
+													<span className='aboutToUploadImagesContainer__item-cover'>
+														<CheckOutlined />
+													</span>
+												)}
+
+
 											</div>
 										)
 									})}
 
-								<div
-									onClick={() => {
-										setvisible(true);
-										setisModalOpenForImages(true);
-										setisModalOpenForThumbnail(false);
-									}}
-									className='aboutToUploadImagesContainer__uploadItem'>
-									<FileAddOutlined />
-									{/* <h5>
-												Select From Library
-											</h5> */}
-								</div>
+
+								<Tooltip
+									title={'Attach images'}>
+
+									<div
+										onClick={() => {
+											setvisible(true);
+											setisModalOpenForImages(true);
+											setisModalOpenForThumbnail(false);
+										}}
+										className='aboutToUploadImagesContainer__uploadItem'>
+										{/* <FileAddOutlined />
+													<FileImageTwoTone />
+													<FileImageOutlined /> */}
+										<FileImageFilled />
+										{/* <h5>
+												     Select From Library
+											<     /h5> */}
+										<span className='aboutToUploadImagesContainer__uploadItem-plus'>
+											<PlusOutlined />
+										</span>
+									</div>
+								</Tooltip>
 
 							</div>
 

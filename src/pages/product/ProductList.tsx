@@ -266,7 +266,7 @@ const ProductList = ({ history }: Props) => {
 
   const handleSearch = (value) => {
     if (productState.data.length > 0) {
-      const newProductList = productState.data.filter(item => item.name.includes(value));
+      const newProductList = productState.data.filter(item => item.name.toLowerCase().includes(value.toLowerCase()));
       setProductList(newProductList);
     }
 

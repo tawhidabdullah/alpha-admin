@@ -7,11 +7,19 @@ import { useHandleFetch } from '../../hooks';
 // import libraries 
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import { message, Tooltip, notification, Modal, Tabs, Empty } from 'antd';
+import { message, Tooltip, Modal, Tabs, Empty, Badge } from 'antd';
 import {
 	DeleteOutlined,
 	FileAddOutlined,
 	CheckCircleOutlined,
+	FileImageFilled,
+	FileImageOutlined,
+	FileImageTwoTone,
+	PlusOutlined,
+	PlusCircleOutlined,
+	CloseOutlined,
+	CheckOutlined,
+	InfoCircleOutlined
 } from '@ant-design/icons';
 
 // import ReactQuill from 'react-quill';
@@ -70,6 +78,7 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 	const [tagIds, setTagIds] = useState([]);
 	const [brandId, setBrandId] = useState('');
 	const [pricing, setPricing] = useState([]);
+	const [coverImageId, setCoverImageId] = useState('');
 
 
 
@@ -93,7 +102,7 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 				tags: tagIds,
 				brand: brandId,
 				image: imagesIds,
-				cover: imagesIds[0] ? imagesIds[0] : '',
+				cover: coverImageId || imagesIds[0] ? imagesIds[0] : '',
 				pricing: pricing,
 			},
 		});
@@ -392,33 +401,31 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 																	<div className='addProductGridContainer__item-body-pricingContainer-item-two'>
 																		<div>
 																			<h3>
-																				Pricing
+																				Price
 						</h3>
 																			<div className='addProductGridContainer__item-body-pricingContainer-item-body'>
 
-																				{item.price && item.price.offer && (
-																					<div>
-																						<h6>
-																							offer
-								</h6>
+
+																				{item.price.offer ? (
+																					<>
 																						<h4>
 																							{item.price.offer}
+
 																						</h4>
-																					</div>
-																				)}
+																			/
+																			<h5 style={{
+																							textDecoration: "line-through"
+																						}}>
 
-
-																				{item.price && item.price.regular && (
-																					<div>
-																						<h6>
-																							regular
-								</h6>
+																							{item.price.regular}
+																						</h5>
+																					</>
+																				) : (
 																						<h4>
 																							{item.price.regular}
-																						</h4>
-																					</div>
-																				)}
 
+																						</h4>
+																					)}
 
 
 																			</div>
@@ -426,26 +433,24 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 
 																		{item.stock && (
 																			<div>
-																				<h3>
-																					Stock
+																				<Badge
+																					overflowCount={999}
+																					count={item.stock.available}>
+																					<h3>
+																						Stock
 									</h3>
+																				</Badge>
 																				<div className='addProductGridContainer__item-body-pricingContainer-item-body'>
 																					<div>
 																						<h6>
-																							available
-										</h6>
-																						<h4>
-																							{item.stock.available}
-																						</h4>
-																					</div>
+																							min
+																							<Badge
+																								className="site-badge-count-4"
+																								overflowCount={999}
+																								count={item.stock.minimum} />
+																						</h6>
 
-																					<div>
-																						<h6>
-																							minimum
-										</h6>
-																						<h4>
-																							{item.stock.minimum}
-																						</h4>
+
 																					</div>
 
 																				</div>
@@ -512,6 +517,13 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 											<h3>
 												Image
 			</h3>
+
+											<Tooltip
+												placement="left" title={'Click on the image to select cover image, By default 1st image is selected as cover'}>
+												<a href='###'>
+													<InfoCircleOutlined />
+												</a>
+											</Tooltip>
 										</div>
 										<div className='addProductGridContainer__item-body'>
 
@@ -520,31 +532,63 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 											<div className='aboutToUploadImagesContainer'>
 												{myImages &&
 													// @ts-ignore
-													myImages.length > 0 && myImages.map(image => {
+													myImages.length > 0 && myImages.map((image, index) => {
 														return (
 															<div className='aboutToUploadImagesContainer__item'>
 																<div
-																	onClick={() => handleImagesDelete(image.id)}
-																	className='aboutToUploadImagesContainer__item-overlay'>
-																	<DeleteOutlined />
+																	className='aboutToUploadImagesContainer__item-imgContainer'
+																	onClick={() => setCoverImageId(image.id)}
+																>
+																	<img src={image.cover} alt={image.alt} />
 																</div>
-																<img src={image.cover} alt={image.alt} />
+
+																<span
+																	onClick={() => handleImagesDelete(image.id)}
+																	className='aboutToUploadImagesContainer__item-remove'>
+																	<CloseOutlined />
+																</span>
+
+
+																{coverImageId === image.id ? (
+																	<span className='aboutToUploadImagesContainer__item-cover'>
+																		<CheckOutlined />
+																	</span>
+																) : !coverImageId && index === 0 && (
+																	<span className='aboutToUploadImagesContainer__item-cover'>
+																		<CheckOutlined />
+																	</span>
+																)}
+
+
 															</div>
 														)
 													})}
 
-												<div
-													onClick={() => {
-														setvisible(true);
-														setisModalOpenForImages(true);
-														setisModalOpenForThumbnail(false);
-													}}
-													className='aboutToUploadImagesContainer__uploadItem'>
-													<FileAddOutlined />
-													{/* <h5>
+
+												<Tooltip
+													title={'Attach images'}>
+
+													<div
+														onClick={() => {
+															setvisible(true);
+															setisModalOpenForImages(true);
+															setisModalOpenForThumbnail(false);
+														}}
+														className='aboutToUploadImagesContainer__uploadItem'>
+														{/* <FileAddOutlined />
+													<FileImageTwoTone />
+													<FileImageOutlined /> */}
+														<FileImageFilled />
+														{/* <h5>
 												     Select From Library
 											<     /h5> */}
-												</div>
+														<span className='aboutToUploadImagesContainer__uploadItem-plus'>
+															<PlusOutlined />
+														</span>
+													</div>
+												</Tooltip>
+
+
 
 											</div>
 										</div>

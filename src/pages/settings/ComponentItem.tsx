@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { AutoComplete } from 'antd';
+import { AutoComplete, Tooltip } from 'antd';
 
 import InputSmall from '../../components/Field/InputSmall';
 import MediaLibrary from '../../components/MediaLibrary';
@@ -7,7 +7,13 @@ import MediaLibrary from '../../components/MediaLibrary';
 import { useFetch } from "../../hooks";
 import {
     DeleteOutlined,
-    FileAddOutlined
+    FileAddOutlined,
+    FileImageFilled,
+    PlusOutlined,
+    CheckCircleOutlined,
+    CloseOutlined,
+    CheckOutlined,
+    InfoCircleOutlined
 } from '@ant-design/icons';
 
 
@@ -113,34 +119,57 @@ const Complete = ({ setItemsList, itemsList, componentItem }) => {
 
 
                 <h3 className='inputFieldLabel-small'>Images</h3>
+                <div style={{
+                    marginBottom: "-1px"
+                }}></div>
+
                 <div className='aboutToUploadImagesContainer'>
                     {myImages &&
                         // @ts-ignore
-                        myImages.length > 0 && myImages.map(image => {
+                        myImages.length > 0 && myImages.map((image, index) => {
                             return (
-                                <div className='aboutToUploadImagesContainer__item'>
+                                <div className='aboutToUploadImagesContainer__item aboutToUploadImagesContainer__item-small'>
                                     <div
-                                        onClick={() => handleImagesDelete(image.id)}
-                                        className='aboutToUploadImagesContainer__item-overlay'>
-                                        <DeleteOutlined />
+                                        className='aboutToUploadImagesContainer__item-imgContainer'
+                                    >
+                                        <img src={image.cover} alt={image.alt} />
                                     </div>
-                                    <img src={image.cover} alt={image.alt} />
+
+                                    <span
+                                        onClick={() => handleImagesDelete(image.id)}
+                                        className='aboutToUploadImagesContainer__item-remove'>
+                                        <CloseOutlined />
+                                    </span>
                                 </div>
                             )
                         })}
 
-                    <div
-                        onClick={() => {
-                            setvisibleMedia(true);
-                        }}
-                        className='aboutToUploadImagesContainer__uploadItem'>
-                        <FileAddOutlined />
-                        {/* <h5>
-												Select From Library
-											</h5> */}
-                    </div>
+
+                    <Tooltip
+                        title={'Attach images'}>
+
+                        <div
+                            onClick={() => {
+                                setvisibleMedia(true);
+                            }}
+                            className='aboutToUploadImagesContainer__uploadItem aboutToUploadImagesContainer__uploadItem-small'>
+                            {/* <FileAddOutlined />
+													<FileImageTwoTone />
+													<FileImageOutlined /> */}
+                            <FileImageFilled />
+                            {/* <h5>
+												     Select From Library
+											<     /h5> */}
+                            <span className='aboutToUploadImagesContainer__uploadItem-plus'>
+                                <PlusOutlined />
+                            </span>
+                        </div>
+                    </Tooltip>
 
                 </div>
+
+
+
             </div>
             <MediaLibrary
                 setvisible={setvisibleMedia}

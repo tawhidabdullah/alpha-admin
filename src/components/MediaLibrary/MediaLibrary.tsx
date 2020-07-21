@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 
 
 // import libraries
-import { Upload, Button, Modal, Tabs, message, notification, Popconfirm } from 'antd';
+import { Upload, Button, Modal, Tabs, message, notification, Popconfirm, Menu, Dropdown, } from 'antd';
 import reqwest from 'reqwest';
 import { Formik } from 'formik';
 import Moment from 'react-moment';
@@ -15,7 +15,10 @@ import {
 	InboxOutlined,
 	CheckOutlined,
 	ArrowUpOutlined,
-	CheckCircleOutlined
+	CheckCircleOutlined,
+	EllipsisOutlined,
+	FileImageOutlined,
+	DeleteOutlined
 
 } from '@ant-design/icons';
 
@@ -315,6 +318,36 @@ const MediaLibrary = ({
 	}
 
 	// console.log('selectedimages', selectedimages)
+
+	const ImageItemMenu = (handleDeleteImageFromImageLibrary, id, handleAddToSelectedList, image) => {
+		return (
+			(
+				<Menu>
+					<Menu.Item
+						onClick={() => handleAddToSelectedList(image, id)}
+						key="1" icon={<CheckOutlined />}>
+						Select
+
+					</Menu.Item>
+
+
+
+					<Menu.Item
+						onClick={() => handleDeleteImageFromImageLibrary(id)}
+						key="1" icon={<DeleteOutlined color='red' />}>
+						Delete
+					</Menu.Item>
+
+
+
+
+				</Menu >
+			)
+		)
+	};
+
+
+
 	return (
 		<>
 			<Modal
@@ -344,12 +377,13 @@ const MediaLibrary = ({
 											className='upload-list-inline'
 											listType='picture'
 											style={{
-												background: '#fff'
+												background: '#fff',
+												borderRadius: '8px'
 											}}
 											{...uploadProps}
 										>
 											<p className='ant-upload-drag-icon'>
-												<InboxOutlined />
+												<FileImageOutlined />
 											</p>
 											<p className='ant-upload-text'>Click or drag file to this area to upload</p>
 											<p className='ant-upload-hint'>
@@ -362,13 +396,15 @@ const MediaLibrary = ({
 
 
 								<Button
+									className='btnPrimaryClassNameoutline'
 									type='primary'
 									onClick={handleUpload}
 									disabled={fileList.length === 0}
 									loading={uploading}
 									icon={<ArrowUpOutlined />}
 									style={{
-										marginTop: '20px'
+										marginTop: '20px',
+										marginBottom: '10px'
 									}}
 								>
 									Upload
@@ -384,16 +420,29 @@ const MediaLibrary = ({
 											return (
 												<div
 													key={image.id}
-													onClick={() => {
-														handleAddToSelectedList(image, image.id)
-													}}
+
 													className='mediaLibraryBodyContainer-left-imageListContainer-item'>
 													{getisSelectedImage(image.id) ? <div className='mediaLibraryBodyContainer-left-imageListContainer-item-icon'>
 														<CheckOutlined
 
 														/>
 													</div> : ''}
-													<img src={image.cover} alt='img' />
+
+													<Dropdown overlay={() => ImageItemMenu(handleDeleteImageFromImageLibrary, image.id, handleAddToSelectedList, image)} placement="bottomRight">
+														<div className='mediaLibraryBodyContainer-left-imageListContainer-item-menu'>
+															<EllipsisOutlined
+
+															/>
+														</div>
+													</Dropdown>
+
+
+
+
+
+													<img onClick={() => {
+														handleAddToSelectedList(image, image.id)
+													}} src={image.cover} alt='img' />
 
 												</div>
 											)
@@ -562,7 +611,8 @@ const MediaLibrary = ({
 							}}>
 								<h4 style={{
 									textAlign: "center",
-									fontSize: "14px"
+									fontSize: "13px",
+									color: '#8888'
 								}}>
 									Select an image to preview details
 							</h4>

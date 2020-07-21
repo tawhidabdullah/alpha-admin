@@ -257,7 +257,7 @@ const CategoryList = ({history}: Props) => {
 
   const handleSearch = (value) => {
     if(categoryState.data.length > 0 ){
-      const newCategoryList = categoryState.data.filter(item => item.name.includes(value)); 
+      const newCategoryList = categoryState.data.filter(item => item.name.toLowerCase().includes(value.toLowerCase())); 
       setcategoryList(newCategoryList); 
     }
      

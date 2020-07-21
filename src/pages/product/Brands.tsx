@@ -1,6 +1,19 @@
 import React, { useEffect, useState } from 'react';
+
+
+// import hooks
 import { useHandleFetch } from '../../hooks';
-import { Select } from 'antd';
+
+// import components 
+import Empty from "../../components/Empty";
+
+
+// import libraries 
+import { Select, Button } from 'antd';
+import {
+	PlusOutlined
+} from '@ant-design/icons';
+
 
 interface Props {
 	setBrandId?: any;
@@ -52,23 +65,60 @@ const Brands = ({ setBrandId }: Props) => {
 	}, []);
 
 	return (
-		<Select
-			showSearch
-			style={{ width: 200 }}
-			placeholder='Select a Brand'
-			optionFilterProp='children'
-			onChange={onChange}
-			onFocus={onFocus}
-			onBlur={onBlur}
-			onSearch={onSearch}
-			filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-		>
-			{brandState.done &&
-				brandState.data.length > 0 &&
-				options.map((option) => {
-					return <Option value={option.value}>{option.name}</Option>;
-				})}
-		</Select>
+		<>
+
+			{brandState.done && !(brandState.data.length > 0) && (
+				<div style={{
+					width: '100%',
+					height: "100%",
+					display: "flex",
+					justifyContent: 'center',
+					alignItems: 'center'
+				}}>
+					<Empty title='No Brand found' height={100} />
+				</div>
+			)}
+
+			{brandState.done && brandState.data.length > 0 && options.length > 0 && (
+				<Select
+					showSearch
+					style={{ width: '210px', borderRadius: '6px' }}
+					placeholder='Select a Brand'
+					optionFilterProp='children'
+					onChange={onChange}
+					onFocus={onFocus}
+					onBlur={onBlur}
+					onSearch={onSearch}
+					filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+				>
+					{brandState.done &&
+						brandState.data.length > 0 &&
+						options.map((option) => {
+							return <Option value={option.value}>{option.name}</Option>;
+						})}
+				</Select>
+			)}
+
+
+
+
+
+
+
+			<div style={{
+				marginTop: '15px'
+			}}>
+
+			</div>
+			<Button
+
+				// type="primary"
+				className='btnSecondaryPlusOutline'
+				icon={<PlusOutlined />}
+			>
+				Add New
+      </Button>
+		</>
 	);
 };
 

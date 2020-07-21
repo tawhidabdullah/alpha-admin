@@ -255,7 +255,7 @@ const CustomerList = ({history}: Props) => {
   
   const handleSearch = (value) => {
     if(customerState.data.length > 0 ){
-      const newCustomerList = customerState.data.filter(item => item.name.includes(value)); 
+      const newCustomerList = customerState.data.filter(item => item.name.toLowerCase().includes(value.toLowerCase())); 
       setCustomerList(newCustomerList); 
     }
      

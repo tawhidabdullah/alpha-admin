@@ -279,7 +279,7 @@ const TagList = ({ }: Props) => {
 
 	const handleSearch = (value) => {
 		if (tagState.data.length > 0) {
-			const newTagList = tagState.data.filter(item => item.name.includes(value));
+			const newTagList = tagState.data.filter(item => item.name.toLowerCase().includes(value.toLowerCase()));
 			setTagList(newTagList);
 		}
 

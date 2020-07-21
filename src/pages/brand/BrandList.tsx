@@ -239,7 +239,7 @@ const CategoryList = ({history}: Props) => {
     
   const handleSearch = (value) => {
     if(brandState.data.length > 0 ){
-      const newBrandList = brandState.data.filter(item => item.name.includes(value)); 
+      const newBrandList = brandState.data.filter(item => item.name.toLowerCase().includes(value.toLowerCase())); 
       setBrandList(newBrandList); 
     }
      
@@ -270,7 +270,7 @@ const CategoryList = ({history}: Props) => {
             enterButton={false}
             className='searchbarClassName'
           placeholder="search brands.."
-          onSearch={value => console.log(value)}
+          onSearch={value => handleSearch(value)}
           // style={{ width: 300 }}
         />
           </div>

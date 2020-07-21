@@ -195,7 +195,8 @@ const Pricing = ({
 									style={{
 										width: '180px',
 										minHeight: '75px',
-										marginTop: '0px'
+										marginTop: '0px',
+										borderRadius: "8px"
 									}} type="dashed" icon={<PlusOutlined />}>Add Attribute</Button>
 							</div>
 
@@ -214,14 +215,21 @@ const Pricing = ({
         Add New
       </Button> */}
 
-
 			<Button
+
 				style={{
 					marginLeft: '10px'
 				}}
 				onClick={handleSavePricing}
 				disabled={getiCreatePricingIsDisabled()}
-				icon={<CheckOutlined />}> Add To Pricing </Button>
+				className='btnAddToPrice'
+				icon={<CheckOutlined />}
+			>
+				Add To Pricing
+				</Button>
+
+
+
 		</>
 	)
 }

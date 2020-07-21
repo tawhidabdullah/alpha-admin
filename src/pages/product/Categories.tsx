@@ -1,15 +1,27 @@
 import React, { useState, useEffect } from 'react';
-import { useFetch, useHandleFetch } from '../../hooks';
-import { Checkbox, Input, Tree } from 'antd';
-const CheckboxGroup = Checkbox.Group;
-const { Search } = Input;
 
+// import components 
+import Empty from "../../components/Empty";
+
+// import hoooks
+import { useHandleFetch } from '../../hooks';
+
+
+// import libraries 
+import { Input, Tree, Button } from 'antd';
+import {
+	PlusOutlined
+} from '@ant-design/icons';
+
+
+const { Search } = Input;
 
 
 
 interface Props {
 	setcategoryIds?: any;
 }
+
 
 const Categories = ({ setcategoryIds }: Props) => {
 	const [options, setoptions] = useState([]);
@@ -61,39 +73,71 @@ const Categories = ({ setcategoryIds }: Props) => {
 		}
 	};
 
-	// console.log('optons', options);
+	console.log('categoryState', categoryState);
+	console.log('optionsCat', options);
 
 
 	return (
 		<div className='addProduct__categoryBoxContainer'>
-			<div className='addProduct__categoryBoxContainer-searchBox'>
-				<Search
-					width={'100%'}
-					style={{
-						height: '30px',
-						borderRadius: '3px !important',
-						borderColor: '#eee !important'
-					}}
-					size='middle'
-					placeholder='category name'
-					onSearch={(value) => console.log(value)}
-					onChange={onSearchChange}
-				/>
-			</div>
 
+			{categoryState.done && !(categoryState.data.length > 0) && (
+				<div style={{
+					width: '100%',
+					height: "100%",
+					display: "flex",
+					justifyContent: 'center',
+					alignItems: 'center'
+				}}>
+					<Empty title='No category found' height={100} />
+				</div>
+			)}
+
+			{categoryState.done && categoryState.data.length > 0 && options.length > 0 && (
+				<>
+					<div className='addProduct__categoryBoxContainer-searchBox'>
+						<Search
+							width={'100%'}
+							style={{
+								height: '30px',
+								borderRadius: '3px !important',
+								borderColor: '#eee !important'
+							}}
+							size='middle'
+							placeholder='cloths, grocery'
+							onSearch={(value) => console.log(value)}
+							onChange={onSearchChange}
+						/>
+					</div>
+
+					<div style={{
+						// marginLeft: "-20px",
+					}}>
+						{options.length > 0 && (
+							<Tree
+								checkable
+								onSelect={onSelect}
+								onCheck={onCheck}
+								treeData={options}
+								defaultExpandAll={true}
+							/>
+						)}
+					</div>
+				</>
+
+			)}
 			<div style={{
-				marginLeft: "-20px",
+				marginTop: '15px'
 			}}>
-				<Tree
 
-					checkable
-					onSelect={onSelect}
-					onCheck={onCheck}
-					treeData={options}
-					defaultExpandAll={true}
-				/>
 			</div>
+			<Button
 
+				// type="primary"
+				className='btnSecondaryPlusOutline'
+				icon={<PlusOutlined />}
+			>
+				Add New
+      </Button>
 
 			{/* <CheckboxGroup options={options} value={checkedList} onChange={onChange} /> */}
 		</div>

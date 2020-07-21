@@ -258,15 +258,11 @@ const CustomerList = ({history}: Props) => {
 
   const handleSearch = (value) => {
     if(regionState.data.length > 0 ){
-      const newTagList = regionState.data.filter(item => item.name.includes(value)); 
+      const newTagList = regionState.data.filter(item => item.name.toLowerCase().includes(value.toLowerCase())); 
       setRegionList(newTagList); 
     }
      
   }
-
-
-
-
 
 
 

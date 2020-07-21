@@ -93,8 +93,10 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, componen
                 ...addComponentRes
             }])
             actions.resetForm();
+            setItemsList([])
             setAddNewCategoryVisible(false);
         }
+
         else {
             openErrorNotification();
         }
@@ -243,7 +245,8 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, componen
                                     style={{
                                         width: '290px',
                                         minHeight: '145px',
-                                        marginTop: '0px'
+                                        marginTop: '0px',
+                                        borderRadius: '8px'
                                     }} type="dashed" icon={<PlusOutlined />}>Add Childrens</Button>
                             </div>
 

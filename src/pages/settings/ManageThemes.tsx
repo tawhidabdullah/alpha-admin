@@ -197,13 +197,19 @@ const CustomerList = ({history}: Props) => {
                   >
                     <Tooltip placement='top' title='Active this theme'>
                     <Button
+                  
                    size='small'
                    className='btnPrimaryClassNameoutline'
                    icon={<CheckOutlined />}
                    onClick={() => handleActiveTheme(theme.id)}
                   >
-                  Set Active
+                    <span style={{
+                      fontSize:'11px'
+                    }}>
+                    Set Active
                  
+                    </span>
+                
                  </Button>
      
      

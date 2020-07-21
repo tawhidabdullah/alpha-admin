@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { AutoComplete, Button } from 'antd';
+import { AutoComplete, Button, Tooltip } from 'antd';
+
+// import configs
+import config from "../../config.json";
 
 import InputSmall from '../../components/Field/InputSmall';
 import MediaLibrary from '../../components/MediaLibrary';
@@ -8,13 +11,18 @@ import { useFetch } from "../../hooks";
 import {
     DeleteOutlined,
     FileAddOutlined, 
-    SaveOutlined
+    SaveOutlined,
+    FileImageFilled,
+    PlusOutlined,
+    CheckCircleOutlined,
+    CloseOutlined,
+    CheckOutlined,
+    InfoCircleOutlined
 } from '@ant-design/icons';
 
 
 
 const Complete = ({ setComponentList, componentList, item, component,componentUpdate }) => {
-
 
     const [localComponentItem, setlocalComponentItem] = useState({
         title: item.title,
@@ -36,12 +44,17 @@ const Complete = ({ setComponentList, componentList, item, component,componentUp
         });
     };
 
+
+
+
+
+
     useEffect(() => {
         if (myImages.length > 0) {
-            const newImages = myImages.map(item => item.id);
             setlocalComponentItem({
                 ...localComponentItem,
-                image: [...newImages]
+                // @ts-ignore
+                image: [...new Set([...localComponentItem.image, ...myImages])]
             })
         }
         else {
@@ -57,11 +70,15 @@ const Complete = ({ setComponentList, componentList, item, component,componentUp
 
 
 
-
     const handleImagesDelete = (id) => {
         // @ts-ignore
-        const newImages = myImages && myImages.filter(image => {
+        const newImages = localComponentItem.image && localComponentItem.image.length > 0 && localComponentItem.image.filter(image => {
             return image.id !== id;
+        })
+
+        setlocalComponentItem({
+            ...localComponentItem,
+            image: [...newImages]
         })
 
         setmyImages(newImages);
@@ -75,10 +92,11 @@ const Complete = ({ setComponentList, componentList, item, component,componentUp
 
 
 
+    console.log('itemComponent',item)
+    console.log('localComponentItem',localComponentItem)
+
     return (
         <>
-
-
             <div
                 style={{
                     width: '100%',
@@ -107,34 +125,54 @@ const Complete = ({ setComponentList, componentList, item, component,componentUp
 
 
                 <h3 className='inputFieldLabel-small'>Images</h3>
+                <div style={{
+                    marginBottom: "-1px"
+                }}></div>
+
+
                 <div className='aboutToUploadImagesContainer'>
-                    {myImages &&
+                    {localComponentItem.image &&
                         // @ts-ignore
-                        myImages.length > 0 && myImages.map(image => {
+                        localComponentItem.image.length > 0 && localComponentItem.image.map((image, index) => {
+                            console.log('goddamnin',image.cover)
                             return (
-                                <div className='aboutToUploadImagesContainer__item'>
+                                <div className='aboutToUploadImagesContainer__item aboutToUploadImagesContainer__item-small'>
                                     <div
-                                        onClick={() => handleImagesDelete(image.id)}
-                                        className='aboutToUploadImagesContainer__item-overlay'>
-                                        <DeleteOutlined />
+                                        className='aboutToUploadImagesContainer__item-imgContainer'
+                                    >
+                                        <img src={image.cover} alt={image.alt} />
                                     </div>
-                                    <img src={image.cover} alt={image.alt} />
+
+                                    <span
+                                        onClick={() => handleImagesDelete(image.id)}
+                                        className='aboutToUploadImagesContainer__item-remove'>
+                                        <CloseOutlined />
+                                    </span>
                                 </div>
                             )
                         })}
 
-                    <div
-                        onClick={() => {
-                            setvisibleMedia(true);
-                        }}
-                        className='aboutToUploadImagesContainer__uploadItem'>
-                        <FileAddOutlined />
-                        {/* <h5>
-												Select From Library
-											</h5> */}
-                    </div>
 
-        
+                    <Tooltip
+                        title={'Attach images'}>
+
+                        <div
+                            onClick={() => {
+                                setvisibleMedia(true);
+                            }}
+                            className='aboutToUploadImagesContainer__uploadItem aboutToUploadImagesContainer__uploadItem-small'>
+                            {/* <FileAddOutlined />
+													<FileImageTwoTone />
+													<FileImageOutlined /> */}
+                            <FileImageFilled />
+                            {/* <h5>
+												     Select From Library
+											<     /h5> */}
+                            <span className='aboutToUploadImagesContainer__uploadItem-plus'>
+                                <PlusOutlined />
+                            </span>
+                        </div>
+                    </Tooltip>
 
                 </div>
                 <Button
