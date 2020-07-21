@@ -6,9 +6,7 @@
 	opacity: 0.8;
 }
 
-.ant-tabs-tab-active {
-	color: #333 !important;
-}
+
 
 .ant-tabs-tab:hover {
 	color: #333 !important;
@@ -884,9 +882,25 @@
 // antd badge count 
 
 .ant-badge-count {
-	background-color: #188fff1a;
+	background-color: #188fff0e;
 	color: #1890ff;
 	display: inline-block	;
 	margin-left: 10px ;
 	font-size: 11px;
+}
+
+// ant tabs tab 
+.ant-tabs-tab-active {
+	// color: #333 !important;
+}
+
+.ant-tabs-tab-active{
+
+}
+
+.ant-tabs-tab{
+	background-color: #fff !important;
+	// border: none !important;
+	border-radius: 8px;
+
 }

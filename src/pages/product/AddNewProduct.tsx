@@ -378,9 +378,11 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 										<div className='addProductGridContainer__item-body'>
 
 											<Tabs
-
+												animated={true}
+												tabPosition="top"
 												type='card'
 											>
+
 												<TabPane tab="Add Variation" key="1">
 													<Pricing handleAddPricing={handleAddPricing} />
 												</TabPane>
@@ -408,7 +410,7 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 
 																				{item.price.offer ? (
 																					<>
-																						<h4>
+																						<h4 >
 																							{item.price.offer}
 
 																						</h4>

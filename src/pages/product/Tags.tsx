@@ -40,6 +40,18 @@ const Tags = ({
     const nextSelectedTags = checked ? [...selectedTags, tag] : selectedTags.filter(t => t !== tag);
     console.log('You are interested in: ', nextSelectedTags);
     setSelectedTags(nextSelectedTags);
+
+    if (tagState.done && tagState.data.length > 0 && nextSelectedTags.length > 0) {
+      const selectedCategoryIds = nextSelectedTags.map((item) => {
+        const selectedcategory = tagState.data.find(
+          (cat) => cat.name.toLowerCase() === item.toLowerCase()
+        );
+        if (selectedcategory) {
+          return selectedcategory.id;
+        }
+      });
+      setTagIds(selectedCategoryIds);
+    }
   }
 
 

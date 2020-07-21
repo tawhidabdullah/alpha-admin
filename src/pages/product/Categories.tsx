@@ -119,6 +119,7 @@ const Categories = ({ setcategoryIds }: Props) => {
 								onCheck={onCheck}
 								treeData={options}
 								defaultExpandAll={true}
+								checkStrictly={true}
 							/>
 						)}
 					</div>
