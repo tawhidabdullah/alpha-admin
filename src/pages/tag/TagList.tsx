@@ -33,6 +33,7 @@ import Input from '../../components/Field/Input';
 import TextArea from '../../components/Field/TextArea';
 import { DataTableSkeleton } from "../../components/Placeholders";
 import QuickEdit from "./QuickEdit"
+import AddNewTag from "./AddNewTag"
 
 
 
@@ -46,7 +47,7 @@ const openSuccessNotification = (message?: any) => {
 
 
 const openErrorNotification = (message?: any) => {
-	notification.success({
+	notification.error({
 		message: message || 'Something Went Wrong',
 		description: '',
 		icon: <CheckCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
@@ -235,7 +236,7 @@ const TagList = ({ }: Props) => {
 				}
 			},
 			body: {
-				name: values.name,
+				name: values.name.trim(),
 				description: values.description,
 			},
 		});
@@ -289,90 +290,17 @@ const TagList = ({ }: Props) => {
 
 
 	return (
-		<div className='site-layout-background' style={{ padding: '30px 20px 30px 20px', minHeight: 360 }}>
-			<div className='addproductSectionTitleContainer'>
-				<h2 className='addprouctSectionTitle'>Add Tag</h2>
-			</div>
-			<div className='addproductSectionContainer addproductSectionContainer-tags'>
-				<div className='addproductSection addproductSection-left'>
-					<Formik
-						onSubmit={(values, actions) => handleSubmit(values, actions)}
-						validationSchema={validationSchema}
-						validateOnBlur={false}
-						enableReinitialize={true}
-						initialValues={
-							{ ...initialValues }
-						}
-					>
-						{({
-							handleChange,
-							values,
-							handleSubmit,
-							errors,
-							isValid,
-							isSubmitting,
-							touched,
-							handleBlur,
-							setFieldTouched,
-							handleReset,
-
-						}) => (
-								<>
-									<Input
-										label='Title'
-										value={values.name}
-										name='name'
-										isError={(touched.name && errors.name) ||
-											(!isSubmitting && addTagState.error['error']['name'])}
-
-										errorString={(touched.name && errors.name) ||
-											(!isSubmitting && addTagState.error['error']['name'])}
-										onChange={(e: any) => {
-											handleChange(e);
-											setFieldTouched('name');
-										}}
-									/>
-									<TextArea
-										label='Description'
-										value={values.description}
-										name='description'
-										isError={(touched.description && errors.description) ||
-											(!isSubmitting && addTagState.error['error']['description'])}
-
-										errorString={(touched.description && errors.description) ||
-											(!isSubmitting && addTagState.error['error']['description'])}
-										onChange={(e: any) => {
-											handleChange(e);
-											setFieldTouched('description');
-										}}
-									/>
-
-
-									<Button
-										type='primary'
-										onClick={(e: any) => handleSubmit(e)}
-										disabled={getisSubmitButtonDisabled(values, isValid)}
-										loading={isSubmitting}
-
-									>
-										Create
-					</Button>
-								</>
-							)}
-					</Formik>
-
-
-				</div>
-				<div className='addproductSection addproductSection-right'>
-
-					<div className='categoryListContainer'>
+		<>
+	
+	
+	<div className='categoryListContainer'>
 						<div className='categoryListContainer__header'>
 
 
 							<div className='categoryListContainer__header-searchBar-tag'>
-								{/* <h2 className='categoryListContainer__header-title'>
-            Brand
-            </h2> */}
+								<h2 className='categoryListContainer__header-title'>
+            Tags
+            </h2>
 
 
 								<Search
@@ -382,7 +310,7 @@ const TagList = ({ }: Props) => {
 									onSearch={value => handleSearch(value)}
 								/>
 							</div>
-							{/* <Button
+							<Button
           // type="primary"
           className='btnPrimaryClassNameoutline'
           icon={<PlusOutlined />}
@@ -390,18 +318,8 @@ const TagList = ({ }: Props) => {
         >
         Add New
             
-            </Button> */}
+            </Button>
 						</div>
-
-						<div className='categoryListContainer__afterHeader'>
-							{/* <Search
-								placeholder="search categories.."
-								size="large"
-								onSearch={value => console.log(value)}
-								style={{ width: 300 }}
-								/> */}
-						</div>
-
 						<div className='categoryListContainer__categoryList'>
 							{tagState.done && tagList.length > 0 && <MyTable
 								setTagList={setTagList}
@@ -419,9 +337,13 @@ const TagList = ({ }: Props) => {
 						</div>
 					</div>
 
-				</div>
-			</div>
-		</div>
+		<AddNewTag 
+		tagList={tagList}
+		setTagList={setTagList}
+		addNewCategoryVisible={addNewCategoryVisible}
+		setAddNewCategoryVisible={setAddNewCategoryVisible}
+		/>
+		</>
 	);
 };
 

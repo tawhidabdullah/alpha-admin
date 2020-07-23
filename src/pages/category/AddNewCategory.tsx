@@ -96,7 +96,7 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, categ
 		const addCategoryRes = await handleAddCategoryFetch({
 
 			body: {
-				name: values.name,
+				name: values.name.trim(),
 				description: values.description,
 				image: imagesIds,
 				cover: coverImageId || imagesIds[0] ? imagesIds[0] : '',
@@ -105,19 +105,27 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, categ
 		});
 
 
+		console.log('ok', addCategoryRes)
+
 		// @ts-ignore
 		if (addCategoryRes && addCategoryRes.status === 'ok') {
 			openSuccessNotification('Category Created!');
 
 			setcategoryList([...categoryList, {
-				id: addCategoryRes['id'] || '',
-				key: addCategoryRes['id'] || '',
+				id: addCategoryRes['_id'] || '',
+				key: addCategoryRes['_id'] || '',
 				name: addCategoryRes['name'] || '',
 				description: addCategoryRes['description'] || '',
 				// @ts-ignore
 				...addCategoryRes
 			}])
+
 			actions.resetForm();
+			// @ts-ignore
+			setmyImages([]);
+			setCoverImageId('')
+			setselectedParentId('')
+			setisparentcategoryChecked(true);
 			setAddNewCategoryVisible(false)
 		}
 		else {
@@ -255,7 +263,9 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, categ
 							}}></div>
 
 							<div className='switchLabelContainer'>
-								<Switch defaultChecked onChange={onSwitchChange} />
+								<Switch
+									checked={isparentCategoryChecked}
+									defaultChecked onChange={onSwitchChange} />
 								<div className='switchLabelContainer-textContainer'>
 									<h5 >Top level Category</h5>
 									<h5 className='switchLabelContainer-desc'>Disable to select a Parent Category</h5>

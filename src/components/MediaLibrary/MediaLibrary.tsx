@@ -12,7 +12,6 @@ import Moment from 'react-moment';
 
 
 import {
-	InboxOutlined,
 	CheckOutlined,
 	ArrowUpOutlined,
 	CheckCircleOutlined,
@@ -87,7 +86,6 @@ const MediaLibrary = ({
 	const [uploading, setuploading] = useState(false);
 	const [selectedimages, setselectedImages] = useState([]);
 	const [activeImageItem, setactiveImageItem] = useState(false);
-	const [addMediaLibrary, handleAddMediaLibraryFetch] = useHandleFetch({}, 'addImageToLibrary');
 	const [updateMediaLibrary, handleUpdateMediaLibraryFetch] = useHandleFetch({}, 'updateImageFromLibrary');
 	const [imageListFromLibraryState, handleImageListFromLibraryFetch] = useHandleFetch({}, 'ImageListFromLibrary');
 	const [deleteImageFromLibraryFetchState, handleDeleteImageFromLibraryFetch] = useHandleFetch({}, 'deleteImageFromLibrary');
@@ -615,7 +613,7 @@ const MediaLibrary = ({
 									color: '#8888'
 								}}>
 									Select an image to preview details
-							</h4>
+								</h4>
 							</div>
 						)}
 

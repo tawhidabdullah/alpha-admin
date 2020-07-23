@@ -9,10 +9,10 @@ import React from 'react';
 
 // import libraries 
 import { LogoutOutlined } from '@ant-design/icons';
-
+import { Layout } from 'antd';
+const { Header } = Layout;
 
 // import styles
-import { HeaderStyle as Header, Title } from "./style";
 
 
 
@@ -25,11 +25,26 @@ const HeaderComponent = (props: Props) => {
 
     return (
         <Header
-
+            style={{
+                background: '#fff',
+                height: '60px',
+                display: 'flex',
+                justifyContent: 'space-between',
+                boxShadow: '0 0.46875rem 2.1875rem rgba(8,10,37,.01), 0 0.9375rem 1.40625rem rgba(8,10,37,.01), 0 0.25rem 0.53125rem rgba(8,10,37,.02), 0 0.125rem 0.1875rem rgba(8,10,37,.01)',
+                zIndex: 10,
+                transition: ' all .2s',
+                alignItems: 'center',
+                alignContent: 'center'
+            }}
         >
-            <Title>
+            <h2
+                style={{
+                    color: '#0072EA', marginTop: '10px', marginLeft: '-20px'
+
+                }}
+            >
                 Admin
-            </Title>
+            </h2>
 
 
             <div

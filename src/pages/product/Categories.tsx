@@ -8,7 +8,7 @@ import { useHandleFetch } from '../../hooks';
 
 
 // import libraries 
-import { Input, Tree, Button } from 'antd';
+import { Input, Tree, Button, Spin } from 'antd';
 import {
 	PlusOutlined
 } from '@ant-design/icons';
@@ -20,10 +20,12 @@ const { Search } = Input;
 
 interface Props {
 	setcategoryIds?: any;
+	categoryOptions?: any;
+	setCategoryOptions?: any;
 }
 
 
-const Categories = ({ setcategoryIds }: Props) => {
+const Categories = ({ setcategoryIds, categoryOptions, setCategoryOptions }: Props) => {
 	const [options, setoptions] = useState([]);
 	const [searchValue, setsearchValue] = useState('');
 
@@ -49,7 +51,9 @@ const Categories = ({ setcategoryIds }: Props) => {
 
 
 	const onCheck = (checkedKeys, info) => {
-		setcategoryIds(checkedKeys);
+		const checkedIds = checkedKeys.checked || [];
+		setcategoryIds(checkedIds);
+		setCategoryOptions(checkedIds);
 	};
 
 	const onSearchChange = (e) => {
@@ -79,6 +83,20 @@ const Categories = ({ setcategoryIds }: Props) => {
 
 	return (
 		<div className='addProduct__categoryBoxContainer'>
+
+			{categoryState.isLoading && (
+				<div style={{
+					padding: '15px 0',
+					width: '100%',
+					height: "100%",
+					display: "flex",
+					justifyContent: 'center',
+					alignItems: 'center'
+				}}>
+					<Spin />
+				</div>
+			)}
+
 
 			{categoryState.done && !(categoryState.data.length > 0) && (
 				<div style={{
@@ -115,6 +133,7 @@ const Categories = ({ setcategoryIds }: Props) => {
 						{options.length > 0 && (
 							<Tree
 								checkable
+								checkedKeys={categoryOptions}
 								onSelect={onSelect}
 								onCheck={onCheck}
 								treeData={options}
@@ -126,7 +145,7 @@ const Categories = ({ setcategoryIds }: Props) => {
 				</>
 
 			)}
-			<div style={{
+			{/* <div style={{
 				marginTop: '15px'
 			}}>
 
@@ -138,7 +157,7 @@ const Categories = ({ setcategoryIds }: Props) => {
 				icon={<PlusOutlined />}
 			>
 				Add New
-      </Button>
+      </Button> */}
 
 			{/* <CheckboxGroup options={options} value={checkedList} onChange={onChange} /> */}
 		</div>

@@ -91,7 +91,7 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, brandLis
 		const addBrandRes = await handleAddBrandFetch({
 
 			body: {
-				name: values.name,
+				name: values.name.trim(),
 				description: values.description,
 				type: values.type,
 				image: imagesIds,
@@ -138,7 +138,7 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, brandLis
 
 
 	const getisSubmitButtonDisabled = (values, isValid) => {
-		if (!values.name && !values.description || !isValid) {
+		if (!values.name || !isValid) {
 			return true;
 		}
 		return false;

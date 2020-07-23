@@ -4,7 +4,7 @@ const { Header } = Layout;
 
 
 const HeaderStyle = styled(Header)`
-background: '#fff !important',
+background: '#fff',
 height: '60px',
 display: 'flex',
 justifyContent: 'space-between',

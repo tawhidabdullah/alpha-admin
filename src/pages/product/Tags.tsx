@@ -9,7 +9,7 @@ import Empty from "../../components/Empty";
 
 
 // import libraries 
-import { Button, Tag, Input } from 'antd';
+import { Button, Tag, Input, Spin } from 'antd';
 import {
   PlusOutlined
 } from '@ant-design/icons';
@@ -23,16 +23,19 @@ const tagsData = ['Movies', 'Books', 'Music', 'Sports'];
 
 interface Props {
   setTagIds?: any;
+  selectedTags?: any;
+  setSelectedTags?: any;
 }
 
 
 const Tags = ({
-  setTagIds
+  setTagIds,
+  setSelectedTags,
+  selectedTags
 }: Props) => {
   const [options, setoptions] = useState([]);
   const [selectedOpions, setselectedOptions] = useState([]);
   const [tagState, handleTagListFetch] = useHandleFetch({}, 'tagList');
-  const [selectedTags, setSelectedTags] = useState([]);
   const [searchValue, setsearchValue] = useState('');
 
 
@@ -129,6 +132,20 @@ const Tags = ({
   return (
     <>
 
+      {tagState.isLoading && (
+        <div style={{
+          padding: '15px 0',
+          width: '100%',
+          height: "100%",
+          display: "flex",
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}>
+          <Spin />
+        </div>
+      )}
+
+
       {tagState.done && !(tagState.data.length > 0) && (
         <div style={{
           width: '100%',
@@ -191,7 +208,7 @@ const Tags = ({
 
 
 
-
+      {/* 
       <div style={{
         marginTop: '15px'
       }}>
@@ -204,7 +221,7 @@ const Tags = ({
         icon={<PlusOutlined />}
       >
         Add New
-      </Button>
+      </Button> */}
     </>
   )
 }

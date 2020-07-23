@@ -9,7 +9,7 @@ import Empty from "../../components/Empty";
 
 
 // import libraries 
-import { Select, Button } from 'antd';
+import { Select, Button, Spin } from 'antd';
 import {
 	PlusOutlined
 } from '@ant-design/icons';
@@ -67,6 +67,21 @@ const Brands = ({ setBrandId }: Props) => {
 	return (
 		<>
 
+			{brandState.isLoading && (
+				<div style={{
+					padding: '15px 0',
+					width: '100%',
+					height: "100%",
+					display: "flex",
+					justifyContent: 'center',
+					alignItems: 'center'
+				}}>
+					<Spin />
+				</div>
+			)}
+
+
+
 			{brandState.done && !(brandState.data.length > 0) && (
 				<div style={{
 					width: '100%',
@@ -104,7 +119,7 @@ const Brands = ({ setBrandId }: Props) => {
 
 
 
-
+			{/* 
 			<div style={{
 				marginTop: '15px'
 			}}>
@@ -117,7 +132,7 @@ const Brands = ({ setBrandId }: Props) => {
 				icon={<PlusOutlined />}
 			>
 				Add New
-      </Button>
+      </Button> */}
 		</>
 	);
 };

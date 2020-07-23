@@ -331,7 +331,7 @@ const CategoryList = ({history}: Props) => {
     <AddNewCategory 
           addNewCategoryVisible={addNewCategoryVisible} 
           setAddNewCategoryVisible={setAddNewCategoryVisible}
-          categoryList={categoryState.data}
+          categoryList={categoryList}
           setcategoryList={setcategoryList}
           
            />}

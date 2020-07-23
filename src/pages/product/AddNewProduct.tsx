@@ -79,9 +79,13 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 	const [brandId, setBrandId] = useState('');
 	const [pricing, setPricing] = useState([]);
 	const [coverImageId, setCoverImageId] = useState('');
+	const [categoryOptions, setCategoryOptions] = useState([]);
+	const [selectedTags, setSelectedTags] = useState([]);
 
 
-
+	const makeEmptyCategoryOptions = (setEmpty) => {
+		setEmpty([]);
+	}
 
 	const handleSubmit = async (values: any, actions: any) => {
 		// @ts-ignore
@@ -94,7 +98,7 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 		const addProductRes = await handleAddProductFetch({
 
 			body: {
-				name: values.name,
+				name: values.name.trim(),
 				description: values.description,
 				model: values.model,
 				unit: values.unit,
@@ -122,13 +126,20 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 				...addProductRes
 			}])
 			setAddNewCategoryVisible(false)
+			// @ts-ignore
+			setmyImages([]);
+			setCoverImageId('');
+			setPricing([]);
+			setTagIds([]);
+			setSelectedTags([]);
+			setBrandId("");
+			setcategoryIds([]);
+			setCategoryOptions([]);
 			actions.resetForm();
 		}
 		else {
 			// openErrorNotification();
 		}
-
-
 
 		actions.setSubmitting(false);
 
@@ -464,7 +475,7 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 																	</div>
 
 																	{item.attribute
-																		&& Object.keys(item.attribute).length > 0 && (
+																		&& Object.values(item.attribute).length > 0 && (
 																			<>
 																				<h3>
 																					Attributes
@@ -619,7 +630,8 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 											</div>
 											<div className='addProductGridContainer-rightItemContainer-body'>
 												<Categories
-
+													setCategoryOptions={setCategoryOptions}
+													categoryOptions={categoryOptions}
 													setcategoryIds={setcategoryIds} />
 											</div>
 										</div>
@@ -634,7 +646,10 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 				</h3>
 											</div>
 											<div className='addProductGridContainer-rightItemContainer-body'>
-												<Tags setTagIds={setTagIds} />
+												<Tags
+													setSelectedTags={setSelectedTags}
+													selectedTags={selectedTags}
+													setTagIds={setTagIds} />
 											</div>
 										</div>
 
