@@ -5,7 +5,7 @@ import * as Yup from 'yup';
 
 import { useHandleFetch } from '../../hooks';
 // import third party ui lib
-import { Switch, Select, notification, Modal, Tooltip } from 'antd';
+import { Switch, Select, notification, Modal, Tooltip, Upload, message } from 'antd';
 
 import {
 	DeleteOutlined,
@@ -15,7 +15,8 @@ import {
 	CheckCircleOutlined,
 	CloseOutlined,
 	CheckOutlined,
-	InfoCircleOutlined
+	InfoCircleOutlined,
+	LoadingOutlined
 } from '@ant-design/icons';
 
 
@@ -74,7 +75,7 @@ interface Props {
 
 const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, categoryList, setcategoryList }: Props) => {
 
-	const [addCategoryState, handleAddCategoryFetch] = useHandleFetch({}, 'addCategory');
+	const [addCategoryState, handleAddCategoryFetch] = useHandleFetch({}, 'addCategory', 'form');
 	const [visible, setvisible] = useState(false);
 	const [myImages, setmyImages] = useState(false);
 	const [myThumbnailImage, setmyThumbnailImage] = useState(false);
@@ -83,7 +84,11 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, categ
 	const [isModalOpenForImages, setisModalOpenForImages] = useState(false);
 	const [selectedParentId, setselectedParentId] = useState('');
 	const [coverImageId, setCoverImageId] = useState('');
+	const [imageUrl, setImageUrl] = useState('');
+	const [loadingThumnail, setLoadingThumbnail] = useState(false);
 
+
+	console.log('addCategoryState', addCategoryState)
 
 
 
@@ -93,19 +98,23 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, categ
 			return image.id;
 		}) : [];
 
+		const formData = new FormData();
+
+		formData.append("name", values.name.trim());
+		formData.append("description", values.description);
+		formData.append("image", imagesIds);
+		formData.append("cover", coverImageId || imagesIds[0] ? imagesIds[0] : '');
+		formData.append("parent", selectedParentId);
+		formData.append('icon', imageUrl)
+
+
+
 		const addCategoryRes = await handleAddCategoryFetch({
 
-			body: {
-				name: values.name.trim(),
-				description: values.description,
-				image: imagesIds,
-				cover: coverImageId || imagesIds[0] ? imagesIds[0] : '',
-				parent: selectedParentId
-			},
+			body: formData,
 		});
 
 
-		console.log('ok', addCategoryRes)
 
 		// @ts-ignore
 		if (addCategoryRes && addCategoryRes.status === 'ok') {
@@ -127,6 +136,7 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, categ
 			setselectedParentId('')
 			setisparentcategoryChecked(true);
 			setAddNewCategoryVisible(false)
+			setImageUrl('');
 		}
 		else {
 			openErrorNotification();
@@ -182,13 +192,46 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, categ
 	}
 
 
-
-
-
-
 	const onChangeSelect = (value) => {
 		setselectedParentId(value);
 	}
+
+
+
+
+	function getBase64(img, callback) {
+		const reader = new FileReader();
+		reader.addEventListener('load', () => callback(reader.result));
+		reader.readAsDataURL(img);
+	}
+
+
+	function beforeUpload(file) {
+		const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+		if (!isJpgOrPng) {
+			message.error('You can only upload JPG/PNG file!');
+		}
+		const isLt2M = file.size / 1024 / 1024 < 2;
+		if (!isLt2M) {
+			message.error('Image must smaller than 2MB!');
+		}
+
+
+		getBase64(file, imageUrl => {
+			setImageUrl(imageUrl)
+			setLoadingThumbnail(false)
+		})
+
+		return false;
+	}
+
+
+	const uploadButton = (
+		<div>
+			{loadingThumnail ? <LoadingOutlined /> : <PlusOutlined />}
+			<div className="ant-upload-text">Upload</div>
+		</div>
+	);
 
 
 	return (
@@ -294,6 +337,40 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, categ
 									</Select>
 								</>
 							)}
+
+
+							<div
+								style={{
+									marginTop: '20px'
+								}}
+							/>
+
+
+							<div className='addproductSection-left-header' >
+								<h3 className='inputFieldLabel'>Icon </h3>
+								<Tooltip
+									placement="left" title={'Add Icon image for this category'}>
+									<a href='###'>
+										<InfoCircleOutlined />
+									</a>
+								</Tooltip>
+							</div>
+
+							<Upload
+								style={{
+									borderRadius: "8px"
+								}}
+								name="avatar"
+								listType="picture-card"
+								className="avatar-uploader"
+								showUploadList={false}
+								beforeUpload={beforeUpload}
+								multiple={false}
+							>
+								{imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
+							</Upload>
+
+
 							<div
 								style={{
 									marginTop: '20px'

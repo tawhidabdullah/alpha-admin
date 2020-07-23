@@ -402,7 +402,11 @@ class Converter {
 					url: product.url,
 					unit: product.unit,
 					category: product.category,
-					pricing: product.pricing
+					pricing: product.pricing,
+					price:
+						parseInt(product.price['offer']) > parseInt(product.price['regular'])
+							? product.price['offer']
+							: product.price['regular'],
 				};
 			});
 

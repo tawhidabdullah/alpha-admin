@@ -151,9 +151,9 @@ const SiderComponent = (props: any) => {
                     {/* <Menu.Item key='21'>
 						<Link to='/settings/image'>Image</Link>
 					</Menu.Item> */}
-                    <Menu.Item key='22'>
+                    {/* <Menu.Item key='22'>
                         <Link to='/admin/settings/invoice'>Invoice</Link>
-                    </Menu.Item>
+                    </Menu.Item> */}
 
                 </SubMenu>
             </Menu>

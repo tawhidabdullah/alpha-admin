@@ -79,7 +79,7 @@ interface Props {
 
 const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, themeList, setThemeList }: Props) => {
 
-    const [addThemeState, handleAddthemeFetch] = useHandleFetch({}, 'addTheme');
+    const [addThemeState, handleAddthemeFetch] = useHandleFetch({}, 'addTheme', 'form');
     const [myImages, setmyImages] = useState(false);
     const [visibleMedia, setvisibleMedia] = useState(false);
     const [myThumbnailImage, setmyThumbnailImage] = useState([]);

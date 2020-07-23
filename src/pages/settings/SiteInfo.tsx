@@ -241,7 +241,7 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, brandLis
 					</TabPane> */}
 
 
-					<TabPane tab="Invoice Information" key="2">
+					<TabPane tab="Admin Information" key="2">
 
 						<SiteInfoInvoice />
 					</TabPane>

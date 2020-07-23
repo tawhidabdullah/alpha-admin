@@ -54,7 +54,8 @@ const dataFetchReducer = (state: IState, action: Actions) => {
 
 const useHandleFetch = (
   initialData: TInitialData,
-  item: TItem
+  item: TItem,
+  format?: string
 ): [IState, (values: any) => void] => {
   const initialState: IState = {
     isLoading: false,
@@ -73,7 +74,7 @@ const useHandleFetch = (
 
     try {
       // @ts-ignore
-      let data = await connector.request(item, 'json', options);
+      let data = await connector.request(item, format || 'json', options);
       dispatch({ type: 'FETCH_SUCCESS', payload: data });
       return data;
     } catch (error) {

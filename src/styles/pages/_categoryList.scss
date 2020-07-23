@@ -39,12 +39,12 @@
 
 	&__bodyContainerList {
 		display: flex;
+		flex-wrap: wrap;
 		&-item {
 			margin: 20px;
 			padding: 20px;
-			border: 1px solid #f1f1f1;
-			box-shadow: 1px 1px 1px #bdd7eb3a;
-			border-radius: 5px;
+			box-shadow: 0 0.125rem 0.625rem rgba(227, 231, 250, 0.4), 0 0.0625rem 0.125rem rgba(206, 220, 233, 0.5) !important;
+			border-radius: 8px;
 			// background-color: rgba(238, 192, 106, 0.877);
 			&-top {
 				width: 150px;

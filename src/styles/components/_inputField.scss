@@ -904,3 +904,16 @@
 	border-radius: 8px;
 
 }
+
+// ant uploader 
+
+.ant-upload.ant-upload-select.ant-upload-select-picture-card {
+	border-radius: 8px;
+	color: rgba(197, 194, 194, 0.863);
+	transition: all 300ms;
+	box-shadow: 0 0.125rem 0.625rem rgba(227, 231, 250, 0.4), 0 0.0625rem 0.125rem rgba(206, 220, 233, 0.5) !important;
+	width: 90px;
+	height: 90px; 
+	background-color: #f7f7f7 !important;
+
+}

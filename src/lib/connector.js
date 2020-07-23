@@ -35,7 +35,7 @@ class Connector {
       method: api.method,
       credentials: 'include',
       headers: new Headers({
-        ...(item !== 'addTheme' && {
+        ...(format === 'json' && {
           'Content-Type': 'application/json',
         }),
         // "Content-Type": "application/x-www-form-urlencoded",
@@ -44,7 +44,7 @@ class Connector {
         }),
       }),
 
-      ...(item !== 'addTheme' ? {
+      ...(format === 'json' ? {
         body: api.method !== 'get' ? JSON.stringify(options.body) : null,
       } : {
           body: api.method !== 'get' ? options.body : null,
@@ -66,7 +66,7 @@ class Connector {
       let res = await fetch(config.baseURL + url, this.options);
 
       if (res.status >= 200 && res.status < 300) {
-        let formattedData = await res[format](); //await res.json(), res.text()
+        let formattedData = await res['json'](); //await res.json(), res.text()
         if (formattedData.status === 'error') {
           throw formattedData.error;
         }

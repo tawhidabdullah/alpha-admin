@@ -59,7 +59,8 @@ const Pricing = ({
 
 			for (let item of attributeList) {
 
-				if (item['value'] && attribute[item['name']]) {
+				console.log('itemofattribute', item);
+				if (item['value'] && item['name']) {
 					attribute[item['name']] = item['value']
 				}
 			}
