@@ -186,7 +186,7 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, brandLis
 							style={{
 								top: '40px'
 							}}
-							title="Add New Brand"
+							title="Add New Organizer"
 							visible={addNewCategoryVisible}
 							onOk={(e: any) => handleSubmit(e)}
 							onCancel={handleCancel}

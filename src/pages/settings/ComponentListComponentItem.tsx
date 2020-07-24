@@ -92,8 +92,7 @@ const Complete = ({ setComponentList, componentList, item, component,componentUp
 
 
 
-    console.log('itemComponent',item)
-    console.log('localComponentItem',localComponentItem)
+
 
     return (
         <>
@@ -134,7 +133,6 @@ const Complete = ({ setComponentList, componentList, item, component,componentUp
                     {localComponentItem.image &&
                         // @ts-ignore
                         localComponentItem.image.length > 0 && localComponentItem.image.map((image, index) => {
-                            console.log('goddamnin',image.cover)
                             return (
                                 <div className='aboutToUploadImagesContainer__item aboutToUploadImagesContainer__item-small'>
                                     <div

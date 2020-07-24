@@ -262,14 +262,14 @@ const CategoryList = ({history}: Props) => {
 
           <div className='categoryListContainer__header-searchBar'>
           <h2 className='categoryListContainer__header-title'>
-            Brand
+            Organizer
             </h2>
 
 
           <Search
             enterButton={false}
             className='searchbarClassName'
-          placeholder="search brands.."
+          placeholder="search organizer.."
           onSearch={value => handleSearch(value)}
           // style={{ width: 300 }}
         />
@@ -305,7 +305,7 @@ const CategoryList = ({history}: Props) => {
 			<div style={{
 				marginTop: '100px'
 			}}>
-				<Empty description='No Brands found'  image={Empty.PRESENTED_IMAGE_SIMPLE} />
+				<Empty description='No Organizer found'  image={Empty.PRESENTED_IMAGE_SIMPLE} />
 			</div>
 		)}
 			</div>

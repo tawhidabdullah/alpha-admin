@@ -27,8 +27,6 @@ const openSuccessNotification = () => {
 
 
 
-
-
 interface myTableProps {
   data: any;
   setProductList: any;
@@ -81,7 +79,6 @@ const MyTable = ({ data, setProductList }: myTableProps) => {
         tableLayout={'auto'}
         onHeaderRow={column => {
           return {
-            onClick: () => console.log('fuckitbabybybyby'), // click header row
             style: {
               color: 'red !important'
             }
@@ -284,18 +281,19 @@ const ProductList = ({ history }: Props) => {
 
           <div className='categoryListContainer__header-searchBar'>
             <h2 className='categoryListContainer__header-title'>
-              Products
+              Events
             </h2>
 
 
             <Search
               enterButton={false}
               className='searchbarClassName'
-              placeholder="search products.."
+              placeholder="search events.."
               onSearch={value => handleSearch(value)}
             // style={{ width: 300 }}
             />
           </div>
+
           <Button
             // type="primary"
             className='btnPrimaryClassNameoutline'
@@ -327,7 +325,7 @@ const ProductList = ({ history }: Props) => {
             <div style={{
               marginTop: '200px'
             }}>
-              <Empty description='No Products found' image={Empty.PRESENTED_IMAGE_SIMPLE} />
+              <Empty description='No Events found' image={Empty.PRESENTED_IMAGE_SIMPLE} />
             </div>
           )}
         </div>

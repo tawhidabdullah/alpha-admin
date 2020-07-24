@@ -64,17 +64,14 @@ const SiderComponent = (props: any) => {
                 <SubMenu
                     key='sub3'
                     icon={<GoldOutlined />}
-                    title='Product'
+                    title='Event'
                 // onTitleClick={() => props.history.push('/product')}
                 >
                     <Menu.Item
                         icon={<RadarChartOutlined />}
                         key='6'>
-                        <Link to='/admin/product'>List Products</Link>
+                        <Link to='/admin/product'>List Events</Link>
                     </Menu.Item>
-
-
-
 
                     <Menu.Item key='9' icon={<TagsOutlined />}>
                         <Link to='/admin/tag'>Tags</Link>
@@ -85,12 +82,9 @@ const SiderComponent = (props: any) => {
                         <Link to='/admin/category'>Categories</Link>
                     </Menu.Item>
 
-
                     <Menu.Item key='5' icon={<BranchesOutlined />}>
-                        <Link to='/admin/brand'>Brands</Link>
+                        <Link to='/admin/brand'>Organizer</Link>
                     </Menu.Item>
-
-
 
                 </SubMenu>
 
@@ -98,17 +92,17 @@ const SiderComponent = (props: any) => {
 					<Link to='/tag'>Tags</Link>
 				</Menu.Item> */}
 
-                <Menu.Item key='10' icon={<CarOutlined />}>
+                {/* <Menu.Item key='10' icon={<CarOutlined />}>
                     <Link to='/admin/delivery'>Delivery</Link>
-                </Menu.Item>
+                </Menu.Item> */}
 
                 <SubMenu key='sub4' icon={<ShoppingCartOutlined />} title='Orders'>
                     <Menu.Item key='11'>
                         <Link to='/admin/order'>List Orders</Link>
                     </Menu.Item>
-                    <Menu.Item key='12'>
+                    {/* <Menu.Item key='12'>
                         <Link to='/admin/order/new'>Add Order</Link>
-                    </Menu.Item>
+                    </Menu.Item> */}
                 </SubMenu>
 
                 <Menu.Item key='13' icon={<TeamOutlined />}>
@@ -131,11 +125,6 @@ const SiderComponent = (props: any) => {
                     </Menu.Item>
                 </SubMenu>
 
-                <Menu.Item
-                    icon={<DesktopOutlined />}
-                    key='20'>
-                    <Link to='/admin/settings/themes'>Themes</Link>
-                </Menu.Item>
 
                 <Menu.Item key='23'
                     icon={<SlidersOutlined />}
@@ -146,6 +135,11 @@ const SiderComponent = (props: any) => {
                 <SubMenu key='sub7' icon={<SettingOutlined />} title='Settings'>
                     <Menu.Item key='19'>
                         <Link to='/admin/settings/siteInfo'>Site information</Link>
+                    </Menu.Item>
+                    <Menu.Item
+                        icon={<DesktopOutlined />}
+                        key='20'>
+                        <Link to='/admin/settings/themes'>Themes</Link>
                     </Menu.Item>
 
                     {/* <Menu.Item key='21'>

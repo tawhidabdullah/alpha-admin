@@ -89,7 +89,6 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, categ
 	const [imageFile, setImagefile] = useState('');
 
 
-	console.log('addCategoryState', addCategoryState)
 
 
 

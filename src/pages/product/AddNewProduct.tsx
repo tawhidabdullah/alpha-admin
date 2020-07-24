@@ -311,7 +311,7 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 								padding: 0,
 							}}
 							width={'70vw'}
-							title="Add New Product"
+							title="Add New Event"
 							visible={addNewCategoryVisible}
 							onOk={(e: any) => handleSubmit(e)}
 							onCancel={handleCancel}
@@ -735,7 +735,7 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 										<div className='addProductGridContainer-rightItemContainer'>
 											<div className='addProductGridContainer-rightItemContainer-header'>
 												<h3>
-													Brands
+													Organizer
 				</h3>
 											</div>
 											<div className='addProductGridContainer-rightItemContainer-body'>

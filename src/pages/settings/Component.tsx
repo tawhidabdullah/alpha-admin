@@ -436,7 +436,6 @@ const Component = (props) => {
 	};
 
 
-	console.log('componentState',componentState)
 
 	return (
 		<>
