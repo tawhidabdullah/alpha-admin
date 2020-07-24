@@ -511,6 +511,8 @@ class Converter {
 					key: theme._id || '',
 					name: theme.name || '',
 					added: theme.added || '',
+					thumbnail: `${config['baseURL']}${theme.thumbnail ? theme.thumbnail : ""}`,
+
 				};
 			});
 

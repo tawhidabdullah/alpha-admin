@@ -8,6 +8,7 @@ import { useHandleFetch } from '../../hooks';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { message, Tooltip, Modal, Tabs, Empty, Badge } from 'antd';
+
 import {
 	DeleteOutlined,
 	FileAddOutlined,
@@ -29,6 +30,7 @@ import {
 import Input from '../../components/Field/Input';
 import TextArea from '../../components/Field/TextArea';
 import MediaLibrary from "../../components/MediaLibrary";
+import DatePicker from "../../components/Field/DatePicker";
 import { openSuccessNotification, openErrorNotification } from "../../components/Notification";
 import Tags from "./Tags";
 import Brands from "./Brands";
@@ -55,7 +57,9 @@ const initialValues = {
 	url: '',
 	cover: '',
 	pricing: [],
-
+	venue: '',
+	date: '',
+	purchaseLimit: null
 }
 
 
@@ -81,6 +85,7 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 	const [coverImageId, setCoverImageId] = useState('');
 	const [categoryOptions, setCategoryOptions] = useState([]);
 	const [selectedTags, setSelectedTags] = useState([]);
+	const [date, setDateFeild] = useState('');
 
 
 	const makeEmptyCategoryOptions = (setEmpty) => {
@@ -95,6 +100,24 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 
 
 
+		const myData = {
+			name: values.name.trim(),
+			description: values.description,
+			model: values.model,
+			unit: values.unit,
+			category: categoryids,
+			tags: tagIds,
+			brand: brandId,
+			image: imagesIds,
+			cover: coverImageId || imagesIds[0] ? imagesIds[0] : '',
+			pricing: pricing,
+			date: date,
+			venue: values.venue,
+			purchaseLimit: values.purchaseLimit
+		};
+
+		console.log('myData', myData)
+
 		const addProductRes = await handleAddProductFetch({
 
 			body: {
@@ -108,6 +131,9 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 				image: imagesIds,
 				cover: coverImageId || imagesIds[0] ? imagesIds[0] : '',
 				pricing: pricing,
+				date: date,
+				venue: values.value,
+				purchaseLimit: values.purchaseLimit
 			},
 		});
 
@@ -247,6 +273,11 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 		}
 	}
 
+	const handleDateChange = (date, dateString) => {
+		setDateFeild(dateString);
+		// console.log('date', date, dateString);
+	}
+
 	return (
 		<Formik
 			onSubmit={(values, actions) => handleSubmit(values, actions)}
@@ -320,6 +351,56 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 													setFieldTouched('name');
 												}}
 											/>
+											<div style={{
+												display: 'flex',
+												justifyContent: 'space-between'
+											}}>
+												<div style={{
+													width: '48%',
+												}}>
+													<TextArea
+														rows={1}
+														label='Venue'
+														value={values.venue}
+														name='venue'
+														isError={(touched.venue && errors.venue) ||
+															(!isSubmitting && addProductState.error['error']['venue'])}
+
+														errorString={(touched.venue && errors.venue) ||
+															(!isSubmitting && addProductState.error['error']['venue'])}
+														onChange={(e: any) => {
+															handleChange(e);
+															setFieldTouched('venue');
+														}}
+													/>
+												</div>
+												<div style={{
+													width: '48%'
+												}}>
+													<h3 className='inputFieldLabel'>Date</h3>
+													<DatePicker onChange={handleDateChange} />
+
+												</div>
+											</div>
+
+											<Input
+												label='Purchase Limit'
+												value={values.purchaseLimit}
+												type='number'
+												name='purchaseLimit'
+												isError={(touched.purchaseLimit && errors.purchaseLimit) ||
+													(!isSubmitting && addProductState.error['error']['purchaseLimit'])}
+
+												errorString={(touched.purchaseLimit && errors.purchaseLimit) ||
+													(!isSubmitting && addProductState.error['error']['purchaseLimit'])}
+												onChange={(e: any) => {
+													handleChange(e);
+													setFieldTouched('purchaseLimit');
+												}}
+											/>
+
+
+
 											<TextArea
 												label='Description'
 												value={values.description}
@@ -335,7 +416,7 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 												}}
 											/>
 
-											<Input
+											{/* <Input
 												label='Model Number'
 												value={values.model}
 												name='model'
@@ -364,15 +445,13 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 													handleChange(e);
 													setFieldTouched('unit');
 												}}
-											/>
+											/> */}
 
 										</div>
 
 
 
 									</div>
-
-
 
 									<div className='addProductGridContainer__price'>
 										<div className='addProductGridContainer__item-header'>
@@ -571,8 +650,6 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 																		<CheckOutlined />
 																	</span>
 																)}
-
-
 															</div>
 														)
 													})}

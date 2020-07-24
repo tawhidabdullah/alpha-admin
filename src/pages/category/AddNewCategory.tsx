@@ -86,6 +86,7 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, categ
 	const [coverImageId, setCoverImageId] = useState('');
 	const [imageUrl, setImageUrl] = useState('');
 	const [loadingThumnail, setLoadingThumbnail] = useState(false);
+	const [imageFile, setImagefile] = useState('');
 
 
 	console.log('addCategoryState', addCategoryState)
@@ -105,7 +106,7 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, categ
 		formData.append("image", imagesIds);
 		formData.append("cover", coverImageId || imagesIds[0] ? imagesIds[0] : '');
 		formData.append("parent", selectedParentId);
-		formData.append('icon', imageUrl)
+		formData.append('icon', imageFile)
 
 
 
@@ -219,6 +220,7 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, categ
 
 		getBase64(file, imageUrl => {
 			setImageUrl(imageUrl)
+			setImagefile(file)
 			setLoadingThumbnail(false)
 		})
 
@@ -373,7 +375,7 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, categ
 
 							<div
 								style={{
-									marginTop: '20px'
+									marginTop: '10px'
 								}}
 							/>
 

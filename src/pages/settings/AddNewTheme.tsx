@@ -90,6 +90,7 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, themeLis
     const [loadingThumnail, setLoadingThumbnail] = useState(false);
     const [imageUrl, setImageUrl] = useState('');
     const [name, setname] = useState('')
+    const [thumbnailFile, setThumbnailFile] = useState('')
 
 
 
@@ -102,11 +103,7 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, themeLis
             formData.append('folder', file, file.name);
         });
         formData.append("name", name);
-        formData.append('thumbnail', imageUrl)
-
-
-
-
+        formData.append('thumbnail', thumbnailFile)
 
 
         const addThemeRes = await handleAddthemeFetch({
@@ -292,6 +289,7 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, themeLis
 
         getBase64(file, imageUrl => {
             setImageUrl(imageUrl)
+            setThumbnailFile(file);
             setLoadingThumbnail(false)
         })
 
@@ -340,8 +338,12 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, themeLis
                     errorString={addThemeState.error['error']['name']}
                 />
 
+                <div style={{
+                    marginTop: '20px'
+                }}></div>
 
-                <h3 className='inputFieldLabel'>Thumbnail Image</h3>
+
+                <h3 className='inputFieldLabel'>Thumbnail</h3>
                 <Upload
                     name="avatar"
                     listType="picture-card"
@@ -356,7 +358,7 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, themeLis
 
 
                 <div style={{
-                    marginTop: '20px'
+                    marginTop: '3px'
                 }}></div>
                 <h3 className='inputFieldLabel'>
                     Theme Folder (.zip)
