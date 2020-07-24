@@ -138,7 +138,6 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 		});
 
 
-
 		// @ts-ignore
 		if (addProductRes && addProductRes.status === 'ok') {
 			openSuccessNotification('Product Created');
@@ -329,7 +328,7 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 									<div className='addProductGridContainer__name'>
 										<div className='addProductGridContainer__item-header'>
 											<h3>
-												Product Information
+												Event Information
 			</h3>
 
 											<div className={values.name && values.name.length > 2 ? 'checkicon-active' : 'checkicon'}>
@@ -456,7 +455,7 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 									<div className='addProductGridContainer__price'>
 										<div className='addProductGridContainer__item-header'>
 											<h3>
-												Product Pricing
+												Event Pricing
 			</h3>
 
 											<div className={pricing && pricing.length > 0 ? 'checkicon-active' : 'checkicon'}>
@@ -747,19 +746,7 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 									</div>
 
 								</div>
-
-
-
-
 							</section>
-
-
-
-
-
-
-
-
 
 
 						</Modal>
