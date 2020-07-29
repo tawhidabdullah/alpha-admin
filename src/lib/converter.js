@@ -108,7 +108,10 @@ class Converter {
 							? product.price['offer']
 							: product.price['regular'],
 					url: product.url,
-					unit: product.unit
+					unit: product.unit,
+					date: product.date,
+					venue: product.venue,
+					pricing: product.pricing
 				};
 			});
 
@@ -368,7 +371,10 @@ class Converter {
 						regularPrice: product.price && product.price['regular'],
 						offerPrice: product.price && product.price['offer'],
 						url: product.url,
-						unit: product.unit
+						unit: product.unit,
+						date: product.date,
+						venue: product.venue,
+						pricing: product.pricing
 					};
 				})) ||
 			[];
@@ -403,6 +409,8 @@ class Converter {
 					unit: product.unit,
 					category: product.category,
 					pricing: product.pricing,
+					date: product.date,
+					venue: product.venue,
 					price:
 						parseInt(product.price['offer']) > parseInt(product.price['regular'])
 							? product.price['offer']
@@ -464,6 +472,34 @@ class Converter {
 
 		return convertedData;
 	}
+
+	/**
+* @public
+* @method brandDetail convert api data from API to general format based on config server
+* @param {Object} data response objectc from alpha
+* @returns {Object}  converted data
+*/
+	async brandDetail(resData) {
+		const data = Object.keys(resData).length > 0 ? resData : null;
+		console.log('brandata', data)
+		if (data) {
+			return {
+				id: data._id || '',
+				key: data._id || '',
+				name: data.name && data.name,
+				description: data.description && data.description,
+				cover: `${config['baseURL']}${data.cover ? data.cover.original && data.cover.original : ''}`,
+				image:
+					(data.image &&
+						data.image.length > 0 &&
+						data.image.map((img) => `${config.baseURL}${img.medium}`)) ||
+					[]
+			}
+		}
+
+		return {};
+	}
+
 
 	/**
    * @public
@@ -706,10 +742,13 @@ class Converter {
 				regularPrice: data.price && data.price['regular'],
 				offerPrice: data.price && data.price['offer'],
 				url: data.url,
-				cover: `${config['baseURL']}${data.cover.original}`,
+				cover: `${config['baseURL']}${data.cover ? data.cover.original && data.cover.original : ''}`,
 				availableStock: data.availableStock,
 				minimumStock: data.minimumStock,
 				unit: data.unit,
+				date: data.date,
+				venue: data.venue,
+				pricing: data.pricing,
 				category:
 					(data.category &&
 						data.category.length > 0 &&
@@ -767,8 +806,11 @@ class Converter {
 				regularPrice: data.price && data.price['regular'],
 				offerPrice: data.price && data.price['offer'],
 				url: data.url,
-				cover: `${config['baseURL']}${data.cover.thumbnail && data.cover.thumbnail}`,
+				cover: `${config['baseURL']}${data.cover.medium && data.cover.medium}`,
 				unit: data.unit,
+				date: data.date,
+				venue: data.venue,
+				pricing: data.pricing,
 				category:
 					(data.category &&
 						data.category.length > 0 &&
@@ -1402,6 +1444,7 @@ class Converter {
 			name: data.name && data.name,
 			description: data.description && data.description,
 			productCount: data.count || data.productCount,
+			cover: data.cover ? `${config['baseURL']}${data.cover.original && data.cover.original}` : null,
 			subCategory:
 				data.subCategory.length > 0 && data.subCategory[0] && data.subCategory[0]['name']
 					? data.subCategory.map((subCat) => {

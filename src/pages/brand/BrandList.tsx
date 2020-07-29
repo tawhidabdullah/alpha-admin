@@ -1,21 +1,22 @@
 import React, {useState,useEffect} from 'react';
 import {withRouter} from 'react-router-dom';
-import { Table,Empty, Popconfirm, Space, Tag,Button, Input,Tooltip, Modal, notification  } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined,EditFilled,CheckCircleOutlined } from '@ant-design/icons';
+import { Table,Empty, Popconfirm, Space,Button, Input,Tooltip, notification  } from 'antd';
+import { PlusOutlined, EditOutlined, DeleteOutlined,CheckCircleOutlined } from '@ant-design/icons';
 
 
 
 /// import hooks
-import { useFetch, useHandleFetch } from "../../hooks";
+import {  useHandleFetch } from "../../hooks";
 
 // import components
 import { DataTableSkeleton } from "../../components/Placeholders";
 import AddNewBrand from "./AddNewBrand"
 import QuickEdit from "./QuickEdit"
+import BrandDetail from "./BrandDetail"
 
 
 
-const { Column, ColumnGroup } = Table;
+const { Column } = Table;
 const { Search } = Input;
 
 
@@ -29,7 +30,7 @@ const openSuccessNotification = (message?: any) => {
 
 
   const openErrorNotification = (message?: any) => {
-	notification.success({
+	notification.error({
 	  message: message || 'Something Went Wrong',
 	  description: '',
 	  icon: <CheckCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
@@ -50,8 +51,7 @@ const MyTable = ({data,setBrandList}: myTableProps) => {
     const [visible,setvisible] = useState(false);   
     const [activeCategoryForEdit,setactiveCategoryForEdit] = useState(false); 
     const [deleteBrandState, handleDeleteBrandFetch] = useHandleFetch({}, 'deleteBrand');
-
-
+  const [brandDetailVisible,setBrandDetailVisible] = useState(false); 
       
 
  
@@ -93,23 +93,52 @@ const MyTable = ({data,setBrandList}: myTableProps) => {
             
            className='classnameofthecolumn'
 
-            render={cover => (
-                <>
-                <img src={cover} alt='cover img' style={{
-                    height: '40px',
-                    width: '40px',
-                    objectFit: "contain",
-                    borderRadius:'3px'
+           render={(cover, record: any) => (
+            <>
+              <img
+                onClick={() => {
+                  setBrandDetailVisible(true);
+                  setactiveCategoryForEdit(record)
+                }}
+                src={cover} alt='cover img' style={{
+                  height: '40px',
+                  width: '40px',
+                  objectFit: "contain",
+                  borderRadius: '3px',
+                  cursor: 'pointer'
                 }} />
-                </>
-              )}
+
+
+
+
+            </>
+          )}
             />
           <Column
            title="Name" 
            dataIndex="name" 
            key="id" 
            className='classnameofthecolumn'
-         
+           render={(text, record: any) => (
+            <>
+
+              <h4
+                onClick={() => {
+                  setBrandDetailVisible(true);
+                  setactiveCategoryForEdit(record)
+                }}
+                style={{
+                  fontWeight: 400,
+                  color: '#555',
+                  cursor: 'pointer'
+
+                }}>
+                {text}
+              </h4>
+
+
+            </>
+          )}
             />
 
 <Column
@@ -184,6 +213,15 @@ const MyTable = ({data,setBrandList}: myTableProps) => {
           )}
         />
       </Table>
+
+
+      <BrandDetail
+        addNewCategoryVisible={brandDetailVisible}
+        setAddNewCategoryVisible={setBrandDetailVisible}
+        productRecord={activeCategoryForEdit}
+      />
+
+
 
     
 

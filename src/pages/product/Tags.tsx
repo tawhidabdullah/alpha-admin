@@ -41,7 +41,6 @@ const Tags = ({
 
   const handleChange = (tag, checked) => {
     const nextSelectedTags = checked ? [...selectedTags, tag] : selectedTags.filter(t => t !== tag);
-    console.log('You are interested in: ', nextSelectedTags);
     setSelectedTags(nextSelectedTags);
 
     if (tagState.done && tagState.data.length > 0 && nextSelectedTags.length > 0) {

@@ -58,9 +58,10 @@ const ContentComponent = (props: Props) => {
                 <Route path='/admin/category' exact>
                     <CategoryList />
                 </Route>
-                <Route path='/admin/category/:name' exact>
+                {/* <Route path='/admin/category/:name' exact>
                     <CategoryDetail />
-                </Route>
+                </Route> */}
+
                 {/* CategoryDetail */}
                 <Route path='/admin/brand/new' exact>
                     <AddNewBrand />

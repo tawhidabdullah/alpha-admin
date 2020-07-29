@@ -10,6 +10,7 @@ import { useFetch, useHandleFetch } from "../../hooks";
 // import components
 import { DataTableSkeleton } from "../../components/Placeholders";
 import AddNewProduct from "./AddNewProduct";
+import ProductDetail from "./ProductDetail";
 import QuickEdit from "./QuickEdit";
 
 const { Column, ColumnGroup } = Table;
@@ -37,7 +38,7 @@ const MyTable = ({ data, setProductList }: myTableProps) => {
   const [visible, setvisible] = useState(false);
   const [activeCategoryForEdit, setactiveCategoryForEdit] = useState(false);
   const [deleteProductState, handleDeleteProductFetch] = useHandleFetch({}, 'deleteProduct');
-
+  const [productDetailVisible, setproductDetailVisible] = useState(false);
 
   const handleDeleteProduct = async (id) => {
     const deleteProductRes = await handleDeleteProductFetch({
@@ -94,32 +95,54 @@ const MyTable = ({ data, setProductList }: myTableProps) => {
 
           className='classnameofthecolumn'
 
-          render={cover => (
+          render={(cover, record: any) => (
             <>
-              <img src={cover} alt='cover img' style={{
-                height: '40px',
-                width: '40px',
-                objectFit: "contain",
-                borderRadius: '3px'
-              }} />
+              <img
+                onClick={() => {
+                  setproductDetailVisible(true);
+                  setactiveCategoryForEdit(record)
+                }}
+                src={cover} alt='cover img' style={{
+                  height: '40px',
+                  width: '40px',
+                  objectFit: "contain",
+                  borderRadius: '3px',
+                  cursor: 'pointer'
+                }} />
+
+
+
+
             </>
           )}
         />
+
         <Column
           title="Name"
           dataIndex="name"
           key="id"
           className='classnameofthecolumn'
-          render={text => (
+          render={(text, record: any) => (
             <>
-              <h4 style={{
-                fontWeight: 400,
-                color: '#666'
-              }}>
+
+              <h4
+                onClick={() => {
+                  setproductDetailVisible(true);
+                  setactiveCategoryForEdit(record)
+                }}
+                style={{
+                  fontWeight: 400,
+                  color: '#555',
+                  cursor: 'pointer'
+
+                }}>
                 {text}
               </h4>
+
+
             </>
           )}
+
         />
 
         <Column
@@ -225,6 +248,12 @@ const MyTable = ({ data, setProductList }: myTableProps) => {
         setvisible={setvisible}
         visible={visible}
         category={activeCategoryForEdit} />}
+
+      <ProductDetail
+        addNewCategoryVisible={productDetailVisible}
+        setAddNewCategoryVisible={setproductDetailVisible}
+        productRecord={activeCategoryForEdit}
+      />
 
 
     </>

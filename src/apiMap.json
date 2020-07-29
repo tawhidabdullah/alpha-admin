@@ -48,6 +48,10 @@
 			"url": "/api/category?subCategory=isSubCategory",
 			"method": "get"
 		},
+		"categoryDetail": {
+			"url": "/api/category/:id",
+			"method": "get"
+		},
 		"categorySelectist": {
 			"url": "/api/category?subCategory=isSubCategory",
 			"method": "get"
@@ -66,6 +70,10 @@
 		},
 		"brandList": {
 			"url": "/api/brand",
+			"method": "get"
+		},
+		"brandDetail": {
+			"url": "/api/brand/:id",
 			"method": "get"
 		},
 		"addBrand": {

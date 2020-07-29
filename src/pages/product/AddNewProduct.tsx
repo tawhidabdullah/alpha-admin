@@ -116,8 +116,6 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 			purchaseLimit: values.purchaseLimit
 		};
 
-		console.log('myData', myData)
-
 		const addProductRes = await handleAddProductFetch({
 
 			body: {
@@ -132,7 +130,7 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 				cover: coverImageId || imagesIds[0] ? imagesIds[0] : '',
 				pricing: pricing,
 				date: date,
-				venue: values.value,
+				venue: values.venue,
 				purchaseLimit: values.purchaseLimit
 			},
 		});
@@ -794,8 +792,6 @@ attributes [title]
 		[add attrubutes value]
 
 	[add attributes name]
-		[add attrubutes value]
-
-
+		[add attrubutes value
 
 *///

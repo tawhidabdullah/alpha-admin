@@ -11,6 +11,7 @@ import { useFetch, useHandleFetch } from "../../hooks";
 // import components
 import { DataTableSkeleton } from "../../components/Placeholders";
 import Empty from "../../components/Empty";
+import CategoryDetail from "./CategoryDetail";
 
 const { Column, ColumnGroup } = Table;
 const { Search } = Input;
@@ -48,7 +49,7 @@ const MyTable = ({data, setcategoryList, history}: myTableProps) => {
     const [visible,setvisible] = useState(false);   
     const [activeCategoryForEdit,setactiveCategoryForEdit] = useState(false); 
     const [deleteCategoryState, handleDeleteCategoryFetch] = useHandleFetch({}, 'deleteCategory');
-
+    const [categoryDetailVisible, setcategoryDetailVisible] = useState(false)
       // console.log('activeCategoryForEdit',activeCategoryForEdit); 
 
 
@@ -93,13 +94,18 @@ const MyTable = ({data, setcategoryList, history}: myTableProps) => {
             render={(cover,record: any) => (
                 <>
                 <img src={cover} 
-                // onClick={() => history.push(`/category/${record.name}`)}
+                   onClick={() => {
+                    setcategoryDetailVisible(true);
+                    setactiveCategoryForEdit(record)
+                  }}
                 alt='cover img' 
                 style={{
                     height: '40px',
                     width: '40px',
                     objectFit: "contain",
-                    borderRadius:'3px'
+                    borderRadius:'3px',
+                  cursor: 'pointer'
+
                 }} />
                 </>
               )}
@@ -109,7 +115,26 @@ const MyTable = ({data, setcategoryList, history}: myTableProps) => {
            dataIndex="name" 
            key="id" 
            className='classnameofthecolumn'
-         
+           render={(text, record: any) => (
+            <>
+
+              <h4
+                onClick={() => {
+                  setcategoryDetailVisible(true);
+                  setactiveCategoryForEdit(record)
+                }}
+                style={{
+                  fontWeight: 400,
+                  color: '#555',
+                  cursor: 'pointer'
+
+                }}>
+                {text}
+              </h4>
+
+
+            </>
+          )}
             />
 
 
@@ -206,6 +231,13 @@ const MyTable = ({data, setcategoryList, history}: myTableProps) => {
     visible={visible}
     category={activeCategoryForEdit}/>}
     
+
+    <CategoryDetail
+        addNewCategoryVisible={categoryDetailVisible}
+        setAddNewCategoryVisible={setcategoryDetailVisible}
+        productRecord={activeCategoryForEdit}
+      />
+
     
     </>
     )

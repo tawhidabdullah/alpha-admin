@@ -6,7 +6,7 @@ const { TextArea } = Input;
 
 
 interface Props {
-    label: string;
+    label?: string;
     type?: string;
     defaultValue?: string;
     value?: string;
@@ -21,9 +21,12 @@ interface Props {
 const Demo = ({ label, type, defaultValue, value, onChange, disabled, isError, errorString, name, rows = 4 }: Props) => {
     return (
         <>
-            <h3 className='inputFieldLabel'>
-                {label}
-            </h3>
+            {label && (
+                <h3 className='inputFieldLabel'>
+                    {label}
+                </h3>
+            )}
+
             <Form.Item
                 validateStatus={isError ? "error" : ""}
                 help={errorString}
