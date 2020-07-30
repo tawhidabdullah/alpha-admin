@@ -97,6 +97,7 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, themeLis
 
 
     const handleSubmit = async () => {
+        setuploading(true);
 
         const formData = new FormData();
         fileList.forEach(file => {
@@ -107,16 +108,18 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, themeLis
 
 
         const addThemeRes = await handleAddthemeFetch({
-
             body: formData,
         });
 
+
+        setuploading(false);
         // @ts-ignore
         if (addThemeRes && addThemeRes.status === 'ok') {
 
+            console.log('addThemeRes', addThemeRes);
             setThemeList([...themeList, {
-                id: addThemeRes['id'] || '',
-                key: addThemeRes['id'] || '',
+                id: addThemeRes['_id'] || '',
+                key: addThemeRes['_id'] || '',
                 name: addThemeRes['name'] || '',
                 thumbnail: addThemeRes['thumbnail'] || '',
                 path: addThemeRes['path'] || '',

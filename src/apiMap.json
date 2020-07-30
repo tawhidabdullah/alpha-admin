@@ -28,6 +28,26 @@
 			"url": "/admin/image/settings",
 			"method": "get"
 		},
+		"attachImageToItemMultiple": {
+			"url": "/admin/image/attach/:collection/:itemId",
+			"method": "post"
+		},
+		"attachImageToItemSingle": {
+			"url": "/admin/image/attach/:imageId/:collection/:itemId",
+			"method": "post"
+		},
+		"detachImageFromItemMultiple": {
+			"url": "/admin/image/detach/:collection/:itemId",
+			"method": "post"
+		},
+		"detachImageFromItemSingle": {
+			"url": "/admin/image/detach/:imageId/:collection/:itemId",
+			"method": "post"
+		},
+		"setImageAsThumbnailToItem": {
+			"url": "/admin/image/cover/:imageId/:collection/:itemId",
+			"method": "post"
+		},
 		"productList": {
 			"url": "/api/product",
 			"method": "get"
@@ -45,7 +65,7 @@
 			"method": "post"
 		},
 		"categoryList": {
-			"url": "/api/category?subCategory=isSubCategory",
+			"url": "/api/category?subCategory=isSubCategory&productCount=productCountValue",
 			"method": "get"
 		},
 		"categoryDetail": {
@@ -218,6 +238,22 @@
 		},
 		"invoiceSettingsDetail": {
 			"url": "/admin/settings/invoice",
+			"method": "get"
+		},
+		"configureSMS": {
+			"url": "/admin/sms/configuration",
+			"method": "get"
+		},
+		"getSMSConfiguration": {
+			"url": "/admin/sms/configure",
+			"method": "post"
+		},
+		"sendSMS": {
+			"url": "/admin/sms/inbox/send",
+			"method": "post"
+		},
+		"getAllNotification": {
+			"url": "/admin/notification",
 			"method": "get"
 		},
 		"login": {

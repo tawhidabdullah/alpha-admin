@@ -19,7 +19,6 @@ import {
 
 const { CheckableTag } = Tag;
 const { Search } = Input;
-const tagsData = ['Movies', 'Books', 'Music', 'Sports'];
 
 interface Props {
   setTagIds?: any;
@@ -32,6 +31,7 @@ const Tags = ({
   setTagIds,
   setSelectedTags,
   selectedTags
+
 }: Props) => {
   const [options, setoptions] = useState([]);
   const [selectedOpions, setselectedOptions] = useState([]);
@@ -57,6 +57,23 @@ const Tags = ({
   }
 
 
+  useEffect(() => {
+    if (tagState.done && tagState.data.length > 0 && selectedTags.length > 0) {
+      const selectedCategoryIds = selectedTags.map((item) => {
+        const selectedcategory = tagState.data.find(
+          (cat) => cat.id === item
+        );
+        if (selectedcategory) {
+          return selectedcategory.name;
+        }
+      });
+      setSelectedTags(selectedCategoryIds);
+    }
+  }, [tagState]);
+
+
+  console.log('selectedTags', selectedTags)
+  console.log('options', options)
 
 
   useEffect(() => {
@@ -69,7 +86,7 @@ const Tags = ({
         }
       });
 
-      // @ts-ignore
+      // @ts-ignoref
       if (tagListRes && tagListRes.length > 0) {
         // @ts-ignore
         const tagOptions = tagListRes.map((tag) => {

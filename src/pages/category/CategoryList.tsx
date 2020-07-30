@@ -87,7 +87,7 @@ const MyTable = ({data, setcategoryList, history}: myTableProps) => {
           title=""
            dataIndex="cover"
             key="id" 
-            // width={'100px'}
+            width={'80px'}
             
            className='classnameofthecolumn'
 
@@ -139,21 +139,32 @@ const MyTable = ({data, setcategoryList, history}: myTableProps) => {
 
 
 <Column
-           title="Desctription" 
-           dataIndex="desctription" 
+           title="Description" 
+           dataIndex="description" 
            key="id" 
            className='classnameofthecolumn'
          
             />
 
 
-<Column
+         <Column
            title="Sub Cateogory" 
            dataIndex="subCount" 
            key="id" 
            className='classnameofthecolumn'
          
             />
+
+<Column
+           title="Product" 
+           dataIndex="productCount" 
+           key="id" 
+           className='classnameofthecolumn'
+         
+            />
+
+
+
           {/* <Column 
           
           className='classnameofthecolumn'
@@ -233,6 +244,8 @@ const MyTable = ({data, setcategoryList, history}: myTableProps) => {
     
 
     <CategoryDetail
+     setBrandList={setcategoryList}
+     brandList={data}
         addNewCategoryVisible={categoryDetailVisible}
         setAddNewCategoryVisible={setcategoryDetailVisible}
         productRecord={activeCategoryForEdit}
@@ -262,6 +275,7 @@ const CategoryList = ({history}: Props) => {
       urlOptions: {
         params: {
           isSubCategory: true,
+          productCountValue: true 
         },
       },
      }); 

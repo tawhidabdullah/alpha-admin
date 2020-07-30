@@ -3,7 +3,7 @@ import React from 'react'
 
 // import pages
 import { Overview } from '../../pages/overview';
-import { CategoryList, CategoryDetail } from '../../pages/category';
+import { CategoryList } from '../../pages/category';
 import { BrandList, AddNewBrand } from '../../pages/brand';
 import { ProductList } from '../../pages/product';
 import { TagList, AddNewTag } from '../../pages/tag';
@@ -13,6 +13,7 @@ import { AttributeList } from '../../pages/attribute';
 import { OrderList, AddNewOrder } from '../../pages/order';
 import { Component, ManageThemes, Image, Invoice, SiteInfo } from '../../pages/settings';
 import { Delivery } from '../../pages/delivery';
+import Sms from '../../pages/sms';
 // import Login from '../../pages/auth/login';
 
 
@@ -116,6 +117,9 @@ const ContentComponent = (props: Props) => {
                 </Route>
                 <Route path='/admin/settings/siteInfo' exact>
                     <SiteInfo />
+                </Route>
+                <Route path='/admin/sms' exact>
+                    <Sms />
                 </Route>
             </Switch>
         </Content>

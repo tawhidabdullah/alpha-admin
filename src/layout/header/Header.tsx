@@ -1,15 +1,20 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 
 // import hooks 
-// import { useHandleFetch } from "../../hooks";
+import { useHandleFetch } from "../../hooks";
 
 // import components
 // import { openSuccessNotification, openErrorNotification } from "../../components/Notification";
+import Empty from "../../components/Empty";
 
 // import libraries 
-import { LogoutOutlined } from '@ant-design/icons';
-import { Layout } from 'antd';
+import { useHistory } from "react-router";
+import { LogoutOutlined, BellOutlined, OrderedListOutlined } from '@ant-design/icons';
+import { Layout, Badge, Dropdown, Menu, Spin } from 'antd';
+import Moment from 'react-moment';
+import moment from 'moment';
+
 const { Header } = Layout;
 
 // import styles
@@ -22,6 +27,102 @@ interface Props {
 }
 
 const HeaderComponent = (props: Props) => {
+    const history = useHistory();
+
+    const [getAllNotificationState, handleGetAllNOticationFetch] = useHandleFetch({}, 'getAllNotification');
+
+
+    const handleMenuClick = (e) => {
+        if (e.key === '3') {
+        }
+    };
+
+
+    useEffect(() => {
+        const getAllNotification = async () => {
+            await handleGetAllNOticationFetch({});
+        }
+
+        getAllNotification();
+    }, [])
+
+
+    const getNotificationCreationTime = (time: any) => {
+        console.log(time);
+        // return <Moment fromNow={true}></Moment>
+        return time;
+    }
+    const menu = () => {
+
+        if (getAllNotificationState.isLoading) return (
+            <Menu>
+                <div style={{
+                    padding: '0 30px'
+                }}>
+                    <Spin />
+                </div>
+
+            </Menu>
+        );
+
+
+
+        if (getAllNotificationState.done && getAllNotificationState.data && !getAllNotificationState.data[0]) {
+            return (
+                <Menu>
+                    <div style={{
+                        padding: '0 30px'
+                    }}>
+                        <Empty title='No Notification found' />
+                    </div>
+
+                </Menu>
+            )
+
+
+        }
+        return (
+            <Menu
+
+            
+
+                onClick={handleMenuClick}>
+                {getAllNotificationState.done && getAllNotificationState.data[0] && getAllNotificationState.data.map(item => {
+                    return (
+                        <Menu.Item
+                            // style={{
+                            //     padding: 0,
+                            //     margin: 0
+                            // }}
+                            key="1">
+
+                            <div className='notificationItem'>
+                                <span className='notificationItem-icon'>
+                                    <OrderedListOutlined />
+                                </span>
+                                <div className='notificationItem-info'>
+                                    <h3>
+                                        {item.heading}
+                                    </h3>
+                                    <h4>
+                                        {item.text}
+                                    </h4>
+                                    <h2>
+
+                                        {getNotificationCreationTime(item.added)}
+                                    </h2>
+                                </div>
+                            </div>
+                        </Menu.Item>
+                    )
+                })}
+
+            </Menu>
+        )
+
+    }
+
+
 
     return (
         <Header
@@ -38,19 +139,57 @@ const HeaderComponent = (props: Props) => {
             }}
         >
             <h2
+
+                onClick={() => history.push('/admin')}
                 style={{
-                    color: '#0072EA', marginTop: '10px', marginLeft: '-20px'
+                    color: '#0072EA', marginTop: '10px', marginLeft: '-20px',
+                    cursor: 'pointer'
 
                 }}
             >
                 Express Ticket
             </h2>
 
-
             <div
                 style={{
                     marginRight: '-28px'
                 }}>
+
+
+                <Dropdown
+                    placement="bottomLeft"
+            
+                    overlay={menu}
+                // visible={this.state.visible}
+                >
+                    <a
+                        style={{
+                            marginRight: '10px'
+                        }}
+                        href='###' className='notificationIconContainer'>
+
+                        <Badge
+                            overflowCount={100}
+                            count={99}
+                        >
+                            <span style={{
+                                marginLeft: '10px',
+                                fontWeight: 600,
+                                borderRadius: '25px',
+                                color: '#1890ff',
+                                padding: '2px 20px',
+                                cursor: 'pointer',
+                                marginRight: '-5px'
+                            }}>
+                                <BellOutlined />
+
+                            </span>
+                        </Badge>
+                    </a>
+                </Dropdown>
+
+
+
 
                 <a href='/admin/auth/logout'>
                     <span style={{

@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
 
 import { useHandleFetch } from '../../hooks';
 // import third party ui lib
-import { Upload, message, Switch, Select, Button, notification, Modal, Tooltip } from 'antd';
+import { Upload, message, Switch, Select, Button, notification, Modal, Tooltip, Spin } from 'antd';
 
 import {
     FileOutlined,
@@ -37,7 +37,7 @@ const validationSchema = Yup.object().shape({
 
 const openSuccessNotification = (message?: any) => {
     notification.success({
-        message: message || 'Brand Created',
+        message: message || 'Brand Updated',
         description: '',
         icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
     });
@@ -67,54 +67,222 @@ interface Props {
     addNewCategoryVisible?: any;
     setAddNewCategoryVisible?: any;
     productRecord?: any;
-
+    brandList: any;
+    setBrandList?: any;
 }
 
-const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, productRecord }: Props) => {
+const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, productRecord, setBrandList, brandList }: Props) => {
 
-    const [addBrandState, handleAddBrandFetch] = useHandleFetch({}, 'addBrand');
-    const [visible, setvisible] = useState(false);
+    const [updateBrandState, handleUpdateBrandFetch] = useHandleFetch({}, 'updateBrand');
+    const [brandDetailState, handleBrandDetailFetch] = useHandleFetch({}, 'brandDetail');
+    const [attachImageToItemMultipleState, handleAttachImageToItemMultipleFetch] = useHandleFetch({}, 'attachImageToItemMultiple');
+    const [attachImageToItemSingleState, handleAttachImageToItemSingleFetch] = useHandleFetch({}, 'attachImageToItemSingle');
+    const [detachImageFromItemMultipleState, handleDetachImageFromItemMultipleFetch] = useHandleFetch({}, 'detachImageFromItemMultiple');
+    const [detachImageFromItemSingleState, handleDetachImageFromItemSingleFetch] = useHandleFetch({}, 'detachImageFromItemSingle');
+    const [setImageAsThumbnailToItemState, handleSetImageAsThumbnailToItemFetch] = useHandleFetch({}, 'setImageAsThumbnailToItem');
+
+
     const [myImages, setmyImages] = useState(false);
     const [visibleMedia, setvisibleMedia] = useState(false);
     const [coverImageId, setCoverImageId] = useState('');
+    const [myGoddamnImages, setMyGoddamnImages] = useState([]);
 
+
+
+    useEffect(() => {
+
+        console.log('productRecord', productRecord);
+        const getBrandDetail = async () => {
+            await handleBrandDetailFetch({
+                urlOptions: {
+                    placeHolders: {
+                        id: productRecord.id
+                    }
+                }
+            })
+        };
+
+        getBrandDetail();
+
+    }, [productRecord]);
+
+
+    useEffect(() => {
+        if (brandDetailState.done && Object.keys(brandDetailState).length > 0) {
+
+            const images = brandDetailState.data.image;
+            if (images && images.length > 0) {
+                setmyImages(images);
+                setMyGoddamnImages(images);
+            }
+
+            if (brandDetailState.data.cover && brandDetailState.data.cover['id']) {
+                // @ts-ignore
+                setmyImages([brandDetailState.data.cover, ...images]);
+                console.log('catcat', [brandDetailState.data.cover, ...images]);
+                setCoverImageId(brandDetailState.data.cover['id']);
+            }
+
+        }
+    }, [brandDetailState])
+
+
+    useEffect(() => {
+        console.log('thumnail', myImages);
+        // @ts-ignore
+        if (myImages && myImages[0] && myImages.length < 2) {
+            console.log('thumnail2', myImages);
+
+            if (coverImageId !== myImages[0].id) {
+                setCoverImageId(myImages[0].id);
+                handleSetImageAsThumnail(myImages[0]);
+            }
+
+        }
+
+    }, [myImages])
+
+
+    const handleDetachSingleImage = async id => {
+        await handleDetachImageFromItemSingleFetch({
+            urlOptions: {
+                placeHolders: {
+                    imageId: id,
+                    collection: 'brand',
+                    itemId: productRecord.id
+                }
+            }
+        });
+
+
+
+
+
+    }
+
+
+
+    const handleSetImageAsThumnail = async image => {
+
+        const thumbnailRes = await handleSetImageAsThumbnailToItemFetch({
+            urlOptions: {
+                placeHolders: {
+                    imageId: image.id,
+                    collection: 'brand',
+                    itemId: productRecord.id
+                }
+            }
+        });
+
+        console.log('thumbnailRes', thumbnailRes)
+
+        // @ts-ignore
+        if (thumbnailRes && thumbnailRes.status === 'ok') {
+            openSuccessNotification('Seted as thumbnail!')
+            const positionInBrand = () => {
+                return brandList.map(item => item.id).indexOf(productRecord.id);
+            }
+
+            const index = positionInBrand();
+
+            const prevItem = brandList.find(item => item.id === productRecord.id);
+
+            if (prevItem) {
+                console.log('prevItem--', prevItem, 'image--', image);
+                // @ts-ignore
+                const updatedItem = Object.assign({}, brandList[index], { ...prevItem, cover: image.cover });
+                const updateBrandList = [...brandList.slice(0, index), updatedItem, ...brandList.slice(index + 1)];
+                setBrandList(updateBrandList);
+
+            }
+        }
+        else {
+            openErrorNotification("Couldn't set as thumbnail, Something went wrong")
+        }
+
+    }
+
+
+
+    console.log('brandDetailState', brandDetailState);
 
     const handleSubmit = async (values: any, actions: any) => {
 
-        // @ts-ignore
-        const imagesIds = myImages ? myImages.map(image => {
-            return image.id;
-        }) : [];
+        console.log('myReadyToGoImages', myImages);
+
+        if (brandDetailState && brandDetailState.done && Object.keys(brandDetailState.data).length > 0) {
+            // @ts-ignore
+            const images = myImages && myImages.length > 0 ? myImages.map(item => item.id) : [];
+
+            if (images[0] && images.length > 1) {
+                await handleAttachImageToItemMultipleFetch({
+                    urlOptions: {
+                        placeHolders: {
+                            collection: 'brand',
+                            itemId: productRecord.id
+                        }
+                    },
+                    body: {
+                        image: images
+                    }
+                });
+            }
+            else if (images[0] && images.length < 1) {
+                await handleAttachImageToItemSingleFetch({
+                    urlOptions: {
+                        placeHolders: {
+                            imageId: images[0].id,
+                            collection: 'brand',
+                            itemId: productRecord.id
+                        }
+                    }
+                });
+            }
+        }
 
 
-        const addBrandRes = await handleAddBrandFetch({
 
+
+        const updateBrandRes = await handleUpdateBrandFetch({
+            urlOptions: {
+                placeHolders: {
+                    id: productRecord.id
+                }
+            },
             body: {
                 name: values.name.trim(),
                 description: values.description,
-                type: values.type,
-                image: imagesIds,
-                cover: coverImageId || imagesIds[0] ? imagesIds[0] : '',
             },
         });
 
         // @ts-ignore
-        if (addBrandRes && addBrandRes.status === 'ok') {
+        if (updateBrandRes && updateBrandRes.status === 'ok') {
             openSuccessNotification();
+            setAddNewCategoryVisible(false);
+
+
+            const positionInBrand = () => {
+                return brandList.map(item => item.id).indexOf(productRecord.id);
+            }
+
+            const index = positionInBrand();
+            // @ts-ignore
+            const updatedItem = Object.assign({}, brandList[index], { ...updateBrandRes });
+            console.log('updateBrandList', updatedItem)
+
+            const updateBrandList = [...brandList.slice(0, index), updatedItem, ...brandList.slice(index + 1)];
+
+            setBrandList(updateBrandList);
 
 
             actions.resetForm();
-            setAddNewCategoryVisible(false);
+
         }
         else {
             openErrorNotification();
         }
 
-
-
-
         actions.setSubmitting(false);
-
     };
 
 
@@ -150,6 +318,7 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, productR
 
 
 
+    console.log('myImages', myImages)
 
     return (
         <Formik
@@ -158,7 +327,7 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, productR
             validateOnBlur={false}
             enableReinitialize={true}
             initialValues={
-                { ...initialValues }
+                { ...initialValues, ...productRecord }
             }
         >
             {({
@@ -182,7 +351,7 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, productR
                             visible={addNewCategoryVisible}
                             onOk={(e: any) => handleSubmit(e)}
                             onCancel={handleCancel}
-                            okText='Create'
+                            okText='Update'
                             okButtonProps={{
                                 loading: isSubmitting,
                                 htmlType: "submit",
@@ -194,24 +363,25 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, productR
                                 value={values.name}
                                 name='name'
                                 isError={(touched.name && errors.name) ||
-                                    (!isSubmitting && addBrandState.error['error']['name'])}
+                                    (!isSubmitting && updateBrandState.error['error']['name'])}
 
                                 errorString={(touched.name && errors.name) ||
-                                    (!isSubmitting && addBrandState.error['error']['name'])}
+                                    (!isSubmitting && updateBrandState.error['error']['name'])}
                                 onChange={(e: any) => {
                                     handleChange(e);
                                     setFieldTouched('name');
                                 }}
                             />
                             <TextArea
+                                rows={3}
                                 label='Description'
                                 value={values.description}
                                 name='description'
                                 isError={(touched.description && errors.description) ||
-                                    (!isSubmitting && addBrandState.error['error']['description'])}
+                                    (!isSubmitting && updateBrandState.error['error']['description'])}
 
                                 errorString={(touched.description && errors.description) ||
-                                    (!isSubmitting && addBrandState.error['error']['description'])}
+                                    (!isSubmitting && updateBrandState.error['error']['description'])}
                                 onChange={(e: any) => {
                                     handleChange(e);
                                     setFieldTouched('description');
@@ -240,68 +410,83 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, productR
 
 
                             <div className='aboutToUploadImagesContainer'>
-                                {myImages &&
-                                    // @ts-ignore
-                                    myImages.length > 0 && myImages.map((image, index) => {
-                                        return (
-                                            <div className='aboutToUploadImagesContainer__item'>
-                                                <div
-                                                    className='aboutToUploadImagesContainer__item-imgContainer'
-                                                    onClick={() => setCoverImageId(image.id)}
-                                                >
-                                                    <img src={image.cover} alt={image.alt} />
-                                                </div>
+                                {brandDetailState.isLoading && (
+                                    <div style={{
+                                        padding: '20px 0'
+                                    }}>
+                                        <Spin />
+                                    </div>
+                                )}
+                                {brandDetailState.done && (
+                                    <>
+                                        {myImages &&
+                                            // @ts-ignore
+                                            myImages.length > 0 && myImages.map((image, index) => {
+                                                return (
+                                                    <div className='aboutToUploadImagesContainer__item'>
+                                                        <div
+                                                            className='aboutToUploadImagesContainer__item-imgContainer'
+                                                            onClick={() => {
+                                                                setCoverImageId(image.id);
+                                                                handleSetImageAsThumnail(image);
+                                                            }}
+                                                        >
+                                                            <img src={image.cover} alt={image.alt} />
+                                                        </div>
 
-                                                <span
-                                                    onClick={() => handleImagesDelete(image.id)}
-                                                    className='aboutToUploadImagesContainer__item-remove'>
-                                                    <CloseOutlined />
-                                                </span>
+                                                        <span
+                                                            onClick={() => {
+                                                                handleImagesDelete(image.id)
+                                                                handleDetachSingleImage(image.id)
+                                                            }
+
+                                                            }
+                                                            className='aboutToUploadImagesContainer__item-remove'>
+                                                            <CloseOutlined />
+                                                        </span>
 
 
-                                                {coverImageId === image.id ? (
-                                                    <span className='aboutToUploadImagesContainer__item-cover'>
-                                                        <CheckOutlined />
-                                                    </span>
-                                                ) : !coverImageId && index === 0 && (
-                                                    <span className='aboutToUploadImagesContainer__item-cover'>
-                                                        <CheckOutlined />
-                                                    </span>
-                                                )}
+                                                        {coverImageId === image.id ? (
+                                                            <span className='aboutToUploadImagesContainer__item-cover'>
+                                                                <CheckOutlined />
+                                                            </span>
+                                                        ) : !coverImageId && index === 0 && (
+                                                            <span className='aboutToUploadImagesContainer__item-cover'>
+                                                                <CheckOutlined />
+                                                            </span>
+                                                        )}
 
 
-                                            </div>
-                                        )
-                                    })}
+                                                    </div>
+                                                )
+                                            })}
 
 
-                                <Tooltip
-                                    title={'Attach images'}>
+                                        <Tooltip
+                                            title={'Attach images'}>
 
-                                    <div
-                                        onClick={() => {
-                                            setvisibleMedia(true);
-                                        }}
-                                        className='aboutToUploadImagesContainer__uploadItem'>
-                                        {/* <FileAddOutlined />
+                                            <div
+                                                onClick={() => {
+                                                    setvisibleMedia(true);
+                                                }}
+                                                className='aboutToUploadImagesContainer__uploadItem'>
+                                                {/* <FileAddOutlined />
 													<FileImageTwoTone />
 													<FileImageOutlined /> */}
-                                        <FileImageFilled />
-                                        {/* <h5>
+                                                <FileImageFilled />
+                                                {/* <h5>
 												     Select From Library
 											<     /h5> */}
-                                        <span className='aboutToUploadImagesContainer__uploadItem-plus'>
-                                            <PlusOutlined />
-                                        </span>
-                                    </div>
-                                </Tooltip>
+                                                <span className='aboutToUploadImagesContainer__uploadItem-plus'>
+                                                    <PlusOutlined />
+                                                </span>
+                                            </div>
+                                        </Tooltip>
+                                    </>
+                                )}
+
 
                             </div>
-
-
-
-
-
 
                         </Modal>
 
@@ -310,6 +495,8 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, productR
                             visible={visibleMedia}
                             setmyImages={setmyImages}
                             myImages={myImages}
+                            myGoddamnImages={myGoddamnImages}
+                            setMyGoddamnImages={setMyGoddamnImages}
                             isModalOpenForImages={true}
 
                         />

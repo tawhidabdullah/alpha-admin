@@ -91,7 +91,7 @@ const MyTable = ({ data, setProductList }: myTableProps) => {
           title=""
           dataIndex="cover"
           key="id"
-          // width={'100px'}
+          width={'80px'}
 
           className='classnameofthecolumn'
 
@@ -217,9 +217,6 @@ const MyTable = ({ data, setProductList }: myTableProps) => {
                 </Tooltip>
               </a>
 
-
-
-
               <Popconfirm
 
                 onConfirm={() => handleDeleteProduct(record.id)}
@@ -253,6 +250,8 @@ const MyTable = ({ data, setProductList }: myTableProps) => {
         addNewCategoryVisible={productDetailVisible}
         setAddNewCategoryVisible={setproductDetailVisible}
         productRecord={activeCategoryForEdit}
+        productList={ProductList}
+        setProductList={setProductList}
       />
 
 

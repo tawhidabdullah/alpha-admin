@@ -59,6 +59,7 @@ const initialValues = {
 	pricing: [],
 	venue: '',
 	date: '',
+	time: '',
 	purchaseLimit: null
 }
 
@@ -86,6 +87,7 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 	const [categoryOptions, setCategoryOptions] = useState([]);
 	const [selectedTags, setSelectedTags] = useState([]);
 	const [date, setDateFeild] = useState('');
+	const [time, setTimeFeild] = useState('');
 
 
 	const makeEmptyCategoryOptions = (setEmpty) => {
@@ -97,24 +99,6 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 		const imagesIds = myImages ? myImages.map(image => {
 			return image.id;
 		}) : [];
-
-
-
-		const myData = {
-			name: values.name.trim(),
-			description: values.description,
-			model: values.model,
-			unit: values.unit,
-			category: categoryids,
-			tags: tagIds,
-			brand: brandId,
-			image: imagesIds,
-			cover: coverImageId || imagesIds[0] ? imagesIds[0] : '',
-			pricing: pricing,
-			date: date,
-			venue: values.venue,
-			purchaseLimit: values.purchaseLimit
-		};
 
 		const addProductRes = await handleAddProductFetch({
 
@@ -130,6 +114,7 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 				cover: coverImageId || imagesIds[0] ? imagesIds[0] : '',
 				pricing: pricing,
 				date: date,
+				time: time,
 				venue: values.venue,
 				purchaseLimit: values.purchaseLimit
 			},
@@ -275,6 +260,13 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 		// console.log('date', date, dateString);
 	}
 
+	const handleTimeChange = (date, dateString) => {
+		setTimeFeild(dateString);
+		// console.log('date', date, dateString);
+	}
+
+
+
 	return (
 		<Formik
 			onSubmit={(values, actions) => handleSubmit(values, actions)}
@@ -355,30 +347,45 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 												<div style={{
 													width: '48%',
 												}}>
-													<TextArea
-														rows={1}
-														label='Venue'
-														value={values.venue}
-														name='venue'
-														isError={(touched.venue && errors.venue) ||
-															(!isSubmitting && addProductState.error['error']['venue'])}
+													<DatePicker
+														label='Date'
+														onChange={handleDateChange} />
 
-														errorString={(touched.venue && errors.venue) ||
-															(!isSubmitting && addProductState.error['error']['venue'])}
-														onChange={(e: any) => {
-															handleChange(e);
-															setFieldTouched('venue');
-														}}
-													/>
 												</div>
 												<div style={{
 													width: '48%'
 												}}>
-													<h3 className='inputFieldLabel'>Date</h3>
-													<DatePicker onChange={handleDateChange} />
+
+													<DatePicker
+														date={date}
+														withTime={true}
+														placeholder='Select time'
+														label='Time'
+														onChange={handleTimeChange} />
 
 												</div>
 											</div>
+											<div style={{
+												marginBottom: '15px'
+											}}></div>
+
+											<TextArea
+												rows={1}
+												label='Venue'
+												value={values.venue}
+												name='venue'
+												isError={(touched.venue && errors.venue) ||
+													(!isSubmitting && addProductState.error['error']['venue'])}
+
+												errorString={(touched.venue && errors.venue) ||
+													(!isSubmitting && addProductState.error['error']['venue'])}
+												onChange={(e: any) => {
+													handleChange(e);
+													setFieldTouched('venue');
+												}}
+											/>
+
+
 
 											<Input
 												label='Purchase Limit'

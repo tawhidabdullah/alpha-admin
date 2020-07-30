@@ -17,11 +17,13 @@ import {
 
 interface Props {
 	setBrandId?: any;
+	brandId?: any;
+	productDetailState?: any;
 }
 
 const { Option } = Select;
 
-const Brands = ({ setBrandId }: Props) => {
+const Brands = ({ setBrandId, brandId, productDetailState }: Props) => {
 	const [options, setoptions] = useState([]);
 	const [selectedBrandId, setSelectedBrandId] = useState('');
 	const [brandState, handleTagListFetch] = useHandleFetch({}, 'brandList');
@@ -67,6 +69,8 @@ const Brands = ({ setBrandId }: Props) => {
 	return (
 		<>
 
+			<div></div>
+
 			{brandState.isLoading && (
 				<div style={{
 					padding: '15px 0',
@@ -94,7 +98,9 @@ const Brands = ({ setBrandId }: Props) => {
 				</div>
 			)}
 
+
 			{brandState.done && brandState.data.length > 0 && options.length > 0 && (
+
 				<Select
 					showSearch
 					style={{ width: '210px', borderRadius: '6px' }}
@@ -104,6 +110,8 @@ const Brands = ({ setBrandId }: Props) => {
 					onFocus={onFocus}
 					onBlur={onBlur}
 					onSearch={onSearch}
+					defaultValue={brandId}
+
 					filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
 				>
 					{brandState.done &&

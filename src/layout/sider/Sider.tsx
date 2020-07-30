@@ -19,7 +19,9 @@ import {
     InboxOutlined,
     SlidersOutlined,
     DesktopOutlined,
-    RadarChartOutlined
+    RadarChartOutlined,
+    MessageOutlined,
+    UserOutlined
 } from '@ant-design/icons';
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -116,6 +118,10 @@ const SiderComponent = (props: any) => {
                     <Menu.Item key='177'>Sent emails</Menu.Item>
                 </SubMenu>
 
+                <Menu.Item key='199' icon={<MessageOutlined />}>
+                    <Link to='/admin/sms'>SMS</Link>
+                </Menu.Item>
+
                 <SubMenu key='sub6' icon={<FileOutlined />} title='Pages'>
                     <Menu.Item key='17'>
                         <Link to='/admin/page/new'> Add new Page</Link>
@@ -125,7 +131,6 @@ const SiderComponent = (props: any) => {
                     </Menu.Item>
                 </SubMenu>
 
-
                 <Menu.Item key='23'
                     icon={<SlidersOutlined />}
                 >
@@ -133,7 +138,9 @@ const SiderComponent = (props: any) => {
                 </Menu.Item>
 
                 <SubMenu key='sub7' icon={<SettingOutlined />} title='Settings'>
-                    <Menu.Item key='19'>
+                    <Menu.Item
+                        icon={<UserOutlined />}
+                        key='19'>
                         <Link to='/admin/settings/siteInfo'>Site information</Link>
                     </Menu.Item>
                     <Menu.Item

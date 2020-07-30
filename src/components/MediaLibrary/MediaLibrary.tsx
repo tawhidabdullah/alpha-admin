@@ -17,7 +17,8 @@ import {
 	CheckCircleOutlined,
 	EllipsisOutlined,
 	FileImageOutlined,
-	DeleteOutlined
+	DeleteOutlined,
+	CloseOutlined
 
 } from '@ant-design/icons';
 
@@ -66,7 +67,9 @@ interface Props {
 	isModalOpenForThumbnail?: boolean;
 	isModalOpenForImages?: boolean;
 	myImages?: any;
-	myThumbnailImage?: any
+	myThumbnailImage?: any;
+	setMyGoddamnImages?: any;
+	myGoddamnImages?: any;
 }
 
 
@@ -194,10 +197,18 @@ const MediaLibrary = ({
 
 
 	useEffect(() => {
-		if (isDoneOk && isModalOpenForImages) {
+		if (myImages && myImages.length > 0)
+			setselectedImages([...myImages]);
+	}, [myImages])
+
+
+	useEffect(() => {
+		if (isDoneOk && isModalOpenForImages && myImages) {
 			setselectedImages([...myImages]);
 		}
-	}, [myImages, isDoneOk])
+	}, [myImages, isDoneOk]);
+
+
 
 	useEffect(() => {
 		if (isDoneOk) {
@@ -235,7 +246,7 @@ const MediaLibrary = ({
 		if (selectedimages && selectedimages.length > 0) {
 			const isImageExist = selectedimages.find(image => image.id === id);
 			if (!isImageExist) {
-				setselectedImages([image, ...selectedimages]);
+				setselectedImages([...selectedimages, image]);
 				setactiveImageItem(image);
 			}
 			else {
@@ -244,7 +255,7 @@ const MediaLibrary = ({
 			}
 		}
 		else {
-			setselectedImages([image, ...selectedimages]);
+			setselectedImages([...selectedimages, image]);
 			setactiveImageItem(image);
 		}
 
@@ -410,6 +421,48 @@ const MediaLibrary = ({
 
 							</TabPane>
 							<TabPane tab="Media Library" key="2">
+								<>
+									{myImages && myImages.lenght > 0 && (
+										<>
+											<h3 className='inputFieldLabel'>
+												Selected Items
+                               </h3>
+											<div className='mediaLibraryBodyContainer-selectedImages'>
+												{imageListFromLibraryState.done
+													&& myImages.length > 0
+													&& myImages.map(image => {
+														return (
+															<div
+																key={image.id}
+
+																className='mediaLibraryBodyContainer-selectedImages-imageListContainer-item'>
+
+
+																<div
+																	onClick={() => {
+																		handleAddToSelectedList(image, image.id)
+																	}}
+																	className='mediaLibraryBodyContainer-selectedImages-imageListContainer-item-menu'>
+																	<CloseOutlined />
+																</div>
+
+
+
+
+																<div className='mediaLibraryBodyContainer-selectedImages-imgContainer'>
+																	<img src={image.cover} alt='img' />
+																</div>
+
+
+															</div>
+														)
+													})}
+
+											</div>
+										</>
+									)}
+								</>
+
 								<div className='mediaLibraryBodyContainer-left-imageListContainer'>
 
 									{imageListFromLibraryState.done

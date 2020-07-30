@@ -159,9 +159,6 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, brandLis
 	return (
 		<>
 			<div className='siteInfoContainer'>
-				<h2>
-					Site Settings
-			</h2>
 
 				<Tabs defaultActiveKey="1" >
 					<TabPane tab="Site Info" key="1">

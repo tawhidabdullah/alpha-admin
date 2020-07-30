@@ -139,6 +139,7 @@ const Categories = ({ setcategoryIds, categoryOptions, setCategoryOptions }: Pro
 								treeData={options}
 								defaultExpandAll={true}
 								checkStrictly={true}
+
 							/>
 						)}
 					</div>

@@ -51,7 +51,7 @@ const MyTable = ({data,setBrandList}: myTableProps) => {
     const [visible,setvisible] = useState(false);   
     const [activeCategoryForEdit,setactiveCategoryForEdit] = useState(false); 
     const [deleteBrandState, handleDeleteBrandFetch] = useHandleFetch({}, 'deleteBrand');
-  const [brandDetailVisible,setBrandDetailVisible] = useState(false); 
+    const [brandDetailVisible,setBrandDetailVisible] = useState(false); 
       
 
  
@@ -89,7 +89,7 @@ const MyTable = ({data,setBrandList}: myTableProps) => {
           title=""
            dataIndex="cover"
             key="id" 
-            // width={'100px'}
+            width={'80px'}
             
            className='classnameofthecolumn'
 
@@ -216,6 +216,8 @@ const MyTable = ({data,setBrandList}: myTableProps) => {
 
 
       <BrandDetail
+        brandList={data}
+        setBrandList={setBrandList}
         addNewCategoryVisible={brandDetailVisible}
         setAddNewCategoryVisible={setBrandDetailVisible}
         productRecord={activeCategoryForEdit}

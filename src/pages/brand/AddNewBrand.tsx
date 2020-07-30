@@ -73,7 +73,7 @@ interface Props {
 
 const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, brandList, setBrandList }: Props) => {
 
-	const [addBrandState, handleAddBrandFetch] = useHandleFetch({}, 'addBrand');
+	const [updateBrandState, handleUpdateBrandFetch] = useHandleFetch({}, 'updateBrand');
 	const [visible, setvisible] = useState(false);
 	const [myImages, setmyImages] = useState(false);
 	const [visibleMedia, setvisibleMedia] = useState(false);
@@ -88,7 +88,7 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, brandLis
 		}) : [];
 
 
-		const addBrandRes = await handleAddBrandFetch({
+		const addBrandRes = await handleUpdateBrandFetch({
 
 			body: {
 				name: values.name.trim(),
@@ -202,10 +202,10 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, brandLis
 								value={values.name}
 								name='name'
 								isError={(touched.name && errors.name) ||
-									(!isSubmitting && addBrandState.error['error']['name'])}
+									(!isSubmitting && updateBrandState.error['error']['name'])}
 
 								errorString={(touched.name && errors.name) ||
-									(!isSubmitting && addBrandState.error['error']['name'])}
+									(!isSubmitting && updateBrandState.error['error']['name'])}
 								onChange={(e: any) => {
 									handleChange(e);
 									setFieldTouched('name');
@@ -216,10 +216,10 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, brandLis
 								value={values.description}
 								name='description'
 								isError={(touched.description && errors.description) ||
-									(!isSubmitting && addBrandState.error['error']['description'])}
+									(!isSubmitting && updateBrandState.error['error']['description'])}
 
 								errorString={(touched.description && errors.description) ||
-									(!isSubmitting && addBrandState.error['error']['description'])}
+									(!isSubmitting && updateBrandState.error['error']['description'])}
 								onChange={(e: any) => {
 									handleChange(e);
 									setFieldTouched('description');

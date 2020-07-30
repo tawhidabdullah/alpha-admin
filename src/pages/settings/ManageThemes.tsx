@@ -174,7 +174,7 @@ const CustomerList = ({history}: Props) => {
    
    <div className='categoryListContainer__bodyContainerList'>
 		
-          {themeState.data.map(theme => {
+          {themeList.map(theme => {
             return (
               <div className='categoryListContainer__bodyContainerList-item'>
               {/* <Badge count={<CheckCircleTwoTone style={{ color: '#3FA3FF' }} />}>
