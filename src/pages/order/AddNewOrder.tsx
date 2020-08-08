@@ -21,7 +21,8 @@ import {
 	CaretRightOutlined,
 	CaretLeftOutlined,
 	CaretRightFilled,
-	UserOutlined
+	UserOutlined,
+	InfoCircleOutlined
 } from '@ant-design/icons';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -40,7 +41,7 @@ const { Step } = Steps;
 
 const openSuccessNotification = (message?: any) => {
 	notification.success({
-		message: message || 'Category Updated',
+		message: message || 'Order Created',
 		description: '',
 		icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
 	});
@@ -48,10 +49,10 @@ const openSuccessNotification = (message?: any) => {
 
 
 const openErrorNotification = (message?: any) => {
-	notification.success({
+	notification.error({
 		message: message || 'Something Went Wrong',
 		description: '',
-		icon: <CheckCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
+		icon: <InfoCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
 	});
 };
 
@@ -61,27 +62,7 @@ const openErrorNotification = (message?: any) => {
 
 
 const validationSchema = Yup.object().shape({
-	firstName: Yup.string()
-		.label('First name')
-		.required()
-		.min(2, 'First name must have at least 2 characters '),
-	lastName: Yup.string()
-		.label('Last name')
-		.required()
-		.min(2, 'Last name must have at least 2 characters '),
-	phone: Yup.string()
-		.required('Please tell us your mobile number.')
-		.max(13, 'Please enter a valid mobile number.'),
-	password: Yup.string()
-		.label('Password')
-		.required()
-		.min(6, 'Password must have at least 6 characters'),
-	address1: Yup.string()
-		.label('Address line 1')
-		.required()
-		.min(3, 'Address line 1 must have at least 3 characters '),
 
-	email: Yup.string().label('Email').email('Please enter a valid email'),
 
 });
 
@@ -96,7 +77,9 @@ const initialValues = {
 	address1: '',
 	address2: '',
 	zipCode: '',
-	additionalInfo: ''
+	additionalInfo: '',
+	country: '',
+	city: '',
 
 };
 
@@ -112,15 +95,7 @@ const steps = [
 
 	},
 	{
-		title: 'Shipping Address',
-		content: '',
-	},
-	{
-		title: 'Payment Details',
-		content: '',
-	},
-	{
-		title: 'Review your Order',
+		title: 'Confirm Order',
 		content: '',
 	},
 ];
@@ -149,11 +124,14 @@ const AddNewOrder = ({ }: Props) => {
 		'countryList'
 	);
 
+
+
 	const [cityListState, handleCityListFetch] = useHandleFetch([], 'cityList');
 
 	const [countryList, setCountryList] = useState([]);
 	const [cityList, setCityList] = useState([]);
 	const [current, setCurrent] = useState(0);
+	const [selectedCustomerData, setSelectedCustomerData] = useState({});
 
 
 	const next = () => {
@@ -168,36 +146,103 @@ const AddNewOrder = ({ }: Props) => {
 	}
 
 
-	const handleSubmit = async (values: any, actions: any) => {
+	const handleCheckoutSubmit = async (values: any, actions: any) => {
 		// console.log('selectedCityValue', selectedCityValue)
+		console.log('values', values);
+		console.log('productListcool', productList);
 
-		const addRegionRes = await handleOrderFetch({
+		const products = productList && productList.length > 0 ? productList.map(item => {
+			return {
+				product: item._id,
+				quantity: item.quantity,
+				variation: item.variation
+			}
+		}) : [];
+
+		const addOrderRes = await handleOrderFetch({
 
 			body: {
-				name: values.name,
-				pickUpLocation: values.pickUpLocation,
-				time: values.time,
-				country: selectedCountryValue,
-				city: selectedCityValue,
+				billingAddress: {
+					phone: values.phone,
+					email: values.email,
+					address1: values.address1,
+					address2: values.address2,
+					firstName: values.firstName,
+					lastName: values.lastName,
+					city: selectedCityValue || selectedCustomerData['city'],
+					country: selectedCountryValue || selectedCustomerData['country'],
+				},
+				products,
+				customerId: customerId
 				// charge
 			},
 		});
 
-
 		// @ts-ignore
-		if (addRegionRes && addRegionRes.status === 'ok') {
+		if (addOrderRes && addOrderRes.status === 'ok') {
 			openSuccessNotification();
 
 
 			actions.resetForm();
 		}
-		else {
-			openErrorNotification();
-		}
-
 
 		actions.setSubmitting(false);
 	};
+
+
+
+	useEffect(() => {
+		if (!addOrderState['isLoading']) {
+			const error = addOrderState['error'];
+			if (error['isError'] && Object.keys(error['error']).length > 0) {
+				if (error['error']['registerError']) {
+					// setServerErrors(error['error']['registerError']);
+				} else if (error['error']['checkoutError']) {
+					// setServerErrors(error['error']['checkoutError']);
+				}
+				else {
+					// setServerErrors(error['error']);
+				}
+
+				const errors =
+					Object.values(error['error']).length > 0
+						? Object.values(error['error'])
+						: [];
+				errors.forEach((err, i) => {
+					if (typeof err === 'string') {
+						openErrorNotification(err);
+
+					}
+					else if (typeof err === 'object') {
+						if (err && Object.keys(err).length > 0) {
+							const errs = Object.values(err);
+							errs.forEach(err => {
+								openErrorNotification(err);
+							})
+
+						}
+					}
+				});
+			}
+		}
+
+		if (
+			!addOrderState['isLoading'] &&
+			Object.keys(addOrderState.data).length > 0
+		) {
+			if (addOrderState['data']['status'] === 'ok') {
+				openSuccessNotification('Order Created Successfully');
+				// history.push({
+				//   pathname: '/orderDetails',
+				//   state: checkoutState['data']
+				// })
+
+				// clearCart();
+				// setIsModalShown(true);
+			}
+		}
+	}, [addOrderState]);
+
 
 
 
@@ -207,7 +252,9 @@ const AddNewOrder = ({ }: Props) => {
 
 	const onChangeCountry = (value) => {
 		setselectedCountryValue(value);
-	}
+	};
+
+
 
 	useEffect(() => {
 		const setCountries = async () => {
@@ -218,7 +265,7 @@ const AddNewOrder = ({ }: Props) => {
 				// @ts-ignore
 				const countryOptions = CountryListRes.map((country) => {
 					return {
-						value: country.name,
+						value: country.id,
 						name: country.name
 					};
 				});
@@ -282,11 +329,14 @@ const AddNewOrder = ({ }: Props) => {
 	useEffect(() => {
 
 		if (productIds.length > 0) {
-
 			if (productIds.length > productList.length) {
+				const variation = productIds[productIds.length - 1]['pricing'].length > 0 && productIds[productIds.length - 1]['pricing'][0]['_id'];
+				console.log('variation', variation)
+
 				setProductList([...productList, {
-					_id: productIds[productIds.length - 1],
-					variation: '5f0a8f0e10cf2f1dc280d915',
+					...productIds[productIds.length - 1],
+					_id: productIds[productIds.length - 1]['id'],
+					variation: variation,
 					quantity: 1
 				}]);
 			}
@@ -295,8 +345,8 @@ const AddNewOrder = ({ }: Props) => {
 			else if (productIds.length < productList.length) {
 				const newProductList = productList.filter(item => {
 					let isTrue = false;
-					productIds.forEach(productId => {
-						if (productId === item._id) {
+					productIds.forEach(product => {
+						if (product._id === item._id) {
 							isTrue = true;
 						}
 					});
@@ -317,15 +367,16 @@ const AddNewOrder = ({ }: Props) => {
 
 
 	// console.log('productList', productList)
+	console.log('selectedCustomerData', selectedCustomerData)
 
 	return (
 		<Formik
-			onSubmit={(values, actions) => handleSubmit(values, actions)}
+			onSubmit={(values, actions) => handleCheckoutSubmit(values, actions)}
 			validationSchema={validationSchema}
 			validateOnBlur={false}
 			enableReinitialize={true}
 			initialValues={
-				{ ...initialValues }
+				{ ...initialValues, ...selectedCustomerData }
 			}
 		>
 			{({
@@ -368,14 +419,18 @@ const AddNewOrder = ({ }: Props) => {
 											<h4 className='inputFieldLabel'>
 												Customer
 											</h4>
-											<CustomersId setCustomerId={setCustomerId} />
+											<CustomersId
+												setSelectedCustomerData={setSelectedCustomerData}
+												setCustomerId={setCustomerId} />
 											<div style={{
 												marginTop: '15px'
 											}}></div>
 											<h4 className='inputFieldLabel'>
 												Products
 											</h4>
-											<AddProducts setProductIds={setProductIds} />
+											<AddProducts
+												productIds={productIds}
+												setProductIds={setProductIds} />
 										</div>
 										<div className='addOrderContainer__container-OrderInfoContainer-right'>
 											<AddNewOrderSummary
@@ -480,6 +535,7 @@ const AddNewOrder = ({ }: Props) => {
 												// noStyle={true}
 												>
 													<Select
+														defaultValue={values.country}
 														notFoundContent={<Empty description='No Country Found' image={Empty.PRESENTED_IMAGE_SIMPLE} />}
 														showSearch
 														style={{ width: '100%' }}
@@ -512,6 +568,7 @@ const AddNewOrder = ({ }: Props) => {
 
 												>
 													<Select
+														defaultValue={values.city}
 														className='selectClassName'
 														notFoundContent={<Empty description='First Select a Country' image={Empty.PRESENTED_IMAGE_SIMPLE} />}
 														showSearch
@@ -585,7 +642,7 @@ const AddNewOrder = ({ }: Props) => {
 
 
 
-								{current === 2 && (
+								{current === 10 && (
 									<div className='addOrderContainer__container-address'>
 
 										<div className='dubbleRowInputs'>
@@ -662,18 +719,7 @@ const AddNewOrder = ({ }: Props) => {
 													}}
 												/>
 											</div>
-
-
-
-
 										</div>
-
-
-
-
-
-
-
 
 										<div className='dubbleRowInputs'>
 											<div className='dubbleRowInputs__item'>
@@ -688,6 +734,7 @@ const AddNewOrder = ({ }: Props) => {
 												// noStyle={true}
 												>
 													<Select
+														defaultValue={'Comoros'}
 														notFoundContent={<Empty description='No Country Found' image={Empty.PRESENTED_IMAGE_SIMPLE} />}
 														showSearch
 														style={{ width: '100%' }}
@@ -720,6 +767,7 @@ const AddNewOrder = ({ }: Props) => {
 
 												>
 													<Select
+														defaultValue={values.city}
 														className='selectClassName'
 														notFoundContent={<Empty description='First Select a Country' image={Empty.PRESENTED_IMAGE_SIMPLE} />}
 														showSearch
@@ -782,45 +830,142 @@ const AddNewOrder = ({ }: Props) => {
 
 										</div>
 
-
-
 									</div>
 								)}
 
-								{/* {current === steps.length - 1 && (
 
-									<Button type="primary" onClick={() => message.success('Processing complete!')}>
-										Done
-									</Button>
-								)} */}
-								{current > 0 && (
-									<Button
-										style={{ marginRight: '15px', marginTop: '10px' }}
-										// type="primary"
-										className='btnPrimaryClassNameoutline'
-										type="primary" onClick={() => prev()}
-									>
-										<CaretLeftOutlined />	Previous
+								{current === 2 && (
+									<div style={{
+										display: 'flex',
+										justifyContent: 'center',
+										marginTop: '40px',
+										alignItems: 'center',
+										flexDirection: "column"
+									}}>
+										<AddNewOrderSummary
+											setProductList={setProductList}
+											productList={productList} />
 
-									</Button>
+										<div style={{
+											display: 'flex',
+											marginTop: '40px',
+											width: '300px',
+											marginBottom: '50px'
 
+										}}>
+											{/* <h3
+												style={{
+													color: '#666'
+												}}
+											>
+												Total
+												</h3>
+
+											<h3
+												style={{
+													color: '#333'
+												}}
+											>
+												500
+												</h3> */}
+											<Button
+												loading={addOrderState.isLoading}
+												style={{
+													marginTop: '10px',
+													marginLeft: '15px'
+												}}
+
+												className='btnPrimaryClassNameoutline-blue'
+												onClick={(e: any) => handleSubmit(e)}
+											>
+												Place Order
+											<CaretRightOutlined />
+
+											</Button>
+										</div>
+									</div>
 								)}
 
-								{current < steps.length - 1 && (
-									<Button
-										style={{
-											marginTop: '10px'
-										}}
 
-										className='btnPrimaryClassNameoutline'
-										type="primary" onClick={() => next()}
-									>
-										Next< CaretRightOutlined />
 
-									</Button>
 
-								)}
+								<div style={{
+									display: 'flex',
+									justifyContent: 'space-between'
+								}}>
+									{current > 0 && (
+										<Button
+											style={{ marginRight: '15px', marginTop: '10px' }}
+											// type="primary"
+											className='btnPrimaryClassNameoutline'
+											type="primary" onClick={() => prev()}
+										>
+											<CaretLeftOutlined />	Previous
 
+										</Button>
+
+									)}
+
+									{current < steps.length - 1 && (
+										<>
+											<div>
+												<Button
+													style={{
+														marginTop: '10px'
+													}}
+
+													className='btnPrimaryClassNameoutline'
+													type="primary" onClick={() => {
+														if (current === 1) {
+															setCurrent(2)
+														}
+														else {
+															next()
+														}
+													}}
+												>
+													Next< CaretRightOutlined />
+
+												</Button>
+
+												{/* {current === 1 && <Button
+													style={{
+														marginTop: '10px',
+														marginLeft: '15px'
+													}}
+
+													className='btnPrimaryClassNameoutline'
+													type="primary" onClick={() => setCurrent(2)}
+												>
+													Use different address< CaretRightOutlined />
+
+												</Button>
+												} */}
+
+
+
+											</div>
+
+
+										</>
+									)}
+
+									{/* {current === steps.length - 1 && (
+										<Button
+											style={{
+												marginTop: '10px',
+												marginLeft: '15px'
+											}}
+
+											className='btnPrimaryClassNameoutline'
+											type="primary" onClick={(e: any) => handleSubmit(e)}
+										>
+											Place Order
+											<CaretRightOutlined />
+
+										</Button>
+									)} */}
+								</div>
 
 								{/* <div className='addOrderContainer__container-left'>
 								

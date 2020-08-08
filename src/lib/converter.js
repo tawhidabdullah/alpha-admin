@@ -537,7 +537,6 @@ class Converter {
 */
 	async brandDetail(resData) {
 		const data = Object.keys(resData).length > 0 ? resData : null;
-		console.log('brandata', data)
 		if (data) {
 			return {
 				id: data._id || '',
@@ -592,6 +591,8 @@ class Converter {
 					city: customer.city || '',
 					email: customer.email || '',
 					phone: customer.phone || '',
+					address1: customer.address1 || '',
+					address2: customer.address2 || '',
 					created: customer.created || ''
 				};
 			});
@@ -822,6 +823,10 @@ class Converter {
 					name: data.brand.name,
 
 				} : {},
+				price:
+					parseInt(data.price['offer']) > parseInt(data.price['regular'])
+						? data.price['offer']
+						: data.price['regular'],
 				pricing: data.pricing,
 				category:
 					(data.category &&
@@ -889,6 +894,10 @@ class Converter {
 				date: data.date,
 				venue: data.venue,
 				pricing: data.pricing,
+				price:
+					parseInt(data.price['offer']) > parseInt(data.price['regular'])
+						? data.price['offer']
+						: data.price['regular'],
 				category:
 					(data.category &&
 						data.category.length > 0 &&
@@ -1729,13 +1738,15 @@ class Converter {
 			(data.length > 0 &&
 				data.map((item) => {
 					return {
+						...item,
 						id: item.id || item._id,
 						billingAddress: item.billingAddress,
 						status: item.status,
 						total: item.totalPrice,
 						products: item.products,
 						date_created: item.date,
-						paymentMethod: item['payment']['paymentMethod']
+						paymentMethod: item['payment']['paymentMethod'],
+						customerId: item.customer['_id']
 					};
 				})) ||
 			[];
@@ -1747,6 +1758,51 @@ class Converter {
 
 		return convertedData;
 	}
+
+
+	/**
+* @public
+* @method orderList convert api data from API to general format based on config server
+* @param {Object} data response objectc from wc
+* @returns {Object}  converted data
+*/
+	async orderList(resData) {
+		const data = resData.orders ? resData.orders.data : [];
+		// const isNext = resData.page.next;
+
+		let convertedData =
+			(data.length > 0 &&
+				data.map((item) => {
+					return {
+						id: item.id || item._id,
+						billingAddress: item.billingAddress,
+						name: item.billingAddress['firstName'] + " " + item.billingAddress['lastName'],
+						country: item.billingAddress['country'],
+						city: item.billingAddress['city'],
+						status: item.status,
+						total: item.totalPrice,
+						products: item.products,
+						date_created: item.added,
+						paymentMethod: item['payment']['paymentMethod'],
+						paymentStatus: item['payment']['status'],
+						payment: item['payment'],
+						customerId: item['customer'] ? item['customer']['_id'] : ''
+
+					};
+				})) ||
+			[];
+
+		// convertedData = {
+		// 	data: convertedData,
+		// 	isNext
+		// };
+
+		return convertedData;
+	}
+
+
+
+
 
 	/**
    * @public

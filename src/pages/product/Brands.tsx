@@ -94,7 +94,7 @@ const Brands = ({ setBrandId, brandId, productDetailState }: Props) => {
 					justifyContent: 'center',
 					alignItems: 'center'
 				}}>
-					<Empty title='No Organizer found' height={100} />
+					<Empty title='No Brand found' height={100} />
 				</div>
 			)}
 
@@ -111,7 +111,6 @@ const Brands = ({ setBrandId, brandId, productDetailState }: Props) => {
 					onBlur={onBlur}
 					onSearch={onSearch}
 					defaultValue={brandId}
-
 					filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
 				>
 					{brandState.done &&

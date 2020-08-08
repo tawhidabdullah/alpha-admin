@@ -116,7 +116,6 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, themeLis
         // @ts-ignore
         if (addThemeRes && addThemeRes.status === 'ok') {
 
-            console.log('addThemeRes', addThemeRes);
             setThemeList([...themeList, {
                 id: addThemeRes['_id'] || '',
                 key: addThemeRes['_id'] || '',

@@ -83,8 +83,11 @@ const HeaderComponent = (props: Props) => {
         }
         return (
             <Menu
+                style={{
+                    maxHeight: '450px',
+                    overflowY: 'scroll'
+                }}
 
-            
 
                 onClick={handleMenuClick}>
                 {getAllNotificationState.done && getAllNotificationState.data[0] && getAllNotificationState.data.map(item => {
@@ -147,7 +150,7 @@ const HeaderComponent = (props: Props) => {
 
                 }}
             >
-                Express Ticket
+                Admin
             </h2>
 
             <div
@@ -158,7 +161,7 @@ const HeaderComponent = (props: Props) => {
 
                 <Dropdown
                     placement="bottomLeft"
-            
+
                     overlay={menu}
                 // visible={this.state.visible}
                 >
@@ -170,7 +173,7 @@ const HeaderComponent = (props: Props) => {
 
                         <Badge
                             overflowCount={100}
-                            count={99}
+                            count={getAllNotificationState.done && getAllNotificationState.data && getAllNotificationState.data.length ? getAllNotificationState.data.length : 0}
                         >
                             <span style={{
                                 marginLeft: '10px',
@@ -215,4 +218,4 @@ const HeaderComponent = (props: Props) => {
     )
 }
 
-export default HeaderComponent; 
+export default HeaderComponent;

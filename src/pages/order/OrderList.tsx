@@ -13,6 +13,11 @@ import AddNewOrder from "./AddNewOrder";
 import QuickEdit from "./QuickEdit";
 import Empty from "../../components/Empty";
 
+
+
+// import lib 
+import Moment from "react-moment";
+
 const { Column, ColumnGroup } = Table;
 const { Search } = Input;
 
@@ -82,30 +87,39 @@ const MyTable = ({data,setOrderList}: myTableProps) => {
         // pagination={false}
         dataSource={data}
         >
-         
-          <Column
-           title="Name" 
-           dataIndex="name" 
-           key="id" 
-           className='classnameofthecolumn'
-         
-            />
+
+          
+        <Column
+          title="Name"
+          dataIndex="name"
+          key="id"
+          className='classnameofthecolumn'
+          render={(text, record: any) => (
+            <>
+
+              <h4
+                onClick={() => {
+                  setvisible(true)
+                  setactiveCategoryForEdit(record); 
+                }}
+                style={{
+                  fontWeight: 400,
+                  color: '#555',
+                  cursor: 'pointer'
+
+                }}>
+                {text}
+              </h4>
 
 
-<Column
-           title="Pick up Location" 
-           dataIndex="pickUpLocation" 
-           key="id" 
-           className='classnameofthecolumn'
-         
-            />
+            </>
+          )}
 
-
-
+        />
 
 <Column
            title="Country" 
-           dataIndex="countryName" 
+           dataIndex="country" 
            key="id" 
            className='classnameofthecolumn'
          
@@ -120,21 +134,47 @@ const MyTable = ({data,setOrderList}: myTableProps) => {
          
             />
 
-<Column
-           title="Time" 
-           dataIndex="time" 
+          <Column
+           title="Created" 
+           dataIndex="date_created" 
            key="id" 
            className='classnameofthecolumn'
-         
+           render={(text, record: any) => (
+            <>
+
+              <h4
+               
+                style={{
+                  fontWeight: 400,
+                  color: '#555',
+
+                }}>
+                  <Moment withTitle>
+                    {text}
+                  </Moment>
+              </h4>
+
+
+            </>
+          )}
             />
 
 
-<Column
-           title="Charge" 
-           dataIndex="time" 
+          <Column
+           title="Status" 
+           dataIndex="status" 
            key="id" 
            className='classnameofthecolumn'
-         
+           render={(text, record: any) => (
+            <>
+
+              <span
+                className={'product-attributeTag'}>
+                {text}
+            </span> 
+
+            </>
+          )}
             />
 
 
@@ -172,20 +212,21 @@ const MyTable = ({data,setOrderList}: myTableProps) => {
           align='right'
           render={(text, record : any) => (
             <Space size="middle">
-            
+              <a href='##'>
                <Tooltip placement="top" title='Quick Edit Region'>
               <span className='iconSize' onClick={() => {
                 setvisible(true)
                 setactiveCategoryForEdit(record); 
               }}> 
               <EditOutlined />
-            
               </span>
+
                </Tooltip>
+               </a>
 
 
 
-   
+{/*    
                <Popconfirm 
                
                onConfirm={() => handleDeleteRegion(record.id)}
@@ -197,7 +238,7 @@ const MyTable = ({data,setOrderList}: myTableProps) => {
              <DeleteOutlined/>
             </span>
        
-           </Popconfirm>
+           </Popconfirm> */}
 
 
              
@@ -246,10 +287,6 @@ const CustomerList = ({history}: Props) => {
      setOrders(); 
     },[])
 
-
-
-
-  
   const [addNewCategoryVisible,setAddNewCategoryVisible] = useState(false);   
 
   // console.log('orderState',orderState)
@@ -261,12 +298,11 @@ const CustomerList = ({history}: Props) => {
       setOrderList(newOrderList); 
     }
      
-  }
+  }; 
 
 
-
-
-
+  console.log('orderState',orderState)
+  console.log('orderList',orderList)
 
 
 	return (
@@ -336,9 +372,7 @@ const CustomerList = ({history}: Props) => {
           setOrderList={setOrderList}
            />} */}
 
-      
-
-        
+  
     </>
 	);
 };

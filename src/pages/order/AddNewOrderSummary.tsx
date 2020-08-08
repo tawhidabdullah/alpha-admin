@@ -22,7 +22,7 @@ const AddNewOrderSummary = ({
 }: Props) => {
     return (
         <div className='addOrderContainer__container-orderSummary'>
-            <h3>
+            <h3 className='addOrderContainer-sectionTitle'>
                 <span>
                     <ShopOutlined />
                 </span>
@@ -36,6 +36,7 @@ const AddNewOrderSummary = ({
                         productId={item._id}
                         quantity={item.quantity}
                         item={item}
+                        variation={item.variation}
                     />;
                 })}
 

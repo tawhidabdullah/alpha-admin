@@ -66,13 +66,13 @@ const SiderComponent = (props: any) => {
                 <SubMenu
                     key='sub3'
                     icon={<GoldOutlined />}
-                    title='Event'
+                    title='Product'
                 // onTitleClick={() => props.history.push('/product')}
                 >
                     <Menu.Item
                         icon={<RadarChartOutlined />}
                         key='6'>
-                        <Link to='/admin/product'>List Events</Link>
+                        <Link to='/admin/product'>List Products</Link>
                     </Menu.Item>
 
                     <Menu.Item key='9' icon={<TagsOutlined />}>
@@ -85,7 +85,7 @@ const SiderComponent = (props: any) => {
                     </Menu.Item>
 
                     <Menu.Item key='5' icon={<BranchesOutlined />}>
-                        <Link to='/admin/brand'>Organizer</Link>
+                        <Link to='/admin/brand'>Brand</Link>
                     </Menu.Item>
 
                 </SubMenu>
@@ -102,9 +102,9 @@ const SiderComponent = (props: any) => {
                     <Menu.Item key='11'>
                         <Link to='/admin/order'>List Orders</Link>
                     </Menu.Item>
-                    {/* <Menu.Item key='12'>
+                    <Menu.Item key='12'>
                         <Link to='/admin/order/new'>Add Order</Link>
-                    </Menu.Item> */}
+                    </Menu.Item>
                 </SubMenu>
 
                 <Menu.Item key='13' icon={<TeamOutlined />}>

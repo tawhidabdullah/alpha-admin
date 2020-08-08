@@ -72,9 +72,6 @@ const Tags = ({
   }, [tagState]);
 
 
-  console.log('selectedTags', selectedTags)
-  console.log('options', options)
-
 
   useEffect(() => {
     const setTags = async () => {
