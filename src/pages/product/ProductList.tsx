@@ -309,14 +309,14 @@ const ProductList = ({ history }: Props) => {
 
           <div className='categoryListContainer__header-searchBar'>
             <h2 className='categoryListContainer__header-title'>
-              Events
+              Products
             </h2>
 
 
             <Search
               enterButton={false}
               className='searchbarClassName'
-              placeholder="search events.."
+              placeholder="search products.."
               onSearch={value => handleSearch(value)}
             // style={{ width: 300 }}
             />
@@ -353,7 +353,7 @@ const ProductList = ({ history }: Props) => {
             <div style={{
               marginTop: '200px'
             }}>
-              <Empty description='No Events found' image={Empty.PRESENTED_IMAGE_SIMPLE} />
+              <Empty description='No Products found' image={Empty.PRESENTED_IMAGE_SIMPLE} />
             </div>
           )}
         </div>

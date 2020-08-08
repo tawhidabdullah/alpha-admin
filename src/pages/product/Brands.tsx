@@ -94,7 +94,7 @@ const Brands = ({ setBrandId, brandId, productDetailState }: Props) => {
 					justifyContent: 'center',
 					alignItems: 'center'
 				}}>
-					<Empty title='No Organizer found' height={100} />
+					<Empty title='No Brand found' height={100} />
 				</div>
 			)}
 
