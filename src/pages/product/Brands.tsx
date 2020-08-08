@@ -111,7 +111,6 @@ const Brands = ({ setBrandId, brandId, productDetailState }: Props) => {
 					onBlur={onBlur}
 					onSearch={onSearch}
 					defaultValue={brandId}
-
 					filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
 				>
 					{brandState.done &&

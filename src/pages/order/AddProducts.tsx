@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { useHandleFetch } from '../../hooks';
-import { Select } from 'antd';
+import { Select, Skeleton } from 'antd';
 
-const { Option } = Select;
 
 interface Props {
     setProductIds?: any;
+    productIds?: any;
 }
 
 
 const Tags = ({
-    setProductIds
+    setProductIds,
+    productIds
 }: Props) => {
     const [options, setoptions] = useState([]);
     const [selectedOpions, setselectedOptions] = useState([]);
@@ -51,7 +52,7 @@ const Tags = ({
                     (cat) => cat.name.toLowerCase() === item.toLowerCase()
                 );
                 if (selectedcategory) {
-                    return selectedcategory.id;
+                    return selectedcategory;
                 }
             });
             setProductIds(selectedCategoryIds);
@@ -70,19 +71,23 @@ const Tags = ({
     return (
         <>
 
-            {tagState.done && tagState.data.length > 0 && <Select
-                mode="multiple"
-                placeholder="search products"
-                value={selectedOpions}
-                onChange={handleChange}
-                style={{ width: '100%' }}
-            >
-                {options.filter(o => !selectedOpions.includes(o)).map(item => (
-                    <Select.Option key={item} value={item}>
-                        {item}
-                    </Select.Option>
-                ))}
-            </Select>}
+            <Skeleton loading={tagState.isLoading}>
+                {tagState.done && tagState.data.length > 0 && <Select
+                    mode="multiple"
+                    placeholder="search products"
+                    value={selectedOpions}
+                    onChange={handleChange}
+                    style={{ width: '100%' }}
+                >
+                    {options.filter(o => !selectedOpions.includes(o)).map(item => (
+                        <Select.Option key={item} value={item}>
+                            {item}
+                        </Select.Option>
+                    ))}
+                </Select>}
+            </Skeleton>
+
+
         </>
     )
 }

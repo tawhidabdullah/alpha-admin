@@ -762,13 +762,13 @@
 			align-items: center;
 
 			h3 {
+				background-color: #188fff1a;
 				color: #1890ff;
 				font-size: 14px;
 				margin-bottom: 15px;
 				margin-left: 17px;
 				text-align: left;
 				font-weight: 400;
-				background-color: rgba(28, 39, 192, 0.11) !important;
 				padding: 2px 20px 2px 20px;
 				border-radius: 25px;
 				
@@ -802,6 +802,7 @@
 	display: flex;
 	align-items: center;
 	padding: 5px 20px;
+	margin-bottom: 15px;
 }
 
 .cart-item-quantityCounter {
@@ -839,8 +840,8 @@
 	font-size: 14px;
 	cursor: pointer;
 	margin-bottom: 15px;
-	margin-top: 15px;
 	color: #444;
+	font-weight: 600;
 
 	@media screen and (max-width: 430px) {
 		font-size: 14px;
@@ -858,7 +859,7 @@
 	// font-weight: 600;
 	font-size: 12px;
 	cursor: pointer;
-	color: #666;
+	color: #777;
 
 	@media screen and (max-width: 430px) {
 		font-weight: 500;
@@ -929,12 +930,12 @@
 
 
 .addOrderContainer-sectionTitle {
+	background-color: #188fff1a;
 	color: #1890ff;
 	font-size: 14px;
 	margin-bottom: 15px;
 	text-align: left;
 	font-weight: 400;
-	background-color: rgba(82, 92, 236, 0.068) !important;
 	padding: 2px 20px 2px 20px;
 	border-radius: 25px;
 	display: inline-block;
@@ -1088,3 +1089,24 @@
 	background-color: #f7f7f7 !important;
 
 }
+
+
+.product-attributeTag {
+	background-color: #188fff1a;
+	color: #1890ff;
+	margin-bottom: 10px;
+	margin-right: 10px;
+	border-radius: 5px;
+	padding: 0 7px;
+    font-size: 12px;
+    line-height: 20px;
+	white-space: nowrap;
+	cursor: pointer;
+
+
+	&-active {
+		background-color: #1890ff;
+        color: #fff;
+	}
+}
+

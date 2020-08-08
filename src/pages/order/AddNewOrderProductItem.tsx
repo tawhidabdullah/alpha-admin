@@ -1,12 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { useHandleFetch } from '../../hooks';
 
+
+// import lib 
+
+
+
+
 interface Props {
     setProductList?: any;
     productList?: any;
     productId?: any;
     quantity?: any;
     item?: any
+    variation?: any;
 }
 
 const CartOverLayCartItem = ({
@@ -14,7 +21,8 @@ const CartOverLayCartItem = ({
     setProductList,
     productId,
     quantity,
-    item
+    item,
+    variation
 }: Props) => {
 
 
@@ -24,6 +32,9 @@ const CartOverLayCartItem = ({
     );
     const [product, setProduct] = useState({});
     const [isLoading, setIsLoading] = useState(false);
+    const [modifiedPrice, setModifiedPrice] = useState('');
+    const [selectedVariationId, setSelectedVariationId] = useState(variation);
+
 
 
     useEffect(() => {
@@ -67,8 +78,6 @@ const CartOverLayCartItem = ({
     }
 
 
-
-
     const handleChangeQuantity = async (value) => {
         if (value === 'minus') {
             if (quantity === 1) {
@@ -97,16 +106,99 @@ const CartOverLayCartItem = ({
             const updateAttributeList = [...productList.slice(0, index), updatedItem, ...productList.slice(index + 1)];
             setProductList(updateAttributeList)
 
-
         }
+    };
+
+
+    const convertAttributeValuesToStringValue = (attribute) => {
+        const value = [];
+
+        let attributeValues = Object.values(attribute);
+        attributeValues.forEach(attributeValue => {
+            // @ts-ignore
+            value.push(attributeValue)
+        })
+
+        return value.join(',');
     };
 
 
 
 
+    const getPricingOptions = (pricing) => {
+        if (pricing && pricing.length > 0) {
+            const pricingOptions = [];
+
+            pricing.forEach(pricingItem => {
+
+                if (Object.values(pricingItem.attribute).length > 0 && pricingItem._id) {
+                    let pricingOption = {
+                        value: pricingItem._id,
+                        label: `${convertAttributeValuesToStringValue(pricingItem.attribute) || ''}`
+                    }
+                    // @ts-ignore
+                    pricingOptions.push(pricingOption)
+                }
+
+            })
+
+            return pricingOptions;
+        }
+        else return false
+    };
+
+    const pricingOptions = item && Object.keys(item).length > 0 ? getPricingOptions(item.pricing) : [];
+
+
+    console.log('pricingOptions', pricingOptions);
+
+    const handleAttributeChange = (tagId) => {
+        setSelectedVariationId(tagId);
+
+        const positionInAttribute = () => {
+            return productList.map(item => item._id).indexOf(productId);
+        }
+
+        const index = positionInAttribute();
+
+        const updatedItem = Object.assign({}, productList[index], { ...item, quantity: 1 });
+        const updateAttributeList = [...productList.slice(0, index), updatedItem, ...productList.slice(index + 1)];
+        setProductList(updateAttributeList);
+
+    }
+
+
+    useEffect(() => {
+
+        const getPriceByVariationId = (id) => {
+            const pricing = item && Object.keys(item).length > 0 ? item.pricing : false;
+            if (pricing) {
+                const priceItem = pricing.find(pricingItem => pricingItem._id === id);
+                console.log('priceItem', id);
+
+                if (priceItem && priceItem.price.regular) {
+                    return priceItem.price.offer
+                        && parseInt(priceItem.price.offer)
+                        ? priceItem.price.offer : priceItem.price.regular
+                }
+                else return false;
+            }
+        }
+
+        if (selectedVariationId) {
+            const price = getPriceByVariationId(selectedVariationId);
+            setModifiedPrice(price);
+        }
+
+    }, [selectedVariationId]);
+
+
+
+    console.log('modifiedPrice', modifiedPrice);
     return (
         <>
-            {productDetailState.done && Object.keys(productDetailState.data).length > 0 && (
+
+            {item && Object.keys(item).length > 0 && (
                 <div className='cart-item' key={''}>
                     <div className='cart-item-quantityCounter'>
                         <i
@@ -129,8 +221,8 @@ const CartOverLayCartItem = ({
 
                     <img
 
-                        src={product['cover']}
-                        alt='productImg'
+                        src={item['cover'] && item['cover']}
+                        alt='Img'
                         style={{
                             cursor: 'pointer',
                         }}
@@ -138,14 +230,25 @@ const CartOverLayCartItem = ({
                     <div className='cart-item-info'>
                         <h4
 
-
                         >
-                            {product['name']}
+                            {item['name']}
                         </h4>
                         <h5
                         >
-                            ${product['offerPrice'] ? product['offerPrice'] : product['regularPrice']}
+                            {modifiedPrice || item['price']}
                         </h5>
+
+
+                        {pricingOptions && pricingOptions.length > 0 && pricingOptions.map(tag => (
+                            <>
+                                <span
+                                    onClick={() => handleAttributeChange(tag.value)}
+                                    className={selectedVariationId === tag.value ? 'product-attributeTag product-attributeTag-active' : 'product-attributeTag'}>
+                                    {tag.label}
+                                </span>
+                            </>
+                        ))}
+
                         {/* <span
              style={{
                display: 'inline-block',

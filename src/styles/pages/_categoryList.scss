@@ -127,6 +127,18 @@
 	border-radius: 15px !important;
 }
 
+.btnPrimaryClassNameoutline-blue  {
+	border: none !important;
+	font-weight: 600;
+	-webkit-box-shadow: none !important;
+	box-shadow: none !important;
+	color: #ffff !important;
+	background-color: #379cee !important;
+    box-shadow: 0 0.125rem 0.625rem rgba(227, 231, 250, 0.4), 0 0.0625rem 0.125rem rgba(206, 220, 233, 0.5) !important;
+	transition: box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1) !important;
+	border-radius: 15px !important;
+}
+
 
 .btnPrimaryClassNameoutline:active {
 	color: #ffff !important;

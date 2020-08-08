@@ -91,7 +91,6 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, productR
 
     useEffect(() => {
 
-        console.log('productRecord', productRecord);
         const getBrandDetail = async () => {
             await handleBrandDetailFetch({
                 urlOptions: {
@@ -119,7 +118,6 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, productR
             if (brandDetailState.data.cover && brandDetailState.data.cover['id']) {
                 // @ts-ignore
                 setmyImages([brandDetailState.data.cover, ...images]);
-                console.log('catcat', [brandDetailState.data.cover, ...images]);
                 setCoverImageId(brandDetailState.data.cover['id']);
             }
 
@@ -128,10 +126,8 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, productR
 
 
     useEffect(() => {
-        console.log('thumnail', myImages);
         // @ts-ignore
         if (myImages && myImages[0] && myImages.length < 2) {
-            console.log('thumnail2', myImages);
 
             if (coverImageId !== myImages[0].id) {
                 setCoverImageId(myImages[0].id);
@@ -174,7 +170,6 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, productR
             }
         });
 
-        console.log('thumbnailRes', thumbnailRes)
 
         // @ts-ignore
         if (thumbnailRes && thumbnailRes.status === 'ok') {
@@ -188,7 +183,6 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, productR
             const prevItem = brandList.find(item => item.id === productRecord.id);
 
             if (prevItem) {
-                console.log('prevItem--', prevItem, 'image--', image);
                 // @ts-ignore
                 const updatedItem = Object.assign({}, brandList[index], { ...prevItem, cover: image.cover });
                 const updateBrandList = [...brandList.slice(0, index), updatedItem, ...brandList.slice(index + 1)];
@@ -204,7 +198,6 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, productR
 
 
 
-    console.log('brandDetailState', brandDetailState);
 
     const handleSubmit = async (values: any, actions: any) => {
 
