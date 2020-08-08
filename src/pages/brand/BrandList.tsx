@@ -227,14 +227,14 @@ const MyTable = ({data,setBrandList}: myTableProps) => {
 
     
 
-    {activeCategoryForEdit &&   <QuickEdit 
+    {activeCategoryForEdit &&   
+    <QuickEdit 
     brandList={data}
     setBrandList={setBrandList}
     setvisible={setvisible}
     visible={visible}
     category={activeCategoryForEdit}/>}
-    
-    
+  
     </>
     )
 }
