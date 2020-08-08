@@ -162,13 +162,13 @@ const MyTable = ({ data, setProductList }: myTableProps) => {
 
         />
 
-        <Column
+        {/* <Column
           title="Unit"
           dataIndex="unit"
           key="id"
           className='classnameofthecolumn'
 
-        />
+        /> */}
         {/* <Column 
           
           className='classnameofthecolumn'
