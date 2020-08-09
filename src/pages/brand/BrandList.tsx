@@ -22,7 +22,7 @@ const { Search } = Input;
 
 const openSuccessNotification = (message?: any) => {
 	notification.success({
-	  message: message || 'Tag Created',
+	  message: message || 'Organizer Created',
 	  description: '',
 	  icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
 	});
@@ -66,7 +66,7 @@ const MyTable = ({data,setBrandList}: myTableProps) => {
 
             // @ts-ignore
 		  if(deleteBrandRes && deleteBrandRes.status === 'ok'){
-			  openSuccessNotification('Deleted Brand'); 
+			  openSuccessNotification('Organizer Deleted'); 
 			  const newBrandList =  data.filter(item => item.id !== id);
 			  setBrandList(newBrandList); 
 		  }
@@ -302,14 +302,14 @@ const CategoryList = ({history}: Props) => {
 
           <div className='categoryListContainer__header-searchBar'>
           <h2 className='categoryListContainer__header-title'>
-            Brand
+            Organizer
             </h2>
 
 
           <Search
             enterButton={false}
             className='searchbarClassName'
-          placeholder="search brand.."
+          placeholder="search organizer.."
           onSearch={value => handleSearch(value)}
           // style={{ width: 300 }}
         />
@@ -345,7 +345,7 @@ const CategoryList = ({history}: Props) => {
 			<div style={{
 				marginTop: '100px'
 			}}>
-				<Empty description='No Brand found'  image={Empty.PRESENTED_IMAGE_SIMPLE} />
+				<Empty description='No organizer found'  image={Empty.PRESENTED_IMAGE_SIMPLE} />
 			</div>
 		)}
 			</div>

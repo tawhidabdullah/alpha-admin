@@ -150,7 +150,7 @@ const HeaderComponent = (props: Props) => {
 
                 }}
             >
-                Admin
+                Express Ticket
             </h2>
 
             <div

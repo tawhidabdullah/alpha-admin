@@ -234,14 +234,14 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 			...priceItem,
 			id: pricing.length
 		}, ...pricing])
-		message.info('Product Pricing Added');
+		message.info('Event Pricing Added');
 	}
 
 
 	const handleDeletePricing = (id) => {
 		const newPricing = pricing.filter(item => item.id !== id);
 		setPricing(newPricing);
-		message.info('Product Pricing Deleted');
+		message.info('Event Pricing Deleted');
 	}
 
 
@@ -300,7 +300,7 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 								padding: 0,
 							}}
 							width={'70vw'}
-							title="Add New Product"
+							title="Add New Event"
 							visible={addNewCategoryVisible}
 							onOk={(e: any) => handleSubmit(e)}
 							onCancel={handleCancel}
@@ -318,7 +318,7 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 									<div className='addProductGridContainer__name'>
 										<div className='addProductGridContainer__item-header'>
 											<h3>
-												Product Information
+												Event Information
 			</h3>
 
 											<div className={values.name && values.name.length > 2 ? 'checkicon-active' : 'checkicon'}>
@@ -460,7 +460,7 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 									<div className='addProductGridContainer__price'>
 										<div className='addProductGridContainer__item-header'>
 											<h3>
-												Product Pricing
+												Event Pricing
 			</h3>
 
 											<div className={pricing && pricing.length > 0 ? 'checkicon-active' : 'checkicon'}>
@@ -739,7 +739,7 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 										<div className='addProductGridContainer-rightItemContainer'>
 											<div className='addProductGridContainer-rightItemContainer-header'>
 												<h3>
-													Brand
+													Organizer
 				</h3>
 											</div>
 											<div className='addProductGridContainer-rightItemContainer-body'>

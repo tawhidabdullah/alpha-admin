@@ -20,7 +20,7 @@ const { Search } = Input;
 
 const openSuccessNotification = () => {
   notification.success({
-    message: 'Product Deleted',
+    message: 'Event Deleted',
     description: '',
     icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
   });
@@ -309,14 +309,14 @@ const ProductList = ({ history }: Props) => {
 
           <div className='categoryListContainer__header-searchBar'>
             <h2 className='categoryListContainer__header-title'>
-              Products
+              Events
             </h2>
 
 
             <Search
               enterButton={false}
               className='searchbarClassName'
-              placeholder="search products.."
+              placeholder="search events.."
               onSearch={value => handleSearch(value)}
             // style={{ width: 300 }}
             />

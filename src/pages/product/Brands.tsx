@@ -94,7 +94,7 @@ const Brands = ({ setBrandId, brandId, productDetailState }: Props) => {
 					justifyContent: 'center',
 					alignItems: 'center'
 				}}>
-					<Empty title='No Brand found' height={100} />
+					<Empty title='No Organizer found' height={100} />
 				</div>
 			)}
 
@@ -104,7 +104,7 @@ const Brands = ({ setBrandId, brandId, productDetailState }: Props) => {
 				<Select
 					showSearch
 					style={{ width: '210px', borderRadius: '6px' }}
-					placeholder='Select a Organizer'
+					placeholder='Select an Organizer'
 					optionFilterProp='children'
 					onChange={onChange}
 					onFocus={onFocus}

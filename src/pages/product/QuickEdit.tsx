@@ -17,7 +17,7 @@ const validationSchema = Yup.object().shape({
 
 const openSuccessNotification = () => {
 	notification.success({
-		message: 'Product Updated',
+		message: 'Event Updated',
 		description: '',
 		icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
 	});
