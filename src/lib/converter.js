@@ -1126,6 +1126,26 @@ class Converter {
 		return convertedData;
 	}
 
+
+
+	/**
+   * @public
+   * @method updateOrderStatus convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+	async updateOrderStatus(data) {
+		const convertedData = data;
+		if (data && data.success) {
+			return {
+				...data,
+				status: 'ok'
+			};
+		}
+
+		return convertedData;
+	}
+
 	/**
    * @public
    * @method deleteImageFromLibrary convert api data from API to general format based on config server
@@ -1601,6 +1621,39 @@ class Converter {
 		};
 
 		return formatedData;
+	}
+
+	/**
+* @public
+* @method orderDetail convert api data from API to general format based on config server
+* @param {Object} data response objectc from wc
+* @returns {Object}  converted data
+*/
+	async orderDetail(data) {
+		//map props
+		const order = data.order || false;
+		if (order) {
+			return {
+				id: order.id || order._id,
+				billingAddress: order.billingAddress,
+				name: order.billingAddress['firstName'] + " " + order.billingAddress['lastName'],
+				country: order.billingAddress['country'],
+				city: order.billingAddress['city'],
+				address: order.billingAddress['address'],
+				phone: order.billingAddress['phone'],
+				email: order.billingAddress['email'],
+				status: order.status,
+				total: order.totalPrice,
+				products: order.products,
+				date_created: order.added,
+				paymentMethod: order['payment']['paymentMethod'],
+				paymentStatus: order['payment']['status'],
+				payment: order['payment'],
+				customerId: order['customer'] ? order['customer']['_id'] : ''
+			}
+		}
+		else return {}
+
 	}
 
 	/**

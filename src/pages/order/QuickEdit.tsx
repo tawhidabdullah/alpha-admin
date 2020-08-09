@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Select, notification, Form, Empty } from 'antd';
+import { Modal, Select, notification, Form, Empty, Button } from 'antd';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { CheckCircleOutlined, InfoCircleOutlined } from '@ant-design/icons';
@@ -7,6 +7,8 @@ import { CheckCircleOutlined, InfoCircleOutlined } from '@ant-design/icons';
 // import components
 import Input from '../../components/Field/Input';
 import { useHandleFetch } from '../../hooks';
+import OrderInvoice from "./OrderInvoice.jsx";
+import ProductItemForOrderDetail from "./productItemForOrderDetail";
 
 
 const { Option } = Select;
@@ -76,6 +78,7 @@ const QuickEdit = ({ customer, setvisible, visible, setOrderList, orderList }: P
 
     const [countryList, setCountryList] = useState([]);
     const [cityList, setCityList] = useState([]);
+    const [showInvoice, setShowInvoice] = useState(false);
 
 
 
@@ -130,8 +133,6 @@ const QuickEdit = ({ customer, setvisible, visible, setOrderList, orderList }: P
         setvisible(false)
 
     };
-
-
 
 
     const onChangeCity = (value) => {
@@ -235,7 +236,7 @@ const QuickEdit = ({ customer, setvisible, visible, setOrderList, orderList }: P
             }) => (
                     <>
                         <Modal
-                            title="Quick Edit"
+                            title="Order detail"
                             visible={visible}
                             onOk={(e: any) => handleSubmit(e)}
                             onCancel={handleCancel}
@@ -249,6 +250,7 @@ const QuickEdit = ({ customer, setvisible, visible, setOrderList, orderList }: P
                                 margin: '0',
                                 padding: '10px'
                             }}
+                            width={'70vw'}
                         >
 
 
@@ -421,7 +423,7 @@ const QuickEdit = ({ customer, setvisible, visible, setOrderList, orderList }: P
                                 </div>
                                 <div className='dubbleRowInputs__item'>
                                     <Input
-                                        label='More specific address'
+                                        label='Address 2'
                                         value={values.address2}
                                         name='address2'
                                         isError={(touched.address2 && errors.address2) ||
@@ -442,10 +444,60 @@ const QuickEdit = ({ customer, setvisible, visible, setOrderList, orderList }: P
                                 marginTop: '12px'
                             }}></div>
 
+
+
+                                    {customer.products && customer.products.length > 0 && (
+                                        <h3 className='inputFieldLabel'>
+                                        Products 
+                                    </h3>
+                                    )}
+
+
+                            {customer.products && customer.products.length > 0 && <> 
+                            
+                                {customer.products.map(item => {
+                    return <ProductItemForOrderDetail
+                        productId={item._id}
+                        quantity={item.quantity}
+                        item={item}
+                        variation={item.variation}
+                    />;
+                })}
+
+                            </>}
+
+
+                            <div style={{
+                                marginTop: '20px'
+                            }}></div>
+                    <Button
+                    onClick={() => setShowInvoice(true)}
+                    className='btnPrimaryClassNameoutline'
+                    >
+                        Generate Invoice
+                        
+                        </Button>
+
+            <div style={{
+                                marginBottom: '20px'
+                            }}></div>
+
+            <OrderInvoice
+            id={customer.id}
+            setShowInvoice={setShowInvoice}
+             showInvoice={showInvoice} 
+            />
+
+                            
+
+
                         </Modal>
 
                     </>
                 )}
+
+
+
         </Formik>
     );
 };

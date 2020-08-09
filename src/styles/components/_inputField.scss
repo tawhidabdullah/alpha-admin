@@ -643,8 +643,8 @@
 	display: flex;
 	width: 100%;
 	&__item {
-		width: 48%;
-		margin-right: 10px;
+		width: calc(50% + 50px);
+		margin-right: 12px;
 	}
 }
 
@@ -678,7 +678,7 @@
 .siteInfoContainer {
 	background-color: #fff;
 	margin: 20px; 
-	padding: 10px; 
+	padding: 20px; 
 	box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.08);
 	color: #22292e;
 
@@ -1109,4 +1109,116 @@
         color: #fff;
 	}
 }
+
+
+// invoice container
+
+
+  .ReadMsgBody {
+    width: 100%;
+    background-color: #ffffff;
+  }
+
+  .ExternalClass {
+    width: 100%;
+    background-color: #ffffff;
+  }
+
+
+
+
+  .visibleMobile {
+    display: none;
+  }
+
+  .hiddenMobile {
+    display: block;
+  }
+
+  .invoiceContainer {
+	div,
+	p,
+	a,
+	li,
+	td {
+	  -webkit-text-size-adjust: none;
+	}
+
+	p {
+		padding: 0 !important;
+		margin-top: 0 !important;
+		margin-right: 0 !important;
+		margin-bottom: 0 !important;
+		margin-left: 0 !important;
+	  }
+   }
+
+  @media only screen and (max-width: 600px) {
+ 
+	.invoiceContainer {
+
+		* {
+			line-height: 1.6 !important;
+		}
+
+		table[class=fullTable] {
+			width: 98% !important;
+			clear: both;
+		  }
+	  
+		  table[class=fullPadding] {
+			width: 85% !important;
+			clear: both;
+		  }
+	  
+		  table[class=col] {
+			width: 45% !important;
+		  }
+	  
+	}
+    
+    .erase {
+      display: none;
+    }
+  }
+
+  @media only screen and (max-width: 420px) {
+	  .invoiceContainer {
+		table[class=fullTable] {
+			width: 100% !important;
+			clear: both;
+		  }
+	  
+		  table[class=fullPadding] {
+			width: 85% !important;
+			clear: both;
+		  }
+	  
+		  table[class=col] {
+			width: 100% !important;
+			clear: both;
+		  }
+	  
+		  table[class=col] td {
+			text-align: left !important;
+		  }
+	  
+	  }
+ 
+    .erase {
+      display: none;
+      font-size: 0;
+      max-height: 0;
+      line-height: 0;
+      padding: 0;
+    }
+
+    .visibleMobile {
+      display: block !important;
+    }
+
+    .hiddenMobile {
+      display: none !important;
+    }
+  }
 

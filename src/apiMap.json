@@ -172,9 +172,13 @@
 			"url": "/admin/order/update/:id",
 			"method": "post"
 		},
+		"updateOrderStatus": {
+			"url": "/admin/order/update/:id/status?newstatus=newOrderstatus",
+			"method": "post"
+		},
 		"orderDetail": {
 			"url": "/admin/order/:id",
-			"method": "post"
+			"method": "get"
 		},
 		"deleteOrder": {
 			"url": "/admin/order/update/delete/:id",
@@ -230,7 +234,7 @@
 		},
 		"updateSiteLogoAndIcon": {
 			"url": "/admin/settings/update/logo",
-			"method": "get"
+			"method": "post"
 		},
 		"updateInvoiceSettings": {
 			"url": "/admin/settings/update/invoice",

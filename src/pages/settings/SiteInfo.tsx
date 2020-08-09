@@ -5,7 +5,7 @@ import * as Yup from 'yup';
 
 import { useHandleFetch } from '../../hooks';
 // import third party ui lib
-import { Upload, message, Switch, Select, Button, notification, Modal, Tabs } from 'antd';
+import { Upload, message, Switch, Select, Button, notification, Modal, Tabs, Tooltip } from 'antd';
 
 
 import {
@@ -13,7 +13,11 @@ import {
 	InboxOutlined,
 	FileAddOutlined,
 	DeleteOutlined,
-	CheckCircleOutlined
+	CheckCircleOutlined,
+	PlusOutlined,
+	FileImageFilled,
+	CheckOutlined,
+	CloseOutlined
 } from '@ant-design/icons';
 
 
@@ -72,9 +76,12 @@ interface Props {
 const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, brandList, setBrandList }: Props) => {
 
 	const [addBrandState, handleAddBrandFetch] = useHandleFetch({}, 'addBrand');
+	const [updateSiteLogoAndIcon, handleUpdateSiteLogoAndIconFetch] = useHandleFetch({}, 'updateSiteLogoAndIcon');
 	const [visible, setvisible] = useState(false);
 	const [myImages, setmyImages] = useState(false);
 	const [visibleMedia, setvisibleMedia] = useState(false);
+	const [coverImageId, setCoverImageId] = useState('');
+
 
 
 	const handleSubmit = async (values: any, actions: any) => {
@@ -164,81 +171,137 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, brandLis
 					<TabPane tab="Site Info" key="1">
 						<AdminSiteInfo />
 					</TabPane>
-					{/* <TabPane tab="Logo & Icon" key="2">
+					<TabPane tab="Site logo & Icon" key="2">
 						<div style={{
 							display: 'flex',
 							alignItems: 'center'
 						}}>
 							<div style={{
-								marginRight: '30px'
+								marginRight: '20px'
 							}}>
-								<h3 className='inputFieldLabel'>Site Logo</h3>
+								<h3 className='inputFieldLabel'> Logo</h3>
 								<div className='aboutToUploadImagesContainer'>
 									{myImages &&
 										// @ts-ignore
-										myImages.length > 0 && myImages.map(image => {
+										myImages.length > 0 && myImages.map((image, index) => {
 											return (
 												<div className='aboutToUploadImagesContainer__item'>
 													<div
-														onClick={() => handleImagesDelete(image.id)}
-														className='aboutToUploadImagesContainer__item-overlay'>
-														<DeleteOutlined />
+														className='aboutToUploadImagesContainer__item-imgContainer'
+														onClick={() => setCoverImageId(image.id)}
+													>
+														<img src={image.cover} alt={image.alt} />
 													</div>
-													<img src={image.cover} alt={image.alt} />
+
+													<span
+														onClick={() => handleImagesDelete(image.id)}
+														className='aboutToUploadImagesContainer__item-remove'>
+														<CloseOutlined />
+													</span>
+
+													{coverImageId === image.id ? (
+														<span className='aboutToUploadImagesContainer__item-cover'>
+															<CheckOutlined />
+														</span>
+													) : !coverImageId && index === 0 && (
+														<span className='aboutToUploadImagesContainer__item-cover'>
+															<CheckOutlined />
+														</span>
+													)}
+
+
 												</div>
 											)
 										})}
 
-									<div
-										onClick={() => {
-											setvisibleMedia(true);
-										}}
-										className='aboutToUploadImagesContainer__uploadItem'>
-										<FileAddOutlined />
+									<Tooltip
+										title={'Attach images'}>
 
-									</div>
+										<div
+											onClick={() => {
+												setvisibleMedia(true);
+											}}
+											className='aboutToUploadImagesContainer__uploadItem'>
 
+											<FileImageFilled />
+
+											<span className='aboutToUploadImagesContainer__uploadItem-plus'>
+												<PlusOutlined />
+											</span>
+										</div>
+									</Tooltip>
 								</div>
 							</div>
 
 							<div style={{
 								// marginTop: '15px'
 							}}>
-								<h3 className='inputFieldLabel'>Site Icon</h3>
+								<h3 className='inputFieldLabel'> Icon</h3>
+
+
 								<div className='aboutToUploadImagesContainer'>
 									{myImages &&
 										// @ts-ignore
-										myImages.length > 0 && myImages.map(image => {
+										myImages.length > 0 && myImages.map((image, index) => {
 											return (
 												<div className='aboutToUploadImagesContainer__item'>
 													<div
-														onClick={() => handleImagesDelete(image.id)}
-														className='aboutToUploadImagesContainer__item-overlay'>
-														<DeleteOutlined />
+														className='aboutToUploadImagesContainer__item-imgContainer'
+														onClick={() => setCoverImageId(image.id)}
+													>
+														<img src={image.cover} alt={image.alt} />
 													</div>
-													<img src={image.cover} alt={image.alt} />
+
+													<span
+														onClick={() => handleImagesDelete(image.id)}
+														className='aboutToUploadImagesContainer__item-remove'>
+														<CloseOutlined />
+													</span>
+
+													{coverImageId === image.id ? (
+														<span className='aboutToUploadImagesContainer__item-cover'>
+															<CheckOutlined />
+														</span>
+													) : !coverImageId && index === 0 && (
+														<span className='aboutToUploadImagesContainer__item-cover'>
+															<CheckOutlined />
+														</span>
+													)}
+
+
 												</div>
 											)
 										})}
 
-									<div
-										onClick={() => {
-											setvisibleMedia(true);
-										}}
-										className='aboutToUploadImagesContainer__uploadItem'>
-										<FileAddOutlined />
 
-									</div>
+
+									<Tooltip
+										title={'Attach images'}>
+										<div
+											onClick={() => {
+												setvisibleMedia(true);
+											}}
+											className='aboutToUploadImagesContainer__uploadItem'>
+
+											<FileImageFilled />
+
+											<span className='aboutToUploadImagesContainer__uploadItem-plus'>
+												<PlusOutlined />
+											</span>
+										</div>
+									</Tooltip>
+
 
 								</div>
+
 							</div>
 						</div>
 
 
-					</TabPane> */}
+					</TabPane>
 
 
-					<TabPane tab="Admin Information" key="2">
+					<TabPane tab="Admin Information" key="3">
 
 						<SiteInfoInvoice />
 					</TabPane>

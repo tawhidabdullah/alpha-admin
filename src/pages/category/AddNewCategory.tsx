@@ -119,6 +119,7 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, categ
 		// @ts-ignore
 		if (addCategoryRes && addCategoryRes.status === 'ok') {
 			openSuccessNotification('Category Created!');
+			setAddNewCategoryVisible(false)
 
 			setcategoryList([...categoryList, {
 				id: addCategoryRes['_id'] || '',
@@ -135,7 +136,6 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, categ
 			setCoverImageId('')
 			setselectedParentId('')
 			setisparentcategoryChecked(true);
-			setAddNewCategoryVisible(false)
 			setImageUrl('');
 		}
 		else {

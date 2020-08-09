@@ -113,10 +113,10 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 				image: imagesIds,
 				cover: coverImageId || imagesIds[0] ? imagesIds[0] : '',
 				pricing: pricing,
-				date: date,
-				time: time,
-				venue: values.venue,
-				purchaseLimit: values.purchaseLimit
+				// date: date,
+				// time: time,
+				// venue: values.venue,
+				// purchaseLimit: values.purchaseLimit
 			},
 		});
 
@@ -340,7 +340,7 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 													setFieldTouched('name');
 												}}
 											/>
-											<div style={{
+											{/* <div style={{
 												display: 'flex',
 												justifyContent: 'space-between'
 											}}>
@@ -364,11 +364,11 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 														onChange={handleTimeChange} />
 
 												</div>
-											</div>
+											</div> */}
 											<div style={{
 												marginBottom: '15px'
 											}}></div>
-
+											{/* 
 											<TextArea
 												rows={1}
 												label='Venue'
@@ -401,7 +401,7 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 													handleChange(e);
 													setFieldTouched('purchaseLimit');
 												}}
-											/>
+											/> */}
 
 
 
