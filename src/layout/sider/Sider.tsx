@@ -21,7 +21,10 @@ import {
     DesktopOutlined,
     RadarChartOutlined,
     MessageOutlined,
-    UserOutlined
+    UserOutlined,
+    FileAddOutlined,
+    FileSearchOutlined,
+    BgColorsOutlined
 } from '@ant-design/icons';
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -123,12 +126,17 @@ const SiderComponent = (props: any) => {
                 </Menu.Item>
 
                 <SubMenu key='sub6' icon={<FileOutlined />} title='Pages'>
-                    <Menu.Item key='17'>
-                        <Link to='/admin/page/new'> Add new Page</Link>
-                    </Menu.Item>
-                    <Menu.Item key='18'>
+                    <Menu.Item key='18'
+                        icon={<FileSearchOutlined />}
+                    >
                         <Link to='/admin/page'> List Pages</Link>
                     </Menu.Item>
+                    <Menu.Item
+                        icon={<FileAddOutlined />}
+                        key='17'>
+                        <Link to='/admin/page/new'> Add new Page</Link>
+                    </Menu.Item>
+
                 </SubMenu>
 
                 <Menu.Item key='23'
@@ -144,7 +152,7 @@ const SiderComponent = (props: any) => {
                         <Link to='/admin/settings/siteInfo'>Site information</Link>
                     </Menu.Item>
                     <Menu.Item
-                        icon={<DesktopOutlined />}
+                        icon={<BgColorsOutlined />}
                         key='20'>
                         <Link to='/admin/settings/themes'>Themes</Link>
                     </Menu.Item>
