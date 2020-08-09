@@ -185,6 +185,9 @@ const AddNewOrder = ({ }: Props) => {
 
 			actions.resetForm();
 		}
+		else {
+			openErrorNotification("Couldn't create order, Something went wrong")
+		}
 
 		actions.setSubmitting(false);
 	};

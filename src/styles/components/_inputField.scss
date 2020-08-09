@@ -1416,3 +1416,50 @@
 
 	}
 }
+
+
+// addd new page
+.addNewPageContainer {
+	margin: 10px 20px;
+
+
+
+
+
+	&__heading {
+
+	}
+
+	&__header {
+		padding: 15px;
+		box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.08);
+		background-color: #fff;
+		border-radius: 8px;
+		margin-bottom: 20px;
+	}
+
+	&__body {
+		padding: 15px;
+		box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.08);
+		background-color: #fff;
+		border-radius: 8px;
+
+	}
+}
+
+// ck editor default changes
+.ck.ck-toolbar.ck-toolbar_grouping>.ck-toolbar__items {
+	background-color: #fff !important;
+}
+
+.ck.ck-toolbar.ck-toolbar_grouping {
+	border: 1px solid #eee !important;
+	border-top-left-radius: 8px !important;
+	border-top-right-radius: 8px !important;
+}
+.ck.ck-content.ck-editor__editable {
+	border-top: none !important;
+	border-color: #eee !important;
+	border-bottom-left-radius: 8px !important;
+	border-bottom-right-radius: 8px !important;
+}

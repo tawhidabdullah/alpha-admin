@@ -75,80 +75,32 @@ interface Props {
 
 const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, brandList, setBrandList }: Props) => {
 
-	const [addBrandState, handleAddBrandFetch] = useHandleFetch({}, 'addBrand');
 	const [updateSiteLogoAndIcon, handleUpdateSiteLogoAndIconFetch] = useHandleFetch({}, 'updateSiteLogoAndIcon');
-	const [visible, setvisible] = useState(false);
 	const [myImages, setmyImages] = useState(false);
 	const [visibleMedia, setvisibleMedia] = useState(false);
 	const [coverImageId, setCoverImageId] = useState('');
 
 
 
-	const handleSubmit = async (values: any, actions: any) => {
-
-		// @ts-ignore
-		const imagesIds = myImages ? myImages.map(image => {
-			return image.id;
-		}) : [];
+	const handleSubmit = async () => {
 
 
-		const addBrandRes = await handleAddBrandFetch({
+		const updateSiteIconAndLogoRes = await handleUpdateSiteLogoAndIconFetch({
 
 			body: {
-				name: values.name,
-				description: values.description,
-				type: values.type,
-				image: imagesIds,
-				cover: imagesIds[0] ? imagesIds[0] : '',
+				logo: myImages ? myImages[0] && myImages[0].id : '',
 			},
 		});
 
 		// @ts-ignore
-		if (addBrandRes && addBrandRes.status === 'ok') {
-			openSuccessNotification();
-
-			setBrandList([...brandList, {
-				id: addBrandRes['id'] || '',
-				key: addBrandRes['id'] || '',
-				name: addBrandRes['name'] || '',
-				description: addBrandRes['description'] || '',
-				// @ts-ignore
-				...addBrandRes
-			}])
-			actions.resetForm();
-			setAddNewCategoryVisible(false);
+		if (updateSiteIconAndLogoRes && updateSiteIconAndLogoRes.status === 'ok') {
+			openSuccessNotification('Updated Site Logo');
 		}
 		else {
-			openErrorNotification();
+			openErrorNotification("Couldn't updated site logo, Something went wrong");
 		}
 
-
-
-
-		actions.setSubmitting(false);
-
 	};
-
-
-
-	const onSwitchChange = (checked: any) => {
-		console.log(checked);
-	};
-
-
-	const handleCancel = (e: any) => {
-		setAddNewCategoryVisible(false);
-	};
-
-
-	const getisSubmitButtonDisabled = (values, isValid) => {
-		if (!values.name && !values.description || !isValid) {
-			return true;
-		}
-		return false;
-	}
-
-
 
 
 	const handleImagesDelete = (id) => {
@@ -161,8 +113,6 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, brandLis
 	}
 
 
-
-
 	return (
 		<>
 			<div className='siteInfoContainer'>
@@ -171,7 +121,7 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, brandLis
 					<TabPane tab="Site Info" key="1">
 						<AdminSiteInfo />
 					</TabPane>
-					<TabPane tab="Site logo & Icon" key="2">
+					<TabPane tab="Site logo" key="2">
 						<div style={{
 							display: 'flex',
 							alignItems: 'center'
@@ -179,7 +129,7 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, brandLis
 							<div style={{
 								marginRight: '20px'
 							}}>
-								<h3 className='inputFieldLabel'> Logo</h3>
+								<h3 className='inputFieldLabel'>Logo</h3>
 								<div className='aboutToUploadImagesContainer'>
 									{myImages &&
 										// @ts-ignore
@@ -198,50 +148,62 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, brandLis
 														className='aboutToUploadImagesContainer__item-remove'>
 														<CloseOutlined />
 													</span>
-
-													{coverImageId === image.id ? (
-														<span className='aboutToUploadImagesContainer__item-cover'>
-															<CheckOutlined />
-														</span>
-													) : !coverImageId && index === 0 && (
-														<span className='aboutToUploadImagesContainer__item-cover'>
-															<CheckOutlined />
-														</span>
-													)}
-
-
 												</div>
 											)
 										})}
 
-									<Tooltip
+
+									{myImages ? !myImages[0] && (
+										<Tooltip
+											title={'Attach images'}>
+
+											<div
+												onClick={() => {
+													setvisibleMedia(true);
+												}}
+												className='aboutToUploadImagesContainer__uploadItem'>
+												{/* <FileAddOutlined />
+														<FileImageTwoTone />
+														<FileImageOutlined /> */}
+												<FileImageFilled />
+												{/* <h5>
+														 Select From Library
+												<     /h5> */}
+												<span className='aboutToUploadImagesContainer__uploadItem-plus'>
+													<PlusOutlined />
+												</span>
+											</div>
+										</Tooltip>
+									) : <Tooltip
 										title={'Attach images'}>
 
-										<div
-											onClick={() => {
-												setvisibleMedia(true);
-											}}
-											className='aboutToUploadImagesContainer__uploadItem'>
-
-											<FileImageFilled />
-
-											<span className='aboutToUploadImagesContainer__uploadItem-plus'>
-												<PlusOutlined />
-											</span>
-										</div>
-									</Tooltip>
+											<div
+												onClick={() => {
+													setvisibleMedia(true);
+												}}
+												className='aboutToUploadImagesContainer__uploadItem'>
+												{/* <FileAddOutlined />
+												<FileImageTwoTone />
+												<FileImageOutlined /> */}
+												<FileImageFilled />
+												{/* <h5>
+												 Select From Library
+										<     /h5> */}
+												<span className='aboutToUploadImagesContainer__uploadItem-plus'>
+													<PlusOutlined />
+												</span>
+											</div>
+										</Tooltip>}
 								</div>
 							</div>
-
+							{/* 
 							<div style={{
-								// marginTop: '15px'
 							}}>
 								<h3 className='inputFieldLabel'> Icon</h3>
 
 
 								<div className='aboutToUploadImagesContainer'>
 									{myImages &&
-										// @ts-ignore
 										myImages.length > 0 && myImages.map((image, index) => {
 											return (
 												<div className='aboutToUploadImagesContainer__item'>
@@ -257,47 +219,63 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, brandLis
 														className='aboutToUploadImagesContainer__item-remove'>
 														<CloseOutlined />
 													</span>
-
-													{coverImageId === image.id ? (
-														<span className='aboutToUploadImagesContainer__item-cover'>
-															<CheckOutlined />
-														</span>
-													) : !coverImageId && index === 0 && (
-														<span className='aboutToUploadImagesContainer__item-cover'>
-															<CheckOutlined />
-														</span>
-													)}
-
-
 												</div>
 											)
 										})}
 
 
+									{myImages ? !myImages[0] && (
+										<Tooltip
+											title={'Attach images'}>
 
-									<Tooltip
+											<div
+												onClick={() => {
+													setvisibleMedia(true);
+												}}
+												className='aboutToUploadImagesContainer__uploadItem'>
+												
+												<FileImageFilled />
+											
+												<span className='aboutToUploadImagesContainer__uploadItem-plus'>
+													<PlusOutlined />
+												</span>
+											</div>
+										</Tooltip>
+									) : <Tooltip
 										title={'Attach images'}>
-										<div
-											onClick={() => {
-												setvisibleMedia(true);
-											}}
-											className='aboutToUploadImagesContainer__uploadItem'>
 
-											<FileImageFilled />
-
-											<span className='aboutToUploadImagesContainer__uploadItem-plus'>
-												<PlusOutlined />
-											</span>
-										</div>
-									</Tooltip>
-
-
+											<div
+												onClick={() => {
+													setvisibleMedia(true);
+												}}
+												className='aboutToUploadImagesContainer__uploadItem'>
+												
+												<FileImageFilled />
+												
+												<span className='aboutToUploadImagesContainer__uploadItem-plus'>
+													<PlusOutlined />
+												</span>
+											</div>
+										</Tooltip>}
 								</div>
 
-							</div>
+							</div> */}
+
+
 						</div>
 
+						<Button
 
+							loading={updateSiteLogoAndIcon.isLoading}
+							onClick={() => handleSubmit()}
+							className='btnPrimaryClassNameoutline'
+						>
+							Update site Logo
+                            </Button>
+
+						<div style={{
+							marginBottom: '10px'
+						}}></div>
 					</TabPane>
 
 

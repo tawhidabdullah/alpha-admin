@@ -224,6 +224,26 @@
 			"url": "/admin/theme/update/delete/:id",
 			"method": "post"
 		},
+		"pageList": {
+			"url": "/admin/page",
+			"method": "get"
+		},
+		"pageDetail": {
+			"url": "/admin/page/:idorurl",
+			"method": "get"
+		},
+		"addPage": {
+			"url": "/admin/page/add",
+			"method": "post"
+		},
+		"updatePage": {
+			"url": "/admin/page/update/site",
+			"method": "post"
+		},
+		"deletePage": {
+			"url": "/admin/page/update/delete/:id",
+			"method": "post"
+		},
 		"siteSettings": {
 			"url": "/admin/settings/site",
 			"method": "get"

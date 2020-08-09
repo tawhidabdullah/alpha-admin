@@ -10,7 +10,7 @@ import Empty from "../../components/Empty";
 
 // import libraries 
 import { useHistory } from "react-router";
-import { LogoutOutlined, BellOutlined, OrderedListOutlined } from '@ant-design/icons';
+import { LogoutOutlined, BellOutlined, OrderedListOutlined, TwitterSquareFilled } from '@ant-design/icons';
 import { Layout, Badge, Dropdown, Menu, Spin } from 'antd';
 import Moment from 'react-moment';
 import moment from 'moment';
@@ -173,7 +173,9 @@ const HeaderComponent = (props: Props) => {
 
                         <Badge
                             overflowCount={100}
-                            count={getAllNotificationState.done && getAllNotificationState.data && getAllNotificationState.data.length ? getAllNotificationState.data.length : 0}
+                            // @ts-ignore
+                            showZero={TwitterSquareFilled}
+                            count={getAllNotificationState.done && !getAllNotificationState.data ? 0 : getAllNotificationState.data.length ? getAllNotificationState.data.length : 0}
                         >
                             <span style={{
                                 marginLeft: '10px',

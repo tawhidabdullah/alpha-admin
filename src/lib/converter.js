@@ -601,6 +601,29 @@ class Converter {
 	}
 
 
+
+	/**
+   * @public
+   * @method pageList convert api data from API to general format based on config server
+   * @param {Object} data response objectc from alpha
+   * @returns {Object}  converted data
+   */
+	async pageList(resData) {
+		const data = resData.data || [];
+
+		const convertedData =
+			data.length > 0 &&
+			data.map((page) => {
+				return {
+					...page
+				};
+			});
+
+		return convertedData;
+	}
+
+
+
 	/**
 * @public
 * @method themeList convert api data from API to general format based on config server
@@ -1034,6 +1057,25 @@ class Converter {
 	}
 
 	/**
+* @public
+* @method updatePage convert api data from API to general format based on config server
+* @param {Object} data response objectc from wc
+* @returns {Object}  converted data
+*/
+	async updatePage(data) {
+		const convertedData = data;
+
+		if (data && data.updated) {
+			return {
+				...data.updated,
+				status: 'ok'
+			};
+		}
+
+		return convertedData;
+	}
+
+	/**
    * @public
    * @method updateBrand convert api data from API to general format based on config server
    * @param {Object} data response objectc from wc
@@ -1127,6 +1169,17 @@ class Converter {
 	}
 
 
+	/**
+* @public
+* @method pageDetail convert api data from API to general format based on config server
+* @param {Object} data response objectc from wc
+* @returns {Object}  converted data
+*/
+	async pageDetail(data) {
+		const convertedData = data;
+		return convertedData;
+	}
+
 
 	/**
    * @public
@@ -1162,6 +1215,25 @@ class Converter {
 
 		return convertedData;
 	}
+
+	/**
+* @public
+* @method deletePage convert api data from API to general format based on config server
+* @param {Object} data response objectc from wc
+* @returns {Object}  converted data
+*/
+	async deletePage(data) {
+		const convertedData = data;
+		if (data && data.success) {
+			return {
+				status: 'ok'
+			};
+		}
+
+		return convertedData;
+	}
+
+
 
 	/**
    * @public
@@ -1228,6 +1300,24 @@ class Converter {
 * @returns {Object}  converted data
 */
 	async addTheme(data) {
+		const convertedData = data;
+		if (data && data.success) {
+			return {
+				...data.inserted[0],
+				status: 'ok'
+			};
+		}
+
+		return convertedData;
+	}
+
+	/**
+* @public
+* @method addPage convert api data from API to general format based on config server
+* @param {Object} data response objectc from wc
+* @returns {Object}  converted data
+*/
+	async addPage(data) {
 		const convertedData = data;
 		if (data && data.success) {
 			return {

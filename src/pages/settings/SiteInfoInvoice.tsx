@@ -254,13 +254,24 @@ const UpdateSiteinfo = ({ }: Props) => {
 
                         </div>
 
+
+                        <div style={{
+                            marginTop: '10px'
+                        }}></div>
+
                         <Button
+
                             onClick={(e: any) => handleSubmit(e)}
                             loading={isSubmitting}
                             disabled={getisSubmitButtonDisabled(values, isValid)}
-                            type='primary'>
-                            Update
-                        </Button>
+                            className='btnPrimaryClassNameoutline'
+                        >
+                            Update Admin Info
+                            </Button>
+
+                        <div style={{
+                            marginBottom: '10px'
+                        }}></div>
                     </>
                 )}
         </Formik>

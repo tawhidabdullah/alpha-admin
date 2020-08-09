@@ -21,8 +21,7 @@ import {
 } from '@ant-design/icons';
 
 
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+
 
 // import components
 import Input from '../../components/Field/Input';
@@ -240,10 +239,7 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, brandLis
 								}}
 							>
 								<h3 className='inputFieldLabel'>Images</h3>
-								{/* <div  >
-					<FileOutlined />
-					<span>Media Center</span>
-				</div> */}
+
 							</div>
 
 

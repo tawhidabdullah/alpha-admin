@@ -1,54 +1,71 @@
-import React, {useState} from 'react';
-import {withRouter} from 'react-router-dom';
-import { Table, Badge, Menu, Dropdown, Space, Tag,Button, Input,Tooltip, Modal  } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
+import React, {useState,useEffect} from 'react';
+import {useHistory} from 'react-router-dom';
+import { Table,Empty, Popconfirm, Space,Button, Input,Tooltip, notification  } from 'antd';
+import { PlusOutlined, EditOutlined, DeleteOutlined,CheckCircleOutlined } from '@ant-design/icons';
 
-const { Column, ColumnGroup } = Table;
+
+
+/// import hooks
+import {  useHandleFetch } from "../../hooks";
+
+// import components
+import { DataTableSkeleton } from "../../components/Placeholders";
+
+
+
+const { Column } = Table;
 const { Search } = Input;
 
-const data = [
-	{
-		key: '1',
-		title: 'Home Page',
-        created: 'Sun Apr 26 2020 22:34:13',
-        lastModified: 'Sun Apr 26 2020 22:34:13',
+
+const openSuccessNotification = (message?: any) => {
+	notification.success({
+	  message: message || 'Page Created',
+	  description: '',
+	  icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
+	});
+  };
+
+
+  const openErrorNotification = (message?: any) => {
+	notification.error({
+	  message: message || 'Something Went Wrong',
+	  description: '',
+	  icon: <CheckCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
+	});
+  };
+
+
+
+
+
+interface myTableProps {
+  data: any; 
+  setBrandList: any; 
+} 
+
+
+const MyTable = ({data,setBrandList}: myTableProps) => {
+    const [activeCategoryForEdit,setactiveCategoryForEdit] = useState(false); 
+    const [deletePageState, handleDeletePageFetch] = useHandleFetch({}, 'deletePage');
+
+    const history = useHistory(); 
       
+      const handleDeletePage = async (id) => {
+        const deletePageRes = await handleDeletePageFetch({
+          urlOptions: {
+            placeHolders: {
+              id,
+            }
+            }
+          });
 
-	},
-	{
-		key: '2',
-		title: 'Product Listing Page',
-        created: 'Sun Apr 26 2020 22:34:13',
-        lastModified: 'Sun Apr 26 2020 22:34:13',
-      
-	},
-	{
-		key: '3',
-		title: 'Dashboard Page',
-        created: 'Sun Apr 26 2020 22:34:13',
-        lastModified: 'Sun Apr 26 2020 22:34:13',
-      
-	}
-];
-
-
-
-
-
-const MyTable = () => {
-    const [visible,setvisible] = useState(false);   
-
-
-
-    const handleOk = (e: any) => {
-        setvisible(false);
-      
-      };
-    
-      const handleCancel = (e: any) => {
-        setvisible(false);
-      };
-
+            // @ts-ignore
+		  if(deletePageRes && deletePageRes.status === 'ok'){
+			  openSuccessNotification('Deleted Page'); 
+			  const newBrandList =  data.filter(item => item.id !== id);
+			  setBrandList(newBrandList); 
+		  }
+      }
       
 
     return (
@@ -58,56 +75,206 @@ const MyTable = () => {
         //     expandedRowRender: record => <p style={{ margin: 0 }}>{record.name}</p>,
         //     rowExpandable: record => record.name !== 'Not Expandable',
         //   }}
-        dataSource={data}>
+        // bordered={true}
+        size='small'
+        // pagination={false}
+        dataSource={data}
+        >
+            <Column 
+          title=""
+           dataIndex="cover"
+            key="id" 
+            width={'100px'}
+            
+           className='classnameofthecolumn'
+
+           render={(cover, record: any) => (
+            <>
+              <img
+                onClick={() => {
+                  setactiveCategoryForEdit(record);
+                  history.push('/admin/page/pageName')
+                }}
+                src={cover} alt='cover img' style={{
+                  height: '40px',
+                  width: '40px',
+                  objectFit: "contain",
+                  borderRadius: '3px',
+                  cursor: 'pointer'
+                }} />
+
+
+
+
+            </>
+          )}
+            />
+          <Column
+           title="Name" 
+           dataIndex="name" 
+           key="id" 
+           className='classnameofthecolumn'
+           render={(text, record: any) => (
+            <>
+
+              <h4
+                onClick={() => {
+                  setactiveCategoryForEdit(record);
+                  history.push('/admin/page/pageName')
+                }}
+                style={{
+                  fontWeight: 400,
+                  color: '#555',
+                  cursor: 'pointer'
+                }}>
+                {text}
+              </h4>
+
+
+            </>
+          )}
+            />
+
+<Column
+           title="Description" 
+           dataIndex="description" 
+           key="id" 
+           className='classnameofthecolumn'
          
-          <Column title="Title" dataIndex="title" key="title" />
-          <Column title="Created" dataIndex="created" key="created" />
-          <Column title="Last Modified" dataIndex="lastModified" key="lastModified" />
+            />
+          {/* <Column 
+          
+          className='classnameofthecolumn'
+
+          title="Product" dataIndex="product" key="product" /> */}
+
+          {/* <Column 
+          
+          className='classnameofthecolumn'
+
+          title="Sub Category" dataIndex="subCategory" key="subCategory" /> */}
+        
+        {/* <Column
+          title="Tags"
+          dataIndex="tags"
+          key="tags"
+          render={tags => (
+            <>
+              {tags.map((tag : any) => (
+                <Tag color="blue" key={tag}>
+                  {tag}
+                </Tag>
+              ))}
+            </>
+          )}
+        /> */}
         <Column
-          title="Action"
+        
+        className='classnameofthecolumn'
+          title=""
           key="action"
+          align='right'
           render={(text, record : any) => (
             <Space size="middle">
-              <a onClick={() => setvisible(true)} href='##'>Quick Edit</a>
-              <Tooltip placement="top" title='Delete Category'>
-              <a href='##'>Delete</a>
-          </Tooltip>
-             
+                <a href='##'>
+               <Tooltip placement="top" title='Quick Edit Page'>
+              <span className='iconSize' onClick={() => {
+                setactiveCategoryForEdit(record); 
+              }}> 
+              <EditOutlined />
+            
+              </span>
+               </Tooltip>
+               </a>
+
+
+ 
+               <Popconfirm 
+               
+               onConfirm={() => handleDeletePage(record.id)}
+               title="Are you sure？" okText="Yes" cancelText="No">
+           
+           <span 
+             className='iconSize iconSize-danger'
+             > 
+             <DeleteOutlined/>
+            </span>
+           </Popconfirm>
+
+
             </Space>
           )}
         />
       </Table>
 
-      <Modal
-          title="Quick Edit"
-          visible={visible}
-          onOk={handleOk}
-          onCancel={handleCancel}
-        >
-          {/* <p>Some contents...</p>
-          <p>Some contents...</p>
-          <p>Some contents...</p> */}
-        </Modal>
+
+  
+
+
+    
+
+
+    
     </>
     )
 }
 
 
 interface Props {
-    history: any; 
 }
 
-const PagesList = ({history}: Props) => {
-  
+const PageList = ({}: Props) => {
+
+
+  const [pageList,setPageList] = useState([]);
+  const [pageState, handlePagsListFetch] = useHandleFetch({}, 'pageList');
+
+  const history = useHistory(); 
+
+  useEffect(()=>{
+   const setPages = async () => {
+     const pages = await handlePagsListFetch({}); 
+     // @ts-ignore
+     setPageList(pages); 
+   }
+   setPages(); 
+  },[])
+
+
+
+
     
+  const handleSearch = (value) => {
+    if(pageState.data.length > 0 ){
+      const newBrandList = pageState.data.filter(item => item.name.toLowerCase().includes(value.toLowerCase())); 
+      setPageList(newBrandList); 
+    }
+     
+  }
+
 	return (
-		<div className='categoryListContainer'>
-            <div className='categoryListContainer__header'>
-            <h2 className='categoryListContainer__header-title'>Pages</h2>
+		<>
+  
+    <div className='categoryListContainer'>
+        <div className='categoryListContainer__header'>
+           <div className='categoryListContainer__header-searchBar'>
+
+          <h2 className='categoryListContainer__header-title'>
+            Pages
+            </h2>
+
+          <Search
+            enterButton={false}
+            className='searchbarClassName'
+          placeholder="search pages.."
+          onSearch={value => handleSearch(value)}
+        />
+          </div>
             <Button
-          type="primary"
+          // type="primary"
+          className='btnPrimaryClassNameoutline'
           icon={<PlusOutlined />}
-          onClick={() => history.push('/page/new')}
+          onClick={() => history.push('/admin/page/new')}
         >
         Add New
             
@@ -115,21 +282,34 @@ const PagesList = ({history}: Props) => {
             </div>
 
             <div className='categoryListContainer__afterHeader'>
-            <Search
-      placeholder="search pages.."
+            {/* <Search
+      placeholder="search categories.."
       size="large"
       onSearch={value => console.log(value)}
       style={{ width: 300 }}
-    />
+    /> */}
             </div>
 
      
 			
 			<div className='categoryListContainer__categoryList'>
-				<MyTable />
+        {pageState.done && pageList.length > 0 && <MyTable 
+          setBrandList={setPageList}
+        data={pageList} />}
+        {pageState.isLoading && <DataTableSkeleton />}
+        {pageState.done && !(pageList.length > 0) && (
+			<div style={{
+				marginTop: '100px'
+			}}>
+				<Empty description='No Page found'  image={Empty.PRESENTED_IMAGE_SIMPLE} />
+			</div>
+		)}
 			</div>
 		</div>
+
+
+    </>
 	);
 };
 
-export default withRouter(PagesList);
+export default PageList;
