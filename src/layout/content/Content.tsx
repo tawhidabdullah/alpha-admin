@@ -46,11 +46,11 @@ const ContentComponent = (props: Props) => {
                     path='/'
                     render={() => <Redirect to='/admin' />}
                 />
-                <Route
+                {/* <Route
                     exact
                     path='/admin'
                     render={() => <Redirect to='/admin/product' />}
-                />
+                /> */}
 
 
                 <Route path='/admin' exact>
