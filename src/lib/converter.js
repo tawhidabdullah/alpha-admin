@@ -138,22 +138,28 @@ class Converter {
 					cover: `${config['baseURL']}${(product.cover && product.cover['thumbnail']) || ''}`,
 					regularPrice: product.price && product.price['regular'],
 					offerPrice: product.price && product.price['offer'],
+					url: product.url,
+					unit: product.unit,
+					category: product.category,
+					pricing: product.pricing,
+					date: product.date,
+					time: product.time,
+					venue: product.venue,
+					brand: product.brand,
+					tags: product.tags,
 					price:
 						parseInt(product.price['offer']) > parseInt(product.price['regular'])
 							? product.price['offer']
 							: product.price['regular'],
-					url: product.url,
-					unit: product.unit,
-					date: product.date,
-					venue: product.venue,
-					pricing: product.pricing
 				};
 			});
 
-		return {
-			data: convertedData,
-			isNext: isNext
-		};
+		// return {
+		// 	data: convertedData,
+		// 	isNext: isNext
+		// };
+
+		return convertedData;
 	}
 
 	/**
@@ -335,19 +341,28 @@ class Converter {
 					cover: `${config['baseURL']}${(product.cover && product.cover['thumbnail']) || ''}`,
 					regularPrice: product.price && product.price['regular'],
 					offerPrice: product.price && product.price['offer'],
+					url: product.url,
+					unit: product.unit,
+					category: product.category,
+					pricing: product.pricing,
+					date: product.date,
+					time: product.time,
+					venue: product.venue,
+					brand: product.brand,
+					tags: product.tags,
 					price:
 						parseInt(product.price['offer']) > parseInt(product.price['regular'])
 							? product.price['offer']
 							: product.price['regular'],
-					url: product.url,
-					unit: product.unit
 				};
 			});
 
-		return {
-			data: convertedData,
-			isNext: isNext
-		};
+		// return {
+		// 	data: convertedData,
+		// 	isNext: isNext
+		// };
+
+		return convertedData;
 	}
 
 	/**
@@ -370,19 +385,28 @@ class Converter {
 					cover: `${config['baseURL']}${(product.cover && product.cover['thumbnail']) || ''}`,
 					regularPrice: product.price && product.price['regular'],
 					offerPrice: product.price && product.price['offer'],
+					url: product.url,
+					unit: product.unit,
+					category: product.category,
+					pricing: product.pricing,
+					date: product.date,
+					time: product.time,
+					venue: product.venue,
+					brand: product.brand,
+					tags: product.tags,
 					price:
 						parseInt(product.price['offer']) > parseInt(product.price['regular'])
 							? product.price['offer']
 							: product.price['regular'],
-					url: product.url,
-					unit: product.unit
 				};
 			});
 
-		return {
-			data: convertedData,
-			isNext: isNext
-		};
+		// return {
+		// 	data: convertedData,
+		// 	isNext: isNext
+		// };
+
+		return convertedData;
 	}
 
 	/**
@@ -543,6 +567,7 @@ class Converter {
 				key: data._id || '',
 				name: data.name && data.name,
 				description: data.description && data.description,
+				url: data.url && data.url,
 				cover: {
 					cover: `${config['baseURL']}${data.cover ? data.cover.original && data.cover.original : ''}`,
 					id: data.cover ? data.cover._id : ''
@@ -569,6 +594,27 @@ class Converter {
 		return {};
 	}
 
+
+	/**
+* @public
+* @method tagDetail convert api data from API to general format based on config server
+* @param {Object} data response objectc from alpha
+* @returns {Object}  converted data
+*/
+	async tagDetail(resData) {
+		const data = Object.keys(resData).length > 0 ? resData : null;
+		if (data) {
+			return {
+				id: data._id || '',
+				key: data._id || '',
+				name: data.name && data.name,
+				url: data.url && data.url,
+				description: data.description && data.description,
+			}
+		}
+
+		return {};
+	}
 
 	/**
    * @public
@@ -927,20 +973,27 @@ class Converter {
 						data.category.map((cat) => {
 							return {
 								id: cat._id,
-								name: cat.name
+								name: cat.name,
+								cover: `${config['baseURL']}${cat.cover ? cat.cover.original && cat.cover.original : ''}`
+
 							};
 						})) ||
 					data.category,
 				brand:
-					(data.brand &&
-						data.brand.length > 0 &&
-						data.brand.map((b) => {
-							return {
-								id: b._id,
-								name: b.name
-							};
-						})) ||
-					data.brand,
+					data.brand &&
+						Object.keys(data.brand).length > 0 ? {
+							id: data.brand._id,
+							name: data.brand.name,
+							cover: `${config['baseURL']}${data.brand.cover ? data.brand.cover.original && data.brand.cover.original : ''}`
+						} :
+						data.brand,
+				primaryCategory: data.primaryCategory &&
+					Object.keys(data.primaryCategory).length > 0 ? {
+						id: data.primaryCategory._id,
+						name: data.primaryCategory.name,
+						cover: `${config['baseURL']}${data.primaryCategory.cover ? data.primaryCategory.cover.original && data.primaryCategory.cover.original : ''}`
+					} :
+					data.primaryCategory,
 				tags:
 					(data.tags &&
 						data.tags.length > 0 &&
@@ -953,7 +1006,7 @@ class Converter {
 					data.tags,
 				availableStock: data.availableStock,
 				cover: {
-					cover: `${config['baseURL']}${data.cover ? data.cover.thumbnail && data.cover.thumbnail : ''}`,
+					cover: `${config['baseURL']}${data.cover ? data.cover.original && data.cover.original : ''}`,
 					id: data.cover ? data.cover._id : ''
 				},
 				image:
@@ -963,7 +1016,7 @@ class Converter {
 							return {
 								id: img._id || '',
 								name: img.name && img.name,
-								cover: `${config['baseURL']}${img.thumbnail}`,
+								cover: `${config['baseURL']}${img.original}`,
 								added: img.added,
 								title: img.title,
 								labels: img.labels,
@@ -1660,8 +1713,9 @@ class Converter {
 			name: data.name && data.name,
 			description: data.description && data.description,
 			productCount: data.productCount || 0,
-			icon: data.icon || '',
-			type: data.type || '',
+			icon: data.icon ? `${config['baseURL']}${data.icon}` : '',
+			type: data.subCategory.length > 0 && data.subCategory[0] && data.subCategory[0]['name'] ? 'Top category' : 'Child category',
+			url: data.url || '',
 			subCategory:
 				data.subCategory.length > 0 && data.subCategory[0] && data.subCategory[0]['name']
 					? data.subCategory.map((subCat) => {

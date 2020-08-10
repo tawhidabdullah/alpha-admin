@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Empty, Popconfirm, Upload, message, Switch, Select, Button, notification, Table, Space, Input as CoolInput, Tooltip, Modal } from 'antd';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
+import { useHistory } from 'react-router';
 
 
 
@@ -77,6 +78,7 @@ const MyTable = ({ data, setTagList }) => {
 	const [activeCategoryForEdit, setactiveCategoryForEdit] = useState(false);
 	const [deleteTagState, handleDeleteTagFetch] = useHandleFetch({}, 'deleteTag');
 
+	const history = useHistory();
 
 
 	const handleDeleteTag = async (id) => {
@@ -130,7 +132,27 @@ const MyTable = ({ data, setTagList }) => {
 					dataIndex="name"
 					key="id"
 					className='classnameofthecolumn'
+					render={(text, record: any) => (
+						<>
 
+							<h4
+								onClick={() => {
+									history.push(`/admin/tag/${record.id}`)
+									// setBrandDetailVisible(true);
+									setactiveCategoryForEdit(record)
+								}}
+								style={{
+									fontWeight: 400,
+									color: '#555',
+									cursor: 'pointer'
+
+								}}>
+								{text}
+							</h4>
+
+
+						</>
+					)}
 				/>
 
 				<Column
@@ -140,6 +162,15 @@ const MyTable = ({ data, setTagList }) => {
 					className='classnameofthecolumn'
 
 				/>
+
+
+				<Column
+					title="Product"
+					dataIndex="productCount"
+					key="id"
+					className='classnameofthecolumn'
+				/>
+
 				<Column
 
 					className='classnameofthecolumn'
@@ -148,7 +179,6 @@ const MyTable = ({ data, setTagList }) => {
 					align='right'
 					render={(text, record: any) => (
 						<Space size="middle">
-
 							<a href='##'>
 								<Tooltip placement="top" title='Quick Edit Tag'>
 									<span className='iconSize' onClick={() => {
@@ -156,7 +186,6 @@ const MyTable = ({ data, setTagList }) => {
 										setactiveCategoryForEdit(record);
 									}}>
 										<EditOutlined />
-
 									</span>
 								</Tooltip>
 							</a>
@@ -164,22 +193,14 @@ const MyTable = ({ data, setTagList }) => {
 
 
 							<Popconfirm
-
 								onConfirm={() => handleDeleteTag(record.id)}
 								title="Are you sure？" okText="Yes" cancelText="No">
-
 								<span
 									className='iconSize iconSize-danger'
 								>
 									<DeleteOutlined />
 								</span>
-
 							</Popconfirm>
-
-
-
-
-
 						</Space>
 					)}
 				/>
@@ -223,10 +244,9 @@ const TagList = ({ }: Props) => {
 	}, [])
 
 
+
 	const [addTagState, handleAddTagFetch] = useHandleFetch({}, 'addTag');
 	const [addNewCategoryVisible, setAddNewCategoryVisible] = useState(false);
-
-
 
 	const handleSubmit = async (values: any, actions: any) => {
 		const addTagRes = await handleAddTagFetch({
@@ -276,8 +296,6 @@ const TagList = ({ }: Props) => {
 		setAddNewCategoryVisible(false);
 	};
 
-
-
 	const handleSearch = (value) => {
 		if (tagState.data.length > 0) {
 			const newTagList = tagState.data.filter(item => item.name.toLowerCase().includes(value.toLowerCase()));
@@ -286,63 +304,56 @@ const TagList = ({ }: Props) => {
 
 	}
 
-
-
-
 	return (
 		<>
-	
-	
-	<div className='categoryListContainer'>
-						<div className='categoryListContainer__header'>
 
-
-							<div className='categoryListContainer__header-searchBar-tag'>
-								<h2 className='categoryListContainer__header-title'>
-            Tags
+			<div className='categoryListContainer'>
+				<div className='categoryListContainer__header'>
+					<div className='categoryListContainer__header-searchBar-tag'>
+						<h2 className='categoryListContainer__header-title'>
+							Tags
             </h2>
 
 
-								<Search
-									enterButton={false}
-									className='searchbarClassName'
-									placeholder="search tags.."
-									onSearch={value => handleSearch(value)}
-								/>
-							</div>
-							<Button
-          // type="primary"
-          className='btnPrimaryClassNameoutline'
-          icon={<PlusOutlined />}
-          onClick={() => setAddNewCategoryVisible(true)}
-        >
-        Add New
-            
-            </Button>
-						</div>
-						<div className='categoryListContainer__categoryList'>
-							{tagState.done && tagList.length > 0 && <MyTable
-								setTagList={setTagList}
-								data={tagList} />}
-							{tagState.isLoading && <DataTableSkeleton />}
-
-
-							{tagState.done && !(tagList.length > 0) && (
-								<div style={{
-									marginTop: '50px'
-								}}>
-									<Empty description='No Tags found' image={Empty.PRESENTED_IMAGE_SIMPLE} />
-								</div>
-							)}
-						</div>
+						<Search
+							enterButton={false}
+							className='searchbarClassName'
+							placeholder="search tags.."
+							onSearch={value => handleSearch(value)}
+						/>
 					</div>
+					<Button
+						// type="primary"
+						className='btnPrimaryClassNameoutline'
+						icon={<PlusOutlined />}
+						onClick={() => setAddNewCategoryVisible(true)}
+					>
+						Add New
+					</Button>
+				</div>
+				<div className='categoryListContainer__categoryList'>
+					{tagState.done && tagList.length > 0 && <MyTable
+						setTagList={setTagList}
+						data={tagList} />}
+					{tagState.isLoading && <DataTableSkeleton />}
 
-		<AddNewTag 
-		tagList={tagList}
-		setTagList={setTagList}
-		addNewCategoryVisible={addNewCategoryVisible}
-		setAddNewCategoryVisible={setAddNewCategoryVisible}
-		/>
+
+					{tagState.done && !(tagList.length > 0) && (
+						<div style={{
+							marginTop: '50px'
+						}}>
+							<Empty description='No Tags found' image={Empty.PRESENTED_IMAGE_SIMPLE} />
+						</div>
+					)}
+				</div>
+			</div>
+
+			<AddNewTag
+				tagList={tagList}
+				setTagList={setTagList}
+				addNewCategoryVisible={addNewCategoryVisible}
+				setAddNewCategoryVisible={setAddNewCategoryVisible}
+			/>
 		</>
 	);
 };

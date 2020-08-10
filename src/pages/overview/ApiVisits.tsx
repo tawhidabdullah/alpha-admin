@@ -232,7 +232,7 @@ const ApiVisits = (props: Props) => {
             </div>
 
             <div className='overviewContainer__body-body'>
-                <ResponsiveContainer width="100%" height={200}>
+                <ResponsiveContainer width="100%" height={300}>
                     <AreaChart data={RAINFALL["2019"]} fontSize={12}>
                         <defs>
                             <linearGradient id="rainGradient" x1="0" y1="0" x2="0" y2="1">

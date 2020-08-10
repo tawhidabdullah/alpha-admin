@@ -175,7 +175,7 @@ const PlatformVisits = (props: Props) => {
 
             <div className="overviewContainer__body-body">
 
-                <ResponsiveContainer width="100%" height={200}>
+                <ResponsiveContainer width="100%" height={300}>
                     <PieChart fontSize={14}>
                         <Tooltip
                             cursor={false}

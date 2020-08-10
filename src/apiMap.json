@@ -72,6 +72,10 @@
 			"url": "/api/category/:id",
 			"method": "get"
 		},
+		"categoryProducts": {
+			"url": "/api/category/:id/product?recursive=isRecursive",
+			"method": "get"
+		},
 		"categorySelectist": {
 			"url": "/api/category?subCategory=isSubCategory",
 			"method": "get"
@@ -108,8 +112,20 @@
 			"url": "/admin/brand/update/delete/:id",
 			"method": "post"
 		},
+		"tagProducts": {
+			"url": "/api/tag/:id/product",
+			"method": "get"
+		},
+		"brandProducts": {
+			"url": "/api/brand/:id/product",
+			"method": "get"
+		},
 		"tagList": {
 			"url": "/api/tag",
+			"method": "get"
+		},
+		"tagDetail": {
+			"url": "/api/tag/:id",
 			"method": "get"
 		},
 		"addTag": {

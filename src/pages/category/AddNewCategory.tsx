@@ -102,7 +102,7 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, categ
 
 		formData.append("name", values.name.trim());
 		formData.append("description", values.description);
-		formData.append("image", imagesIds);
+		formData.append("image", JSON.stringify(imagesIds));
 		formData.append("cover", coverImageId || imagesIds[0] ? imagesIds[0] : '');
 		formData.append("parent", selectedParentId);
 		formData.append('icon', imageFile)
@@ -110,7 +110,6 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, categ
 
 
 		const addCategoryRes = await handleAddCategoryFetch({
-
 			body: formData,
 		});
 

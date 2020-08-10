@@ -3,10 +3,10 @@ import React from 'react'
 
 // import pages
 import { Overview } from '../../pages/overview';
-import { CategoryList } from '../../pages/category';
-import { BrandList, AddNewBrand } from '../../pages/brand';
-import { ProductList } from '../../pages/product';
-import { TagList, AddNewTag } from '../../pages/tag';
+import { CategoryList, NewCategoryDetail } from '../../pages/category';
+import { BrandList, AddNewBrand, NewBrandDetail } from '../../pages/brand';
+import { ProductList, NewProductDetail } from '../../pages/product';
+import { TagList, AddNewTag, NewTagDetail } from '../../pages/tag';
 import { CustomerList } from '../../pages/customer';
 import { PagesList, AddNewPage } from '../../pages/pages';
 import { AttributeList } from '../../pages/attribute';
@@ -14,9 +14,9 @@ import { OrderList, AddNewOrder } from '../../pages/order';
 import { Component, ManageThemes, Image, Invoice, SiteInfo } from '../../pages/settings';
 import { Delivery } from '../../pages/delivery';
 import Sms from '../../pages/sms';
+
+
 // import Login from '../../pages/auth/login';
-
-
 
 
 // import libraries
@@ -44,20 +44,23 @@ const ContentComponent = (props: Props) => {
                 <Route
                     exact
                     path='/'
-                    render={() => <Redirect to='/admin' />}
+                    render={() => <Redirect to='/admin/overview' />}
                 />
-                {/* <Route
+
+                <Route
                     exact
                     path='/admin'
-                    render={() => <Redirect to='/admin/product' />}
-                /> */}
+                    render={() => <Redirect to='/admin/overview' />}
+                />
 
-
-                <Route path='/admin' exact>
+                <Route path='/admin/overview' exact>
                     <Overview />
                 </Route>
                 <Route path='/admin/category' exact>
                     <CategoryList />
+                </Route>
+                <Route path='/admin/category/:id' exact>
+                    <NewCategoryDetail />
                 </Route>
                 {/* <Route path='/admin/category/:name' exact>
                     <CategoryDetail />
@@ -70,17 +73,27 @@ const ContentComponent = (props: Props) => {
                 <Route path='/admin/brand' exact>
                     <BrandList />
                 </Route>
+                <Route path='/admin/brand/:id' exact>
+                    <NewBrandDetail />
+                </Route>
                 <Route path='/admin/product' exact>
                     <ProductList />
                 </Route>
+                <Route path='/admin/product/:id' exact>
+                    <NewProductDetail />
+                </Route>
+
                 {/* <Route path='/product/new' exact>
                      <AddNewProduct />
                    </Route> */}
                 <Route path='/admin/tag' exact>
                     <TagList />
                 </Route>
-                <Route path='/admin/product/new' exact>
+                <Route path='/admin/tag/new' exact>
                     <AddNewTag />
+                </Route>
+                <Route path='/admin/tag/:id' exact>
+                    <NewTagDetail />
                 </Route>
                 <Route path='/admin/attribute' exact>
                     <AttributeList />

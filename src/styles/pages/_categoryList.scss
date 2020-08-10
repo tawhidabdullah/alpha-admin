@@ -213,6 +213,7 @@
 
 	&__left {
 		flex: 1;
+		max-width: calc(70% - 10px);
 	}
 
 	&__right {

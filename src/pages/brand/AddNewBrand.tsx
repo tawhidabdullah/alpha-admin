@@ -117,13 +117,9 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, brandLis
 			openErrorNotification();
 		}
 
-
-
-
 		actions.setSubmitting(false);
 
 	};
-
 
 
 	const onSwitchChange = (checked: any) => {
@@ -143,9 +139,6 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, brandLis
 		return false;
 	}
 
-
-
-
 	const handleImagesDelete = (id) => {
 		// @ts-ignore
 		const newImages = myImages && myImages.filter(image => {
@@ -154,8 +147,6 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, brandLis
 
 		setmyImages(newImages);
 	}
-
-
 
 
 	return (

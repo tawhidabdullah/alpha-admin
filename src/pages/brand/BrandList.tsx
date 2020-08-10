@@ -1,5 +1,5 @@
 import React, {useState,useEffect} from 'react';
-import {withRouter} from 'react-router-dom';
+import {withRouter, useHistory} from 'react-router-dom';
 import { Table,Empty, Popconfirm, Space,Button, Input,Tooltip, notification  } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined,CheckCircleOutlined } from '@ant-design/icons';
 
@@ -12,7 +12,6 @@ import {  useHandleFetch } from "../../hooks";
 import { DataTableSkeleton } from "../../components/Placeholders";
 import AddNewBrand from "./AddNewBrand"
 import QuickEdit from "./QuickEdit"
-import BrandDetail from "./BrandDetail"
 
 
 
@@ -52,7 +51,8 @@ const MyTable = ({data,setBrandList}: myTableProps) => {
     const [activeCategoryForEdit,setactiveCategoryForEdit] = useState(false); 
     const [deleteBrandState, handleDeleteBrandFetch] = useHandleFetch({}, 'deleteBrand');
     const [brandDetailVisible,setBrandDetailVisible] = useState(false); 
-      
+    const history = useHistory(); 
+
 
  
       const handleDeleteBrand = async (id) => {
@@ -97,7 +97,8 @@ const MyTable = ({data,setBrandList}: myTableProps) => {
             <>
               <img
                 onClick={() => {
-                  setBrandDetailVisible(true);
+                  // setBrandDetailVisible(true);
+                  history.push(`/admin/brand/${record.id}`)
                   setactiveCategoryForEdit(record)
                 }}
                 src={cover} alt='cover img' style={{
@@ -124,7 +125,8 @@ const MyTable = ({data,setBrandList}: myTableProps) => {
 
               <h4
                 onClick={() => {
-                  setBrandDetailVisible(true);
+                  history.push(`/admin/brand/${record.id}`)
+                  // setBrandDetailVisible(true);
                   setactiveCategoryForEdit(record)
                 }}
                 style={{
@@ -144,6 +146,15 @@ const MyTable = ({data,setBrandList}: myTableProps) => {
 <Column
            title="Description" 
            dataIndex="description" 
+           key="id" 
+           className='classnameofthecolumn'
+         
+            />
+
+
+       <Column
+           title="Product" 
+           dataIndex="productCount" 
            key="id" 
            className='classnameofthecolumn'
          
@@ -215,17 +226,6 @@ const MyTable = ({data,setBrandList}: myTableProps) => {
       </Table>
 
 
-      <BrandDetail
-        brandList={data}
-        setBrandList={setBrandList}
-        addNewCategoryVisible={brandDetailVisible}
-        setAddNewCategoryVisible={setBrandDetailVisible}
-        productRecord={activeCategoryForEdit}
-      />
-
-
-
-    
 
     {activeCategoryForEdit &&   <QuickEdit 
     brandList={data}
