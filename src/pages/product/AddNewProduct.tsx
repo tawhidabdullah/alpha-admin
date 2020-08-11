@@ -8,6 +8,9 @@ import { useHandleFetch } from '../../hooks';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { message, Tooltip, Modal, Tabs, Empty, Badge } from 'antd';
+import CKEditor from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+
 
 import {
 	DeleteOutlined,
@@ -88,6 +91,7 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 	const [selectedTags, setSelectedTags] = useState([]);
 	const [date, setDateFeild] = useState('');
 	const [time, setTimeFeild] = useState('');
+	const [description, setDescription] = useState('');
 
 
 	const makeEmptyCategoryOptions = (setEmpty) => {
@@ -104,7 +108,7 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 
 			body: {
 				name: values.name.trim(),
-				description: values.description,
+				description: description,
 				model: values.model,
 				unit: values.unit,
 				category: categoryids,
@@ -113,10 +117,10 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 				image: imagesIds,
 				cover: coverImageId || imagesIds[0] ? imagesIds[0] : '',
 				pricing: pricing,
-				date: date,
-				time: time,
-				venue: values.venue,
-				purchaseLimit: values.purchaseLimit
+				// date: date,
+				// time: time,
+				// venue: values.venue,
+				// purchaseLimit: values.purchaseLimit
 			},
 		});
 
@@ -340,7 +344,7 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 													setFieldTouched('name');
 												}}
 											/>
-											<div style={{
+											{/* <div style={{
 												display: 'flex',
 												justifyContent: 'space-between'
 											}}>
@@ -364,11 +368,11 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 														onChange={handleTimeChange} />
 
 												</div>
-											</div>
+											</div> */}
 											<div style={{
 												marginBottom: '15px'
 											}}></div>
-
+											{/* 
 											<TextArea
 												rows={1}
 												label='Venue'
@@ -401,24 +405,37 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 													handleChange(e);
 													setFieldTouched('purchaseLimit');
 												}}
-											/>
+											/> */}
 
 
+											<h3 className='inputFieldLabel'>
+												Description
+                               </h3>
 
-											<TextArea
-												label='Description'
-												value={values.description}
-												name='description'
-												isError={(touched.description && errors.description) ||
-													(!isSubmitting && addProductState.error['error']['description'])}
+											<div style={{
+												width: '100%',
+												maxWidth: '100%'
+											}}>
+												<CKEditor
+													editor={ClassicEditor}
+													data={description}
+													onInit={editor => {
+														// You can store the "editor" and use when it is needed.
+														console.log('Editor is ready to use!', editor);
+													}}
+													onChange={(event, editor) => {
+														const data = editor.getData();
+														setDescription(data);
+													}}
+													onBlur={(event, editor) => {
+														console.log('Blur.', editor);
+													}}
+													onFocus={(event, editor) => {
+														console.log('Focus.', editor);
+													}}
+												/>
+											</div>
 
-												errorString={(touched.description && errors.description) ||
-													(!isSubmitting && addProductState.error['error']['description'])}
-												onChange={(e: any) => {
-													handleChange(e);
-													setFieldTouched('description');
-												}}
-											/>
 
 											{/* <Input
 												label='Model Number'

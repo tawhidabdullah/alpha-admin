@@ -1,9 +1,9 @@
 import ProductList from "./ProductList";
-import ProductDetail from "./ProductDetail";
-import AddNewProduct from "./AddNewProduct";
+import AddNewProduct from "./ProductEdit";
+import NewProductDetail from "./NewProductDetail";
 
 export {
     ProductList,
-    ProductDetail,
-    AddNewProduct
+    AddNewProduct,
+    NewProductDetail
 }

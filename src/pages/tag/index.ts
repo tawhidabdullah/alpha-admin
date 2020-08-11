@@ -1,5 +1,5 @@
 import TagList from './TagList';
-import TagDetail from './TagDetail';
 import AddNewTag from './AddNewTag';
+import NewTagDetail from './NewTagDetail';
 
-export { TagList, TagDetail, AddNewTag };
+export { TagList, AddNewTag, NewTagDetail };

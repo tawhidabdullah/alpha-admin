@@ -21,8 +21,7 @@ import {
 } from '@ant-design/icons';
 
 
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+
 
 // import components
 import Input from '../../components/Field/Input';
@@ -118,13 +117,9 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, brandLis
 			openErrorNotification();
 		}
 
-
-
-
 		actions.setSubmitting(false);
 
 	};
-
 
 
 	const onSwitchChange = (checked: any) => {
@@ -144,9 +139,6 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, brandLis
 		return false;
 	}
 
-
-
-
 	const handleImagesDelete = (id) => {
 		// @ts-ignore
 		const newImages = myImages && myImages.filter(image => {
@@ -155,8 +147,6 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, brandLis
 
 		setmyImages(newImages);
 	}
-
-
 
 
 	return (
@@ -240,10 +230,7 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, brandLis
 								}}
 							>
 								<h3 className='inputFieldLabel'>Images</h3>
-								{/* <div  >
-					<FileOutlined />
-					<span>Media Center</span>
-				</div> */}
+
 							</div>
 
 

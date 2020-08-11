@@ -5,7 +5,7 @@ import * as Yup from 'yup';
 
 import { useHandleFetch } from '../../hooks';
 // import third party ui lib
-import { Upload, message, Switch, Select, Button, notification, Modal, Tabs } from 'antd';
+import { Upload, message, Switch, Select, Button, notification, Modal, Tabs, Tooltip } from 'antd';
 
 
 import {
@@ -13,7 +13,11 @@ import {
 	InboxOutlined,
 	FileAddOutlined,
 	DeleteOutlined,
-	CheckCircleOutlined
+	CheckCircleOutlined,
+	PlusOutlined,
+	FileImageFilled,
+	CheckOutlined,
+	CloseOutlined
 } from '@ant-design/icons';
 
 
@@ -71,77 +75,32 @@ interface Props {
 
 const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, brandList, setBrandList }: Props) => {
 
-	const [addBrandState, handleAddBrandFetch] = useHandleFetch({}, 'addBrand');
-	const [visible, setvisible] = useState(false);
+	const [updateSiteLogoAndIcon, handleUpdateSiteLogoAndIconFetch] = useHandleFetch({}, 'updateSiteLogoAndIcon');
 	const [myImages, setmyImages] = useState(false);
 	const [visibleMedia, setvisibleMedia] = useState(false);
+	const [coverImageId, setCoverImageId] = useState('');
 
 
-	const handleSubmit = async (values: any, actions: any) => {
 
-		// @ts-ignore
-		const imagesIds = myImages ? myImages.map(image => {
-			return image.id;
-		}) : [];
+	const handleSubmit = async () => {
 
 
-		const addBrandRes = await handleAddBrandFetch({
+		const updateSiteIconAndLogoRes = await handleUpdateSiteLogoAndIconFetch({
 
 			body: {
-				name: values.name,
-				description: values.description,
-				type: values.type,
-				image: imagesIds,
-				cover: imagesIds[0] ? imagesIds[0] : '',
+				logo: myImages ? myImages[0] && myImages[0].id : '',
 			},
 		});
 
 		// @ts-ignore
-		if (addBrandRes && addBrandRes.status === 'ok') {
-			openSuccessNotification();
-
-			setBrandList([...brandList, {
-				id: addBrandRes['id'] || '',
-				key: addBrandRes['id'] || '',
-				name: addBrandRes['name'] || '',
-				description: addBrandRes['description'] || '',
-				// @ts-ignore
-				...addBrandRes
-			}])
-			actions.resetForm();
-			setAddNewCategoryVisible(false);
+		if (updateSiteIconAndLogoRes && updateSiteIconAndLogoRes.status === 'ok') {
+			openSuccessNotification('Updated Site Logo');
 		}
 		else {
-			openErrorNotification();
+			openErrorNotification("Couldn't updated site logo, Something went wrong");
 		}
 
-
-
-
-		actions.setSubmitting(false);
-
 	};
-
-
-
-	const onSwitchChange = (checked: any) => {
-		console.log(checked);
-	};
-
-
-	const handleCancel = (e: any) => {
-		setAddNewCategoryVisible(false);
-	};
-
-
-	const getisSubmitButtonDisabled = (values, isValid) => {
-		if (!values.name && !values.description || !isValid) {
-			return true;
-		}
-		return false;
-	}
-
-
 
 
 	const handleImagesDelete = (id) => {
@@ -154,8 +113,6 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, brandLis
 	}
 
 
-
-
 	return (
 		<>
 			<div className='siteInfoContainer'>
@@ -164,81 +121,165 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, brandLis
 					<TabPane tab="Site Info" key="1">
 						<AdminSiteInfo />
 					</TabPane>
-					{/* <TabPane tab="Logo & Icon" key="2">
+					<TabPane tab="Site logo" key="2">
 						<div style={{
 							display: 'flex',
 							alignItems: 'center'
 						}}>
 							<div style={{
-								marginRight: '30px'
+								marginRight: '20px'
 							}}>
-								<h3 className='inputFieldLabel'>Site Logo</h3>
+								<h3 className='inputFieldLabel'>Logo</h3>
 								<div className='aboutToUploadImagesContainer'>
 									{myImages &&
 										// @ts-ignore
-										myImages.length > 0 && myImages.map(image => {
+										myImages.length > 0 && myImages.map((image, index) => {
 											return (
 												<div className='aboutToUploadImagesContainer__item'>
 													<div
-														onClick={() => handleImagesDelete(image.id)}
-														className='aboutToUploadImagesContainer__item-overlay'>
-														<DeleteOutlined />
+														className='aboutToUploadImagesContainer__item-imgContainer'
+														onClick={() => setCoverImageId(image.id)}
+													>
+														<img src={image.cover} alt={image.alt} />
 													</div>
-													<img src={image.cover} alt={image.alt} />
+
+													<span
+														onClick={() => handleImagesDelete(image.id)}
+														className='aboutToUploadImagesContainer__item-remove'>
+														<CloseOutlined />
+													</span>
 												</div>
 											)
 										})}
 
-									<div
-										onClick={() => {
-											setvisibleMedia(true);
-										}}
-										className='aboutToUploadImagesContainer__uploadItem'>
-										<FileAddOutlined />
 
-									</div>
+									{myImages ? !myImages[0] && (
+										<Tooltip
+											title={'Attach images'}>
 
+											<div
+												onClick={() => {
+													setvisibleMedia(true);
+												}}
+												className='aboutToUploadImagesContainer__uploadItem'>
+												{/* <FileAddOutlined />
+														<FileImageTwoTone />
+														<FileImageOutlined /> */}
+												<FileImageFilled />
+												{/* <h5>
+														 Select From Library
+												<     /h5> */}
+												<span className='aboutToUploadImagesContainer__uploadItem-plus'>
+													<PlusOutlined />
+												</span>
+											</div>
+										</Tooltip>
+									) : <Tooltip
+										title={'Attach images'}>
+
+											<div
+												onClick={() => {
+													setvisibleMedia(true);
+												}}
+												className='aboutToUploadImagesContainer__uploadItem'>
+												{/* <FileAddOutlined />
+												<FileImageTwoTone />
+												<FileImageOutlined /> */}
+												<FileImageFilled />
+												{/* <h5>
+												 Select From Library
+										<     /h5> */}
+												<span className='aboutToUploadImagesContainer__uploadItem-plus'>
+													<PlusOutlined />
+												</span>
+											</div>
+										</Tooltip>}
 								</div>
 							</div>
-
+							{/* 
 							<div style={{
-								// marginTop: '15px'
 							}}>
-								<h3 className='inputFieldLabel'>Site Icon</h3>
+								<h3 className='inputFieldLabel'> Icon</h3>
+
+
 								<div className='aboutToUploadImagesContainer'>
 									{myImages &&
-										// @ts-ignore
-										myImages.length > 0 && myImages.map(image => {
+										myImages.length > 0 && myImages.map((image, index) => {
 											return (
 												<div className='aboutToUploadImagesContainer__item'>
 													<div
-														onClick={() => handleImagesDelete(image.id)}
-														className='aboutToUploadImagesContainer__item-overlay'>
-														<DeleteOutlined />
+														className='aboutToUploadImagesContainer__item-imgContainer'
+														onClick={() => setCoverImageId(image.id)}
+													>
+														<img src={image.cover} alt={image.alt} />
 													</div>
-													<img src={image.cover} alt={image.alt} />
+
+													<span
+														onClick={() => handleImagesDelete(image.id)}
+														className='aboutToUploadImagesContainer__item-remove'>
+														<CloseOutlined />
+													</span>
 												</div>
 											)
 										})}
 
-									<div
-										onClick={() => {
-											setvisibleMedia(true);
-										}}
-										className='aboutToUploadImagesContainer__uploadItem'>
-										<FileAddOutlined />
 
-									</div>
+									{myImages ? !myImages[0] && (
+										<Tooltip
+											title={'Attach images'}>
 
+											<div
+												onClick={() => {
+													setvisibleMedia(true);
+												}}
+												className='aboutToUploadImagesContainer__uploadItem'>
+												
+												<FileImageFilled />
+											
+												<span className='aboutToUploadImagesContainer__uploadItem-plus'>
+													<PlusOutlined />
+												</span>
+											</div>
+										</Tooltip>
+									) : <Tooltip
+										title={'Attach images'}>
+
+											<div
+												onClick={() => {
+													setvisibleMedia(true);
+												}}
+												className='aboutToUploadImagesContainer__uploadItem'>
+												
+												<FileImageFilled />
+												
+												<span className='aboutToUploadImagesContainer__uploadItem-plus'>
+													<PlusOutlined />
+												</span>
+											</div>
+										</Tooltip>}
 								</div>
-							</div>
+
+							</div> */}
+
+
 						</div>
 
+						<Button
 
-					</TabPane> */}
+							loading={updateSiteLogoAndIcon.isLoading}
+							onClick={() => handleSubmit()}
+							className='btnPrimaryClassNameoutline'
+						>
+							Update site Logo
+                            </Button>
+
+						<div style={{
+							marginBottom: '10px'
+						}}></div>
+					</TabPane>
 
 
-					<TabPane tab="Admin Information" key="2">
+					<TabPane tab="Admin Information" key="3">
 
 						<SiteInfoInvoice />
 					</TabPane>

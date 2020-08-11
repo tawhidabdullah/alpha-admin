@@ -79,15 +79,12 @@ const openSuccessNotification = (message?: any) => {
 
 
 const openErrorNotification = (message?: any) => {
-	notification.success({
+	notification.error({
 		message: message || 'Something Went Wrong',
 		description: '',
 		icon: <CheckCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
 	});
 };
-
-
-
 
 
 interface Props {
@@ -237,6 +234,8 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, custo
 	}
 
 
+
+	console.log('cityListState', cityListState)
 
 
 
@@ -390,8 +389,6 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, custo
 									}}
 								/>
 							</div>
-
-
 
 							<div className='dubbleRowInputs'>
 								<div className='dubbleRowInputs__item'>

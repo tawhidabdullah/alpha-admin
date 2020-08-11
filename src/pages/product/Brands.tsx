@@ -99,7 +99,7 @@ const Brands = ({ setBrandId, brandId, productDetailState }: Props) => {
 			)}
 
 
-			{brandState.done && brandState.data.length > 0 && options.length > 0 && (
+			{brandState.done && brandState.data && brandState.data.length > 0 && options.length > 0 && (
 
 				<Select
 					showSearch

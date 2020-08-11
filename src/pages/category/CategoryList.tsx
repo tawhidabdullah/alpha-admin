@@ -11,7 +11,6 @@ import { useFetch, useHandleFetch } from "../../hooks";
 // import components
 import { DataTableSkeleton } from "../../components/Placeholders";
 import Empty from "../../components/Empty";
-import CategoryDetail from "./CategoryDetail";
 
 const { Column, ColumnGroup } = Table;
 const { Search } = Input;
@@ -49,7 +48,6 @@ const MyTable = ({data, setcategoryList, history}: myTableProps) => {
     const [visible,setvisible] = useState(false);   
     const [activeCategoryForEdit,setactiveCategoryForEdit] = useState(false); 
     const [deleteCategoryState, handleDeleteCategoryFetch] = useHandleFetch({}, 'deleteCategory');
-    const [categoryDetailVisible, setcategoryDetailVisible] = useState(false)
       // console.log('activeCategoryForEdit',activeCategoryForEdit); 
 
 
@@ -95,7 +93,8 @@ const MyTable = ({data, setcategoryList, history}: myTableProps) => {
                 <>
                 <img src={cover} 
                    onClick={() => {
-                    setcategoryDetailVisible(true);
+                    history.push(`/admin/category/${record.id}`)
+                    // setcategoryDetailVisible(true);
                     setactiveCategoryForEdit(record)
                   }}
                 alt='cover img' 
@@ -120,7 +119,8 @@ const MyTable = ({data, setcategoryList, history}: myTableProps) => {
 
               <h4
                 onClick={() => {
-                  setcategoryDetailVisible(true);
+                  history.push(`/admin/category/${record.id}`)
+                  // setcategoryDetailVisible(true);
                   setactiveCategoryForEdit(record)
                 }}
                 style={{
@@ -241,16 +241,6 @@ const MyTable = ({data, setcategoryList, history}: myTableProps) => {
     setvisible={setvisible}
     visible={visible}
     category={activeCategoryForEdit}/>}
-    
-
-    <CategoryDetail
-     setBrandList={setcategoryList}
-     brandList={data}
-        addNewCategoryVisible={categoryDetailVisible}
-        setAddNewCategoryVisible={setcategoryDetailVisible}
-        productRecord={activeCategoryForEdit}
-      />
-
     
     </>
     )

@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {withRouter} from 'react-router-dom';
 import { Table, Badge, Menu, Dropdown, Space, Tag,Button, Input,Tooltip, Modal, notification, Popconfirm } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined,EditFilled,CheckCircleOutlined } from '@ant-design/icons';
+import { PlusOutlined, EditOutlined, DeleteOutlined,CheckOutlined,CheckCircleOutlined,DownOutlined  } from '@ant-design/icons';
 
 
 /// import hooks
@@ -33,7 +33,7 @@ const openSuccessNotification = (message?: any) => {
 
 
   const openErrorNotification = (message?: any) => {
-	notification.success({
+	notification.error({
 	  message: message || 'Something Went Wrong',
 	  description: '',
 	  icon: <CheckCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
@@ -54,6 +54,7 @@ const MyTable = ({data,setOrderList}: myTableProps) => {
     const [visible,setvisible] = useState(false);   
     const [activeCategoryForEdit,setactiveCategoryForEdit] = useState(false); 
     const [deleteOrderState, handleDeleteOrderFetch] = useHandleFetch({}, 'deleteOrder');
+    const [updateOrderStatusState, handleUpdateOrderStatusFetch] = useHandleFetch({}, 'updateOrderStatus');
 
 
       const handleDeleteRegion = async (id) => {
@@ -74,6 +75,85 @@ const MyTable = ({data,setOrderList}: myTableProps) => {
 
       }
       
+
+
+      
+      const handleUpdateOrderStatus = async (record,id,newStatus) => {
+        const updateOrderStatusRes = await handleUpdateOrderStatusFetch({
+          urlOptions: {
+            params: {
+              newOrderstatus: newStatus,
+            },
+            placeHolders: {
+              id,
+            }
+            }
+          });
+
+            // @ts-ignore
+		  if(updateOrderStatusRes && updateOrderStatusRes.status === 'ok'){
+			  openSuccessNotification('Updated Order Status'); 
+			  
+        const positionInTag = () => {
+          return data.map(item => item.id).indexOf(id);
+          }
+
+      const index = positionInTag();
+      console.log('recordis',record,index );
+
+      // @ts-ignore
+      const updatedItem = Object.assign({}, data[index], { status: newStatus });
+      const updateOrderList = [...data.slice(0, index), updatedItem, ...data.slice(index + 1)];
+      console.log('updateOrderList',updateOrderList,'-----',setOrderList );
+      setOrderList(updateOrderList);
+
+
+      }
+
+      
+      else {
+        openErrorNotification("Couldn't changed order status, Something went wrong")
+      }
+
+      }
+      
+
+      const StatusItemMenu = (record,id) => {
+        return (
+          (
+            <Menu>
+
+<Menu.Item
+                onClick={() => handleUpdateOrderStatus(record,id,'pending')}
+                key="1" icon={<CheckOutlined />}>
+                Pending
+              </Menu.Item>
+  
+
+  
+              <Menu.Item
+                onClick={() => handleUpdateOrderStatus(record,id,'complete')}
+                key="1" icon={<CheckOutlined />}>
+                Completed
+    
+              </Menu.Item>
+    
+              {/* <Menu.Item
+                onClick={() => handleUpdateOrderStatus(record,id,'deliver')}
+                key="1" icon={<CheckOutlined />}>
+                Delivered
+              </Menu.Item>
+     */}
+            
+            </Menu >
+          )
+        )
+      };
+
+
+
+
+    
 
     return (
         <>
@@ -149,7 +229,7 @@ const MyTable = ({data,setOrderList}: myTableProps) => {
                   color: '#555',
 
                 }}>
-                  <Moment withTitle>
+                  <Moment  withTitle>
                     {text}
                   </Moment>
               </h4>
@@ -161,6 +241,7 @@ const MyTable = ({data,setOrderList}: myTableProps) => {
 
 
           <Column
+          width={150}
            title="Status" 
            dataIndex="status" 
            key="id" 
@@ -168,11 +249,29 @@ const MyTable = ({data,setOrderList}: myTableProps) => {
            render={(text, record: any) => (
             <>
 
-              <span
-                className={'product-attributeTag'}>
-                {text}
-            </span> 
+        <Dropdown overlay={() => StatusItemMenu(record,record.id)} placement="bottomRight">
+           <a href='##'>
+            <span
+                // className={'product-attributeTag'}
+              style={{
+                fontSize:'12px'
+              }}
+                >
 
+                {text}
+                <span style={{
+                  marginLeft:"5px",
+                  fontSize:'10px'
+                }}>
+                   <DownOutlined />
+                </span>
+               
+            </span> 
+            </a>
+					</Dropdown>
+
+
+     
             </>
           )}
             />
@@ -301,8 +400,6 @@ const CustomerList = ({history}: Props) => {
   }; 
 
 
-  console.log('orderState',orderState)
-  console.log('orderList',orderList)
 
 
 	return (
@@ -352,7 +449,7 @@ const CustomerList = ({history}: Props) => {
 			
 			<div className='categoryListContainer__categoryList'>
         {orderState.done && orderList.length > 0 && <MyTable 
-        setOrderList={orderList}
+        setOrderList={setOrderList}
         data={orderList} />}
         {orderState.isLoading && <DataTableSkeleton />}
 

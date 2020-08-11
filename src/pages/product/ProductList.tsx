@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { withRouter } from 'react-router-dom';
+import { withRouter, useHistory } from 'react-router-dom';
 import { notification, Empty, Table, Badge, Menu, Dropdown, Space, Tag, Button, Input, Tooltip, Popconfirm } from 'antd';
 import { CheckCircleOutlined, PlusOutlined, EditOutlined, DeleteOutlined, EditFilled } from '@ant-design/icons';
 
 
 /// import hooks
-import { useFetch, useHandleFetch } from "../../hooks";
+import { useHandleFetch } from "../../hooks";
 
 // import components
 import { DataTableSkeleton } from "../../components/Placeholders";
 import AddNewProduct from "./AddNewProduct";
-import ProductDetail from "./ProductDetail";
+import ProductDetail from "./ProductEdit";
 import QuickEdit from "./QuickEdit";
 
 const { Column, ColumnGroup } = Table;
@@ -39,6 +39,8 @@ const MyTable = ({ data, setProductList }: myTableProps) => {
   const [activeCategoryForEdit, setactiveCategoryForEdit] = useState(false);
   const [deleteProductState, handleDeleteProductFetch] = useHandleFetch({}, 'deleteProduct');
   const [productDetailVisible, setproductDetailVisible] = useState(false);
+
+  const history = useHistory();
 
   const handleDeleteProduct = async (id) => {
     const deleteProductRes = await handleDeleteProductFetch({
@@ -99,7 +101,7 @@ const MyTable = ({ data, setProductList }: myTableProps) => {
             <>
               <img
                 onClick={() => {
-                  setproductDetailVisible(true);
+                  history.push(`/admin/product/${record.id}`)
                   setactiveCategoryForEdit(record)
                 }}
                 src={cover} alt='cover img' style={{
@@ -127,7 +129,7 @@ const MyTable = ({ data, setProductList }: myTableProps) => {
 
               <h4
                 onClick={() => {
-                  setproductDetailVisible(true);
+                  history.push(`/admin/product/${record.id}`)
                   setactiveCategoryForEdit(record)
                 }}
                 style={{
@@ -246,13 +248,7 @@ const MyTable = ({ data, setProductList }: myTableProps) => {
         visible={visible}
         category={activeCategoryForEdit} />}
 
-      <ProductDetail
-        addNewCategoryVisible={productDetailVisible}
-        setAddNewCategoryVisible={setproductDetailVisible}
-        productRecord={activeCategoryForEdit}
-        productList={ProductList}
-        setProductList={setProductList}
-      />
+
 
 
     </>
