@@ -1477,8 +1477,8 @@
 	};
 
 	&__imageGallary {
-		box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.08);
-		padding: 15px;
+		// box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.08);
+		// padding: 15px;
 		border-radius: 8px;
 	}
 
@@ -1688,7 +1688,6 @@
 
 /// image gallary
 .imgGallaryContainer {
-	padding: 10px 0;
 	
 }
 .imgGallary-row {
@@ -1696,7 +1695,6 @@
   display: flex;
   -ms-flex-wrap: wrap; /* IE10 */
   flex-wrap: wrap;
-  padding: 0 4px;
 }
 
 /* Create four equal columns that sits next to each other */
@@ -1704,14 +1702,17 @@
   -ms-flex: 50%; /* IE10 */
   flex: 1 0 25%;
   max-width: 50%;
-  padding: 0 4px;
+  padding: 0 5px;
+
 }
 
 .imgGallary-column img {
-  margin-top: 8px;
+  margin-top: 10px;
   vertical-align: middle;
   width: 100%;
   border-radius: 10px;
+  box-shadow: 0 0.125rem 0.625rem rgba(227, 231, 250, 0.4), 0 0.0625rem 0.125rem rgba(206, 220, 233, 0.5) !important;
+
 }
 
 /* Responsive layout - makes a two column-layout instead of four columns */

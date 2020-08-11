@@ -907,16 +907,7 @@ class Converter {
 							};
 						})) ||
 					data.category,
-				tags:
-					(data.tags &&
-						data.tags.length > 0 &&
-						data.tags.map((tag) => {
-							return {
-								id: tag._id,
-								name: tag.name
-							};
-						})) ||
-					data.tags,
+				tags: data.tags && data.tags.length > 0 ? data.tags : [],
 
 				cover: {
 					cover: `${config['baseURL']}${data.cover ? data.cover.original && data.cover.original : ''}`,
@@ -994,16 +985,7 @@ class Converter {
 						cover: `${config['baseURL']}${data.primaryCategory.cover ? data.primaryCategory.cover.original && data.primaryCategory.cover.original : ''}`
 					} :
 					data.primaryCategory,
-				tags:
-					(data.tags &&
-						data.tags.length > 0 &&
-						data.tags.map((tag) => {
-							return {
-								id: tag._id,
-								name: tag.name
-							};
-						})) ||
-					data.tags,
+				tags: data.tags && data.tags.length > 0 ? data.tags : [],
 				availableStock: data.availableStock,
 				cover: {
 					cover: `${config['baseURL']}${data.cover ? data.cover.original && data.cover.original : ''}`,

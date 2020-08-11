@@ -153,7 +153,7 @@ const NewBrandDetail = (props: Props) => {
 
                                     </h3>
                                 )}
-
+                                {/* 
                                 {productDetailState.data['tags'] && productDetailState.data['tags'].length > 0 &&
                                     (<>
                                         <h3>
@@ -168,7 +168,7 @@ const NewBrandDetail = (props: Props) => {
                                         </h3>
 
                                     </>)
-                                }
+                                } */}
 
                                 {productDetailState.data['category'] && productDetailState.data['category'].length > 0 &&
                                     (<>

@@ -140,6 +140,8 @@ const Tags = ({
   };
 
 
+  console.log('selectedTags', selectedTags)
+
 
 
   return (
@@ -157,6 +159,7 @@ const Tags = ({
           <Spin />
         </div>
       )}
+
 
 
       {tagState.done && !(tagState.data.length > 0) && (

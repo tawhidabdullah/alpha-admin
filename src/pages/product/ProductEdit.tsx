@@ -129,15 +129,17 @@ const AddNewProduct = ({ productEditVisible, setProductEditVisible, productDetai
         else {
             setBrandId('');
         }
-        if (productDetailData && productDetailData.tags && productDetailData.tags) {
+        if (productDetailData && productDetailData.tags && productDetailData.tags.length > 0) {
+            // const tagIds = productDetailData.tags.map(item => item.id);
             setSelectedTags(productDetailData.tags);
         }
         else {
             setSelectedTags([]);
 
         }
-        if (productDetailData && productDetailData.category && productDetailData.category) {
-            setCategoryOptions(productDetailData.category);
+        if (productDetailData && productDetailData.category && productDetailData.category.length > 0) {
+            const categoryIds = productDetailData.category.map(item => item.id);
+            setCategoryOptions(categoryIds);
         }
         else {
             setCategoryOptions([]);
