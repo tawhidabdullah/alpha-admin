@@ -416,7 +416,7 @@ const AddNewOrder = ({ }: Props) => {
 												<span>
 													<UserOutlined />
 												</span>
-                                            Customers And products
+                                            Customers And Events
                                            </h3>
 
 											<h4 className='inputFieldLabel'>
@@ -429,7 +429,7 @@ const AddNewOrder = ({ }: Props) => {
 												marginTop: '15px'
 											}}></div>
 											<h4 className='inputFieldLabel'>
-												Products
+												Events
 											</h4>
 											<AddProducts
 												productIds={productIds}

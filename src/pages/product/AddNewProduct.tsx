@@ -127,7 +127,7 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 
 		// @ts-ignore
 		if (addProductRes && addProductRes.status === 'ok') {
-			openSuccessNotification('Product Created');
+			openSuccessNotification('Event Created');
 
 			setProductList([...productList, {
 				id: addProductRes['id'] || '',

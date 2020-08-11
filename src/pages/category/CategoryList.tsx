@@ -156,7 +156,7 @@ const MyTable = ({data, setcategoryList, history}: myTableProps) => {
             />
 
 <Column
-           title="Product" 
+           title="Event" 
            dataIndex="productCount" 
            key="id" 
            className='classnameofthecolumn'

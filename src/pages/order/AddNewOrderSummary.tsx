@@ -26,7 +26,7 @@ const AddNewOrderSummary = ({
                 <span>
                     <ShopOutlined />
                 </span>
-                Added Products
+                Added Events
             </h3>
             <div className='addOrderContainer__container-productItemContainer'>
                 {productList.length > 0 && productList.map(item => {

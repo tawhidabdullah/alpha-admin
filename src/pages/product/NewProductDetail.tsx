@@ -98,7 +98,7 @@ const NewBrandDetail = (props: Props) => {
 
             <div className='brandDetailContainer__heading'>
                 <h3>
-                    Product Detail
+                    Event Detail
                 </h3>
 
                 {productDetailState.done && productDetailState.data && (Object.keys(productDetailState.data).length > 0) && (
@@ -370,7 +370,7 @@ const NewBrandDetail = (props: Props) => {
                             <>
                                 <div className='brandDetailContainer__heading'>
                                     <h3>
-                                        Brand
+                                        Organizer
                                    </h3>
                                 </div>
 

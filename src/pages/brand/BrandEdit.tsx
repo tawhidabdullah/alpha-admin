@@ -37,7 +37,7 @@ const validationSchema = Yup.object().shape({
 
 const openSuccessNotification = (message?: any) => {
     notification.success({
-        message: message || 'Brand Updated',
+        message: message || 'Organizer Updated',
         description: '',
         icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
     });
@@ -319,7 +319,7 @@ const AddNewBrand = ({ brandDetailData, brandEditVisible, setBrandEditVisible }:
                             style={{
                                 top: '40px'
                             }}
-                            title="Brand Edit"
+                            title="Organizer Edit"
                             visible={brandEditVisible}
                             onOk={(e: any) => handleSubmit(e)}
                             onCancel={handleCancel}

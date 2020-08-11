@@ -74,7 +74,7 @@ const Tags = ({
             <Skeleton loading={tagState.isLoading}>
                 {tagState.done && tagState.data.length > 0 && <Select
                     mode="multiple"
-                    placeholder="search products"
+                    placeholder="search events"
                     value={selectedOpions}
                     onChange={handleChange}
                     style={{ width: '100%' }}
@@ -86,8 +86,6 @@ const Tags = ({
                     ))}
                 </Select>}
             </Skeleton>
-
-
         </>
     )
 }

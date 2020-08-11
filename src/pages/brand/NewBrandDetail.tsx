@@ -93,7 +93,7 @@ const NewBrandDetail = (props: Props) => {
 
             <div className='brandDetailContainer__heading'>
                 <h3>
-                    Brand Detail
+                    Organizer Detail
                 </h3>
 
 
