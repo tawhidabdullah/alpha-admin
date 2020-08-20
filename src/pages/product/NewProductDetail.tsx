@@ -35,18 +35,29 @@ const NewBrandDetail = (props: Props) => {
     const history = useHistory();
     const productId = params['id'];
     const [productEditVisible, setProductEditVisible] = useState(false);
+    const [productDetailData,setProductDetailData] = useState({}); 
+
+
 
 
     useEffect(() => {
 
         const getProductDetail = async () => {
-            await handleProductDetailFetch({
+            const productDetailRes = await handleProductDetailFetch({
                 urlOptions: {
                     placeHolders: {
                         id: productId
                     }
                 }
-            })
+            }); 
+
+            // @ts-ignore
+            if(productDetailRes){
+                // @ts-ignore
+                setProductDetailData(productDetailRes); 
+            };
+
+            console.log('productDetailRes',productDetailRes);
         };
 
         getProductDetail();
@@ -91,7 +102,7 @@ const NewBrandDetail = (props: Props) => {
     }
 
 
-    const row = productDetailState.done && productDetailState.data && productDetailState.data['image'] ? getImagesInCollumn(productDetailState.data['image']) : [];
+    const row = productDetailState.done && productDetailData && productDetailData['image'] ? getImagesInCollumn(productDetailData['image']) : [];
 
     return (
         <div className='brandDetailContainer'>
@@ -101,12 +112,13 @@ const NewBrandDetail = (props: Props) => {
                     Product Detail
                 </h3>
 
-                {productDetailState.done && productDetailState.data && (Object.keys(productDetailState.data).length > 0) && (
+                {productDetailState.done && productDetailData && (Object.keys(productDetailData).length > 0) && (
                     <>
                         <ProductEdit
                             productEditVisible={productEditVisible}
                             setProductEditVisible={setProductEditVisible}
-                            productDetailData={productDetailState.data}
+                            productDetailData={productDetailData}
+                            setProductDetailData={setProductDetailData}
                         />
                         <Button
                             onClick={() => setProductEditVisible(true)}
@@ -122,43 +134,43 @@ const NewBrandDetail = (props: Props) => {
             <Skeleton
                 avatar paragraph={{ rows: 3 }}
                 loading={productDetailState.isLoading}>
-                {productDetailState.done && productDetailState.data && !(Object.keys(productDetailState.data).length > 0) && (
+                {productDetailState.done && productDetailData && !(Object.keys(productDetailData).length > 0) && (
                     <Empty description='No Product found' image={Empty.PRESENTED_IMAGE_SIMPLE} />
                 )}
 
-                {productDetailState.done && productDetailState.data && (Object.keys(productDetailState.data).length > 0) && (
+                {productDetailState.done && productDetailData && (Object.keys(productDetailData).length > 0) && (
                     <>
                         <div className='brandDetailContainer__header'>
                             <div className='brandDetailContainer__header-coverContainer brandDetailContainer__header-coverContainer-product'>
-                                <img src={productDetailState.data['cover'] && productDetailState.data['cover']['cover']} alt="" />
+                                <img src={productDetailData['cover'] && productDetailData['cover']['cover']} alt="" />
                             </div>
                             <div className='brandDetailContainer__header-info'>
                                 <h2>
-                                    {productDetailState.data['name']}
+                                    {productDetailData['name']}
                                 </h2>
                                 <h4>
-                                    {productDetailState.data['price']}
+                                    {productDetailData['price']}
                                 </h4>
                                 <h3>
-                                    {productDetailState.data['description']}
+                                    {productDetailData['description']}
                                 </h3>
 
 
-                                {productDetailState.data['url'] && (
+                                {productDetailData['url'] && (
                                     <h3>
                                         URL:
                                         <span>
-                                            {productDetailState.data['url']}
+                                            {productDetailData['url']}
                                         </span>
 
                                     </h3>
                                 )}
                                 {/* 
-                                {productDetailState.data['tags'] && productDetailState.data['tags'].length > 0 &&
+                                {productDetailData['tags'] && productDetailData['tags'].length > 0 &&
                                     (<>
                                         <h3>
                                             TAGS:
-                                        {productDetailState.data['tags'].map(tag => {
+                                        {productDetailData['tags'].map(tag => {
                                             return (
                                                 <span>
                                                     {tag.name}
@@ -170,11 +182,11 @@ const NewBrandDetail = (props: Props) => {
                                     </>)
                                 } */}
 
-                                {productDetailState.data['category'] && productDetailState.data['category'].length > 0 &&
+                                {productDetailData['category'] && productDetailData['category'].length > 0 &&
                                     (<>
                                         <h3>
                                             CATEGORIES:
-                                        {productDetailState.data['category'].map(cat => {
+                                        {productDetailData['category'].map(cat => {
                                             return (
                                                 <span
                                                     onClick={() => history.push(`/admin/category/${cat.id}`)}
@@ -193,7 +205,7 @@ const NewBrandDetail = (props: Props) => {
                         </div>
 
 
-                        {productDetailState.data['icon'] && (
+                        {productDetailData['icon'] && (
                             <>
                                 <div className='brandDetailContainer__heading'>
                                     <h3>
@@ -203,7 +215,7 @@ const NewBrandDetail = (props: Props) => {
 
                                 <div className='brandDetailContainer__inlineBox'>
                                     <div className='brandDetailContainer__header-coverContainer brandDetailContainer__header-coverContainer-icon'>
-                                        <img src={productDetailState.data['icon'] && productDetailState.data['icon']} alt="" />
+                                        <img src={productDetailData['icon'] && productDetailData['icon']} alt="" />
                                     </div>
 
                                 </div>
@@ -214,7 +226,7 @@ const NewBrandDetail = (props: Props) => {
                             </>
                         )}
 
-                        {productDetailState.data['pricing'] && productDetailState.data['pricing'].length > 0 && (
+                        {productDetailData['pricing'] && productDetailData['pricing'].length > 0 && (
                             <>
                                 <div className='brandDetailContainer__heading'>
                                     <h3>
@@ -224,7 +236,7 @@ const NewBrandDetail = (props: Props) => {
 
                                 <div className='brandDetailContainer__pricing'>
                                     <div className='addProductGridContainer__item-body-pricingContainer'>
-                                        {productDetailState.data['pricing'].map(item => {
+                                        {productDetailData['pricing'].map(item => {
                                             return (
                                                 <div className='addProductGridContainer__item-body-pricingContainer-item'>
 
@@ -329,7 +341,7 @@ const NewBrandDetail = (props: Props) => {
 
 
 
-                        {productDetailState.data['image'] && productDetailState.data['image'].length > 0 && (
+                        {productDetailData['image'] && productDetailData['image'].length > 0 && (
                             <>
                                 <div className='brandDetailContainer__heading'>
                                     <h3>
@@ -366,7 +378,7 @@ const NewBrandDetail = (props: Props) => {
                             </>
                         )}
 
-                        {productDetailState.data['brand'] && Object.keys(productDetailState.data['brand']).length > 0 && (
+                        {productDetailData['brand'] && Object.keys(productDetailData['brand']).length > 0 && (
                             <>
                                 <div className='brandDetailContainer__heading'>
                                     <h3>
@@ -375,18 +387,18 @@ const NewBrandDetail = (props: Props) => {
                                 </div>
 
                                 <div
-                                    onClick={() => history.push(`/admin/brand/${productDetailState.data['brand']['id']}`)}
+                                    onClick={() => history.push(`/admin/brand/${productDetailData['brand']['id']}`)}
 
                                     className='brandDetailContainer__brand'>
                                     <div className='brandDetailContainer__brand-coverbox'>
-                                        <img src={productDetailState.data['brand']['cover'] && productDetailState.data['brand']['cover']} alt="" />
+                                        <img src={productDetailData['brand']['cover'] && productDetailData['brand']['cover']} alt="" />
                                     </div>
                                     <div className='brandDetailContainer__brand-info'>
                                         <h2>
-                                            {productDetailState.data['brand']['name']}
+                                            {productDetailData['brand']['name']}
                                         </h2>
                                         <h3>
-                                            {productDetailState.data['brand']['description']}
+                                            {productDetailData['brand']['description']}
                                         </h3>
                                     </div>
                                 </div>
@@ -398,7 +410,7 @@ const NewBrandDetail = (props: Props) => {
                         )}
 
 
-                        {productDetailState.data['primaryCategory'] && Object.keys(productDetailState.data['primaryCategory']).length > 0 && (
+                        {productDetailData['primaryCategory'] && Object.keys(productDetailData['primaryCategory']).length > 0 && (
                             <>
                                 <div className='brandDetailContainer__heading'>
                                     <h3>
@@ -407,17 +419,17 @@ const NewBrandDetail = (props: Props) => {
                                 </div>
 
                                 <div
-                                    onClick={() => history.push(`/admin/category/${productDetailState.data['primaryCategory']['id']}`)}
+                                    onClick={() => history.push(`/admin/category/${productDetailData['primaryCategory']['id']}`)}
                                     className='brandDetailContainer__brand'>
                                     <div className='brandDetailContainer__brand-coverbox'>
-                                        <img src={productDetailState.data['primaryCategory']['cover'] && productDetailState.data['primaryCategory']['cover']} alt="" />
+                                        <img src={productDetailData['primaryCategory']['cover'] && productDetailData['primaryCategory']['cover']} alt="" />
                                     </div>
                                     <div className='brandDetailContainer__brand-info'>
                                         <h2>
-                                            {productDetailState.data['primaryCategory']['name']}
+                                            {productDetailData['primaryCategory']['name']}
                                         </h2>
                                         <h3>
-                                            {productDetailState.data['primaryCategory']['description']}
+                                            {productDetailData['primaryCategory']['description']}
                                         </h3>
                                     </div>
                                 </div>

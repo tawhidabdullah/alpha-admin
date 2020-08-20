@@ -71,9 +71,13 @@ interface Props {
 	categoryEditVisible?: any;
 	setCategoryEditVisible?: any;
 	categoryDetailData?: any;
+	setcategoryDetailData?:any; 
 }
 
-const AddNewBrand = ({ categoryEditVisible, setCategoryEditVisible, categoryDetailData }: Props) => {
+const AddNewBrand = ({ categoryEditVisible, 
+	setCategoryEditVisible,
+	 categoryDetailData,
+	 setcategoryDetailData }: Props) => {
 
 	const [updateBrandState, handleUpdateBrandFetch] = useHandleFetch({}, 'updateCategory');
 	const [brandDetailState, handleBrandDetailFetch] = useHandleFetch({}, 'categoryDetail');
@@ -223,7 +227,7 @@ const AddNewBrand = ({ categoryEditVisible, setCategoryEditVisible, categoryDeta
 
 
 
-		const updateBrandRes = await handleUpdateBrandFetch({
+		const updateTagRes = await handleUpdateBrandFetch({
 			urlOptions: {
 				placeHolders: {
 					id: categoryDetailData.id
@@ -238,7 +242,15 @@ const AddNewBrand = ({ categoryEditVisible, setCategoryEditVisible, categoryDeta
 		});
 
 		// @ts-ignore
-		if (updateBrandRes && updateBrandRes.status === 'ok') {
+		if (updateTagRes && updateTagRes.status === 'ok') {
+			setcategoryDetailData({
+				...categoryDetailData,
+				// @ts-ignore
+				...updateTagRes
+			})
+			console.log('updateTagRes',updateTagRes);
+			console.log('categoryDetailData',categoryDetailData);
+			// setcategoryDetailData()
 			openSuccessNotification();
 			setCategoryEditVisible(false);
 

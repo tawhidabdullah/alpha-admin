@@ -437,7 +437,7 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 											</div>
 
 
-											{/* <Input
+											<Input
 												label='Model Number'
 												value={values.model}
 												name='model'
@@ -466,7 +466,7 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 													handleChange(e);
 													setFieldTouched('unit');
 												}}
-											/> */}
+											/>
 
 										</div>
 

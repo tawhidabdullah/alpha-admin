@@ -8,6 +8,9 @@ import React, { useState, useEffect } from 'react'
 import { ResponsiveContainer, PieChart, Tooltip, Pie, Cell } from "recharts";
 
 
+// import hooks
+import { useHandleFetch } from "../../hooks";
+
 import {
     DeleteOutlined,
     FileAddOutlined,
@@ -27,7 +30,7 @@ import {
     TagOutlined
 } from '@ant-design/icons';
 
-import { Select, Button, Spin } from 'antd';
+import { Select, Button, Spin, Empty } from 'antd';
 
 const { Option } = Select;
 
@@ -40,20 +43,21 @@ interface Props {
 
 const localOptions = [
     {
-        value: 'all',
-        name: 'All'
+        value: 'browser',
+        name: 'Browser'
     },
     {
-        value: 'Chrome',
-        name: 'chrome'
+        value: 'device',
+        name: 'Device'
+    },
+    {
+        value: 'os',
+        name: 'OS'
     }, {
-        value: 'Firefox',
-        name: 'firefox'
+        value: 'platform',
+        name: 'Platform'
     },
-    {
-        value: 'Operamini',
-        name: 'operamini'
-    }
+  
 
 ];
 
@@ -109,9 +113,41 @@ export const TooltipContainerStyles = {
 
 const PlatformVisits = (props: Props) => {
     const [options, setoptions] = useState(localOptions);
-    const [selectedApiValue, setSelectedApiValue] = useState('');
+    const [selectedApiValue, setSelectedApiValue] = useState('browser');
 
 
+    const [demoGraphicVisitsState, handleDemoGraphicVisitsStateFetch] = useHandleFetch({}, 'getAnalyticsDemographicVisits');
+
+
+    const [demographicData, setdemographicData] = useState([]);
+
+    useEffect(()=>{
+        const getDemoGraphicVisitsValue = async () => {
+            const demograpicVisitsDataRes =  await handleDemoGraphicVisitsStateFetch({
+                urlOptions: {
+                    params: {
+                        metricType: selectedApiValue,
+                    }
+                }
+            }); 
+           };
+
+           getDemoGraphicVisitsValue(); 
+
+    },[selectedApiValue])
+
+
+
+    useEffect(()=>{
+        if(demoGraphicVisitsState.done && demoGraphicVisitsState.data){
+            setdemographicData(demoGraphicVisitsState.data); 
+        }; 
+    },[demoGraphicVisitsState])
+
+
+
+    console.log('demoGraphicVisitsState',demoGraphicVisitsState)
+    console.log('demographicData',demographicData)
 
 
     const onChange = (value) => {
@@ -127,13 +163,16 @@ const PlatformVisits = (props: Props) => {
         midAngle,
         innerRadius,
         outerRadius,
+        value,
+        name,
+        index,
         percent,
-        index
     }) => {
         const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
         const x = cx + radius * Math.cos(-midAngle * RADIAN) - 10;
         const y = cy + radius * Math.sin(-midAngle * RADIAN);
 
+        console.log('percent..',percent);
         return (
             <text x={x} y={y} fill="white" fontSize={12} dominantBaseline="central">
                 {`${(percent * 100).toFixed(0)}%`}
@@ -148,10 +187,10 @@ const PlatformVisits = (props: Props) => {
             <div className='overviewContainer__body-platformVisits-header'>
                 <div className='overviewContainer__body-platformVisits-header-info'>
                     <h2>
-                        Chrome
+                        Demographic
                         </h2>
                     <h3>
-                        On Chorme visited
+                       {selectedApiValue} demography
                         </h3>
                 </div>
                 <div className='overviewContainer__body-platformVisits-header-controller'>
@@ -159,10 +198,10 @@ const PlatformVisits = (props: Props) => {
                         bordered={false}
                         showSearch
                         style={{ width: '130px', borderRadius: '6px', color: '#1890ff' }}
-                        placeholder='Select an Device'
+                        placeholder='Select Type'
                         optionFilterProp='children'
                         onChange={onChange}
-                        defaultValue={'all'}
+                        defaultValue={'browser'}
                         filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                     >
                         {
@@ -175,34 +214,61 @@ const PlatformVisits = (props: Props) => {
 
             <div className="overviewContainer__body-body">
 
-                <ResponsiveContainer width="100%" height={300}>
-                    <PieChart fontSize={14}>
-                        <Tooltip
-                            cursor={false}
-                            contentStyle={TooltipContainerStyles}
-                            formatter={(value, name) => [`${value}%`, `Device - ${name}`]}
-                        />
+            {demoGraphicVisitsState.isLoading && (
+            <>
+                <div style={{
+                    display:'flex',
+                    justifyContent:'center',
+                    alignItems:"center",
+                    marginTop:'100px',
+                    marginBottom:'100px',
+                }}>
+                <Spin
+                size='large'
+                />
+                </div>
 
-                        <Pie
-                            dataKey="percentage"
-                            data={AGE_GROUP}
-                            outerRadius={100}
-                            innerRadius={40}
-                            name="Percentage"
-                            nameKey="age"
-                            unit="%"
-                            label={renderCustomizedLabel}
-                            labelLine={false}
-                        >
-                            {AGE_GROUP.map((entry, index) => (
-                                <Cell
-                                    key={`cell-${index}`}
-                                    fill={COLORS[index % COLORS.length]}
-                                />
-                            ))}
-                        </Pie>
-                    </PieChart>
-                </ResponsiveContainer>
+            </>
+        )}
+                {demoGraphicVisitsState.done && !(demoGraphicVisitsState.data.length > 0) && (
+                    <div style={{
+                        marginTop: '00px'
+                    }}>
+                        <Empty description={`No Visits for ${selectedApiValue}`} image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                    </div>
+                )}
+
+
+                    {demoGraphicVisitsState.done && demographicData && demographicData.length > 0 && (
+                        <ResponsiveContainer width="100%" height={300}>
+                        <PieChart fontSize={14}>
+                            <Tooltip
+                                cursor={false}
+                                contentStyle={TooltipContainerStyles}
+                                formatter={(value, name) => [`${value}`, `${name}`]}
+                            />
+
+                            <Pie
+                                dataKey="count"
+                                data={demographicData}
+                                outerRadius={100}
+                                innerRadius={40}
+                                name={selectedApiValue}
+                                nameKey={selectedApiValue}
+                                unit="%"
+                                label={renderCustomizedLabel}
+                                labelLine={false}
+                            >
+                                {demographicData && demographicData.map((entry, index) => (
+                                    <Cell
+                                        key={`cell-${index}`}
+                                        fill={COLORS[index % COLORS.length]}
+                                    />
+                                ))}
+                            </Pie>
+                            </PieChart>
+                        </ResponsiveContainer>
+                    )}
             </div>
 
             <div className="overviewContainer__body-footer">
@@ -220,3 +286,7 @@ const PlatformVisits = (props: Props) => {
 }
 
 export default PlatformVisits
+
+
+// http://localhost:5000/admin/analytics/user?metric=day?start=date&end=datae
+// /http://localhost:5000/admin/analytics/item?type=product&item=534534534534&metric=day

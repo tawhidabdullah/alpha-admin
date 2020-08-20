@@ -299,7 +299,7 @@ const PageList = ({}: Props) => {
         {pageState.isLoading && <DataTableSkeleton />}
         {pageState.done && !(pageList.length > 0) && (
 			<div style={{
-				marginTop: '100px'
+				marginTop: '200px'
 			}}>
 				<Empty description='No Page found'  image={Empty.PRESENTED_IMAGE_SIMPLE} />
 			</div>

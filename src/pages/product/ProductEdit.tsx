@@ -71,9 +71,14 @@ interface Props {
     productEditVisible?: any;
     setProductEditVisible?: any;
     productDetailData?: any;
+    setProductDetailData?:any; 
 }
 
-const AddNewProduct = ({ productEditVisible, setProductEditVisible, productDetailData }: Props) => {
+const AddNewProduct = ({ productEditVisible, 
+    setProductEditVisible, 
+    productDetailData,
+    setProductDetailData
+ }: Props) => {
 
     const [updateProductState, handleUpdateProductFetch] = useHandleFetch({}, 'updateProduct');
     const [productDetailState, handleProductDetailFetch] = useHandleFetch({}, 'productDetailById');
@@ -190,7 +195,6 @@ const AddNewProduct = ({ productEditVisible, setProductEditVisible, productDetai
                 console.log('catcat', [productDetailState.data.cover, ...images]);
                 setCoverImageId(productDetailState.data.cover['id']);
             }
-
         }
     }, [productDetailState])
 
@@ -304,6 +308,16 @@ const AddNewProduct = ({ productEditVisible, setProductEditVisible, productDetai
         if (updatedProductRes && updatedProductRes.status === 'ok') {
             openSuccessNotification('Product Updated');
             setProductEditVisible(false);
+            setProductDetailData({
+                // @ts-ignore
+                ...updatedProductRes,
+                category: productDetailData.category,
+                brand: productDetailData.brand,
+                tags: productDetailData.tags,
+                cover: productDetailData.cover,
+                image: productDetailData.image,
+            }); 
+
 
             console.log('updatedProductRes', updatedProductRes);
             // setProductList([...productList, {
@@ -483,7 +497,7 @@ const AddNewProduct = ({ productEditVisible, setProductEditVisible, productDetai
                                 padding: 0,
                             }}
                             width={'70vw'}
-                            title="Product Detail"
+                            title="Product Edit"
                             visible={productEditVisible}
                             onOk={(e: any) => handleSubmit(e)}
                             onCancel={handleCancel}
@@ -495,16 +509,13 @@ const AddNewProduct = ({ productEditVisible, setProductEditVisible, productDetai
                                 disabled: getisSubmitButtonDisabled(values, isValid)
                             }}
                         >
-
-
                             <section className='addProductGridContainer'>
                                 <div className='addProductGridContainer__left'>
                                     <div className='addProductGridContainer__name'>
                                         <div className='addProductGridContainer__item-header'>
                                             <h3>
                                                 Product Information
-			</h3>
-
+		                                	</h3>
                                             <div className={values.name && values.name.length > 2 ? 'checkicon-active' : 'checkicon'}>
                                                 <CheckCircleOutlined />
                                             </div>
@@ -594,7 +605,7 @@ const AddNewProduct = ({ productEditVisible, setProductEditVisible, productDetai
 
                                             <h3 className='inputFieldLabel'>
                                                 Description
-                               </h3>
+                                            </h3>
 
                                             <div style={{
                                                 width: '100%',
@@ -620,36 +631,40 @@ const AddNewProduct = ({ productEditVisible, setProductEditVisible, productDetai
                                                 />
                                             </div>
 
-                                            {/* <Input
-												label='Model Number'
-												value={values.model}
-												name='model'
-												isError={(touched.model && errors.model) ||
-													(!isSubmitting && updateProductState.error['error']['model'])}
+                                            <div style={{
+                                                marginTop:"15px"
+                                            }}> </div>
 
-												errorString={(touched.model && errors.model) ||
-													(!isSubmitting && updateProductState.error['error']['model'])}
-												onChange={(e: any) => {
-													handleChange(e);
-													setFieldTouched('model');
-												}}
-											/>
+                                            <Input
+                                                label='Model Number'
+                                                value={values.model}
+                                                name='model'
+                                                isError={(touched.model && errors.model) ||
+                                                    (!isSubmitting && updateProductState.error['error']['model'])}
+
+                                                errorString={(touched.model && errors.model) ||
+                                                    (!isSubmitting && updateProductState.error['error']['model'])}
+                                                onChange={(e: any) => {
+                                                    handleChange(e);
+                                                    setFieldTouched('model');
+                                                }}
+                                            />
 
 
-											<Input
-												label='Unit'
-												value={values.unit}
-												name='unit'
-												isError={(touched.unit && errors.unit) ||
-													(!isSubmitting && updateProductState.error['error']['unit'])}
+                                            <Input
+                                                label='Unit'
+                                                value={values.unit}
+                                                name='unit'
+                                                isError={(touched.unit && errors.unit) ||
+                                                    (!isSubmitting && updateProductState.error['error']['unit'])}
 
-												errorString={(touched.unit && errors.unit) ||
-													(!isSubmitting && updateProductState.error['error']['unit'])}
-												onChange={(e: any) => {
-													handleChange(e);
-													setFieldTouched('unit');
-												}}
-											/> */}
+                                                errorString={(touched.unit && errors.unit) ||
+                                                    (!isSubmitting && updateProductState.error['error']['unit'])}
+                                                onChange={(e: any) => {
+                                                    handleChange(e);
+                                                    setFieldTouched('unit');
+                                                }}
+                                            />
 
                                         </div>
 

@@ -1,5 +1,5 @@
 import React, {useState,useEffect} from 'react';
-import {withRouter} from 'react-router-dom';
+import {withRouter, useHistory} from 'react-router-dom';
 import { Table, Badge, Menu, Dropdown, notification, Space, Tag,Button, Input,Tooltip, Modal , Popconfirm} from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined,EditFilled, CheckCircleOutlined } from '@ant-design/icons';
 import Moment from 'react-moment';
@@ -48,6 +48,7 @@ const MyTable = ({data,setCustomerList}: myTableProps) => {
     const [visible,setvisible] = useState(false);   
     const [activeCategoryForEdit,setactiveCategoryForEdit] = useState(false); 
 
+   const history = useHistory(); 
 
     const [deleteCustomerState, handleDeleteCustomerFetch] = useHandleFetch({}, 'deleteCustomer');
       const handleDeleteCustomer = async (id) => {
@@ -81,6 +82,31 @@ const MyTable = ({data,setCustomerList}: myTableProps) => {
         // pagination={false}
         dataSource={data}
         >
+
+          <Column
+           title="Name" 
+           dataIndex="name" 
+           key="id" 
+           className='classnameofthecolumn'
+           render={(text, record: any) => (
+            <>
+              <h4
+                onClick={() => {
+                  history.push(`/admin/customer/${record.id}`)
+                  // setcategoryDetailVisible(true);
+                  setactiveCategoryForEdit(record)
+                }}
+                style={{
+                  fontWeight: 400,
+                  color: '#555',
+                  cursor: 'pointer'
+                }}>
+                {text}
+              </h4>
+            </>
+          )}
+            />
+
          
           <Column
            title="Phone" 
@@ -91,25 +117,7 @@ const MyTable = ({data,setCustomerList}: myTableProps) => {
             />
 
 
-         <Column
-           title="First Name" 
-           dataIndex="firstName" 
-           key="id" 
-           className='classnameofthecolumn'
-         
-            />
-
-         <Column
-           title="Last Name" 
-           dataIndex="lastName" 
-           key="id" 
-           className='classnameofthecolumn'
-         
-            />
-
-
-
-<Column
+          <Column
            title="Country" 
            dataIndex="country" 
            key="id" 
@@ -118,7 +126,7 @@ const MyTable = ({data,setCustomerList}: myTableProps) => {
             />
 
 
-<Column
+          <Column
            title="City" 
            dataIndex="city" 
            key="id" 
@@ -126,7 +134,7 @@ const MyTable = ({data,setCustomerList}: myTableProps) => {
          
             />
 
-<Column
+           <Column
            title="Created" 
            dataIndex="created" 
            key="id" 
@@ -322,7 +330,7 @@ const CustomerList = ({history}: Props) => {
          data={customerList} />}
         {customerState.isLoading && <DataTableSkeleton />}
         {customerState.done && !(customerList.length > 0) && (
-			<Empty title='No Region found'  />
+			<Empty title='No Customer found'  />
 		)}
 			</div>
 		</div>

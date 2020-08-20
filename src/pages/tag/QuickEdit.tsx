@@ -12,7 +12,6 @@ import { CheckCircleOutlined, PlusOutlined, EditOutlined, DeleteOutlined, EditFi
 
 const validationSchema = Yup.object().shape({
 	name: Yup.string().label('Name').required('Name is required').min(3, 'Name must have at least 3 characters'),
-	description: Yup.string().label('Description').required('Description is required')
 });
 
 
@@ -92,7 +91,7 @@ const QuickEdit = ({ category, setvisible, visible, tagList, setTagList }: Props
 
 
 	const getisSubmitButtonDisabled = (values, isValid) => {
-		if (!values.name || !values.description || !isValid) {
+		if (!values.name || !isValid) {
 			return true;
 		}
 		return false;

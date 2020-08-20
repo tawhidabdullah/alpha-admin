@@ -35,7 +35,12 @@ import {
 } from '@ant-design/icons';
 
 
-import { Select, Button, Spin } from 'antd';
+import { useHandleFetch } from "../../hooks";
+
+
+
+import { Select, Button, Spin, Empty } from 'antd';
+import Moment from "react-moment";
 
 const { Option } = Select;
 
@@ -141,6 +146,9 @@ export const RAINFALL = {
     ]
 };
 
+
+
+
 const MONTHS = [
     "Jan",
     "Feb",
@@ -189,8 +197,42 @@ const localOptions = [
 ]
 
 const ApiVisits = (props: Props) => {
-    const [options, setoptions] = useState(localOptions);
     const [selectedApiValue, setSelectedApiValue] = useState('');
+
+
+
+    
+
+    const [demoGraphicVisitsState, handleDemoGraphicVisitsStateFetch] = useHandleFetch({}, 'getAnalyticsDemographicVisits');
+
+
+    const [userData, setuserData] = useState([]);
+
+    useEffect(()=>{
+        const getDemoGraphicVisitsValue = async () => {
+            const uservisitsDataRes =  await handleDemoGraphicVisitsStateFetch({
+                urlOptions: {
+                    params: {
+                        metricType: 'day',
+                    }
+                }
+            }); 
+
+           console.log('uservisitsData',uservisitsDataRes); 
+
+           // @ts-ignore
+           if(uservisitsDataRes){
+            // @ts-ignore
+            setuserData(uservisitsDataRes)
+           }
+
+
+           };
+
+
+           getDemoGraphicVisitsValue(); 
+
+    },[])
 
 
 
@@ -202,38 +244,47 @@ const ApiVisits = (props: Props) => {
 
 
     return (
-        <div className='overviewContainer__body-apiVisits'>
+        <div className='overviewContainer__userVisits'>
             <div className='overviewContainer__body-apiVisits-header'>
                 <div className='overviewContainer__body-apiVisits-header-info'>
                     <h2>
-                        Product Visits
-                        </h2>
-                    <h3>
-                        All Products that were visited
+                        Users 
+                    </h2>
+
+                        <h3>
+                          All users that visited
                         </h3>
-                </div>
-                <div className='overviewContainer__body-apiVisits-header-controller'>
-                    <Select
-                        bordered={false}
-                        showSearch
-                        style={{ width: '130px', borderRadius: '6px', color: '#1890ff' }}
-                        placeholder='Select an api'
-                        optionFilterProp='children'
-                        onChange={onChange}
-                        defaultValue={'product'}
-                        filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                    >
-                        {
-                            options.map((option) => {
-                                return <Option value={option.value}>{option.name}</Option>;
-                            })}
-                    </Select>
                 </div>
             </div>
 
             <div className='overviewContainer__body-body'>
-                <ResponsiveContainer width="100%" height={300}>
-                    <AreaChart data={RAINFALL["2019"]} fontSize={12}>
+            {demoGraphicVisitsState.isLoading && (
+            <>
+            <div style={{
+                marginTop:'150px',
+                display:'flex',
+                justifyContent:'center',
+                alignItems:"center"
+            }}>
+            <Spin
+            size='large'
+             />
+                </div>
+
+            </>
+        )}
+                {demoGraphicVisitsState.done && !(demoGraphicVisitsState.data.length > 0) && (
+                    <div style={{
+                        marginTop: '00px'
+                    }}>
+                        <Empty description={`No User visited`} image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                    </div>
+                )}
+
+
+               {demoGraphicVisitsState.done && userData && userData.length > 0 && (
+                    <ResponsiveContainer width="100%" height={300}>
+                    <AreaChart data={userData} fontSize={12}>
                         <defs>
                             <linearGradient id="rainGradient" x1="0" y1="0" x2="0" y2="1">
                                 <stop offset="0%" stopColor="#1890ff" />
@@ -245,7 +296,9 @@ const ApiVisits = (props: Props) => {
                             strokeDasharray="3 3"
                             stroke="#d6d9da"
                         />
-                        <XAxis dataKey="month" tickFormatter={getMonthNameByOrder} />
+                        <XAxis dataKey="day" 
+                        // tickFormatter={getMonthNameByOrder}
+                         />
                         <YAxis
                             // unit="ml"
                             orientation="left"
@@ -256,29 +309,30 @@ const ApiVisits = (props: Props) => {
                         <Tooltip
                             cursor={false}
                             contentStyle={TooltipContainerStyles}
-                            formatter={(value, name) => [`${value}%`, `Device - ${name}`]}
+                            formatter={(value, name) => [`${value}`, `${name}`]}
                         />
                         <Area
-                            dataKey="rainfall"
-                            name="Rainfall"
-                            unit="ml"
+                            dataKey="count"
+                            name="Count"
+                            // unit="times"
                             type="basis"
                             fill="url(#rainGradient)"
                         />
                     </AreaChart>
                 </ResponsiveContainer>
+               )}
 
 
             </div>
-            <div className="overviewContainer__body-footer">
+            {/* <div className="overviewContainer__body-footer">
                 <h3>
                     <span>
                         <CalendarOutlined />
                     </span>
 
-								In the last month
-					     </h3>
-            </div>
+					In the last month
+				</h3>
+            </div> */}
 
         </div>
     )

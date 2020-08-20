@@ -35,19 +35,28 @@ const NewBrandDetail = (props: Props) => {
     const history = useHistory();
     const categoryId = params['id'];
     const [categoryEditVisible, setCategoryEditVisible] = useState(false);
+    const [categoryDetail,setcategoryDetail] = useState({}); 
 
 
 
     useEffect(() => {
 
         const getCategoryDetail = async () => {
-            await handleCategoryDetailFetch({
+            const categoryDetailDataRes =  await handleCategoryDetailFetch({
                 urlOptions: {
                     placeHolders: {
                         id: categoryId
                     }
                 }
-            })
+            }); 
+
+            // @ts-ignore
+            if(categoryDetailDataRes){
+                  // @ts-ignore
+                setcategoryDetail(categoryDetailDataRes)
+
+            }
+
         };
 
         getCategoryDetail();
@@ -86,12 +95,13 @@ const NewBrandDetail = (props: Props) => {
                     Category Detail
                 </h3>
 
-                {categoryDetailState.done && categoryDetailState.data && (Object.keys(categoryDetailState.data).length > 0) && (
+                {categoryDetailState.done && categoryDetail && (Object.keys(categoryDetail).length > 0) && (
                     <>
                         <CategoryEdit
                             categoryEditVisible={categoryEditVisible}
                             setCategoryEditVisible={setCategoryEditVisible}
-                            categoryDetailData={categoryDetailState.data}
+                            categoryDetailData={categoryDetail}
+                            setcategoryDetailData={setcategoryDetail}
                         />
                         <Button
                             onClick={() => setCategoryEditVisible(true)}
@@ -107,36 +117,36 @@ const NewBrandDetail = (props: Props) => {
             <Skeleton
                 avatar paragraph={{ rows: 3 }}
                 loading={categoryDetailState.isLoading}>
-                {categoryDetailState.done && categoryDetailState.data && !(Object.keys(categoryDetailState.data).length > 0) && (
+                {categoryDetailState.done && categoryDetail && !(Object.keys(categoryDetail).length > 0) && (
                     <Empty description='No Category found' image={Empty.PRESENTED_IMAGE_SIMPLE} />
                 )}
 
 
 
-                {categoryDetailState.done && categoryDetailState.data && (Object.keys(categoryDetailState.data).length > 0) && (
+                {categoryDetailState.done && categoryDetail && (Object.keys(categoryDetail).length > 0) && (
                     <>
                         <div className='brandDetailContainer__header'>
                             <div className='brandDetailContainer__header-coverContainer brandDetailContainer__header-coverContainer-category'>
-                                <img src={categoryDetailState.data['cover'] && categoryDetailState.data['cover']['cover']} alt="" />
+                                <img src={categoryDetail['cover'] && categoryDetail['cover']['cover']} alt="" />
                             </div>
                             <div className='brandDetailContainer__header-info'>
                                 <h2>
-                                    {categoryDetailState.data['name']}
+                                    {categoryDetail['name']}
                                 </h2>
                                 <h3>
-                                    {categoryDetailState.data['description']}
+                                    {categoryDetail['description']}
                                 </h3>
                                 <h3>
                                     Category type: <span>
-                                        {categoryDetailState.data['type']}
+                                        {categoryDetail['type']}
                                     </span>
                                 </h3>
 
-                                {categoryDetailState.data['url'] && (
+                                {categoryDetail['url'] && (
                                     <h3>
                                         URL:
                                         <span>
-                                            {categoryDetailState.data['url']}
+                                            {categoryDetail['url']}
                                         </span>
 
                                     </h3>
@@ -146,7 +156,7 @@ const NewBrandDetail = (props: Props) => {
                         </div>
 
 
-                        {categoryDetailState.data['icon'] && (
+                        {categoryDetail['icon'] && (
                             <>
                                 <div className='brandDetailContainer__heading'>
                                     <h3>
@@ -156,7 +166,7 @@ const NewBrandDetail = (props: Props) => {
 
                                 <div className='brandDetailContainer__inlineBox'>
                                     <div className='brandDetailContainer__header-coverContainer brandDetailContainer__header-coverContainer-icon'>
-                                        <img src={categoryDetailState.data['icon'] && categoryDetailState.data['icon']} alt="" />
+                                        <img src={categoryDetail['icon'] && categoryDetail['icon']} alt="" />
                                     </div>
 
                                 </div>
@@ -168,7 +178,7 @@ const NewBrandDetail = (props: Props) => {
                         )}
 
 
-                        {categoryDetailState.data['image'] && categoryDetailState.data['image'].length > 0 && (
+                        {categoryDetail['image'] && categoryDetail['image'].length > 0 && (
                             <>
                                 <div className='brandDetailContainer__heading'>
                                     <h3>
@@ -178,7 +188,7 @@ const NewBrandDetail = (props: Props) => {
 
                                 <div className='brandDetailContainer__inlineBox'>
                                     <div className='brandDetailContainer__header-coverContainer brandDetailContainer__header-coverContainer-icon'>
-                                        <img src={categoryDetailState.data['icon'] && categoryDetailState.data['icon']} alt="" />
+                                        <img src={categoryDetail['icon'] && categoryDetail['icon']} alt="" />
                                     </div>
 
                                 </div>
@@ -190,7 +200,7 @@ const NewBrandDetail = (props: Props) => {
                         )}
 
 
-                        {categoryDetailState.data['subCategory'] && categoryDetailState.data['subCategory'].length > 0 && (
+                        {categoryDetail['subCategory'] && categoryDetail['subCategory'].length > 0 && (
                             <>
                                 <div className='brandDetailContainer__heading'>
                                     <h3>
@@ -199,7 +209,7 @@ const NewBrandDetail = (props: Props) => {
                                 </div>
 
                                 <div className='smallcatCardContainer'>
-                                    {categoryDetailState.data['subCategory'].map(subCat => {
+                                    {categoryDetail['subCategory'].map(subCat => {
                                         return (
                                             <div
                                                 onClick={() => history.push(`/admin/category/${subCat.id}`)}
@@ -280,6 +290,7 @@ const NewBrandDetail = (props: Props) => {
                                     <>
                                         <img
                                             onClick={() => {
+                                                history.push(`/admin/product/${record.id}`)
                                                 // go to product detail
                                             }}
                                             src={cover} alt='cover img' style={{
@@ -306,7 +317,7 @@ const NewBrandDetail = (props: Props) => {
                                     <>
                                         <h4
                                             onClick={() => {
-                                                // go to product detail
+                                                history.push(`/admin/product/${record.id}`)
                                             }}
                                             style={{
                                                 fontWeight: 400,

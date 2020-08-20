@@ -39,9 +39,10 @@ interface Props {
     tagEditVisible?: any;
     setTagEditVisible?: any;
     tagDetailData?: any;
+    setTagDetailData?:any; 
 }
 
-const QuickEdit = ({ tagEditVisible, setTagEditVisible, tagDetailData }: Props) => {
+const QuickEdit = ({ tagEditVisible, setTagEditVisible, tagDetailData,setTagDetailData }: Props) => {
     const [updateTagState, handleUpdateCategoryFetch] = useHandleFetch({}, 'updateTag');
 
     const handleSubmit = async (values: any, actions: any) => {
@@ -59,6 +60,13 @@ const QuickEdit = ({ tagEditVisible, setTagEditVisible, tagDetailData }: Props) 
 
         // @ts-ignore
         if (updateTagRes && updateTagRes.status === 'ok') {
+            setTagDetailData({
+                id:values.id,
+                key:values.id,
+                name: values.name,
+                description: values.description,
+            })
+            console.log('categoryupdateTagRes',updateTagRes);
             openSuccessNotification();
 
             // const positionInTag = () => {

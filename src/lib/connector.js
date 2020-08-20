@@ -50,7 +50,6 @@ class Connector {
           body: api.method !== 'get' ? options.body : null,
 
         }),
-
     };
 
     //*replace variable parts in url with actual data if params exists |or| just return the url

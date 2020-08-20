@@ -91,7 +91,7 @@ const steps = [
 		// description: 'Add Customer & Products'
 	},
 	{
-		title: 'Billing Address',
+		title: 'Shipping Address',
 
 	},
 	{
@@ -162,7 +162,7 @@ const AddNewOrder = ({ }: Props) => {
 		const addOrderRes = await handleOrderFetch({
 
 			body: {
-				billingAddress: {
+				shippingAddress: {
 					phone: values.phone,
 					email: values.email,
 					address1: values.address1,
@@ -172,7 +172,7 @@ const AddNewOrder = ({ }: Props) => {
 					city: selectedCityValue || selectedCustomerData['city'],
 					country: selectedCountryValue || selectedCustomerData['country'],
 				},
-				products,
+				items: products,
 				customerId: customerId
 				// charge
 			},
@@ -419,6 +419,10 @@ const AddNewOrder = ({ }: Props) => {
                                             Customers And products
                                            </h3>
 
+										   <div style={{
+												marginTop: '15px'
+											}}></div>
+
 											<h4 className='inputFieldLabel'>
 												Customer
 											</h4>
@@ -481,10 +485,6 @@ const AddNewOrder = ({ }: Props) => {
 													}}
 												/>
 											</div>
-
-
-
-
 										</div>
 
 
@@ -617,7 +617,7 @@ const AddNewOrder = ({ }: Props) => {
 											</div>
 											<div className='dubbleRowInputs__item'>
 												<Input
-													label='More specific address'
+													label='Address 2'
 													value={values.address2}
 													name='address2'
 													isError={(touched.address2 && errors.address2) ||

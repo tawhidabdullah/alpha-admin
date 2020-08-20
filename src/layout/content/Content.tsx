@@ -4,16 +4,19 @@ import React from 'react'
 // import pages
 import { Overview } from '../../pages/overview';
 import { CategoryList, NewCategoryDetail } from '../../pages/category';
+import { ProductBundleDetail, ProductBundleList } from '../../pages/productBundle';
 import { BrandList, AddNewBrand, NewBrandDetail } from '../../pages/brand';
 import { ProductList, NewProductDetail } from '../../pages/product';
 import { TagList, AddNewTag, NewTagDetail } from '../../pages/tag';
-import { CustomerList } from '../../pages/customer';
+import { CouponList, CouponDetail } from '../../pages/coupon';
+import { CustomerList, CustomerDetail } from '../../pages/customer';
 import { PagesList, AddNewPage } from '../../pages/pages';
 import { AttributeList } from '../../pages/attribute';
-import { OrderList, AddNewOrder } from '../../pages/order';
+import { OrderList, AddNewOrder, OrderDetail } from '../../pages/order';
 import { Component, ManageThemes, Image, Invoice, SiteInfo } from '../../pages/settings';
 import { Delivery } from '../../pages/delivery';
 import Sms from '../../pages/sms';
+import {Email} from '../../pages/email';
 
 
 // import Login from '../../pages/auth/login';
@@ -83,6 +86,22 @@ const ContentComponent = (props: Props) => {
                     <NewProductDetail />
                 </Route>
 
+                <Route path='/admin/bundle' exact>
+                    <ProductBundleList />
+                </Route>
+
+                <Route path='/admin/bundle/:id' exact>
+                    <ProductBundleDetail />
+                </Route>
+
+                <Route path='/admin/coupon' exact>
+                    <CouponList />
+                </Route>
+
+                <Route path='/admin/coupon/:id' exact>
+                    <CouponDetail />
+                </Route>
+
                 {/* <Route path='/product/new' exact>
                      <AddNewProduct />
                    </Route> */}
@@ -104,8 +123,14 @@ const ContentComponent = (props: Props) => {
                 <Route path='/admin/order/new' exact>
                     <AddNewOrder />
                 </Route>
+                <Route path='/admin/order/:id' exact>
+                    <OrderDetail />
+                </Route>
                 <Route path='/admin/customer' exact>
                     <CustomerList />
+                </Route>
+                <Route path='/admin/customer/:id' exact>
+                    <CustomerDetail />
                 </Route>
                 <Route path='/admin/page' exact>
                     <PagesList />
@@ -134,6 +159,11 @@ const ContentComponent = (props: Props) => {
                 <Route path='/admin/sms' exact>
                     <Sms />
                 </Route>
+
+                <Route path='/admin/email' exact>
+                    <Email />
+                </Route>
+
             </Switch>
         </Content>
     )

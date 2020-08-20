@@ -24,7 +24,10 @@ import {
     UserOutlined,
     FileAddOutlined,
     FileSearchOutlined,
-    BgColorsOutlined
+    BgColorsOutlined,
+    BankOutlined,
+    FireOutlined,
+    MailTwoTone
 } from '@ant-design/icons';
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -75,7 +78,13 @@ const SiderComponent = (props: any) => {
                     <Menu.Item
                         icon={<RadarChartOutlined />}
                         key='6'>
-                        <Link to='/admin/product'>List Products</Link>
+                        <Link to='/admin/product'>Products</Link>
+                    </Menu.Item>
+
+                    <Menu.Item
+                        icon={<BankOutlined />}
+                        key='2222'>
+                        <Link to='/admin/bundle'>Bundle</Link>
                     </Menu.Item>
 
                     <Menu.Item key='9' icon={<TagsOutlined />}>
@@ -97,6 +106,10 @@ const SiderComponent = (props: any) => {
 					<Link to='/tag'>Tags</Link>
 				</Menu.Item> */}
 
+                <Menu.Item key='1011' icon={<FireOutlined />}>
+                    <Link to='/admin/coupon'>Coupon</Link>
+                </Menu.Item>
+
                 <Menu.Item key='10' icon={<CarOutlined />}>
                     <Link to='/admin/delivery'>Delivery</Link>
                 </Menu.Item>
@@ -114,12 +127,11 @@ const SiderComponent = (props: any) => {
                     <Link to='/admin/customer'>Customer</Link>
                 </Menu.Item>
 
-                <SubMenu key='sub5' icon={<MailOutlined />} title='Email'>
-                    <Menu.Item key='14'>STMP Configuration</Menu.Item>
-                    <Menu.Item key='15'>Auto emails</Menu.Item>
-                    <Menu.Item key='16'>Compose Email</Menu.Item>
-                    <Menu.Item key='177'>Sent emails</Menu.Item>
-                </SubMenu>
+
+                <Menu.Item key='1888' icon={<MailOutlined />}>
+                    <Link to='/admin/email'>Email</Link>
+                </Menu.Item>
+
 
                 <Menu.Item key='199' icon={<MessageOutlined />}>
                     <Link to='/admin/sms'>SMS</Link>

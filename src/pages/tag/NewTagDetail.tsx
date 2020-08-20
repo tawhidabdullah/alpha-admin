@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from "react-router";
+import { useParams, useHistory } from "react-router";
 
 
 // import hooks
@@ -39,21 +39,30 @@ const NewBrandDetail = (props: Props) => {
     const [tagDetailState, handleTagDetailFetch] = useHandleFetch({}, 'tagDetail');
     const [tagProductsState, handleTagProductsFetch] = useHandleFetch({}, 'tagProducts');
     const [tagEditVisible, setTagEditVisible] = useState(false);
+    const [tagDetailData,setTagDetailData] = useState({}); 
 
 
     const params = useParams();
+    const history = useHistory();
     const tagId = params['id'];
 
     useEffect(() => {
 
         const getBrandDetail = async () => {
-            await handleTagDetailFetch({
+            const tagDetailRes =  await handleTagDetailFetch({
                 urlOptions: {
                     placeHolders: {
                         id: tagId
                     }
                 }
-            })
+            }); 
+
+            // @ts-ignore
+            if(tagDetailRes){
+                console.log('tagDetailRes',tagDetailRes);
+                // @ts-ignore
+                setTagDetailData(tagDetailRes);
+            }
         };
 
         getBrandDetail();
@@ -90,12 +99,13 @@ const NewBrandDetail = (props: Props) => {
                     Tag Detail
                 </h3>
 
-                {tagDetailState.done && tagDetailState.data && (Object.keys(tagDetailState.data).length > 0) && (
+                {tagDetailState.done && tagDetailData && (Object.keys(tagDetailData).length > 0) && (
                     <>
                         <TagEdit
                             tagEditVisible={tagEditVisible}
                             setTagEditVisible={setTagEditVisible}
-                            tagDetailData={tagDetailState.data}
+                            tagDetailData={tagDetailData}
+                            setTagDetailData={setTagDetailData}
                         />
                         <Button
                             onClick={() => setTagEditVisible(true)}
@@ -110,25 +120,25 @@ const NewBrandDetail = (props: Props) => {
             <Skeleton
                 paragraph={{ rows: 2 }}
                 loading={tagDetailState.isLoading}>
-                {tagDetailState.done && tagDetailState.data && !(Object.keys(tagDetailState.data).length > 0) && (
+                {tagDetailState.done && tagDetailData && !(Object.keys(tagDetailData).length > 0) && (
                     <Empty description='No Tag found' image={Empty.PRESENTED_IMAGE_SIMPLE} />
                 )}
 
-                {tagDetailState.done && tagDetailState.data && (Object.keys(tagDetailState.data).length > 0) && (
+                {tagDetailState.done && tagDetailData && (Object.keys(tagDetailData).length > 0) && (
                     <div className='brandDetailContainer__header'>
 
                         <div className='brandDetailContainer__header-info'>
                             <h2>
-                                {tagDetailState.data['name']}
+                                {tagDetailData['name']}
                             </h2>
                             <h3>
-                                {tagDetailState.data['description']}
+                                {tagDetailData['description']}
                             </h3>
-                            {tagDetailState.data['url'] && (
+                            {tagDetailData['url'] && (
                                 <h3>
                                     URL:
                                     <span>
-                                        {tagDetailState.data['url']}
+                                        {tagDetailData['url']}
                                     </span>
 
                                 </h3>
@@ -193,7 +203,7 @@ const NewBrandDetail = (props: Props) => {
                                     <>
                                         <img
                                             onClick={() => {
-                                                // go to product detail
+                                                history.push(`/admin/product/${record.id}`)
                                             }}
                                             src={cover} alt='cover img' style={{
                                                 height: '40px',
@@ -219,7 +229,7 @@ const NewBrandDetail = (props: Props) => {
                                     <>
                                         <h4
                                             onClick={() => {
-                                                // go to product detail
+                                                history.push(`/admin/product/${record.id}`)
                                             }}
                                             style={{
                                                 fontWeight: 400,

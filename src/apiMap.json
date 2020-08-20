@@ -144,6 +144,50 @@
 			"url": "/admin/customer",
 			"method": "get"
 		},
+		"customerDetail": {
+			"url": "/admin/customer/:id",
+			"method": "get"
+		},
+		"addBundle": {
+			"url": "/admin/bundle/add",
+			"method": "post"
+		},
+		"bundleDetail": {
+			"url": "/admin/bundle/:id",
+			"method": "get"
+		},
+		"updateBundle": {
+			"url": "/admin/bundle/update/:id",
+			"method": "post"
+		},
+		"deleteBundle": {
+			"url": "/admin/bundle/update/delete/:id",
+			"method": "post"
+		},
+		"bundleList": {
+			"url": "/admin/bundle",
+			"method": "get"
+		},
+		"addCoupon": {
+			"url": "/admin/coupon/add",
+			"method": "post"
+		},
+		"couponDetail": {
+			"url": "/admin/coupon/:id",
+			"method": "get"
+		},
+		"updateCoupon": {
+			"url": "/admin/coupon/update/:id",
+			"method": "post"
+		},
+		"deleteCoupon": {
+			"url": "/admin/coupon/update/delete/:id",
+			"method": "post"
+		},
+		"couponList": {
+			"url": "/admin/coupon",
+			"method": "get"
+		},
 		"productDetailById": {
 			"url": "/api/product/:id",
 			"method": "get"
@@ -178,6 +222,10 @@
 		},
 		"orderList": {
 			"url": "/admin/order",
+			"method": "get"
+		},
+		"orderListForCustomer": {
+			"url": "/admin/order?customer=customerId",
 			"method": "get"
 		},
 		"addOrder": {
@@ -295,6 +343,66 @@
 		"getAllNotification": {
 			"url": "/admin/notification",
 			"method": "get"
+		},
+		"getAnalyticsPageVisitCount": {
+			"url": "/admin/analytics/visitCount?type=visitType",
+			"method": "get"
+		},
+		"getAnalyticsPageBreakDown": {
+			"url": "/admin/analytics/breakdown?metric=metricName",
+			"method": "get"
+		},
+		"getAnalyticsPageVisits": {
+			"url": "/admin/analytics/item?type=visitType&metric=item",
+			"method": "get"
+		},
+		"getAnalyticsDemographicVisits": {
+			"url": "/admin/analytics/user?metric=metricType",
+			"method": "get"
+		},
+		"getAnalyticsTotalUserCount": {
+			"url": "/admin/analytics/user?metric=metricValue",
+			"method": "get"
+		},
+		"getTotalUserCount": {
+			"url": "/admin/analytics/user?metric=metricValue",
+			"method": "get"
+		},
+		"getEmailConfiguration": {
+			"url": "/admin/email/configuration",
+			"method": "get"
+		},
+		"configureEmailSTMP": {
+			"url": "/admin/email/configure",
+			"method": "post"
+		},
+		"getAutoEmailConfiguration": {
+			"url": "/admin/email/autoevents",
+			"method": "get"
+		},
+		"configureAutoEmail": {
+			"url": "/admin/email/configure/autoevents",
+			"method": "post"
+		},
+		"configureAutoEmailTemplate": {
+			"url": "/admin/email/configure/template",
+			"method": "post"
+		},
+		"getConfigureAutoEmailTemplate": {
+			"url": "/admin/email/autoevents/templates/:eventName",
+			"method": "get"
+		},
+		"getSetEmailList": {
+			"url": "/admin/email/inbox",
+			"method": "get"
+		},
+		"getSetEmailDetails": {
+			"url": "/admin/email/inbox/:id",
+			"method": "get"
+		},
+		"sendCustomEmail": {
+			"url": "/admin/email/inbox/send",
+			"method": "post"
 		},
 		"login": {
 			"url": "/admin/auth/login",

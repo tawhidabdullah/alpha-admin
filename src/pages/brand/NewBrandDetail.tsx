@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from "react-router";
+import { useParams, useHistory } from "react-router";
 
 
 // import hooks
@@ -40,21 +40,24 @@ const NewBrandDetail = (props: Props) => {
     const [brandProductsState, handleBrandProductsFetch] = useHandleFetch({}, 'brandProducts');
 
     const params = useParams();
+    const history = useHistory();
     const brandId = params['id'];
     const [brandEditVisible, setBrandEditVisible] = useState(false);
+    const [brandDetailData, setBrandDetailData] = useState(false);
 
 
 
     useEffect(() => {
-
         const getBrandDetail = async () => {
-            await handleBrandDetailFetch({
+            const brandDetailRes = await handleBrandDetailFetch({
                 urlOptions: {
                     placeHolders: {
                         id: brandId
                     }
                 }
-            })
+            }); 
+
+
         };
 
         getBrandDetail();
@@ -204,7 +207,7 @@ const NewBrandDetail = (props: Props) => {
                                     <>
                                         <img
                                             onClick={() => {
-                                                // go to product detail
+                                                history.push(`/admin/product/${record.id}`)
                                             }}
                                             src={cover} alt='cover img' style={{
                                                 height: '40px',
@@ -230,7 +233,7 @@ const NewBrandDetail = (props: Props) => {
                                     <>
                                         <h4
                                             onClick={() => {
-                                                // go to product detail
+                                                history.push(`/admin/product/${record.id}`)
                                             }}
                                             style={{
                                                 fontWeight: 400,

@@ -488,6 +488,260 @@ class Converter {
 		return convertedData;
 	}
 
+
+
+	/**
+   * @public
+   * @method bundleList convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+	async bundleList(resData) {
+		const data = resData || [];
+
+		let convertedData =
+			data.length > 0 &&
+			data.map((product) => {
+				return {
+					id: product._id || '',
+					name: product.name && product.name,
+					description: product.description && product.description,
+					cover: `${config['baseURL']}${(product.cover && product.cover['thumbnail']) || ''}`,
+					regularPrice: product.price && product.price['regular'],
+					offerPrice: product.price && product.price['offer'],
+					url: product.url,
+					startDate: product.startDate,
+					endDate: product.endDate,
+					actualPrice: product.actualPrice,
+					unit: product.unit,
+					category: product.category,
+					pricing: product.pricing,
+					date: product.date,
+					time: product.time,
+					venue: product.venue,
+					brand: product.brand,
+					tags: product.tags,
+					product: product['product'],
+					productCount: product['product'].length,
+					price:
+						parseInt(product.price['offer']) > parseInt(product.price['regular'])
+							? product.price['offer']
+							: product.price['regular'],
+				};
+			});
+
+		// convertedData = {
+		// 	data: convertedData,
+		// 	isNext
+		// };
+
+		return convertedData;
+	}
+
+
+
+	/**
+* @public
+* @method bundleDetail convert api data from API to general format based on config server
+* @param {Object} data response objectc from wc
+* @returns {Object}  converted data
+*/
+	async bundleDetail(resData) {
+		const data = resData || {};
+
+		if (Object.keys(data).length > 0) {
+			return {
+				id: data._id || '',
+				name: data.name && data.name,
+				description: data.description && data.description,
+				cover: `${config['baseURL']}${(data.cover && data.cover['thumbnail']) || ''}`,
+				regularPrice: data.price && data.price['regular'],
+				offerPrice: data.price && data.price['offer'],
+				url: data.url,
+				startDate: data.startDate,
+				endDate: data.endDate,
+				actualPrice: data.actualPrice,
+				unit: data.unit,
+				category: data.category,
+				pricing: data.pricing,
+				date: data.date,
+				time: data.time,
+				venue: data.venue,
+				brand: data.brand,
+				tags: data.tags,
+				products: data.product,
+				productCount: data['product'].length,
+				price:
+					parseInt(data.price['offer']) > parseInt(data.price['regular'])
+						? data.price['offer']
+						: data.price['regular'],
+			}
+		}
+
+		else return data;
+
+		// convertedData = {
+		// 	data: convertedData,
+		// 	isNext
+		// };
+
+	}
+
+
+
+	
+
+
+	
+	/**
+   * @public
+   * @method getAnalyticsPageVisits convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+  async getAnalyticsPageVisits(resData) {
+	const data = resData || [];
+
+	console.log('getAnalyticsPageVisits',resData); 
+
+	let convertedData =
+		data.length > 0 &&
+		data.map((item) => {
+			return {
+				id: item._id || '',
+				visit: item.count || '',
+				name: item['item'] && item['item']['name'] ,
+				url: item['item'] && item['item']['url'] ,
+				itemId: item['item'] && item['item']['_id'] ,
+			};
+		});
+
+	// convertedData = {
+	// 	data: convertedData,
+	// 	isNext
+	// };
+
+	return convertedData;
+}
+
+
+
+	
+	/**
+   * @public
+   * @method getAnalyticsPageVisitCount convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+  async getAnalyticsPageVisitCount(resData) {
+	return resData; 
+	}
+
+
+	/**
+   * @public
+   * @method getAnalyticsDemographicVisits convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+  async getAnalyticsDemographicVisits(resData) {
+	return resData; 
+	}
+
+
+		/**
+	 * @public
+	 * @method getAnalyticsTotalUserCount convert api data from API to general format based on config server
+	 * @param {Object} data response objectc from wc
+	 * @returns {Object}  converted data
+	 */
+	async getAnalyticsTotalUserCount(resData) {
+		return resData; 
+	}
+
+
+		/**
+	 * @public
+	 * @method customerDetail convert api data from API to general format based on config server
+	 * @param {Object} data response objectc from wc
+	 * @returns {Object}  converted data
+	 */
+	async customerDetail(resData) {
+		if(resData){
+			return {
+				id: resData._id || '',
+				key: resData._id || '',
+				firstName: resData.firstName || '',
+				lastName: resData.lastName || '',
+				name: resData.firstName + ' ' + resData.lastName,
+				country: resData.country || '',
+				city: resData.city || '',
+				email: resData.email || '',
+				phone: resData.phone || '',
+				address1: resData.address1 || '',
+				address2: resData.address2 || '',
+				created: resData.created || ''
+			}
+		}
+		else return resData; 
+	}
+
+	
+	/**
+   * @public
+   * @method couponList convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+	async couponList(resData) {
+		const data = resData || [];
+
+		let convertedData =
+			data.length > 0 &&
+			data.map((product) => {
+				return {
+					id: product._id || '',
+					name: product.name && product.name,
+					code: product.code,
+					minimumOrder: product.minimumOrder,
+					maximumOrder: product.maximumOrder,
+					offerPrice: product.price && product.price['offer'],
+					orderedProducts: product.orderedProducts,
+					freeProducts: product.freeProducts,
+					orderedProductsCount: product.orderedProducts && product.orderedProducts.length,
+					freeProductsCount: product.freeProducts && product.orderedProducts.length,
+					amountType: product.amountType,
+					amount: product.amount,
+					freeDelivery: product.freeDelivery,
+					startDate: product.startDate,
+					endDate: product.endDate,
+					maxUsePerUser: product.maxUsePerUser,
+					actualPrice: product.actualPrice,
+					unit: product.unit,
+					category: product.category,
+					pricing: product.pricing,
+					date: product.date,
+					time: product.time,
+					venue: product.venue,
+					brand: product.brand,
+					tags: product.tags,
+
+				};
+			});
+
+		// convertedData = {
+		// 	data: convertedData,
+		// 	isNext
+		// };
+
+		return convertedData;
+	}
+
+
+
+
+
+
 	/**
    * @public
    * @method tagList convert api data from API to general format based on config server
@@ -633,6 +887,7 @@ class Converter {
 					key: customer._id || '',
 					firstName: customer.firstName || '',
 					lastName: customer.lastName || '',
+					name: customer.firstName + ' ' + customer.lastName,
 					country: customer.country || '',
 					city: customer.city || '',
 					email: customer.email || '',
@@ -920,7 +1175,7 @@ class Converter {
 							return {
 								id: img._id || '',
 								name: img.name && img.name,
-								cover: `${config['baseURL']}${img.thumbnail}`,
+								cover: `${config['baseURL']}${img.original}`,
 								added: img.added,
 								title: img.title,
 								labels: img.labels,
@@ -934,6 +1189,52 @@ class Converter {
 
 		return convertedData;
 	}
+
+
+
+
+
+	/**
+   * @public
+   * @method couponDetail convert api data from API to general format based on config server
+   * @param {Object} data response objectc from alpha
+   * @returns {Object}  converted data
+   */
+
+	async couponDetail(data) {
+		const convertedData =
+			(Object.keys(data).length > 0 && {
+				id: data._id || '',
+				name: data.name && data.name,
+				code: data.code,
+				minimumOrder: data.minimumOrder,
+				maximumOrder: data.maximumOrder,
+				orderedProducts: data.orderedProducts | [],
+				freeProducts: data.freeProducts || [],
+				orderedProductsCount: data.orderedProducts && data.orderedProducts.length,
+				freeProductsCount: data.freeProducts && data.orderedProducts.length,
+				amountType: data.amountType,
+				amount: data.amount,
+				freeDelivery: data.freeDelivery,
+				startDate: data.startDate,
+				endDate: data.endDate,
+				maxUsePerUser: data.maxUsePerUser,
+				actualPrice: data.actualPrice,
+				unit: data.unit,
+				category: data.category,
+				pricing: data.pricing,
+				date: data.date,
+				time: data.time,
+				venue: data.venue,
+				brand: data.brand,
+				tags: data.tags,
+			}) ||
+			{};
+
+		return convertedData;
+	}
+
+
 
 	/**
    * @public
@@ -1025,7 +1326,61 @@ class Converter {
 		if (data && data.updated) {
 			return {
 				...data.updated,
-				status: 'ok'
+				id: data.updated._id || data.updated.id || '',
+				name: data.updated.name || '',
+				description: data.updated.description.replace(/<[^>]+>/g, '') || '',
+				regularPrice: data.updated.price && data.updated.price['regular'],
+				offerPrice: data.updated.price && data.updated.price['offer'],
+				url: data.updated.url,
+				availableStock: data.updated.availableStock,
+				minimumStock: data.updated.minimumStock,
+				unit: data.updated.unit,
+				date: data.updated.date,
+				venue: data.updated.venue,
+				brand: data.updated.brand && Object.key(data.updated.brand).length > 0 ? {
+					id: data.updated.brand.id,
+					name: data.updated.brand.name,
+
+				} : {},
+				price:
+					parseInt(data.updated.price['offer']) > parseInt(data.updated.price['regular'])
+						? data.updated.price['offer']
+						: data.updated.price['regular'],
+				pricing: data.updated.pricing,
+				category:
+					(data.updated.category &&
+						data.updated.category.length > 0 &&
+						data.updated.category.map((cat) => {
+							return {
+								id: cat._id,
+								name: cat.name
+							};
+						})) ||
+					data.updated.category,
+				tags: data.updated.tags && data.updated.tags.length > 0 ? data.updated.tags : [],
+
+				cover: {
+					cover: `${config['baseURL']}${data.updated.cover ? data.updated.cover.original && data.updated.cover.original : ''}`,
+					id: data.updated.cover ? data.updated.cover._id : ''
+				},
+				image:
+					(data.updated.image &&
+						data.updated.image.length > 0 &&
+						data.updated.image.map((img) => {
+							return {
+								id: img._id || '',
+								name: img.name && img.name,
+								cover: `${config['baseURL']}${img.original}`,
+								added: img.added,
+								title: img.title,
+								labels: img.labels,
+								alt: img.alt,
+								caption: img.caption
+							}
+						})) ||
+					[],
+					status: 'ok'
+
 			};
 		}
 
@@ -1202,6 +1557,46 @@ class Converter {
 
 		return convertedData;
 	}
+
+
+
+	/**
+   * @public
+   * @method deleteBundle convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+	async deleteBundle(data) {
+		const convertedData = data;
+		if (data && data.success) {
+			return {
+				status: 'ok'
+			};
+		}
+
+		return convertedData;
+	}
+
+
+
+	/**
+   * @public
+   * @method deleteCoupon convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+	async deleteCoupon(data) {
+		const convertedData = data;
+		if (data && data.success) {
+			return {
+				status: 'ok'
+			};
+		}
+
+		return convertedData;
+	}
+
+
 
 
 	/**
@@ -1720,7 +2115,7 @@ class Converter {
 						return {
 							id: img._id || '',
 							name: img.name && img.name,
-							cover: `${config['baseURL']}${img.thumbnail}`,
+							cover: `${config['baseURL']}${img.medium}`,
 							added: img.added,
 							title: img.title,
 							labels: img.labels,
@@ -1949,23 +2344,26 @@ class Converter {
 		const data = resData.orders ? resData.orders.data : [];
 		// const isNext = resData.page.next;
 
+		console.log('orderListDAta',data);
+
 		let convertedData =
 			(data.length > 0 &&
 				data.map((item) => {
 					return {
-						id: item.id || item._id,
-						billingAddress: item.billingAddress,
-						name: item.billingAddress['firstName'] + " " + item.billingAddress['lastName'],
-						country: item.billingAddress['country'],
-						city: item.billingAddress['city'],
-						status: item.status,
-						total: item.totalPrice,
-						products: item.products,
-						date_created: item.added,
-						paymentMethod: item['payment']['paymentMethod'],
-						paymentStatus: item['payment']['status'],
-						payment: item['payment'],
-						customerId: item['customer'] ? item['customer']['_id'] : ''
+							id: item.id || item._id,
+							billingAddress: item.billingAddress,
+							name: item.billingAddress && item.billingAddress['firstName'] && item.billingAddress['firstName'] + " " +
+							 item.billingAddress && item.billingAddress['lastName'] && item.billingAddress['lastName'],
+							country: item.billingAddress && item.billingAddress['country'] && item.billingAddress['country'],
+							city: item.billingAddress && item.billingAddress['city'] && item.billingAddress['city'],
+							status: item.status,
+							total: item.totalPrice,
+							products: item.products,
+							date_created: item.added,
+							paymentMethod: item['payment'] && item['payment']['paymentMethod'],
+							paymentStatus: item['payment'] && item['payment']['status'],
+							payment: item['payment'],
+							customerId: item['customer'] ? item['customer']['_id'] : ''
 
 					};
 				})) ||
@@ -1979,6 +2377,47 @@ class Converter {
 		return convertedData;
 	}
 
+
+		/**
+		* @public
+		* @method orderListForCustomer convert api data from API to general format based on config server
+		* @param {Object} data response objectc from wc
+		* @returns {Object}  converted data
+		*/
+		async orderListForCustomer(resData) {
+			const data = resData.orders ? resData.orders.data : [];
+			// const isNext = resData.page.next;
+
+			let convertedData =
+				(data.length > 0 &&
+					data.map((item) => {
+						return {
+							id: item.id || item._id,
+							billingAddress: item.billingAddress,
+							name: item.billingAddress && item.billingAddress['firstName'] && item.billingAddress['firstName'] + " " +
+							 item.billingAddress && item.billingAddress['lastName'] && item.billingAddress['lastName'],
+							country: item.billingAddress && item.billingAddress['country'] && item.billingAddress['country'],
+							city: item.billingAddress && item.billingAddress['city'] && item.billingAddress['city'],
+							status: item.status,
+							total: item.totalPrice,
+							products: item.products,
+							date_created: item.added,
+							paymentMethod: item['payment'] && item['payment']['paymentMethod'],
+							paymentStatus: item['payment'] && item['payment']['status'],
+							payment: item['payment'],
+							customerId: item['customer'] ? item['customer']['_id'] : ''
+
+						};
+					})) ||
+				[];
+
+			// convertedData = {
+			// 	data: convertedData,
+			// 	isNext
+			// };
+
+			return convertedData;
+		}
 
 
 
@@ -2189,6 +2628,9 @@ class Converter {
 		return items;
 	}
 
+
+
+
 	/**
    * @public
    * @method 'About Us' convert api data from API to general format based on config server
@@ -2209,6 +2651,40 @@ class Converter {
 		});
 		return items;
 	}
+
+
+
+	/**
+   * @public
+   * @method 'getTotalUserCount Us' convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+	async getTotalUserCount(data) {
+		return data;
+	}
+
+
+	/**
+   * @public
+   * @method addCoupon Us' convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+	async addCoupon(data) {
+		if (data && data[0]) {
+			return {
+				status: 'ok',
+				...data[0]
+			}
+		}
+		return {};
+	}
+
+
+
+
+
 }
 
 export default Converter;

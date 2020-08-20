@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {withRouter} from 'react-router-dom';
+import {withRouter, useHistory} from 'react-router-dom';
 import { Table, Badge, Menu, Dropdown, Space, Tag,Button, Input,Tooltip, Modal, notification, Popconfirm } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined,CheckOutlined,CheckCircleOutlined,DownOutlined  } from '@ant-design/icons';
 
@@ -56,6 +56,7 @@ const MyTable = ({data,setOrderList}: myTableProps) => {
     const [deleteOrderState, handleDeleteOrderFetch] = useHandleFetch({}, 'deleteOrder');
     const [updateOrderStatusState, handleUpdateOrderStatusFetch] = useHandleFetch({}, 'updateOrderStatus');
 
+    const history = useHistory();
 
       const handleDeleteRegion = async (id) => {
         const deleteOrderRes = await handleDeleteOrderFetch({
@@ -157,7 +158,7 @@ const MyTable = ({data,setOrderList}: myTableProps) => {
 
     return (
         <>
-        <Table 
+         <Table 
         // expandable={{
         //     expandedRowRender: record => <p style={{ margin: 0 }}>{record.name}</p>,
         //     rowExpandable: record => record.name !== 'Not Expandable',
@@ -179,7 +180,8 @@ const MyTable = ({data,setOrderList}: myTableProps) => {
 
               <h4
                 onClick={() => {
-                  setvisible(true)
+                  // setvisible(true)
+                  history.push(`/admin/order/${record.id}`)
                   setactiveCategoryForEdit(record); 
                 }}
                 style={{
@@ -349,7 +351,7 @@ const MyTable = ({data,setOrderList}: myTableProps) => {
 
     
 
-    {activeCategoryForEdit &&   <QuickEdit 
+    {/* {activeCategoryForEdit &&   <QuickEdit 
     setvisible={setvisible}
     visible={visible}
     customer={activeCategoryForEdit}
@@ -359,7 +361,7 @@ const MyTable = ({data,setOrderList}: myTableProps) => {
     />
 
     }
-    
+     */}
     
     </>
     )
@@ -376,6 +378,8 @@ const CustomerList = ({history}: Props) => {
 
     const [orderState, handleRegionListFetch] = useHandleFetch({}, 'orderList');
   
+
+    console.log('orderState',orderState);
   
     useEffect(()=>{
      const setOrders = async () => {
@@ -461,8 +465,8 @@ const CustomerList = ({history}: Props) => {
 		</div>
 
 
-{/* {orderState.done && 
-    <AddNewOrder 
+      {/* {orderState.done && 
+          <AddNewOrder 
           addNewCategoryVisible={addNewCategoryVisible} 
           setAddNewCategoryVisible={setAddNewCategoryVisible}
           orderList={orderState.data}
