@@ -28,6 +28,8 @@ import {
 import Input from '../../components/Field/Input';
 import TextArea from '../../components/Field/TextArea';
 import MediaLibrary from "../../components/MediaLibrary";
+import MetaTags from "./MetaTags";
+
 
 
 
@@ -58,7 +60,15 @@ const openErrorNotification = (message?: any) => {
 
 const initialValues = {
 	name: '',
+	bnName: '',
 	description: '',
+	bnDescription: '',
+	metaTitle: '',
+	bnMetaTitle: '',
+	metaDescription: '',
+	bnMetaDescription: '',
+	metaTags: '',
+	bnMetaTags: '',
 	image: [],
 	url: '',
 	cover: ''
@@ -75,7 +85,7 @@ interface Props {
 
 const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, categoryList, setcategoryList }: Props) => {
 
-	const [addCategoryState, handleAddCategoryFetch] = useHandleFetch({}, 'addCategory', 'form');
+	const [addCategoryState, handleAddCategoryFetch] = useHandleFetch({}, 'addCategory');
 	const [visible, setvisible] = useState(false);
 	const [myImages, setmyImages] = useState(false);
 	const [myThumbnailImage, setmyThumbnailImage] = useState(false);
@@ -87,9 +97,8 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, categ
 	const [imageUrl, setImageUrl] = useState('');
 	const [loadingThumnail, setLoadingThumbnail] = useState(false);
 	const [imageFile, setImagefile] = useState('');
-
-
-
+	const [tags,setTags] = useState([]);
+	const [bnTags,setBnTags] = useState([]);
 
 
 	const handleSubmit = async (values: any, actions: any) => {
@@ -110,9 +119,25 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, categ
 
 
 		const addCategoryRes = await handleAddCategoryFetch({
-			body: formData,
+			body: {
+				name: values.name.trim(),
+				description: values.description,
+				image: imagesIds,
+				cover: coverImageId || imagesIds[0] ? imagesIds[0] : '',
+				parent: selectedParentId,
+				icon: imageFile,
+				metaTitle: values.metaTitle,
+				metaDescription: values.metaDescription,
+				metaTags: tags.join(','),
+				bn: {
+					metaTitle: values.bnMetaTitle,
+					metaDescription: values.bnMetaDescription,
+					metaTags: bnTags.join(','),
+					name: values.bnName.trim(),
+					description: values.bnDescription,
+				}
+			},
 		});
-
 
 
 		// @ts-ignore
@@ -197,7 +222,6 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, categ
 
 
 
-
 	function getBase64(img, callback) {
 		const reader = new FileReader();
 		reader.addEventListener('load', () => callback(reader.result));
@@ -233,6 +257,8 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, categ
 		</div>
 	);
 
+
+	console.log('addnewCategoryTags',tags);
 
 	return (
 		<Formik
@@ -273,8 +299,9 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, categ
 							}}
 						>
 							<Input
-								label='Title'
+								label='Name'
 								value={values.name}
+								placeHolder={'grocery,fashion'}
 								name='name'
 								isError={(touched.name && errors.name) ||
 									(!isSubmitting && addCategoryState.error['error']['name'])}
@@ -286,9 +313,27 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, categ
 									setFieldTouched('name');
 								}}
 							/>
+
+							<Input
+								label='BN Name'
+								value={values.bnName}
+								placeHolder={'মুদিখানা,ফ্যাশন'}
+								name='bnName'
+								isError={(touched.bnName && errors.bnName) ||
+									(!isSubmitting && addCategoryState.error['error']['bnName'])}
+
+								errorString={(touched.bnName && errors.bnName) ||
+									(!isSubmitting && addCategoryState.error['error']['bnName'])}
+								onChange={(e: any) => {
+									handleChange(e);
+									setFieldTouched('bnName');
+								}}
+							/>
+
 							<TextArea
 								label='Description'
 								value={values.description}
+								placeholder={'This category...'}
 								name='description'
 								isError={(touched.description && errors.description) ||
 									(!isSubmitting && addCategoryState.error['error']['description'])}
@@ -298,6 +343,22 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, categ
 								onChange={(e: any) => {
 									handleChange(e);
 									setFieldTouched('description');
+								}}
+							/>
+
+							<TextArea
+								label='BN Description'
+								value={values.bnDescription}
+								placeholder={'এই ক্যাটাগড়ি...'}
+								name='bnDescription'
+								isError={(touched.bnDescription && errors.bnDescription) ||
+									(!isSubmitting && addCategoryState.error['error']['bnDescription'])}
+
+								errorString={(touched.bnDescription && errors.bnDescription) ||
+									(!isSubmitting && addCategoryState.error['error']['bnDescription'])}
+								onChange={(e: any) => {
+									handleChange(e);
+									setFieldTouched('bnDescription');
 								}}
 							/>
 
@@ -451,6 +512,96 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, categ
 							</div>
 
 
+							
+
+							<Input
+								label='Meta title'
+								value={values.metaTitle}
+								placeHolder={'category...'}
+								name='metaTitle'
+								isError={(touched.metaTitle && errors.metaTitle) ||
+									(!isSubmitting && addCategoryState.error['error']['metaTitle'])}
+
+								errorString={(touched.metaTitle && errors.metaTitle) ||
+									(!isSubmitting && addCategoryState.error['error']['metaTitle'])}
+								onChange={(e: any) => {
+									handleChange(e);
+									setFieldTouched('metaTitle')
+								}}
+							/>
+
+							<Input
+								label='BN Meta title'
+								value={values.bnMetaTitle}
+								placeHolder={'ক্যাটাগড়ি...'}
+								name='bnMetaTitle'
+								isError={(touched.bnMetaTitle && errors.bnMetaTitle) ||
+									(!isSubmitting && addCategoryState.error['error']['bnMetaTitle'])}
+
+								errorString={(touched.bnMetaTitle && errors.bnMetaTitle) ||
+									(!isSubmitting && addCategoryState.error['error']['bnMetaTitle'])}
+								onChange={(e: any) => {
+									handleChange(e);
+									setFieldTouched('bnMetaTitle');
+								}}
+							/>
+
+							<TextArea
+								label='Meta description'
+								value={values.metaDescription}
+								placeholder={'meta...'}
+								name='metaDescription'
+								isError={(touched.metaDescription && errors.metaDescription) ||
+									(!isSubmitting && addCategoryState.error['error']['metaDescription'])}
+
+								errorString={(touched.metaDescription && errors.metaDescription) ||
+									(!isSubmitting && addCategoryState.error['error']['metaDescription'])}
+								onChange={(e: any) => {
+									handleChange(e);
+									setFieldTouched('metaDescription');
+								}}
+							/>
+
+							<TextArea
+								label='BN Meta Description'
+								value={values.bnMetaDescription}
+								placeholder={'এইয় মেট...'}
+								name='bnMetaDescription'
+								isError={(touched.bnMetaDescription && errors.bnMetaDescription) ||
+									(!isSubmitting && addCategoryState.error['error']['bnMetaDescription'])}
+
+								errorString={(touched.bnMetaDescription && errors.bnMetaDescription) ||
+									(!isSubmitting && addCategoryState.error['error']['bnMetaDescription'])}
+								onChange={(e: any) => {
+									handleChange(e);
+									setFieldTouched('bnMetaDescription');
+								}}
+							/>
+
+							<h3 className='inputFieldLabel'>
+							Meta Tags (grocery,fashion)
+							</h3>
+
+							<MetaTags
+							// @ts-ignore
+							setTags={setTags}
+							tags={tags}
+							 />
+
+							<div style={{
+								marginTop:'15px'
+							}}></div>
+
+							<h3 className='inputFieldLabel'>
+							BN Meta Tags (মুদিখানা,ফ্যাশন)
+							</h3>
+
+							<MetaTags
+							// @ts-ignore
+							setTags={setBnTags}
+							tags={bnTags}
+							 />
+							
 						</Modal>
 
 						<MediaLibrary

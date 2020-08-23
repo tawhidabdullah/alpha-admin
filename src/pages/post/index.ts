@@ -1,9 +1,13 @@
 import PostList from "./PostList";
-import PostEdit from "./PostEdit";
 import PostDetail from "./PostDetail";
+import {NewPostTagDetail,PostTagList} from "./postTags";
+import {PostCategoryList, NewPostCategoryDetail} from "./postCategory";
 
 export {
     PostList,
-    PostEdit,
-    PostDetail
+    PostDetail,
+    PostCategoryList,
+    NewPostCategoryDetail,
+    PostTagList,
+    NewPostTagDetail
 }

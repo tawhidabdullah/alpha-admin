@@ -28,6 +28,8 @@ import 'react-quill/dist/quill.snow.css';
 import Input from '../../components/Field/Input';
 import TextArea from '../../components/Field/TextArea';
 import MediaLibrary from "../../components/MediaLibrary";
+import MetaTags from "../../pages/category/MetaTags";
+
 
 const validationSchema = Yup.object().shape({
     name: Yup.string().label('Name').required('Name is required').min(3, 'Name must have at least 3 characters'),
@@ -55,7 +57,15 @@ const openErrorNotification = (message?: any) => {
 
 const initialValues = {
     name: '',
-    description: '',
+	bnName: '',
+	description: '',
+	bnDescription: '',
+	metaTitle: '',
+	bnMetaTitle: '',
+	metaDescription: '',
+	bnMetaDescription: '',
+	metaTags: '',
+	bnMetaTags: '',
 }
 
 
@@ -74,7 +84,8 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, tagList,
     const [myImages, setmyImages] = useState(false);
     const [visibleMedia, setvisibleMedia] = useState(false);
     const [coverImageId, setCoverImageId] = useState('');
-
+    const [tags,setTags] = useState([]);
+	const [bnTags,setBnTags] = useState([]);
 
     const handleSubmit = async (values: any, actions: any) => {
         const addTagRes = await handleAddTagFetch({
@@ -86,6 +97,19 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, tagList,
             body: {
                 name: values.name.trim(),
                 description: values.description,
+                metaTitle: values.metaTitle,
+                metaDescription: values.metaDescription,
+                metaTags: tags.join(','),
+
+
+                
+                bn: {
+					metaTitle: values.bnMetaTitle,
+					metaDescription: values.bnMetaDescription,
+					metaTags: bnTags.join(','),
+					name: values.bnName.trim(),
+					description: values.bnDescription,
+				}
             },
         });
 
@@ -177,34 +201,159 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, tagList,
                                 disabled: getisSubmitButtonDisabled(values, isValid)
                             }}
                         >
-                            <Input
-                                label='Title'
-                                value={values.name}
-                                name='name'
-                                isError={(touched.name && errors.name) ||
-                                    (!isSubmitting && addTagState.error['error']['name'])}
+                  			<Input
+								label='Name'
+								value={values.name}
+								name='name'
+								placeHolder={'new,fresh'}
+								isError={(touched.name && errors.name) ||
+									(!isSubmitting && addTagState.error['error']['name'])}
 
-                                errorString={(touched.name && errors.name) ||
-                                    (!isSubmitting && addTagState.error['error']['name'])}
-                                onChange={(e: any) => {
-                                    handleChange(e);
-                                    setFieldTouched('name');
-                                }}
-                            />
-                            <TextArea
-                                label='Description'
-                                value={values.description}
+								errorString={(touched.name && errors.name) ||
+									(!isSubmitting && addTagState.error['error']['name'])}
+								onChange={(e: any) => {
+									handleChange(e);
+									setFieldTouched('name');
+								}}
+							/>
+
+							<Input
+								label='BN Name'
+								value={values.bnName}
+								placeHolder={'নতুন,ফ্রেশ'}
+								name='bnName'
+								isError={(touched.bnName && errors.bnName) ||
+									(!isSubmitting && addTagState.error['error']['bnName'])}
+
+								errorString={(touched.bnName && errors.bnName) ||
+									(!isSubmitting && addTagState.error['error']['bnName'])}
+								onChange={(e: any) => {
+									handleChange(e);
+									setFieldTouched('bnName');
+								}}
+							/>
+
+
+							<TextArea
+								label='Description'
+								value={values.description}
                                 name='description'
-                                isError={(touched.description && errors.description) ||
-                                    (!isSubmitting && addTagState.error['error']['description'])}
+                                placeholder={'This tag...'}
+								isError={(touched.description && errors.description) ||
+									(!isSubmitting && addTagState.error['error']['description'])}
 
-                                errorString={(touched.description && errors.description) ||
-                                    (!isSubmitting && addTagState.error['error']['description'])}
-                                onChange={(e: any) => {
-                                    handleChange(e);
-                                    setFieldTouched('description');
-                                }}
-                            />
+								errorString={(touched.description && errors.description) ||
+									(!isSubmitting && addTagState.error['error']['description'])}
+								onChange={(e: any) => {
+									handleChange(e);
+									setFieldTouched('description');
+								}}
+							/>
+
+							<TextArea
+								label='BN Description'
+								value={values.bnDescription}
+								placeholder={'এই ট্যাগ...'}
+								name='bnDescription'
+								isError={(touched.bnDescription && errors.bnDescription) ||
+									(!isSubmitting && addTagState.error['error']['bnDescription'])}
+
+								errorString={(touched.bnDescription && errors.bnDescription) ||
+									(!isSubmitting && addTagState.error['error']['bnDescription'])}
+								onChange={(e: any) => {
+									handleChange(e);
+									setFieldTouched('bnDescription');
+								}}
+							/>
+
+                                
+<Input
+								label='Meta title'
+								value={values.metaTitle}
+								placeHolder={'category...'}
+								name='metaTitle'
+								isError={(touched.metaTitle && errors.metaTitle) ||
+									(!isSubmitting && addTagState.error['error']['metaTitle'])}
+
+								errorString={(touched.metaTitle && errors.metaTitle) ||
+									(!isSubmitting && addTagState.error['error']['metaTitle'])}
+								onChange={(e: any) => {
+									handleChange(e);
+									setFieldTouched('metaTitle')
+								}}
+							/>
+
+							<Input
+								label='BN Meta title'
+								value={values.bnMetaTitle}
+								placeHolder={'ক্যাটাগড়ি...'}
+								name='bnMetaTitle'
+								isError={(touched.bnMetaTitle && errors.bnMetaTitle) ||
+									(!isSubmitting && addTagState.error['error']['bnMetaTitle'])}
+
+								errorString={(touched.bnMetaTitle && errors.bnMetaTitle) ||
+									(!isSubmitting && addTagState.error['error']['bnMetaTitle'])}
+								onChange={(e: any) => {
+									handleChange(e);
+									setFieldTouched('bnMetaTitle');
+								}}
+							/>
+
+							<TextArea
+								label='Meta description'
+								value={values.metaDescription}
+								placeholder={'meta...'}
+								name='metaDescription'
+								isError={(touched.metaDescription && errors.metaDescription) ||
+									(!isSubmitting && addTagState.error['error']['metaDescription'])}
+
+								errorString={(touched.metaDescription && errors.metaDescription) ||
+									(!isSubmitting && addTagState.error['error']['metaDescription'])}
+								onChange={(e: any) => {
+									handleChange(e);
+									setFieldTouched('metaDescription');
+								}}
+							/>
+
+							<TextArea
+								label='BN Meta Description'
+								value={values.bnMetaDescription}
+								placeholder={'এইয় মেট...'}
+								name='bnMetaDescription'
+								isError={(touched.bnMetaDescription && errors.bnMetaDescription) ||
+									(!isSubmitting && addTagState.error['error']['bnMetaDescription'])}
+
+								errorString={(touched.bnMetaDescription && errors.bnMetaDescription) ||
+									(!isSubmitting && addTagState.error['error']['bnMetaDescription'])}
+								onChange={(e: any) => {
+									handleChange(e);
+									setFieldTouched('bnMetaDescription');
+								}}
+							/>
+
+							<h3 className='inputFieldLabel'>
+							Meta Tags (grocery,fashion)
+							</h3>
+
+							<MetaTags
+							// @ts-ignore
+							setTags={setTags}
+							tags={tags}
+							 />
+
+							<div style={{
+								marginTop:'15px'
+							}}></div>
+
+							<h3 className='inputFieldLabel'>
+							BN Meta Tags (মুদিখানা,ফ্যাশন)
+							</h3>
+
+							<MetaTags
+							// @ts-ignore
+							setTags={setBnTags}
+							tags={bnTags}
+							 />
 
                         </Modal>
 

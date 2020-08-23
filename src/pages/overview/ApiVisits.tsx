@@ -261,15 +261,13 @@ const ApiVisits = (props: Props) => {
             {demoGraphicVisitsState.isLoading && (
             <>
             <div style={{
-                marginTop:'150px',
+                margin:'100px 0',
                 display:'flex',
                 justifyContent:'center',
                 alignItems:"center"
             }}>
-            <Spin
-            size='large'
-             />
-                </div>
+              <Spin size='large' />
+            </div>
 
             </>
         )}

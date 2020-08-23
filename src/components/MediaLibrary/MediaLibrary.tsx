@@ -157,7 +157,7 @@ const MediaLibrary = ({
 
 		// You can use any AJAX library you like
 		reqwest({
-			url: `${config.baseURL}/admin/image/add`,
+			url: `${config.baseURL}/admin/api/image/add`,
 			method: 'post',
 			processData: false,
 			data: formData,
@@ -346,10 +346,6 @@ const MediaLibrary = ({
 						key="1" icon={<DeleteOutlined color='red' />}>
 						Delete
 					</Menu.Item>
-
-
-
-
 				</Menu >
 			)
 		)

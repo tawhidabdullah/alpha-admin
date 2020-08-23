@@ -4,8 +4,11 @@ import * as Yup from 'yup';
 
 
 import { useHandleFetch } from '../../hooks';
+
+
+
 // import third party ui lib
-import { Upload, message, Switch, Select, Button, notification, Modal, Empty, Steps, Form, Checkbox } from 'antd';
+import { Upload,Radio , message, Switch, Select, Button, notification, Modal, Empty, Steps, Form, Checkbox } from 'antd';
 
 import {
 	FileOutlined,
@@ -22,8 +25,13 @@ import {
 	CaretLeftOutlined,
 	CaretRightFilled,
 	UserOutlined,
-	InfoCircleOutlined
+	InfoCircleOutlined,
+	CarOutlined,
+	ClockCircleOutlined
 } from '@ant-design/icons';
+
+
+
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
@@ -34,6 +42,11 @@ import AddNewOrderSummary from './AddNewOrderSummary';
 import CustomersId from './CustomersId';
 import AddProducts from './AddProducts';
 import { product } from '../../state/ducks';
+
+
+
+//import utils
+import {getDeliveryChargeTotal} from '.././../utils'
 
 
 const { Option } = Select;
@@ -112,8 +125,6 @@ const AddNewOrder = ({ }: Props) => {
 	const [addOrderState, handleOrderFetch] = useHandleFetch({}, 'addOrder');
 	const [selectedCountryValue, setselectedCountryValue] = useState('');
 	const [selectedCityValue, setselectedCityValue] = useState('');
-	const [productIds, setProductIds] = useState([]);
-	const [productList, setProductList] = useState([]);
 	const [customerId, setCustomerId] = useState([]);
 
 	const [countryOptions, setcountryOptions] = useState([]);
@@ -124,14 +135,123 @@ const AddNewOrder = ({ }: Props) => {
 		'countryList'
 	);
 
-
-
 	const [cityListState, handleCityListFetch] = useHandleFetch([], 'cityList');
 
 	const [countryList, setCountryList] = useState([]);
 	const [cityList, setCityList] = useState([]);
 	const [current, setCurrent] = useState(0);
 	const [selectedCustomerData, setSelectedCustomerData] = useState({});
+	const [productIds, setProductIds] = useState([]);
+	const [productList, setProductList] = useState([]);
+	
+	const [productListState, handleProductListFetch] = useHandleFetch({}, 'productList');
+	const [customerListState, handleCustomerListFetch] = useHandleFetch({}, 'customerList');
+
+
+
+	const [deliveryRegionState, handleDeliveryRegionFetch] = useHandleFetch(
+		[],
+		'getDeliveryRegion'
+	  );
+
+
+	  const [deliveryRegionName, setDeliveryRegionName] = useState('');
+	  const [selectedRegion, setSelectedRegion] = useState({});
+	  const [regionDeliveryCharge,setregionDeliveryCharge] = useState([]);
+
+	  const isDeliveryChargeExists = (regions) => {
+		if (!regions) {
+		  return false;
+		} else return true;
+	  };
+
+
+	  useEffect(() => {
+		const getAndSetShippingDeliveryCharge = async () => {
+			const deliveryRegionState = await handleDeliveryRegionFetch({
+			  urlOptions: {
+				placeHolders: {
+				  cityName: selectedCityValue,
+				},
+			  },
+			});
+			// @ts-ignore
+			setregionDeliveryCharge(deliveryRegionState);
+		  };
+	
+		  getAndSetShippingDeliveryCharge();
+	  }, [selectedCityValue]);
+
+
+	  const handleDeviliveryRegionChange = (value) => {
+		setDeliveryRegionName(value);
+
+		if (
+		  isDeliveryChargeExists(
+			regionDeliveryCharge.length > 0 &&
+			regionDeliveryCharge
+		  )
+		) {
+		  const deliveryRegions = regionDeliveryCharge; 
+	
+		  const selectedRegion = deliveryRegions.find(
+			(region) => region['_id'] === value
+		  );
+		  if (selectedRegion) {
+			setSelectedRegion(selectedRegion);
+		  }
+		}
+	  };
+	
+	  useEffect(() => {
+		if (
+		  isDeliveryChargeExists(
+		  regionDeliveryCharge.length > 0 &&
+			regionDeliveryCharge
+		  )
+		) {
+		  const deliveryRegions = regionDeliveryCharge;
+	
+		  const selectedRegion = deliveryRegions.find(
+			(region, index) => 0 === index
+		  );
+		  if (selectedRegion) {
+			setDeliveryRegionName(selectedRegion['name']);
+			setSelectedRegion(selectedRegion);
+		  }
+		}
+	  }, [regionDeliveryCharge]);
+
+
+	const getTotalPrice = (total, charge) => {
+    if (charge) {
+      return parseInt(total) + parseInt(charge);
+    } else {
+      return Math.floor(total);
+    }
+  };
+
+
+	  console.log('deliveryRegionState',deliveryRegionState)
+	  console.log('selectedRegion',selectedRegion)
+	  console.log('regionDeliveryCharge',regionDeliveryCharge)
+
+	useEffect(() => {
+        const setProducts = async () => {
+            const productListRes = await handleProductListFetch({});
+        };
+
+        setProducts();
+    }, []);
+
+
+	useEffect(() => {
+        const setCustomers = async () => {
+            const customerListRes = await handleCustomerListFetch({});
+        };
+        setCustomers();
+    }, []);
+
 
 
 	const next = () => {
@@ -173,6 +293,7 @@ const AddNewOrder = ({ }: Props) => {
 					country: selectedCountryValue || selectedCustomerData['country'],
 				},
 				items: products,
+				delivery: deliveryRegionName,
 				customerId: customerId
 				// charge
 			},
@@ -308,8 +429,6 @@ const AddNewOrder = ({ }: Props) => {
 
 
 
-
-
 	const getisSubmitButtonDisabled = (values, isValid) => {
 		if (!isValid ||
 			!values.name ||
@@ -329,48 +448,58 @@ const AddNewOrder = ({ }: Props) => {
 
 
 
-	useEffect(() => {
 
-		if (productIds.length > 0) {
-			if (productIds.length > productList.length) {
-				const variation = productIds[productIds.length - 1]['pricing'].length > 0 && productIds[productIds.length - 1]['pricing'][0]['_id'];
-				console.log('variation', variation)
+    useEffect(() => {
 
-				setProductList([...productList, {
-					...productIds[productIds.length - 1],
-					_id: productIds[productIds.length - 1]['id'],
-					variation: variation,
-					quantity: 1
-				}]);
-			}
+        if (productIds && productIds.length > 0 && productList) {
+            if (productIds.length > productList.length) {
+                const variation = productIds[productIds.length - 1]['pricing'] && productIds[productIds.length - 1]['pricing'].length > 0 && productIds[productIds.length - 1]['pricing'][0]['_id'];
+                console.log('variation', variation)
 
-
-			else if (productIds.length < productList.length) {
-				const newProductList = productList.filter(item => {
-					let isTrue = false;
-					productIds.forEach(product => {
-						if (product._id === item._id) {
-							isTrue = true;
-						}
-					});
-					return isTrue;
-				})
-				setProductList(newProductList);
-
-			}
-
-		}
-		else {
-			setProductList([]);
-		}
-		// console.log('productIds', productIds)
+                setProductList([...productList, {
+                    ...productIds[productIds.length - 1],
+                    _id: productIds[productIds.length - 1]['id'],
+                    variation: variation,
+                    quantity: 1
+                }]);
+            }
 
 
-	}, [productIds])
+            else if (productIds.length < productList.length) {
+                console.log('productIds', productIds);
+                console.log('productList', productList);
+
+                const newProductList = productList.filter(item => {
+                    let isTrue = false;
+                    productIds.forEach(product => {
+                        if (product.id === item._id) {
+                            isTrue = true;
+                        }
+                    });
+                    return isTrue;
+                })
+                setProductList(newProductList);
+
+            }
+
+        }
+        else {
+            setProductList([]);
+        }
+        // console.log('productIds', productIds)
+
+
+    }, [productIds])
 
 
 	// console.log('productList', productList)
-	console.log('selectedCustomerData', selectedCustomerData)
+	console.log('selectedCustomerData', selectedCustomerData); 
+
+	const radioStyle = {
+		display: 'block',
+		height: '30px',
+		lineHeight: '30px',
+	  };
 
 	return (
 		<Formik
@@ -411,7 +540,9 @@ const AddNewOrder = ({ }: Props) => {
 								{current === 0 && (
 									<div className='addOrderContainer__container-OrderInfoContainer'>
 										<div className='addOrderContainer__container-OrderInfoContainer-left'>
-											<h3 className='addOrderContainer-sectionTitle'>
+											<h3 
+											style={{}}
+											className='addOrderContainer-sectionTitle'>
 
 												<span>
 													<UserOutlined />
@@ -427,6 +558,7 @@ const AddNewOrder = ({ }: Props) => {
 												Customer
 											</h4>
 											<CustomersId
+										    	customerListState={customerListState}
 												setSelectedCustomerData={setSelectedCustomerData}
 												setCustomerId={setCustomerId} />
 											<div style={{
@@ -436,6 +568,7 @@ const AddNewOrder = ({ }: Props) => {
 												Products
 											</h4>
 											<AddProducts
+										    	productListState={productListState}
 												productIds={productIds}
 												setProductIds={setProductIds} />
 										</div>
@@ -446,7 +579,6 @@ const AddNewOrder = ({ }: Props) => {
 										</div>
 									</div>
 								)}
-
 
 
 								{current === 1 && (
@@ -849,10 +981,64 @@ const AddNewOrder = ({ }: Props) => {
 											setProductList={setProductList}
 											productList={productList} />
 
+										<div>
+
+										<h3 
+										style={{
+											marginTop:'20px',
+											display:'block'
+										}}
+										className='addOrderContainer-sectionTitle'>
+											<span>
+												<CarOutlined />
+											</span>
+											Delivery Region List ({selectedCityValue})
+									    </h3>
+											
+										<Radio.Group
+										value={deliveryRegionName}
+										defaultValue={deliveryRegionName}
+										 name="radiogroup" >
+											 {regionDeliveryCharge.map(deliveryRegionItem => {
+												 return (
+													<div 
+													onClick={() => handleDeviliveryRegionChange(deliveryRegionItem._id)}
+													className='deliveryRegionLabelContainer'>
+														<div className='deliveryRegionLabelContainer__radio'>
+														<Radio 
+															value={deliveryRegionItem._id}
+														>
+													</Radio>
+														</div>
+													<div className='deliveryRegionLabelContainer__info'>
+													<h3>
+														{deliveryRegionItem.name}
+													</h3>
+														<h4>
+															<span>
+															<CarOutlined />	
+															</span>
+															{deliveryRegionItem.pickUpLocation}
+														</h4>
+														<h4>
+															<span>
+															<ClockCircleOutlined />	
+															</span>
+															{deliveryRegionItem.time}
+														</h4>
+													</div>
+													</div>
+
+													
+												 )
+											 })}
+  										</Radio.Group>
+										</div>		
+
+
 										<div style={{
 											display: 'flex',
 											marginTop: '40px',
-											width: '300px',
 											marginBottom: '50px'
 
 										}}>

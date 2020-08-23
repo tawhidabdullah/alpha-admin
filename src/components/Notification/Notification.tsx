@@ -1,5 +1,6 @@
 import React from 'react';
 import { notification } from 'antd';
+
 import {
     CheckCircleOutlined,
     ExclamationCircleOutlined
@@ -13,8 +14,6 @@ const openSuccessNotification = (message?: any) => {
         icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
     });
 };
-
-
 
 
 const openErrorNotification = (message?: any) => {

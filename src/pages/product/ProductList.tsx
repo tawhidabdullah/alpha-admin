@@ -164,6 +164,26 @@ const MyTable = ({ data, setProductList }: myTableProps) => {
 
         />
 
+
+                      <Column
+                                title="Available"
+                                dataIndex="available"
+                                key="id"
+                                className='classnameofthecolumn'
+
+                            />
+
+
+                            <Column
+                                title="Minimum"
+                                dataIndex="minimum"
+                                key="id"
+                                className='classnameofthecolumn'
+
+                            />
+
+
+
         {/* <Column
           title="Unit"
           dataIndex="unit"

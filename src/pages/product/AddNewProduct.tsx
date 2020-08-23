@@ -39,6 +39,7 @@ import Tags from "./Tags";
 import Brands from "./Brands";
 import Categories from "./Categories";
 import Pricing from "./Pricing";
+import MetaTags from "../category/MetaTags";
 
 const { TabPane } = Tabs;
 
@@ -63,7 +64,16 @@ const initialValues = {
 	venue: '',
 	date: '',
 	time: '',
-	purchaseLimit: null
+	purchaseLimit: null,
+	bnUnit: '',
+	bnName: '',
+	bnDescription: '',
+	metaTitle: '',
+	bnMetaTitle: '',
+	metaDescription: '',
+	bnMetaDescription: '',
+	metaTags: '',
+	bnMetaTags: '',
 }
 
 
@@ -91,8 +101,10 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 	const [selectedTags, setSelectedTags] = useState([]);
 	const [date, setDateFeild] = useState('');
 	const [time, setTimeFeild] = useState('');
-	const [description, setDescription] = useState('');
-
+	const [description, setDescription] = useState('This product...');
+	const [bnDescription, setBNDescription] = useState('এই পণ্য...');
+	const [metaTags,setMetaTags] = useState([]);
+	const [bnMetaTags,setBnMetaTags] = useState([]);
 
 	const makeEmptyCategoryOptions = (setEmpty) => {
 		setEmpty([]);
@@ -120,7 +132,20 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 				// date: date,
 				// time: time,
 				// venue: values.venue,
-				// purchaseLimit: values.purchaseLimit
+				// purchaseLimit: values.purchaseLimit,
+				metaTitle: values.metaTitle,
+				metaDescription: values.metaDescription,
+				metaTags: metaTags.join(','),
+
+				
+				bn: {
+					metaTitle: values.bnMetaTitle,
+					metaDescription: values.bnMetaDescription,
+					metaTags: bnMetaTags.join(','),
+					name: values.bnName.trim(),
+					unit: values.metaUnit,
+					description: values.bnDescription,
+				}
 			},
 		});
 
@@ -331,8 +356,9 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 										</div>
 										<div className='addProductGridContainer__item-body'>
 											<Input
-												label='Title'
+												label='Name'
 												value={values.name}
+												placeHolder={'Rafty ox'}
 												name='name'
 												isError={(touched.name && errors.name) ||
 													(!isSubmitting && addProductState.error['error']['name'])}
@@ -344,6 +370,25 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 													setFieldTouched('name');
 												}}
 											/>
+
+											<Input
+											label='BN Name'
+											value={values.bnName}
+											placeHolder={'রাফতি অক্স'}
+											name='bnName'
+											isError={(touched.bnName && errors.bnName) ||
+												(!isSubmitting && addProductState.error['error']['bnName'])}
+
+											errorString={(touched.bnName && errors.bnName) ||
+												(!isSubmitting && addProductState.error['error']['bnName'])}
+											onChange={(e: any) => {
+												handleChange(e);
+												setFieldTouched('bnName');
+											}}
+										/>
+
+
+
 											{/* <div style={{
 												display: 'flex',
 												justifyContent: 'space-between'
@@ -369,9 +414,7 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 
 												</div>
 											</div> */}
-											<div style={{
-												marginBottom: '15px'
-											}}></div>
+										
 											{/* 
 											<TextArea
 												rows={1}
@@ -408,9 +451,63 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 											/> */}
 
 
+								
+
+											<Input
+												label='Unit'
+												value={values.unit}
+												name='unit'
+										    	placeHolder={'1KG,4KG,250GM'}
+												isError={(touched.unit && errors.unit) ||
+													(!isSubmitting && addProductState.error['error']['unit'])}
+
+												errorString={(touched.unit && errors.unit) ||
+													(!isSubmitting && addProductState.error['error']['unit'])}
+												onChange={(e: any) => {
+													handleChange(e);
+													setFieldTouched('unit');
+												}}
+											/>
+
+
+											<Input
+											label='BN Unit'
+											value={values.bnUnit}
+											placeHolder={'১কেজি,২কেজি'}
+											name='bnUnit'
+											isError={(touched.bnUnit && errors.bnUnit) ||
+												(!isSubmitting && addProductState.error['error']['bnUnit'])}
+
+											errorString={(touched.bnUnit && errors.bnUnit) ||
+												(!isSubmitting && addProductState.error['error']['bnUnit'])}
+											onChange={(e: any) => {
+												handleChange(e);
+												setFieldTouched('bnUnit');
+											}}
+										/>
+
+
+
+
+											<Input
+												label='Model Number'
+												value={values.model}
+												name='model'
+												isError={(touched.model && errors.model) ||
+													(!isSubmitting && addProductState.error['error']['model'])}
+
+												errorString={(touched.model && errors.model) ||
+													(!isSubmitting && addProductState.error['error']['model'])}
+												onChange={(e: any) => {
+													handleChange(e);
+													setFieldTouched('model');
+												}}
+											/>
+
+
 											<h3 className='inputFieldLabel'>
 												Description
-                               </h3>
+                                             </h3>
 
 											<div style={{
 												width: '100%',
@@ -435,38 +532,38 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 													}}
 												/>
 											</div>
+													
+
+											<h3 className='inputFieldLabel'>
+												BN Description
+                                             </h3>
+
+											<div style={{
+												width: '100%',
+												maxWidth: '100%'
+											}}>
+												<CKEditor
+													editor={ClassicEditor}
+													data={bnDescription}
+													onInit={editor => {
+														// You can store the "editor" and use when it is needed.
+														console.log('Editor is ready to use!', editor);
+													}}
+													onChange={(event, editor) => {
+														const data = editor.getData();
+														setBNDescription(data);
+													}}
+													onBlur={(event, editor) => {
+														console.log('Blur.', editor);
+													}}
+													onFocus={(event, editor) => {
+														console.log('Focus.', editor);
+													}}
+												/>
+											</div>
 
 
-											<Input
-												label='Model Number'
-												value={values.model}
-												name='model'
-												isError={(touched.model && errors.model) ||
-													(!isSubmitting && addProductState.error['error']['model'])}
-
-												errorString={(touched.model && errors.model) ||
-													(!isSubmitting && addProductState.error['error']['model'])}
-												onChange={(e: any) => {
-													handleChange(e);
-													setFieldTouched('model');
-												}}
-											/>
-
-
-											<Input
-												label='Unit'
-												value={values.unit}
-												name='unit'
-												isError={(touched.unit && errors.unit) ||
-													(!isSubmitting && addProductState.error['error']['unit'])}
-
-												errorString={(touched.unit && errors.unit) ||
-													(!isSubmitting && addProductState.error['error']['unit'])}
-												onChange={(e: any) => {
-													handleChange(e);
-													setFieldTouched('unit');
-												}}
-											/>
+									
 
 										</div>
 
@@ -629,7 +726,7 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 										<div className='addProductGridContainer__item-header'>
 											<h3>
 												Image
-			</h3>
+											</h3>
 
 											<Tooltip
 												placement="left" title={'Click on the image to select cover image, By default 1st image is selected as cover'}>
@@ -704,6 +801,119 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 											</div>
 										</div>
 									</div>
+
+
+
+
+									<div className='addProductGridContainer__image'>
+
+<div className='addProductGridContainer__item-header'>
+	<h3>
+	Meta Data
+</h3>
+
+	<Tooltip
+		placement="left" title={"Meta data will be used to make the user's easy and for search engine optimization."}>
+		<a href='###'>
+			<InfoCircleOutlined />
+		</a>
+	</Tooltip>
+</div>
+<div className='addProductGridContainer__item-body'>
+
+                                
+<Input
+								label='Meta title'
+								value={values.metaTitle}
+								placeHolder={'category...'}
+								name='metaTitle'
+								isError={(touched.metaTitle && errors.metaTitle) ||
+									(!isSubmitting && addProductState.error['error']['metaTitle'])}
+
+								errorString={(touched.metaTitle && errors.metaTitle) ||
+									(!isSubmitting && addProductState.error['error']['metaTitle'])}
+								onChange={(e: any) => {
+									handleChange(e);
+									setFieldTouched('metaTitle')
+								}}
+							/>
+
+							<Input
+								label='BN Meta title'
+								value={values.bnMetaTitle}
+								placeHolder={'ক্যাটাগড়ি...'}
+								name='bnMetaTitle'
+								isError={(touched.bnMetaTitle && errors.bnMetaTitle) ||
+									(!isSubmitting && addProductState.error['error']['bnMetaTitle'])}
+
+								errorString={(touched.bnMetaTitle && errors.bnMetaTitle) ||
+									(!isSubmitting && addProductState.error['error']['bnMetaTitle'])}
+								onChange={(e: any) => {
+									handleChange(e);
+									setFieldTouched('bnMetaTitle');
+								}}
+							/>
+
+							<TextArea
+								label='Meta description'
+								value={values.metaDescription}
+								placeholder={'meta...'}
+								name='metaDescription'
+								isError={(touched.metaDescription && errors.metaDescription) ||
+									(!isSubmitting && addProductState.error['error']['metaDescription'])}
+
+								errorString={(touched.metaDescription && errors.metaDescription) ||
+									(!isSubmitting && addProductState.error['error']['metaDescription'])}
+								onChange={(e: any) => {
+									handleChange(e);
+									setFieldTouched('metaDescription');
+								}}
+							/>
+
+							<TextArea
+								label='BN Meta Description'
+								value={values.bnMetaDescription}
+								placeholder={'এইয় মেট...'}
+								name='bnMetaDescription'
+								isError={(touched.bnMetaDescription && errors.bnMetaDescription) ||
+									(!isSubmitting && addProductState.error['error']['bnMetaDescription'])}
+
+								errorString={(touched.bnMetaDescription && errors.bnMetaDescription) ||
+									(!isSubmitting && addProductState.error['error']['bnMetaDescription'])}
+								onChange={(e: any) => {
+									handleChange(e);
+									setFieldTouched('bnMetaDescription');
+								}}
+							/>
+
+							<h3 className='inputFieldLabel'>
+							Meta Tags (grocery,fashion)
+							</h3>
+
+							<MetaTags
+							// @ts-ignore
+							setTags={setMetaTags}
+							tags={metaTags}
+							 />
+
+							<div style={{
+								marginTop:'15px'
+							}}></div>
+
+							<h3 className='inputFieldLabel'>
+							BN Meta Tags (মুদিখানা,ফ্যাশন)
+							</h3>
+
+							<MetaTags
+							// @ts-ignore
+							setTags={setBnMetaTags}
+							tags={metaTags}
+							 />
+
+	
+</div>
+</div>
+
 
 								</div>
 								<div className='addProductGridContainer__right'>

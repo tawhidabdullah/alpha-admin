@@ -10,16 +10,20 @@ import Empty from "../../components/Empty";
 
 // import libraries 
 import { useHistory } from "react-router";
-import { LogoutOutlined, BellOutlined, OrderedListOutlined, TwitterSquareFilled } from '@ant-design/icons';
-import { Layout, Badge, Dropdown, Menu, Spin } from 'antd';
+import { LogoutOutlined,
+     BellOutlined, 
+     OrderedListOutlined,
+    TwitterSquareFilled,
+    ShoppingCartOutlined,
+    UserOutlined,
+     } from '@ant-design/icons';
 import Moment from 'react-moment';
 import moment from 'moment';
-
+import { Layout, Badge, Dropdown, Menu, Spin } from 'antd';
 const { Header } = Layout;
 
+
 // import styles
-
-
 
 
 interface Props {
@@ -47,85 +51,123 @@ const HeaderComponent = (props: Props) => {
     }, [])
 
 
-    const getNotificationCreationTime = (time: any) => {
-        console.log(time);
-        // return <Moment fromNow={true}></Moment>
-        return time;
+
+
+    console.log('getAllNotificationState',getAllNotificationState);
+
+
+    const typeIcon = {
+        customer: <UserOutlined />,
+        order: <ShoppingCartOutlined />
     }
+
     const menu = () => {
 
         if (getAllNotificationState.isLoading) return (
-            <Menu>
-                <div style={{
-                    padding: '0 30px'
-                }}>
-                    <Spin />
-                </div>
-
-            </Menu>
+            <div style={{
+                height:'100%',
+                display:'flex',
+                justifyContent:'center',
+                alignItems:'center',
+                marginTop:'100px'
+            }}>
+                <Spin />
+            </div>
         );
-
-
 
         if (getAllNotificationState.done && getAllNotificationState.data && !getAllNotificationState.data[0]) {
             return (
-                <Menu>
-                    <div style={{
-                        padding: '0 30px'
-                    }}>
-                        <Empty title='No Notification found' />
-                    </div>
-
-                </Menu>
+                <div style={{
+                    height:'100%',
+                    display:'flex',
+                    justifyContent:'center',
+                    alignItems:'center',
+                    marginTop:'100px'
+                }}>
+                     <Empty title='No Notification found' />
+                </div>
             )
-
-
         }
         return (
-            <Menu
-                style={{
-                    maxHeight: '450px',
-                    overflowY: 'scroll'
-                }}
+            <div 
+            style={{
+                
+            }}
+            className='notificationListItemContainer'>
+                                 
+                                 {getAllNotificationState.done
+                 && getAllNotificationState.data[0]
+                 && (
+                    <div style={{
+                      
+                    }}>
+                    <div style={{
+                        width:'100%',
+                        display:'flex',
+                        justifyContent:"space-around",
+                    }}>
+                    <a
+                     style={{
+                          textAlign:'center',
+                          backgroundColor:'#f7f7f7' ,
+                          padding:"10px",
+                          width:'50%',
+                          fontSize:'13px'
 
+                     }}
+                      href="##">
+                        CLEAR ALL
+                     </a>
+                     <a
+                     onClick={() => history.push('/admin/notification')}
+                     style={{
+                          textAlign:'center',
+                          backgroundColor:'#eee'   ,
+                          padding:"10px",
+                          width:'50%' ,
+                          fontSize:'13px'
+                     }}
+                      href="##">
+                      SEE ALL 
+                     </a>
+                    </div>
+                    </div>
+                 )
+               }
 
-                onClick={handleMenuClick}>
-                {getAllNotificationState.done && getAllNotificationState.data[0] && getAllNotificationState.data.map(item => {
-                    return (
-                        <Menu.Item
-                            // style={{
-                            //     padding: 0,
-                            //     margin: 0
-                            // }}
-                            key="1">
-
-                            <div className='notificationItem'>
-                                <span className='notificationItem-icon'>
-                                    <OrderedListOutlined />
-                                </span>
-                                <div className='notificationItem-info'>
-                                    <h3>
-                                        {item.heading}
-                                    </h3>
-                                    <h4>
-                                        {item.text}
-                                    </h4>
-                                    <h2>
-
-                                        {getNotificationCreationTime(item.added)}
-                                    </h2>
-                                </div>
-                            </div>
-                        </Menu.Item>
-                    )
-                })}
-
-            </Menu>
+            {getAllNotificationState.done
+            && getAllNotificationState.data[0]
+            && getAllNotificationState.data.map((item,index) => {
+            return (
+            <div
+              onClick={() => history.push(`/admin/${item.type}/${item.id}`)}
+              className='notificationListItemContainer__item'>
+                <span className='notificationListItemContainer__item-icon'>
+                  {typeIcon[item['type']]}
+                </span>
+                <div className='notificationListItemContainer__item-info'>
+                    <h3>
+                        {item.heading}
+                    </h3>
+                    <h4>
+                        {item.text}
+                    </h4>
+                    <h2>
+                    <Moment >
+                        {item.added}
+                    </Moment>
+                    </h2>
+                </div>
+            </div>
         )
+    })}
+</div>
 
+          
+        )
     }
 
-
+    
 
     return (
         <Header

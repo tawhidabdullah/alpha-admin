@@ -14,10 +14,13 @@ import {
 import { Skeleton, Empty, Button, notification, Table, Space, Input as CoolInput, Tooltip, Modal, Badge } from 'antd';
 
 
+// import moment
+import Moment from "react-moment";
 
 // import components
 import { DataTableSkeleton } from "../../components/Placeholders";
-import ProductEdit from "./PostEdit";
+import ProductBundleEdit from "./PostEdit";
+import CouponProducts from "../coupon/CouponProducts";
 
 
 const { Column, ColumnGroup } = Table;
@@ -29,7 +32,7 @@ interface Props {
 }
 
 const NewBrandDetail = (props: Props) => {
-    const [productDetailState, handleProductDetailFetch] = useHandleFetch({}, 'productDetailById');
+    const [productDetailState, handleProductDetailFetch] = useHandleFetch({}, 'bundleDetail');
 
     const params = useParams();
     const history = useHistory();
@@ -54,7 +57,7 @@ const NewBrandDetail = (props: Props) => {
     }, [productId]);
 
 
-
+    
 
     console.log('productDetailState', productDetailState);
 
@@ -93,28 +96,30 @@ const NewBrandDetail = (props: Props) => {
 
     const row = productDetailState.done && productDetailState.data && productDetailState.data['image'] ? getImagesInCollumn(productDetailState.data['image']) : [];
 
+
+    console.log('bundleDetail', productDetailState);
     return (
         <div className='brandDetailContainer'>
 
             <div className='brandDetailContainer__heading'>
                 <h3>
-                    Post Detail
+                    Bundle Detail
                 </h3>
 
                 {productDetailState.done && productDetailState.data && (Object.keys(productDetailState.data).length > 0) && (
                     <>
-                        <ProductEdit
+                        {/* <ProductBundleEdit
                             productEditVisible={productEditVisible}
                             setProductEditVisible={setProductEditVisible}
                             productDetailData={productDetailState.data}
-                        />
-                        <Button
+                        /> */}
+                        {/* <Button
                             onClick={() => setProductEditVisible(true)}
                             type='link'
                             icon={<EditOutlined />}
                         >
                             Edit
-                      </Button>
+                      </Button> */}
                     </>
                 )}
 
@@ -142,6 +147,27 @@ const NewBrandDetail = (props: Props) => {
                                 <h3>
                                     {productDetailState.data['description']}
                                 </h3>
+
+                                {productDetailState.data['startDate'] && (
+                                    <h3>
+                                        START DATE:
+                                        <span>
+                                            {productDetailState.data['url']}
+                                        </span>
+
+                                    </h3>
+                                )}
+
+                                {productDetailState.data['endDate'] && (
+                                    <h3>
+                                        END DATE:
+                                        <span>
+                                            {productDetailState.data['url']}
+                                        </span>
+
+                                    </h3>
+                                )}
+
 
 
                                 {productDetailState.data['url'] && (
@@ -214,120 +240,40 @@ const NewBrandDetail = (props: Props) => {
                             </>
                         )}
 
-                        {productDetailState.data['pricing'] && productDetailState.data['pricing'].length > 0 && (
-                            <>
-                                <div className='brandDetailContainer__heading'>
-                                    <h3>
-                                        Pricing
-                                   </h3>
+
+
+                        {productDetailState.done && productDetailState.data && Object.keys(productDetailState.data).length > 0 && productDetailState.data['products'] && (
+                            <div className='brandDetailContainer__heading'>
+                                <h3>
+                                    Products
+                       </h3>
+                            </div>
+                        )
+                        }
+
+
+                        <div className='brandDetailContainer__body'>
+                            {productDetailState.done && productDetailState.data && productDetailState.data['products'] && !(productDetailState.data['products'].length > 0) && (
+                                <div style={{
+                                    marginTop: '100px'
+                                }}>
+                                    <Empty description='No Products exists for this Bundle' image={Empty.PRESENTED_IMAGE_SIMPLE} />
                                 </div>
+                            )}
 
-                                <div className='brandDetailContainer__pricing'>
-                                    <div className='addProductGridContainer__item-body-pricingContainer'>
-                                        {productDetailState.data['pricing'].map(item => {
+                            {productDetailState.done && productDetailState.data && Object.keys(productDetailState.data).length > 0 && (
+                                <>
+                                    {productDetailState.data['products'] && productDetailState.data['products'].length > 0 &&
+                                        productDetailState.data['products'].map(product => {
                                             return (
-                                                <div className='addProductGridContainer__item-body-pricingContainer-item'>
-
-                                                    <div className='addProductGridContainer__item-body-pricingContainer-item-two'>
-                                                        <div>
-                                                            <h3>
-                                                                Price
-    </h3>
-                                                            <div className='addProductGridContainer__item-body-pricingContainer-item-body'>
-
-
-                                                                {item.price.offer ? (
-                                                                    <>
-                                                                        <h4 >
-                                                                            {item.price.offer}
-
-                                                                        </h4>
-                                                        /
-                                                        <h5 style={{
-                                                                            textDecoration: "line-through"
-                                                                        }}>
-
-                                                                            {item.price.regular}
-                                                                        </h5>
-                                                                    </>
-                                                                ) : (
-                                                                        <h4>
-                                                                            {item.price.regular}
-
-                                                                        </h4>
-                                                                    )}
-
-
-                                                            </div>
-                                                        </div>
-
-                                                        {item.stock && (
-                                                            <div>
-                                                                <Badge
-                                                                    overflowCount={999}
-                                                                    count={item.stock.available}>
-                                                                    <h3>
-                                                                        Stock
-                </h3>
-                                                                </Badge>
-                                                                <div className='addProductGridContainer__item-body-pricingContainer-item-body'>
-                                                                    <div>
-                                                                        <h6>
-                                                                            min
-                                                                        <Badge
-                                                                                className="site-badge-count-4"
-                                                                                overflowCount={999}
-                                                                                count={item.stock.minimum} />
-                                                                        </h6>
-
-                                                                    </div>
-
-                                                                </div>
-                                                            </div>
-                                                        )}
-
-
-
-                                                    </div>
-
-                                                    {item.attribute
-                                                        && Object.values(item.attribute).length > 0 && (
-                                                            <>
-                                                                <h3>
-                                                                    Attributes
-    </h3>
-                                                                <div className='addProductGridContainer__item-body-pricingContainer-item-body'>
-                                                                    {item.attribute
-                                                                        && Object.keys(item.attribute).length > 0
-                                                                        && Object.keys(item.attribute).map(attributeItem => {
-                                                                            return (
-                                                                                <div>
-                                                                                    <h6>
-                                                                                        {attributeItem}
-                                                                                    </h6>
-                                                                                    <h4>
-                                                                                        {item.attribute[attributeItem]}
-                                                                                    </h4>
-                                                                                </div>
-                                                                            )
-                                                                        })}
-                                                                </div>
-                                                            </>
-                                                        )}
-
-                                                </div>
+                                                <CouponProducts
+                                                    quantity={product.quantity}
+                                                    productId={product['_id']} />
                                             )
                                         })}
-                                    </div>
-                                </div>
-
-                                <div style={{
-                                    marginBottom: "25px"
-                                }}></div>
-                            </>
-                        )}
-
-
+                                </>
+                            )}
+                        </div>
 
                         {productDetailState.data['image'] && productDetailState.data['image'].length > 0 && (
                             <>

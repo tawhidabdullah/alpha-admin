@@ -1,51 +1,51 @@
 {
 	"alpha": {
 		"addImageToLibrary": {
-			"url": "/admin/image/add",
+			"url": "/admin/api/image/add",
 			"method": "post"
 		},
 		"updateImageFromLibrary": {
-			"url": "/admin/image/update",
+			"url": "/admin/api/image/update",
 			"method": "post"
 		},
 		"deleteImageFromLibrary": {
-			"url": "/admin/image/update/delete/:id",
+			"url": "/admin/api/image/update/delete/:id",
 			"method": "post"
 		},
 		"ImageListFromLibrary": {
-			"url": "/admin/image",
+			"url": "/admin/api/image",
 			"method": "get"
 		},
 		"viewSingleImageFromLibrary": {
-			"url": "/admin/image/:id",
+			"url": "/admin/api/image/:id",
 			"method": "post"
 		},
 		"ImageSizeAndSettingsUpdateForImageLibrary": {
-			"url": "/admin/image/update/settings",
+			"url": "/admin/api/image/update/settings",
 			"method": "post"
 		},
 		"viewImageSizeAndSettings": {
-			"url": "/admin/image/settings",
+			"url": "/admin/api/image/settings",
 			"method": "get"
 		},
 		"attachImageToItemMultiple": {
-			"url": "/admin/image/attach/:collection/:itemId",
+			"url": "/admin/api/image/attach/:collection/:itemId",
 			"method": "post"
 		},
 		"attachImageToItemSingle": {
-			"url": "/admin/image/attach/:imageId/:collection/:itemId",
+			"url": "/admin/api/image/attach/:imageId/:collection/:itemId",
 			"method": "post"
 		},
 		"detachImageFromItemMultiple": {
-			"url": "/admin/image/detach/:collection/:itemId",
+			"url": "/admin/api/image/detach/:collection/:itemId",
 			"method": "post"
 		},
 		"detachImageFromItemSingle": {
-			"url": "/admin/image/detach/:imageId/:collection/:itemId",
+			"url": "/admin/api/image/detach/:imageId/:collection/:itemId",
 			"method": "post"
 		},
 		"setImageAsThumbnailToItem": {
-			"url": "/admin/image/cover/:imageId/:collection/:itemId",
+			"url": "/admin/api/image/cover/:imageId/:collection/:itemId",
 			"method": "post"
 		},
 		"productList": {
@@ -53,15 +53,35 @@
 			"method": "get"
 		},
 		"addProduct": {
-			"url": "/admin/product/add",
+			"url": "/admin/api/product/add",
 			"method": "post"
 		},
 		"updateProduct": {
-			"url": "/admin/product/update/:id",
+			"url": "/admin/api/product/update/:id",
 			"method": "post"
 		},
 		"deleteProduct": {
-			"url": "/admin/product/update/delete/:id",
+			"url": "/admin/api/product/update/delete/:id",
+			"method": "post"
+		},
+		"addPost": {
+			"url": "/admin/api/post/add",
+			"method": "post"
+		},
+		"postList": {
+			"url": "/admin/api/post/add",
+			"method": "post"
+		},
+		"postCategoryList": {
+			"url": "/admin/api/post/categories",
+			"method": "post"
+		},
+		"postAddCategory": {
+			"url": "/admin/api/post/categories/add",
+			"method": "post"
+		},
+		"postDetail": {
+			"url": "/admin/api/post/:id",
 			"method": "post"
 		},
 		"categoryList": {
@@ -81,15 +101,15 @@
 			"method": "get"
 		},
 		"addCategory": {
-			"url": "/admin/category/add",
+			"url": "/admin/api/category/add",
 			"method": "post"
 		},
 		"updateCategory": {
-			"url": "/admin/category/update/:id",
+			"url": "/admin/api/category/update/:id",
 			"method": "post"
 		},
 		"deleteCategory": {
-			"url": "/admin/category/update/delete/:id",
+			"url": "/admin/api/category/update/delete/:id",
 			"method": "post"
 		},
 		"brandList": {
@@ -101,15 +121,15 @@
 			"method": "get"
 		},
 		"addBrand": {
-			"url": "/admin/brand/add",
+			"url": "/admin/api/brand/add",
 			"method": "post"
 		},
 		"updateBrand": {
-			"url": "/admin/brand/update/:id",
+			"url": "/admin/api/brand/update/:id",
 			"method": "post"
 		},
 		"deleteBrand": {
-			"url": "/admin/brand/update/delete/:id",
+			"url": "/admin/api/brand/update/delete/:id",
 			"method": "post"
 		},
 		"tagProducts": {
@@ -129,63 +149,63 @@
 			"method": "get"
 		},
 		"addTag": {
-			"url": "/admin/tag/add",
+			"url": "/admin/api/tag/add",
 			"method": "post"
 		},
 		"updateTag": {
-			"url": "/admin/tag/update/:id",
+			"url": "/admin/api/tag/update/:id",
 			"method": "post"
 		},
 		"deleteTag": {
-			"url": "/admin/tag/update/delete/:id",
+			"url": "/admin/api/tag/update/delete/:id",
 			"method": "post"
 		},
 		"customerList": {
-			"url": "/admin/customer",
+			"url": "/admin/api/customer",
 			"method": "get"
 		},
 		"customerDetail": {
-			"url": "/admin/customer/:id",
+			"url": "/admin/api/customer/:id",
 			"method": "get"
 		},
 		"addBundle": {
-			"url": "/admin/bundle/add",
+			"url": "/admin/api/bundle/add",
 			"method": "post"
 		},
 		"bundleDetail": {
-			"url": "/admin/bundle/:id",
+			"url": "/admin/api/bundle/:id",
 			"method": "get"
 		},
 		"updateBundle": {
-			"url": "/admin/bundle/update/:id",
+			"url": "/admin/api/bundle/update/:id",
 			"method": "post"
 		},
 		"deleteBundle": {
-			"url": "/admin/bundle/update/delete/:id",
+			"url": "/admin/api/bundle/update/delete/:id",
 			"method": "post"
 		},
 		"bundleList": {
-			"url": "/admin/bundle",
+			"url": "/admin/api/bundle",
 			"method": "get"
 		},
 		"addCoupon": {
-			"url": "/admin/coupon/add",
+			"url": "/admin/api/coupon/add",
 			"method": "post"
 		},
 		"couponDetail": {
-			"url": "/admin/coupon/:id",
+			"url": "/admin/api/coupon/:id",
 			"method": "get"
 		},
 		"updateCoupon": {
-			"url": "/admin/coupon/update/:id",
+			"url": "/admin/api/coupon/update/:id",
 			"method": "post"
 		},
 		"deleteCoupon": {
-			"url": "/admin/coupon/update/delete/:id",
+			"url": "/admin/api/coupon/update/delete/:id",
 			"method": "post"
 		},
 		"couponList": {
-			"url": "/admin/coupon",
+			"url": "/admin/api/coupon",
 			"method": "get"
 		},
 		"productDetailById": {
@@ -193,223 +213,247 @@
 			"method": "get"
 		},
 		"addCustomer": {
-			"url": "/admin/customer/add",
+			"url": "/admin/api/customer/add",
 			"method": "post"
 		},
 		"updateCustomer": {
-			"url": "/admin/customer/update/:id",
+			"url": "/admin/api/customer/update/:id",
 			"method": "post"
 		},
 		"deleteCustomer": {
-			"url": "/admin/customer/update/delete/:id",
+			"url": "/admin/api/customer/update/delete/:id",
 			"method": "post"
 		},
 		"regionList": {
-			"url": "/admin/delivery",
+			"url": "/admin/api/delivery",
 			"method": "get"
 		},
 		"addRegion": {
-			"url": "/admin/delivery/add",
+			"url": "/admin/api/delivery/add",
 			"method": "post"
 		},
 		"updateRegion": {
-			"url": "/admin/delivery/update/:id",
+			"url": "/admin/api/delivery/update/:id",
 			"method": "post"
 		},
 		"deleteRegion": {
-			"url": "/admin/delivery/update/delete/:id",
+			"url": "/admin/api/delivery/update/delete/:id",
 			"method": "post"
 		},
+		"getDeliveryRegion": {
+			"url": "/api/delivery/city/:cityName",
+			"method": "get"
+		},
 		"orderList": {
-			"url": "/admin/order",
+			"url": "/admin/api/order",
 			"method": "get"
 		},
 		"orderListForCustomer": {
-			"url": "/admin/order?customer=customerId",
+			"url": "/admin/api/order?customer=customerId",
 			"method": "get"
 		},
 		"addOrder": {
-			"url": "/admin/order/add",
+			"url": "/admin/api/order/add",
 			"method": "post"
 		},
 		"updateOrder": {
-			"url": "/admin/order/update/:id",
+			"url": "/admin/api/order/update/:id",
 			"method": "post"
 		},
 		"updateOrderStatus": {
-			"url": "/admin/order/update/:id/status?newstatus=newOrderstatus",
+			"url": "/admin/api/order/update/:id/status?newstatus=newOrderstatus",
 			"method": "post"
 		},
 		"orderDetail": {
-			"url": "/admin/order/:id",
+			"url": "/admin/api/order/:id",
 			"method": "get"
 		},
 		"deleteOrder": {
-			"url": "/admin/order/update/delete/:id",
+			"url": "/admin/api/order/update/delete/:id",
 			"method": "post"
 		},
 		"componentList": {
-			"url": "/admin/component",
+			"url": "/admin/api/component",
 			"method": "get"
 		},
 		"addComponent": {
-			"url": "/admin/component/add",
+			"url": "/admin/api/component/add",
 			"method": "post"
 		},
 		"updateComponent": {
-			"url": "/admin/component/update/:id",
+			"url": "/admin/api/component/update/:id",
 			"method": "post"
 		},
 		"componentDetail": {
-			"url": "/admin/component/:id",
+			"url": "/admin/api/component/:id",
 			"method": "post"
 		},
 		"deleteComponent": {
-			"url": "/admin/component/update/delete/:id",
+			"url": "/admin/api/component/update/delete/:id",
 			"method": "post"
 		},
 		"themeList": {
-			"url": "/admin/theme",
+			"url": "/admin/api/theme",
 			"method": "get"
 		},
 		"addTheme": {
-			"url": "/admin/theme/add",
+			"url": "/admin/api/theme/add",
 			"method": "post"
 		},
 		"activeTheme": {
-			"url": "/admin/theme/update/activate/:id",
+			"url": "/admin/api/theme/update/activate/:id",
 			"method": "post"
 		},
 		"themeDetail": {
-			"url": "/admin/theme/:id",
+			"url": "/admin/api/theme/:id",
 			"method": "post"
 		},
 		"deletetheme": {
-			"url": "/admin/theme/update/delete/:id",
+			"url": "/admin/api/theme/update/delete/:id",
 			"method": "post"
 		},
 		"pageList": {
-			"url": "/admin/page",
+			"url": "/admin/api/page",
 			"method": "get"
 		},
 		"pageDetail": {
-			"url": "/admin/page/:idorurl",
+			"url": "/admin/api/page/:idorurl",
 			"method": "get"
 		},
 		"addPage": {
-			"url": "/admin/page/add",
+			"url": "/admin/api/page/add",
 			"method": "post"
 		},
 		"updatePage": {
-			"url": "/admin/page/update/site",
+			"url": "/admin/api/page/update/site",
 			"method": "post"
 		},
 		"deletePage": {
-			"url": "/admin/page/update/delete/:id",
+			"url": "/admin/api/page/update/delete/:id",
 			"method": "post"
 		},
 		"siteSettings": {
-			"url": "/admin/settings/site",
+			"url": "/admin/api/settings/site",
 			"method": "get"
 		},
 		"updateSiteSettings": {
-			"url": "/admin/settings/update/site",
+			"url": "/admin/api/settings/update/site",
 			"method": "post"
 		},
 		"updateSiteLogoAndIcon": {
-			"url": "/admin/settings/update/logo",
+			"url": "/admin/api/settings/update/logo",
 			"method": "post"
 		},
 		"updateInvoiceSettings": {
-			"url": "/admin/settings/update/invoice",
+			"url": "/admin/api/settings/update/invoice",
 			"method": "post"
 		},
 		"invoiceSettingsDetail": {
-			"url": "/admin/settings/invoice",
+			"url": "/admin/api/settings/invoice",
 			"method": "get"
 		},
 		"configureSMS": {
-			"url": "/admin/sms/configuration",
+			"url": "/admin/api/sms/configuration",
 			"method": "get"
 		},
 		"getSMSConfiguration": {
-			"url": "/admin/sms/configure",
+			"url": "/admin/api/sms/configure",
 			"method": "post"
 		},
 		"sendSMS": {
-			"url": "/admin/sms/inbox/send",
+			"url": "/admin/api/sms/inbox/send",
 			"method": "post"
 		},
 		"getAllNotification": {
-			"url": "/admin/notification",
+			"url": "/admin/api/notification",
 			"method": "get"
 		},
 		"getAnalyticsPageVisitCount": {
-			"url": "/admin/analytics/visitCount?type=visitType",
+			"url": "/admin/api/analytics/visitCount?type=visitType",
 			"method": "get"
 		},
 		"getAnalyticsPageBreakDown": {
-			"url": "/admin/analytics/breakdown?metric=metricName",
+			"url": "/admin/api/analytics/breakdown?metric=metricName",
 			"method": "get"
 		},
 		"getAnalyticsPageVisits": {
-			"url": "/admin/analytics/item?type=visitType&metric=item",
+			"url": "/admin/api/analytics/item?type=visitType&metric=item",
 			"method": "get"
 		},
 		"getAnalyticsDemographicVisits": {
-			"url": "/admin/analytics/user?metric=metricType",
+			"url": "/admin/api/analytics/user?metric=metricType",
+			"method": "get"
+		},
+		"getAnalyticsOrders": {
+			"url": "/admin/api/order?metric=metricType",
 			"method": "get"
 		},
 		"getAnalyticsTotalUserCount": {
-			"url": "/admin/analytics/user?metric=metricValue",
+			"url": "/admin/api/analytics/user?metric=metricValue",
 			"method": "get"
 		},
 		"getTotalUserCount": {
-			"url": "/admin/analytics/user?metric=metricValue",
+			"url": "/admin/api/analytics/user?metric=metricValue",
 			"method": "get"
 		},
 		"getEmailConfiguration": {
-			"url": "/admin/email/configuration",
+			"url": "/admin/api/email/configuration",
 			"method": "get"
 		},
 		"configureEmailSTMP": {
-			"url": "/admin/email/configure",
+			"url": "/admin/api/email/configure",
 			"method": "post"
 		},
 		"getAutoEmailConfiguration": {
-			"url": "/admin/email/autoevents",
+			"url": "/admin/api/email/autoevents",
 			"method": "get"
 		},
 		"configureAutoEmail": {
-			"url": "/admin/email/configure/autoevents",
+			"url": "/admin/api/email/configure/autoevents",
 			"method": "post"
 		},
 		"configureAutoEmailTemplate": {
-			"url": "/admin/email/configure/template",
+			"url": "/admin/api/email/configure/template",
 			"method": "post"
 		},
 		"getConfigureAutoEmailTemplate": {
-			"url": "/admin/email/autoevents/templates/:eventName",
+			"url": "/admin/api/email/autoevents/templates/:eventName",
 			"method": "get"
 		},
 		"getSetEmailList": {
-			"url": "/admin/email/inbox",
+			"url": "/admin/api/email/inbox",
 			"method": "get"
 		},
 		"getSetEmailDetails": {
-			"url": "/admin/email/inbox/:id",
+			"url": "/admin/api/email/inbox/:id",
 			"method": "get"
 		},
 		"sendCustomEmail": {
-			"url": "/admin/email/inbox/send",
+			"url": "/admin/api/email/inbox/send",
 			"method": "post"
 		},
 		"login": {
-			"url": "/admin/auth/login",
+			"url": "/admin/api/auth/login",
 			"method": "post"
 		},
 		"attributeList": {
-			"url": "/admin/attributes",
+			"url": "/admin/api/attributes",
+			"method": "get"
+		},
+		"adminRoleRegister": {
+			"url": "/admin/api/adminRoles/register",
+			"method": "post"
+		},
+		"updateAdminRole": {
+			"url": "/admin/api/adminRoles/update/:id",
+			"method": "post"
+		},
+		"adminList": {
+			"url": "/admin/api/adminRoles",
+			"method": "get"
+		},
+		"adminDetail": {
+			"url": "/admin/api/adminRoles/:id",
 			"method": "get"
 		},
 		"countryList": {
@@ -421,7 +465,7 @@
 			"method": "get"
 		},
 		"logout": {
-			"url": "/admin/auth/logout",
+			"url": "/admin/api/auth/logout",
 			"method": "get"
 		}
 	}

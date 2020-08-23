@@ -16,10 +16,9 @@ const Complete = ({ setAttributeList, attributeList, attribute }) => {
     const [attributeItem, setAttributeITem] = useState({
         name: attribute.name,
         value: attribute.value
-    })
+    }); 
 
-
-
+    
     useEffect(() => {
         const positionInAttribute = () => {
             return attributeList.map(item => item.id).indexOf(attribute.id);

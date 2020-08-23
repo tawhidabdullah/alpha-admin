@@ -16,10 +16,15 @@ interface Props {
     errorString?: string;
     name?: string;
     addonBefore?: string;
-    required?: boolean
+    required?: boolean;
+    placeHolder?:string; 
 }
 
-const Demo = ({ required, addonBefore, label, type, defaultValue, value, onChange, disabled, isError, errorString, name }: Props) => {
+const Demo = ({ required, addonBefore, label, 
+    type, defaultValue,value, onChange, disabled,
+     isError, errorString, name,
+     placeHolder
+    }: Props) => {
     return (
         <>
             {label && (
@@ -33,9 +38,8 @@ const Demo = ({ required, addonBefore, label, type, defaultValue, value, onChang
                 validateStatus={isError ? "error" : ""}
                 // hasFeedback validateStatus="success"
                 help={errorString}
-
-            // rules={[{ required: true }]}
-            >
+                // rules={[{ required: true }]}
+                >
 
                 <Input
                     required={required}
@@ -48,7 +52,9 @@ const Demo = ({ required, addonBefore, label, type, defaultValue, value, onChang
                     disabled={disabled}
                     value={value}
                     onChange={onChange}
-                    className='inputclassName' />
+                    className='inputclassName'
+                    placeholder={placeHolder}
+                     />
 
             </Form.Item>
         </>

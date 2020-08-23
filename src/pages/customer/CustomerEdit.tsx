@@ -27,10 +27,6 @@ const validationSchema = Yup.object().shape({
     phone: Yup.string()
         .required('Please tell us your mobile number.')
         .max(13, 'Please enter a valid mobile number.'),
-    password: Yup.string()
-        .label('Password')
-        .required()
-        .min(6, 'Password must have at least 6 characters'),
     address1: Yup.string()
         .label('Address line 1')
         .required()
@@ -207,7 +203,6 @@ const QuickEdit = ({ customer, setvisible, visible }: Props) => {
         if (!isValid ||
             !values.firstName ||
             !values.lastName ||
-            !values.password ||
             !values.phone ||
             !values.address1) {
             return true;
@@ -239,7 +234,7 @@ const QuickEdit = ({ customer, setvisible, visible }: Props) => {
             }) => (
                     <>
                         <Modal
-                            title="Quick Edit"
+                            title="Customer Edit"
                             visible={visible}
                             onOk={(e: any) => handleSubmit(e)}
                             onCancel={handleCancel}

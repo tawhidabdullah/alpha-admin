@@ -44,7 +44,9 @@ const Tags = ({
 
 
     const handleChange = (selectItems) => {
-        setselectedOptions(selectItems)
+        setselectedOptions(selectItems);
+
+        console.log('selectedProducts', selectItems);
 
         if (tagState.done && tagState.data.length > 0 && selectItems.length > 0) {
             const selectedCategoryIds = selectItems.map((item) => {
@@ -55,6 +57,7 @@ const Tags = ({
                     return selectedcategory;
                 }
             });
+            console.log('selectedCategoryIds', selectedCategoryIds);
             setProductIds(selectedCategoryIds);
         }
         else {

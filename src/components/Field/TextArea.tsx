@@ -16,9 +16,14 @@ interface Props {
     errorString?: string;
     name?: string;
     rows?: number
+    placeholder?:any; 
 }
 
-const Demo = ({ label, type, defaultValue, value, onChange, disabled, isError, errorString, name, rows = 4 }: Props) => {
+const Demo = ({ label, type, defaultValue, value, 
+    onChange, disabled, isError,
+     errorString, name, rows = 4,
+     placeholder
+     }: Props) => {
     return (
         <>
             {label && (
@@ -38,7 +43,9 @@ const Demo = ({ label, type, defaultValue, value, onChange, disabled, isError, e
                     value={value}
                     name={name}
                     className='inputclassName'
-                    rows={rows} />
+                    rows={rows} 
+                    placeholder={placeholder}
+                    />
 
             </Form.Item>
         </>

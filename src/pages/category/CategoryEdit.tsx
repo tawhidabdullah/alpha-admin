@@ -391,7 +391,7 @@ const AddNewBrand = ({ categoryEditVisible,
 							style={{
 								top: '40px'
 							}}
-							title="Category Detail"
+							title="Category Edit"
 							visible={categoryEditVisible}
 							onOk={(e: any) => handleSubmit(e)}
 							onCancel={handleCancel}

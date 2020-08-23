@@ -46,7 +46,6 @@ const NewBrandDetail = (props: Props) => {
     const [brandDetailData, setBrandDetailData] = useState(false);
 
 
-
     useEffect(() => {
         const getBrandDetail = async () => {
             const brandDetailRes = await handleBrandDetailFetch({
@@ -56,6 +55,15 @@ const NewBrandDetail = (props: Props) => {
                     }
                 }
             }); 
+
+            // @ts-ignore
+            if(brandDetailRes){
+                // @ts-ignore
+                setBrandDetailData(brandDetailRes)
+            }; 
+
+
+            console.log('brandDetailRes',brandDetailRes);
 
 
         };
@@ -100,12 +108,13 @@ const NewBrandDetail = (props: Props) => {
                 </h3>
 
 
-                {brandDetailState.done && brandDetailState.data && (Object.keys(brandDetailState.data).length > 0) && (
+                {brandDetailState.done && brandDetailData && (Object.keys(brandDetailData).length > 0) && (
                     <>
                         <BrandEdit
                             brandEditVisible={brandEditVisible}
                             setBrandEditVisible={setBrandEditVisible}
-                            brandDetailData={brandDetailState.data}
+                            brandDetailData={brandDetailData}
+                            setBrandDetailData={setBrandDetailData}
                         />
                         <Button
                             onClick={() => setBrandEditVisible(true)}
@@ -121,28 +130,28 @@ const NewBrandDetail = (props: Props) => {
             <Skeleton
                 avatar paragraph={{ rows: 3 }}
                 loading={brandDetailState.isLoading}>
-                {brandDetailState.done && brandDetailState.data && !(Object.keys(brandDetailState.data).length > 0) && (
+                {brandDetailState.done && brandDetailData && !(Object.keys(brandDetailData).length > 0) && (
                     <Empty description='No Brand found' image={Empty.PRESENTED_IMAGE_SIMPLE} />
                 )}
 
-                {brandDetailState.done && brandDetailState.data && (Object.keys(brandDetailState.data).length > 0) && (
+                {brandDetailState.done && brandDetailData && (Object.keys(brandDetailData).length > 0) && (
                     <div className='brandDetailContainer__header'>
                         <div className='brandDetailContainer__header-coverContainer'>
-                            <img src={brandDetailState.data['cover'] && brandDetailState.data['cover']['cover']} alt="" />
+                            <img src={brandDetailData['cover'] && brandDetailData['cover']['cover']} alt="" />
                         </div>
                         <div className='brandDetailContainer__header-info'>
                             <h2>
-                                {brandDetailState.data['name']}
+                                {brandDetailData['name']}
                             </h2>
                             <h3>
-                                {brandDetailState.data['description']}
+                                {brandDetailData['description']}
                             </h3>
 
-                            {brandDetailState.data['url'] && (
+                            {brandDetailData['url'] && (
                                 <h3>
                                     URL:
                                     <span>
-                                        {brandDetailState.data['url']}
+                                        {brandDetailData['url']}
                                     </span>
 
                                 </h3>
@@ -266,6 +275,25 @@ const NewBrandDetail = (props: Props) => {
                                 className='classnameofthecolumn'
 
                             />
+
+                            
+                            <Column
+                                title="Available"
+                                dataIndex="available"
+                                key="id"
+                                className='classnameofthecolumn'
+
+                            />
+
+
+                            <Column
+                                title="Minimum"
+                                dataIndex="minimum"
+                                key="id"
+                                className='classnameofthecolumn'
+
+                            />
+
 
                         </Table>
                     </>

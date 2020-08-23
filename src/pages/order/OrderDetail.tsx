@@ -81,7 +81,7 @@ const NewBrandDetail = (props: Props) => {
 
 
 
-    console.log('tagProductsState', tagProductsState);
+    console.log('orderDetailState', tagDetailState);
 
     console.log('brandParams', params);
 
@@ -136,20 +136,109 @@ const NewBrandDetail = (props: Props) => {
 
                                 </h3>
                             )}
+
+                            {tagDetailState['data']['country'] && (
+                                <h3>
+                                    COUNTRY:
+                                    <span>
+                                        {tagDetailState['data']['country']}
+                                    </span>
+                                </h3>
+                            )}
+
+
+                            {tagDetailState['data']['city'] && (
+                                <h3>
+                                    CITY:
+                                    <span>
+                                        {tagDetailState['data']['city']}
+                                    </span>
+                                </h3>
+                            )}
+                        
+
+
+                            {tagDetailState['data']['address1'] && (
+                                <h3>
+                                    ADDRESS:
+                                    <span>
+                                        {tagDetailState['data']['address1']}
+                                    </span>
+                                </h3>
+                            )}
+                         
+
+                            {tagDetailState['data']['phone'] && (
+                                <h3>
+                                    PHONE:
+                                    <span>
+                                        {tagDetailState['data']['phone']}
+                                    </span>
+                                </h3>
+                            )}
+
+                             {tagDetailState['data']['email'] && (
+                                <h3>
+                                    EMAIL:
+                                    <span>
+                                        {tagDetailState['data']['email']}
+                                    </span>
+                                </h3>
+                            )}
+
+
+                            {tagDetailState['data']['paymentMethod'] && (
+                                <h3>
+                                    PAYMENT METHOD:
+                                    <span>
+                                        {tagDetailState['data']['paymentMethod']}
+                                    </span>
+                                </h3>
+                            )}
+
+
+                            {tagDetailState['data']['paymentStatus'] && (
+                                <h3>
+                                    PAYMENT STATUS:
+                                    <span>
+                                        {tagDetailState['data']['paymentStatus']}
+                                    </span>
+                                </h3>
+                            )}
+
+                            
+                        {tagDetailState['data']['status'] && (
+                                <h3>
+                                    ORDER STATUS:
+                                    <span>
+                                        {tagDetailState['data']['status']}
+                                    </span>
+                                </h3>
+                            )}
+
+                      
                         </div>
                     </div>
                 )}
 
             </Skeleton>
 
+
             <div className='brandDetailContainer__heading'>
-                <h3>
-                    Products
-                </h3>
-            </div>
+                    <h3>
+                        Products
+                    </h3>
+                </div>
+
+          
+           
             <div className='brandDetailContainer__body'>
-                {tagProductsState.isLoading && <DataTableSkeleton />}
-                {tagProductsState.done && !(tagProductsState.data.length > 0) && (
+
+
+                {tagDetailState.done 
+                    && tagDetailState.data 
+                    && (Object.keys(tagDetailState.data).length > 0) 
+                    && tagDetailState.data['products'] && !(tagDetailState.data['products'].length > 0) && (
                     <div style={{
                         marginTop: '100px'
                     }}>
@@ -157,8 +246,13 @@ const NewBrandDetail = (props: Props) => {
                     </div>
                 )}
 
-                {tagProductsState.done && tagProductsState.data && tagProductsState.data.length > 0 && (
-                    <>
+
+                {tagDetailState.done 
+                    && tagDetailState.data 
+                    && (Object.keys(tagDetailState.data).length > 0) 
+                    && tagDetailState.data['products'] 
+                    && tagDetailState.data['products'].length > 0 && (
+                <>
                         <Table
                             style={{
                                 paddingTop: '10px',
@@ -173,7 +267,7 @@ const NewBrandDetail = (props: Props) => {
                             // bordered={true}
                             size='small'
                             // pagination={false}
-                            dataSource={tagProductsState.data}
+                            dataSource={tagDetailState.data['products']}
                             tableLayout={'auto'}
                             onHeaderRow={column => {
                                 return {
@@ -205,10 +299,6 @@ const NewBrandDetail = (props: Props) => {
                                                 borderRadius: '3px',
                                                 cursor: 'pointer'
                                             }} />
-
-
-
-
                                     </>
                                 )}
                             />
@@ -239,14 +329,6 @@ const NewBrandDetail = (props: Props) => {
 
                             />
 
-                            <Column
-                                title="Offer Price"
-                                dataIndex="offerPrice"
-                                key="id"
-                                className='classnameofthecolumn'
-
-                            />
-
 
                             <Column
                                 title="Price"
@@ -256,9 +338,34 @@ const NewBrandDetail = (props: Props) => {
 
                             />
 
+
+
+
+
+                            
+                            <Column
+                                title="Available"
+                                dataIndex="available"
+                                key="id"
+                                className='classnameofthecolumn'
+
+                            />
+
+
+                            <Column
+                                title="Minimum"
+                                dataIndex="minimum"
+                                key="id"
+                                className='classnameofthecolumn'
+
+                            />
+
+
                         </Table>
-                    </>
-                )}
+
+                </>
+            )}
+
 
             </div>
         </div>

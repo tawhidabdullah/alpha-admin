@@ -28,8 +28,6 @@ class Connector {
 
     // configuring options for fetch request
 
-
-
     this.options = {
       ...this.options,
       method: api.method,
@@ -48,7 +46,6 @@ class Connector {
         body: api.method !== 'get' ? JSON.stringify(options.body) : null,
       } : {
           body: api.method !== 'get' ? options.body : null,
-
         }),
     };
 

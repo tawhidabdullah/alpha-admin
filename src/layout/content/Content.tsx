@@ -12,11 +12,17 @@ import { CouponList, CouponDetail } from '../../pages/coupon';
 import { CustomerList, CustomerDetail } from '../../pages/customer';
 import { PagesList, AddNewPage } from '../../pages/pages';
 import { AttributeList } from '../../pages/attribute';
-import { OrderList, AddNewOrder, OrderDetail } from '../../pages/order';
+import { OrderList, AddNewOrder, OrderDetail,OrderAnalytics } from '../../pages/order';
 import { Component, ManageThemes, Image, Invoice, SiteInfo } from '../../pages/settings';
 import { Delivery } from '../../pages/delivery';
 import Sms from '../../pages/sms';
 import {Email} from '../../pages/email';
+import {NotificationList} from '../../pages/notification';
+import {AdminList, AdminDetail} from '../../pages/admins';
+import {PostList, PostDetail } from '../../pages/post';
+import {StaffList, StaffDetail} from '../../pages/staff';
+import {ExpenseList, ExpenseDetail} from '../../pages/expense';
+import {PostTagList, PostCategoryList, NewPostCategoryDetail, NewPostTagDetail} from '../../pages/post';
 
 
 // import Login from '../../pages/auth/login';
@@ -98,13 +104,47 @@ const ContentComponent = (props: Props) => {
                     <CouponList />
                 </Route>
 
+
+                <Route path='/admin/posts' exact>
+                    <PostList />
+                </Route>
+
+            
+
+                
+                <Route path='/admin/posts/tag' exact>
+                    <PostTagList />
+                </Route>
+
+                <Route path='/admin/posts/category' exact>
+                    <PostCategoryList />
+                </Route>
+
+                <Route path='/admin/posts/:id' exact>
+                    <PostDetail />
+                </Route>
+
+                <Route path='/admin/posts/tag/:id' exact>
+                    <NewPostTagDetail />
+                </Route>
+
+                <Route path='/admin/posts/category/:id' exact>
+                     <NewPostCategoryDetail />
+                </Route>
+                
                 <Route path='/admin/coupon/:id' exact>
                     <CouponDetail />
+                </Route>
+
+                <Route path='/admin/notification' exact>
+                    <NotificationList />
                 </Route>
 
                 {/* <Route path='/product/new' exact>
                      <AddNewProduct />
                    </Route> */}
+
+
                 <Route path='/admin/tag' exact>
                     <TagList />
                 </Route>
@@ -123,9 +163,29 @@ const ContentComponent = (props: Props) => {
                 <Route path='/admin/order/new' exact>
                     <AddNewOrder />
                 </Route>
+                <Route path='/admin/order/overview' exact>
+                    <OrderAnalytics />
+                </Route>
+
                 <Route path='/admin/order/:id' exact>
                     <OrderDetail />
                 </Route>
+               
+                <Route path='/admin/staff' exact>
+                    <StaffList />
+                </Route>
+                <Route path='/admin/staff/:id' exact>
+                    <StaffDetail />
+                </Route>
+
+                <Route path='/admin/expense' exact>
+                    <ExpenseList />
+                </Route>
+
+                <Route path='/admin/expense/:id' exact>
+                    <ExpenseDetail />
+                </Route>
+
                 <Route path='/admin/customer' exact>
                     <CustomerList />
                 </Route>
@@ -155,6 +215,12 @@ const ContentComponent = (props: Props) => {
                 </Route>
                 <Route path='/admin/settings/siteInfo' exact>
                     <SiteInfo />
+                </Route>
+                <Route path='/admin/settings/admins' exact>
+                    <AdminList />
+                </Route>
+                <Route path='/admin/settings/admins/:id' exact>
+                    <AdminDetail />
                 </Route>
                 <Route path='/admin/sms' exact>
                     <Sms />

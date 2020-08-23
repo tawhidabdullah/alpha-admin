@@ -87,6 +87,41 @@ const NewBrandDetail = (props: Props) => {
     console.log('brandParams', params);
 
 
+    const getImagesInCollumn = (imgs) => {
+        if (!imgs[0]) return false;
+        imgs = imgs.map(item => item.cover);
+        const columns = {};
+
+        let localIndex = 0;
+        let columnNumber = 0;
+
+
+        imgs.forEach((item, index) => {
+            if (localIndex < 3) {
+                if (columns[columnNumber]) {
+                    columns[columnNumber] = [...columns[columnNumber], item]
+                }
+                else columns[columnNumber] = [item];
+
+                localIndex = localIndex + 1;
+                columnNumber = columnNumber + 1;
+
+            }
+            else {
+                localIndex = 0;
+                columnNumber = 0;
+                console.log('localIndex', localIndex)
+            }
+        });
+
+        return columns;
+    }
+
+
+    const row = categoryDetailState.done && categoryDetail && categoryDetail['image'] ? getImagesInCollumn(categoryDetail['image']) : [];
+
+
+
     return (
         <div className='brandDetailContainer'>
 
@@ -103,6 +138,7 @@ const NewBrandDetail = (props: Props) => {
                             categoryDetailData={categoryDetail}
                             setcategoryDetailData={setcategoryDetail}
                         />
+
                         <Button
                             onClick={() => setCategoryEditVisible(true)}
                             type='link'
@@ -186,9 +222,27 @@ const NewBrandDetail = (props: Props) => {
                                    </h3>
                                 </div>
 
-                                <div className='brandDetailContainer__inlineBox'>
-                                    <div className='brandDetailContainer__header-coverContainer brandDetailContainer__header-coverContainer-icon'>
-                                        <img src={categoryDetail['icon'] && categoryDetail['icon']} alt="" />
+                                <div className='brandDetailContainer__imageGallary'>
+                                    <div className='imgGallaryContainer'>
+
+                                        <div className="imgGallary-row">
+                                            {row && Object.keys(row).map(column => {
+                                                return (
+                                                    <div className="imgGallary-column">
+                                                        {row[column] && row[column].map(img => {
+                                                            return <img 
+                                                            alt='..'
+                                                            src={img} style={{
+                                                                width: '100%'
+                                                            }} />
+                                                        })}
+
+                                                    </div>
+                                                )
+                                            })}
+
+
+                                        </div>
                                     </div>
 
                                 </div>
@@ -350,6 +404,24 @@ const NewBrandDetail = (props: Props) => {
                                 className='classnameofthecolumn'
 
                             />
+
+<Column
+                                title="Available"
+                                dataIndex="available"
+                                key="id"
+                                className='classnameofthecolumn'
+
+                            />
+
+
+                            <Column
+                                title="Minimum"
+                                dataIndex="minimum"
+                                key="id"
+                                className='classnameofthecolumn'
+
+                            />
+
 
                         </Table>
                     </>

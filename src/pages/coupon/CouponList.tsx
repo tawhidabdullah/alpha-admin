@@ -5,7 +5,7 @@ import { Empty, Popconfirm, Upload, message, Switch, Select, Button, notificatio
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { useHistory } from 'react-router';
-
+import Moment from 'react-moment'
 
 
 import {
@@ -176,6 +176,26 @@ const MyTable = ({ data, setTagList }) => {
                     key="id"
                     className='classnameofthecolumn'
 
+                    render={(text, record: any) => (
+                        <>
+
+                            <h4
+                                style={{
+                                    fontWeight: 400,
+                                    color: '#555',
+                                    cursor: 'pointer'
+                                }}>
+                                    
+                               <Moment>
+                                {text}
+                               </Moment>
+                            </h4>
+
+
+                        </>
+                    )}
+
+
                 />
 
                 <Column
@@ -183,6 +203,23 @@ const MyTable = ({ data, setTagList }) => {
                     dataIndex="endDate"
                     key="id"
                     className='classnameofthecolumn'
+
+                    render={(text, record: any) => (
+                        <>
+
+                            <h4
+                                style={{
+                                    fontWeight: 400,
+                                    color: '#555',
+                                    cursor: 'pointer'
+                                }}>
+                                    
+                               <Moment>
+                                {text}
+                               </Moment>
+                            </h4>
+                        </>
+                    )}
 
                 />
 

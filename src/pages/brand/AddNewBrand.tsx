@@ -28,6 +28,7 @@ import Input from '../../components/Field/Input';
 import TextArea from '../../components/Field/TextArea';
 import MediaLibrary from "../../components/MediaLibrary";
 
+import MetaTags from "../../pages/category/MetaTags";
 const validationSchema = Yup.object().shape({
 	name: Yup.string().label('Name').required('Name is required').min(3, 'Name must have at least 3 characters'),
 });
@@ -54,7 +55,15 @@ const openErrorNotification = (message?: any) => {
 
 const initialValues = {
 	name: '',
+	bnName: '',
 	description: '',
+	bnDescription: '',
+	metaTitle: '',
+	bnMetaTitle: '',
+	metaDescription: '',
+	bnMetaDescription: '',
+	metaTags: '',
+	bnMetaTags: '',
 	image: [],
 	url: '',
 	cover: ''
@@ -77,7 +86,8 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, brandLis
 	const [myImages, setmyImages] = useState(false);
 	const [visibleMedia, setvisibleMedia] = useState(false);
 	const [coverImageId, setCoverImageId] = useState('');
-
+	const [tags,setTags] = useState([]);
+	const [bnTags,setBnTags] = useState([]);
 
 	const handleSubmit = async (values: any, actions: any) => {
 
@@ -95,6 +105,18 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, brandLis
 				type: values.type,
 				image: imagesIds,
 				cover: coverImageId || imagesIds[0] ? imagesIds[0] : '',
+				metaTitle: values.metaTitle,
+                metaDescription: values.metaDescription,
+				metaTags: tags.join(','),
+				
+				
+				bn: {
+					metaTitle: values.bnMetaTitle,
+					metaDescription: values.bnMetaDescription,
+					metaTags: bnTags.join(','),
+					name: values.bnName.trim(),
+					description: values.bnDescription,
+				}
 			},
 		});
 
@@ -149,6 +171,7 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, brandLis
 	}
 
 
+
 	return (
 		<Formik
 			onSubmit={(values, actions) => handleSubmit(values, actions)}
@@ -188,9 +211,10 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, brandLis
 							}}
 						>
 							<Input
-								label='Title'
+								label='Name'
 								value={values.name}
 								name='name'
+								placeHolder={'microsoft,apple'}
 								isError={(touched.name && errors.name) ||
 									(!isSubmitting && updateBrandState.error['error']['name'])}
 
@@ -201,10 +225,29 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, brandLis
 									setFieldTouched('name');
 								}}
 							/>
+
+							<Input
+								label='BN Name'
+								value={values.bnName}
+								placeHolder={'প্রান,নোকিয়া'}
+								name='bnName'
+								isError={(touched.bnName && errors.bnName) ||
+									(!isSubmitting && updateBrandState.error['error']['bnName'])}
+
+								errorString={(touched.bnName && errors.bnName) ||
+									(!isSubmitting && updateBrandState.error['error']['bnName'])}
+								onChange={(e: any) => {
+									handleChange(e);
+									setFieldTouched('bnName');
+								}}
+							/>
+
+
 							<TextArea
 								label='Description'
 								value={values.description}
 								name='description'
+								placeholder={'This brand...'}
 								isError={(touched.description && errors.description) ||
 									(!isSubmitting && updateBrandState.error['error']['description'])}
 
@@ -213,6 +256,22 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, brandLis
 								onChange={(e: any) => {
 									handleChange(e);
 									setFieldTouched('description');
+								}}
+							/>
+
+							<TextArea
+								label='BN Description'
+								value={values.bnDescription}
+								placeholder={'এই ব্র্যান্ড...'}
+								name='bnDescription'
+								isError={(touched.bnDescription && errors.bnDescription) ||
+									(!isSubmitting && updateBrandState.error['error']['bnDescription'])}
+
+								errorString={(touched.bnDescription && errors.bnDescription) ||
+									(!isSubmitting && updateBrandState.error['error']['bnDescription'])}
+								onChange={(e: any) => {
+									handleChange(e);
+									setFieldTouched('bnDescription');
 								}}
 							/>
 
@@ -296,6 +355,95 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, brandLis
 
 
 
+
+
+							<Input
+								label='Meta title'
+								value={values.metaTitle}
+								placeHolder={'category...'}
+								name='metaTitle'
+								isError={(touched.metaTitle && errors.metaTitle) ||
+									(!isSubmitting && updateBrandState.error['error']['metaTitle'])}
+
+								errorString={(touched.metaTitle && errors.metaTitle) ||
+									(!isSubmitting && updateBrandState.error['error']['metaTitle'])}
+								onChange={(e: any) => {
+									handleChange(e);
+									setFieldTouched('metaTitle')
+								}}
+							/>
+
+							<Input
+								label='BN Meta title'
+								value={values.bnMetaTitle}
+								placeHolder={'ক্যাটাগড়ি...'}
+								name='bnMetaTitle'
+								isError={(touched.bnMetaTitle && errors.bnMetaTitle) ||
+									(!isSubmitting && updateBrandState.error['error']['bnMetaTitle'])}
+
+								errorString={(touched.bnMetaTitle && errors.bnMetaTitle) ||
+									(!isSubmitting && updateBrandState.error['error']['bnMetaTitle'])}
+								onChange={(e: any) => {
+									handleChange(e);
+									setFieldTouched('bnMetaTitle');
+								}}
+							/>
+
+							<TextArea
+								label='Meta description'
+								value={values.metaDescription}
+								placeholder={'meta...'}
+								name='metaDescription'
+								isError={(touched.metaDescription && errors.metaDescription) ||
+									(!isSubmitting && updateBrandState.error['error']['metaDescription'])}
+
+								errorString={(touched.metaDescription && errors.metaDescription) ||
+									(!isSubmitting && updateBrandState.error['error']['metaDescription'])}
+								onChange={(e: any) => {
+									handleChange(e);
+									setFieldTouched('metaDescription');
+								}}
+							/>
+
+							<TextArea
+								label='BN Meta Description'
+								value={values.bnMetaDescription}
+								placeholder={'এইয় মেট...'}
+								name='bnMetaDescription'
+								isError={(touched.bnMetaDescription && errors.bnMetaDescription) ||
+									(!isSubmitting && updateBrandState.error['error']['bnMetaDescription'])}
+
+								errorString={(touched.bnMetaDescription && errors.bnMetaDescription) ||
+									(!isSubmitting && updateBrandState.error['error']['bnMetaDescription'])}
+								onChange={(e: any) => {
+									handleChange(e);
+									setFieldTouched('bnMetaDescription');
+								}}
+							/>
+
+							<h3 className='inputFieldLabel'>
+							Meta Tags (grocery,fashion)
+							</h3>
+
+							<MetaTags
+							// @ts-ignore
+							setTags={setTags}
+							tags={tags}
+							 />
+
+							<div style={{
+								marginTop:'15px'
+							}}></div>
+
+							<h3 className='inputFieldLabel'>
+							BN Meta Tags (মুদিখানা,ফ্যাশন)
+							</h3>
+
+							<MetaTags
+							// @ts-ignore
+							setTags={setBnTags}
+							tags={bnTags}
+							 />
 
 
 						</Modal>

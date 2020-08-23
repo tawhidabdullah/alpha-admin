@@ -5,6 +5,7 @@ import { Select, Skeleton } from 'antd';
 interface Props {
     setCustomerId?: any;
     setSelectedCustomerData?: any;
+    customerListState?:any; 
 }
 
 const { Option } = Select;

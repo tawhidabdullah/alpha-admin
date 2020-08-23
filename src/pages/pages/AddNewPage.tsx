@@ -35,6 +35,7 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import Input from '../../components/Field/Input';
 import TextArea from '../../components/Field/TextArea';
 import MediaLibrary from "../../components/MediaLibrary";
+import MetaTags from "../../pages/category/MetaTags";
 
 
 
@@ -72,6 +73,15 @@ const validationSchema = Yup.object().shape({
 
 const initialValues = {
 	name: '',
+	bnName: '',
+	content: '',
+	bnContent: '',
+	metaTitle: '',
+	bnMetaTitle: '',
+	metaDescription: '',
+	bnMetaDescription: '',
+	metaTags: '',
+	bnMetaTags: '',
 	url: ''
 };
 
@@ -101,22 +111,38 @@ interface Props {
 
 const AddNewPage = ({ }: Props) => {
 
-	const [addPageState, handleAddPageFetch] = useHandleFetch({}, 'addpage');
+	const [addPageState, handleAddPageFetch] = useHandleFetch({}, 'addPage');
 	const [content, setContent] = useState("<p>Hello from the new page !</p>");
+	const [bnContent, setBnContent] = useState("<p>হ্যালো নতুন পেজ থেকে!</p>");
 	const [myImages, setmyImages] = useState(false);
 	const [visibleMedia, setvisibleMedia] = useState(false);
 	const [coverImageId, setCoverImageId] = useState('');
+	const [tags,setTags] = useState([]);
+	const [bnTags,setBnTags] = useState([]);
 
 
 	const handleAddPageSubmit = async (values: any, actions: any) => {
-		console.log('content', content);
+		console.log('fuckit', values);
 		console.log('values', values);
+		
 		const addOrderRes = await handleAddPageFetch({
 			body: {
 				name: values.name,
 				content: content,
 				url: values.name,
 				cover: myImages ? myImages[0] && myImages[0].id : '',
+				metaTitle: values.metaTitle,
+				metaDescription: values.metaDescription,
+				metaTags: tags.join(','),
+
+
+				bn: {
+					metaTitle: values.bnMetaTitle,
+					metaDescription: values.bnMetaDescription,
+					metaTags: bnTags.join(','),
+					name: values.bnName.trim(),
+					content: values.setBnContent,
+				}
 			},
 		});
 
@@ -158,6 +184,61 @@ const AddNewPage = ({ }: Props) => {
 
 
 
+	
+    useEffect(() => {
+		if (!addPageState['isLoading']) {
+			const error = addPageState['error'];
+			if (error['isError'] && Object.keys(error['error']).length > 0) {
+				if (error['error']['registerError']) {
+					// setServerErrors(error['error']['registerError']);
+				} else if (error['error']['checkoutError']) {
+					// setServerErrors(error['error']['checkoutError']);
+				}
+				else {
+					// setServerErrors(error['error']);
+				}
+
+				const errors =
+					Object.values(error['error']).length > 0
+						? Object.values(error['error'])
+						: [];
+				errors.forEach((err, i) => {
+					if (typeof err === 'string') {
+						openErrorNotification(err);
+
+					}
+					else if (typeof err === 'object') {
+						if (err && Object.keys(err).length > 0) {
+							const errs = Object.values(err);
+							errs.forEach(err => {
+								openErrorNotification(err);
+							})
+
+						}
+					}
+				});
+			}
+		}
+
+		if (
+			!addPageState['isLoading'] &&
+			Object.keys(addPageState.data).length > 0
+		) {
+			if (addPageState['data']['status'] === 'ok') {
+				openSuccessNotification('Page Created Successfully');
+				// history.push({
+				//   pathname: '/orderDetails',
+				//   state: checkoutState['data']
+				// })
+
+				// clearCart();
+				// setIsModalShown(true);
+			}
+		}
+    }, [addPageState]);
+
+
+
 
 	console.log('myImagesdx', myImages)
 
@@ -196,6 +277,7 @@ const AddNewPage = ({ }: Props) => {
 											label='Title'
 											value={values.name}
 											name='name'
+											placeHolder='About us,Contact us'
 											isError={(touched.name && errors.name) ||
 												(!isSubmitting && addPageState.error['error']['name'])}
 
@@ -208,7 +290,29 @@ const AddNewPage = ({ }: Props) => {
 										/>
 									</div>
 									<div className='dubbleRowInputs__item'>
-										<Input
+									<Input
+										label='BN Title'
+										value={values.bnName}
+										placeHolder={'ব্লগ...'}
+										name='bnName'
+										isError={(touched.bnName && errors.bnName) ||
+											(!isSubmitting && addPageState.error['error']['bnName'])}
+
+										errorString={(touched.bnName && errors.bnName) ||
+											(!isSubmitting && addPageState.error['error']['bnName'])}
+										onChange={(e: any) => {
+											handleChange(e);
+											setFieldTouched('bnName');
+										}}
+										/>
+
+										
+									</div>
+								</div>
+
+								
+
+								<Input
 											label='URL'
 											value={values.url}
 											name='url'
@@ -222,8 +326,6 @@ const AddNewPage = ({ }: Props) => {
 												setFieldTouched('url');
 											}}
 										/>
-									</div>
-								</div>
 
 								<h3 className='inputFieldLabel'>Thumbnail</h3>
 
@@ -293,6 +395,13 @@ const AddNewPage = ({ }: Props) => {
 										</Tooltip>}
 								</div>
 
+								<p style={{
+									color: '#ff4d4f',
+									marginTop:'-15px'
+								}}>
+								{addPageState.error['error']['cover']}
+								</p>
+
 							</div>
 							<div className='addNewPageContainer__body'>
 								<h3 className='inputFieldLabel'>
@@ -317,11 +426,161 @@ const AddNewPage = ({ }: Props) => {
 										console.log('Focus.', editor);
 									}}
 								/>
+
+								<div style={{
+									marginTop:'15px'
+								}}></div>
+
+							<h3 className='inputFieldLabel'>
+									BN Content
+                               </h3>
+
+								<CKEditor
+									editor={ClassicEditor}
+									data={bnContent}
+									onInit={editor => {
+										// You can store the "editor" and use when it is needed.
+										console.log('Editor is ready to use!', editor);
+									}}
+									onChange={(event, editor) => {
+										const data = editor.getData();
+										setBnContent(data);
+									}}
+									onBlur={(event, editor) => {
+										console.log('Blur.', editor);
+									}}
+									onFocus={(event, editor) => {
+										console.log('Focus.', editor);
+									}}
+								/>
+
 							</div>
 
 							<div style={{
 								marginTop: '20px'
 							}}></div>
+
+
+
+							<div className='addNewPageContainer__header'>
+								<div className='dubbleRowInputs'>
+									<div className='dubbleRowInputs__item'>
+										<Input
+											label='Meta Title'
+											value={values.metaTitle}
+											name='metaTitle'
+											isError={(touched.metaTitle && errors.metaTitle) ||
+												(!isSubmitting && addPageState.error['error']['metaTitle'])}
+
+											errorString={(touched.metaTitle && errors.metaTitle) ||
+												(!isSubmitting && addPageState.error['error']['metaTitle'])}
+											onChange={(e: any) => {
+												handleChange(e);
+												setFieldTouched('metaTitle');
+											}}
+										/>
+									
+
+									</div>
+									<div className='dubbleRowInputs__item'>
+									<Input
+											label='BN Meta Title'
+											value={values.bnMetaTitle}
+											placeHolder={'নতুন,ফ্রেশ'}
+											name='bnMetaTitle'
+											isError={(touched.bnMetaTitle && errors.bnMetaTitle) ||
+												(!isSubmitting && addPageState.error['error']['bnMetaTitle'])}
+
+											errorString={(touched.bnMetaTitle && errors.bnMetaTitle) ||
+												(!isSubmitting && addPageState.error['error']['bnMetaTitle'])}
+											onChange={(e: any) => {
+												handleChange(e);
+												setFieldTouched('bnMetaTitle');
+											}}
+										/>
+									</div>
+								</div>
+
+
+									<div className='dubbleRowInputs'>
+										<div className='dubbleRowInputs__item'>
+										<TextArea
+									label='Meta description'
+									value={values.metaDescription}
+									placeholder={'meta...'}
+									name='metaDescription'
+									isError={(touched.metaDescription && errors.metaDescription) ||
+										(!isSubmitting && addPageState.error['error']['metaDescription'])}
+
+									errorString={(touched.metaDescription && errors.metaDescription) ||
+										(!isSubmitting && addPageState.error['error']['metaDescription'])}
+									onChange={(e: any) => {
+										handleChange(e);
+										setFieldTouched('metaDescription');
+									}}
+								/>
+
+										
+
+										</div>
+										<div className='dubbleRowInputs__item'>
+										<TextArea
+											label='BN Meta Description'
+											value={values.bnMetaDescription}
+											placeholder={'এইয় মেট...'}
+											name='bnMetaDescription'
+											isError={(touched.bnMetaDescription && errors.bnMetaDescription) ||
+												(!isSubmitting && addPageState.error['error']['bnMetaDescription'])}
+
+											errorString={(touched.bnMetaDescription && errors.bnMetaDescription) ||
+												(!isSubmitting && addPageState.error['error']['bnMetaDescription'])}
+											onChange={(e: any) => {
+												handleChange(e);
+												setFieldTouched('bnMetaDescription');
+											}}
+										/>
+										</div>
+									</div>
+
+								
+								
+
+									<div className='dubbleRowInputs'>
+									<div className='dubbleRowInputs__item'>
+									<h3 className='inputFieldLabel'>
+							Meta Tags (grocery,fashion)
+							</h3>
+
+							<MetaTags
+							// @ts-ignore
+							setTags={setTags}
+							tags={tags}
+							 />
+
+
+									
+
+									</div>
+									<div className='dubbleRowInputs__item'>
+									<h3 className='inputFieldLabel'>
+							BN Meta Tags (মুদিখানা,ফ্যাশন)
+							</h3>
+
+							<MetaTags
+							// @ts-ignore
+							setTags={setBnTags}
+							tags={bnTags}
+							 />
+									</div>
+								</div>
+
+							</div>
+
+
+							<div style={{
+								marginTop: '20px'
+							}}></div>
+
 
 							<Button
 								loading={addPageState.isLoading}

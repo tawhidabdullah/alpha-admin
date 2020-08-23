@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 // import components 
 import ApiVisits from "./ApiVisits";
+import OrderOverView from "./OrderOverView";
 import PlatformVisits from "./PlatformVisits";
 import PageVisits from "./PageVisits";
 
@@ -205,11 +206,8 @@ const Overview = (props: Props) => {
 			</div>
 			<div className="overviewContainer__body">
 			</div>
+			<OrderOverView />
 			<ApiVisits />
-
-
-
-
 		</div>
 	);
 };

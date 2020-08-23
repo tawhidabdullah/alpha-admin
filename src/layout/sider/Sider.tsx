@@ -27,7 +27,13 @@ import {
     BgColorsOutlined,
     BankOutlined,
     FireOutlined,
-    MailTwoTone
+    MailTwoTone,
+    UserAddOutlined,
+    FileExcelOutlined,
+    CalculatorOutlined,
+    CustomerServiceOutlined,
+    MoneyCollectOutlined,
+    UsergroupAddOutlined
 } from '@ant-design/icons';
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -102,9 +108,41 @@ const SiderComponent = (props: any) => {
 
                 </SubMenu>
 
+                <SubMenu
+                    key='sub333'
+                    icon={<GoldOutlined />}
+                    title='Recipies'
+                // onTitleClick={() => props.history.push('/product')}
+                >
+                    <Menu.Item
+                        icon={<RadarChartOutlined />}
+                        key='655'>
+                        <Link to='/admin/posts'>List Posts</Link>
+                    </Menu.Item>
+
+                    <Menu.Item
+                        icon={<TagOutlined />}
+                        key='2222444'>
+                        <Link to='/admin/posts/category'>Post Category</Link>
+                    </Menu.Item>
+
+                    <Menu.Item key='955' icon={<TagsOutlined />}>
+                        <Link to='/admin/posts/tag'>Post Tags</Link>
+                    </Menu.Item>
+
+                </SubMenu>
+
+
+
                 {/* <Menu.Item key='9' icon={<TagsOutlined />}>
 					<Link to='/tag'>Tags</Link>
 				</Menu.Item> */}
+
+                {/* <Menu.Item key='1012' icon={<FileExcelOutlined />}>
+                    <Link to='/admin/posts'>
+                        Recipies
+                    </Link>
+                </Menu.Item> */}
 
                 <Menu.Item key='1011' icon={<FireOutlined />}>
                     <Link to='/admin/coupon'>Coupon</Link>
@@ -114,9 +152,41 @@ const SiderComponent = (props: any) => {
                     <Link to='/admin/delivery'>Delivery</Link>
                 </Menu.Item>
 
+                
+                <SubMenu
+                    key='sub33'
+                    icon={<CalculatorOutlined />}
+                    title='Accounting'
+                // onTitleClick={() => props.history.push('/product')}
+                >
+                    <Menu.Item
+                        icon={<UsergroupAddOutlined />}
+                        key='66'>
+                        <Link to='/admin/staff'>
+                            Staff
+                        </Link>
+                    </Menu.Item>
+
+                    <Menu.Item
+                        icon={<MoneyCollectOutlined />}
+                        key='67'>
+                        <Link to='/admin/expense'>
+                            Expense
+                        </Link>
+                    </Menu.Item>
+
+                </SubMenu>
+
+
+
                 <SubMenu key='sub4' icon={<ShoppingCartOutlined />} title='Orders'>
                     <Menu.Item key='11'>
                         <Link to='/admin/order'>List Orders</Link>
+                    </Menu.Item>
+                    <Menu.Item key='11222'>
+                        <Link to='/admin/order/overview'>
+                            Order Analytics
+                        </Link>
                     </Menu.Item>
                     <Menu.Item key='12'>
                         <Link to='/admin/order/new'>Add Order</Link>
@@ -163,6 +233,13 @@ const SiderComponent = (props: any) => {
                         key='19'>
                         <Link to='/admin/settings/siteInfo'>Site information</Link>
                     </Menu.Item>
+
+                    <Menu.Item
+                        icon={<UserAddOutlined />}
+                        key='19999'>
+                        <Link to='/admin/settings/admins'>Admins</Link>
+                    </Menu.Item>
+
                     <Menu.Item
                         icon={<BgColorsOutlined />}
                         key='20'>

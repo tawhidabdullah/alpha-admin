@@ -1,5 +1,6 @@
 import config from '../config.json';
 import dataMap from '../dataMap.json';
+import { product } from '../state/ducks';
 
 class Converter {
 	/**
@@ -44,7 +45,55 @@ class Converter {
 			});
 
 		return formatedData;
-	}
+	};
+
+
+		/**
+   * @public
+   * @method postCategoryList convert api data from API to general format based on config server
+   * @param {Object} data response objectc from alpha
+   * @returns {Object}  converted data
+   */
+  async postCategoryList(resData) {
+	const data = resData.data || [];
+
+	const formatedData =
+		data.length > 0 &&
+		data.map((category) => {
+			return {
+				id: category._id || '',
+				key: category._id || '',
+				name: category.name && category.name,
+				description: category.description && category.description,
+				// productCount: category.productCount || 0,
+				parent: category.parent || '',
+				cover: category.cover ? `${config['baseURL']}${category.cover.thumbnail}` : null,
+				subCount:
+					category.subCategory.length === 1
+						? category.subCategory[0] && category.subCategory[0].name ? category.subCategory.length : 0
+						: category.subCategory.length,
+				...(category.subCategory &&
+					category.subCategory.length > 0 &&
+					category.subCategory[0] &&
+					category.subCategory[0]['name'] && {
+					children: category.subCategory.map((subCat) => {
+						return {
+							id: subCat._id || '',
+							key: subCat._id,
+							name: subCat.name && subCat.name,
+							description: subCat.description && subCat.description,
+							cover: subCat.cover ? `${config['baseURL']}${subCat.cover.thumbnail}` : ''
+						};
+					})
+				})
+			};
+		});
+
+	return formatedData;
+};
+
+
+	
 
 	/**
 * @public
@@ -151,6 +200,14 @@ class Converter {
 						parseInt(product.price['offer']) > parseInt(product.price['regular'])
 							? product.price['offer']
 							: product.price['regular'],
+					available: product.pricing &&
+					product.pricing.length > 0 ?
+							 product.pricing[0]['stock'] && product.pricing[0]['stock']['available']
+							 : 0,
+					minimum: product.pricing &&
+					product.pricing.length > 0 ?
+					product.pricing[0]['stock'] && product.pricing[0]['stock']['minimum']
+					: 0
 				};
 			});
 
@@ -354,6 +411,13 @@ class Converter {
 						parseInt(product.price['offer']) > parseInt(product.price['regular'])
 							? product.price['offer']
 							: product.price['regular'],
+					avalable: product.pricing &&
+					product.pricing.length > 0 ?
+							 product.pricing[0]['stock'] && product.pricing[0]['stock']['available']
+							 : 0,
+					minimum: product.pricing &&
+					product.pricing.length > 0 ?
+					product.pricing[0]['stock'] && product.pricing[0]['stock']['minimum'] : 0
 				};
 			});
 
@@ -398,6 +462,14 @@ class Converter {
 						parseInt(product.price['offer']) > parseInt(product.price['regular'])
 							? product.price['offer']
 							: product.price['regular'],
+					avalable: product.pricing &&
+					product.pricing.length > 0 ?
+							 product.pricing[0]['stock'] && product.pricing[0]['stock']['available']
+							 : 0,
+					minimum: product.pricing &&
+					product.pricing.length > 0 ?
+					product.pricing[0]['stock'] && product.pricing[0]['stock']['minimum']
+					: 0
 				};
 			});
 
@@ -474,9 +546,18 @@ class Converter {
 					brand: product.brand,
 					tags: product.tags,
 					price:
-						parseInt(product.price['offer']) > parseInt(product.price['regular'])
+					parseInt(product.price['offer']) > parseInt(product.price['regular'])
 							? product.price['offer']
 							: product.price['regular'],
+					available: product.pricing &&
+					product.pricing.length > 0 ?
+							 product.pricing[0]['stock'] && product.pricing[0]['stock']['available']
+							 : 0,
+					minimum: product.pricing &&
+					product.pricing.length > 0 ?
+					product.pricing[0]['stock'] && product.pricing[0]['stock']['minimum']
+					: 0
+							
 				};
 			});
 
@@ -600,7 +681,7 @@ class Converter {
    * @returns {Object}  converted data
    */
   async getAnalyticsPageVisits(resData) {
-	const data = resData || [];
+	const data = resData && resData.data ? resData.data : [];
 
 	console.log('getAnalyticsPageVisits',resData); 
 
@@ -644,9 +725,29 @@ class Converter {
    * @param {Object} data response objectc from wc
    * @returns {Object}  converted data
    */
-  async getAnalyticsDemographicVisits(resData) {
-	return resData; 
+  	async getAnalyticsDemographicVisits(resData) {
+
+		const data = resData && resData.data ? resData.data : [];
+		if(data){
+			return data; 
+		}
+		else return []
 	}
+
+
+	/**
+   * @public
+   * @method getAnalyticsOrders convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+   async getAnalyticsOrders(resData) {
+	if(resData.orders && Object.keys(resData.orders).length > 0){
+		return resData.orders['data']; 
+	}
+ 	return []; 
+	}
+
 
 
 		/**
@@ -1080,16 +1181,20 @@ class Converter {
 
 	/**
    * @public
-   * @method getDeliveryCharge convert api data from API to general format based on config server
+   * @method getDeliveryRegion convert api data from API to general format based on config server
    * @param {Object} data response objectc from alpha
    * @returns {Object}  converted data
    */
-	async getDeliveryCharge(data) {
+
+
+   
+	async getDeliveryRegion(data) {
 		const convertedData = data;
 
 		return convertedData;
 	}
 
+	
 	/**
    * @public
    * @method cityList convert api data from API to general format based on config server
@@ -1183,7 +1288,15 @@ class Converter {
 								caption: img.caption
 							}
 						})) ||
-					[]
+					[],
+					available: product.pricing &&
+					product.pricing.length > 0 ?
+							 product.pricing[0]['stock'] && product.pricing[0]['stock']['available']
+							 : 0,
+					minimum: product.pricing &&
+					product.pricing.length > 0 ?
+					product.pricing[0]['stock'] && product.pricing[0]['stock']['minimum']
+					: 0
 			}) ||
 			{};
 
@@ -1236,7 +1349,7 @@ class Converter {
 
 
 
-	/**
+    /**
    * @public
    * @method productDetailById convert api data from API to general format based on config server
    * @param {Object} data response objectc from alpha
@@ -1699,8 +1812,26 @@ class Converter {
 		}
 
 		return convertedData;
-	}
+	}; 
 
+
+		/**
+   * @public
+   * @method postAddCategory convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+	async postAddCategory(data) {
+		const convertedData = data;
+		if (data && data.inserted) {
+			return {
+				...data.inserted[0],
+				status: 'ok'
+			};
+		}
+
+		return convertedData;
+	};
 	/**
    * @public
    * @method addProduct convert api data from API to general format based on config server
@@ -1720,6 +1851,45 @@ class Converter {
 	}
 
 
+		/**
+   * @public
+   * @method addPost convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+
+  async addPost(data) {
+	const convertedData = data;
+	if (data && data.inserted) {
+		return {
+			...data.inserted[0],
+			status: 'ok'
+		};
+	}
+	return convertedData;
+}
+
+
+	
+	/**
+   * @public
+   * @method addOrder convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+
+
+
+  async addOrder(data) {
+	const convertedData = data;
+	if (data && data.inserted) {
+		return {
+			...data.inserted[0],
+			status: 'ok'
+		};
+	}
+	return convertedData;
+}
 
 
 
@@ -2144,6 +2314,57 @@ class Converter {
 		return formatedData;
 	}
 
+
+	
+
+		/**
+   * @public
+   * @method adminRoleRegister convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+	async adminRoleRegister(data) {
+		//map props
+
+		if(data && data.length > 0){
+			return {
+				status: 'ok',
+				...data[0]
+			}
+		}
+		else return {}; 
+	}
+
+
+			/**
+   * @public
+   * @method adminList convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+	async adminList(resData) {
+		//map props
+
+		return resData; 
+	}; 
+
+
+				/**
+   * @public
+   * @method adminDetail convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+  async adminDetail(resData) {
+	//map props
+
+	return resData; 
+}; 
+
+
+	
+
+
 	/**
 * @public
 * @method orderDetail convert api data from API to general format based on config server
@@ -2156,16 +2377,43 @@ class Converter {
 		if (order) {
 			return {
 				id: order.id || order._id,
-				billingAddress: order.billingAddress,
-				name: order.billingAddress['firstName'] + " " + order.billingAddress['lastName'],
-				country: order.billingAddress['country'],
-				city: order.billingAddress['city'],
-				address: order.billingAddress['address'],
-				phone: order.billingAddress['phone'],
-				email: order.billingAddress['email'],
+				shippingAddress: order.shippingAddress,
+				name: order.shippingAddress['firstName'] + " " + order.shippingAddress['lastName'],
+				country: order.shippingAddress['country'],
+				city: order.shippingAddress['city'],
+				address: order.shippingAddress['address'],
+				phone: order.shippingAddress['phone'],
+				email: order.shippingAddress['email'],
 				status: order.status,
 				total: order.totalPrice,
-				products: order.products,
+				products: order.products && order.products.length > 0 ? order.products.map(product => {
+					return {
+						id: product._id || '',
+						name: product.name && product.name,
+						description: product.description && product.description,
+						cover: `${config['baseURL']}${(product.cover && product.cover['thumbnail']) || ''}`,
+						regularPrice: product.price && product.price['regular'],
+						offerPrice: product.price && product.price['offer'],
+						url: product.url,
+						unit: product.unit,
+						category: product.category,
+						pricing: product.pricing,
+						date: product.date,
+						time: product.time,
+						venue: product.venue,
+						brand: product.brand,
+						tags: product.tags,
+						price: product.price,
+						available: product.pricing &&
+						 product.pricing.length > 0 ?
+						  product.pricing[0]['stock'] && product.pricing[0]['stock']['available']
+						  : 0,
+						  minimum: product.pricing &&
+						 product.pricing.length > 0 ?
+						  product.pricing[0]['stock'] && product.pricing[0]['stock']['minimum']
+						  : 0
+					}
+				}) : [],
 				date_created: order.added,
 				paymentMethod: order['payment']['paymentMethod'],
 				paymentStatus: order['payment']['status'],
@@ -2351,11 +2599,11 @@ class Converter {
 				data.map((item) => {
 					return {
 							id: item.id || item._id,
-							billingAddress: item.billingAddress,
-							name: item.billingAddress && item.billingAddress['firstName'] && item.billingAddress['firstName'] + " " +
-							 item.billingAddress && item.billingAddress['lastName'] && item.billingAddress['lastName'],
-							country: item.billingAddress && item.billingAddress['country'] && item.billingAddress['country'],
-							city: item.billingAddress && item.billingAddress['city'] && item.billingAddress['city'],
+							shippingAddress: item.billingAddress,
+							name: item.shippingAddress && item.shippingAddress['firstName'] && item.shippingAddress['firstName'] + " " +
+							 item.shippingAddress && item.shippingAddress['lastName'] && item.shippingAddress['lastName'],
+							country: item.shippingAddress && item.shippingAddress['country'] && item.shippingAddress['country'],
+							city: item.shippingAddress && item.shippingAddress['city'] && item.shippingAddress['city'],
 							status: item.status,
 							total: item.totalPrice,
 							products: item.products,
@@ -2393,11 +2641,11 @@ class Converter {
 					data.map((item) => {
 						return {
 							id: item.id || item._id,
-							billingAddress: item.billingAddress,
-							name: item.billingAddress && item.billingAddress['firstName'] && item.billingAddress['firstName'] + " " +
-							 item.billingAddress && item.billingAddress['lastName'] && item.billingAddress['lastName'],
-							country: item.billingAddress && item.billingAddress['country'] && item.billingAddress['country'],
-							city: item.billingAddress && item.billingAddress['city'] && item.billingAddress['city'],
+							shippingAddress: item.billingAddress,
+							name: item.shippingAddress && item.shippingAddress['firstName'] && item.shippingAddress['firstName'] + " " +
+							 item.shippingAddress && item.shippingAddress['lastName'] && item.shippingAddress['lastName'],
+							country: item.shippingAddress && item.shippingAddress['country'] && item.shippingAddress['country'],
+							city: item.shippingAddress && item.shippingAddress['city'] && item.shippingAddress['city'],
 							status: item.status,
 							total: item.totalPrice,
 							products: item.products,
@@ -2418,8 +2666,6 @@ class Converter {
 
 			return convertedData;
 		}
-
-
 
 
 	/**

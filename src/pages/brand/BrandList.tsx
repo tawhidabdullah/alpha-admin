@@ -343,7 +343,7 @@ const CategoryList = ({history}: Props) => {
         {brandState.isLoading && <DataTableSkeleton />}
         {brandState.done && !(brandList.length > 0) && (
 			<div style={{
-				marginTop: '100px'
+				marginTop: '200px'
 			}}>
 				<Empty description='No Brand found'  image={Empty.PRESENTED_IMAGE_SIMPLE} />
 			</div>

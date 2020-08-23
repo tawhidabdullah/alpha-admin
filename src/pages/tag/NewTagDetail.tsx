@@ -263,6 +263,24 @@ const NewBrandDetail = (props: Props) => {
 
                             />
 
+
+                            <Column
+                                title="Available"
+                                dataIndex="available"
+                                key="id"
+                                className='classnameofthecolumn'
+
+                            />
+
+
+                            <Column
+                                title="Minimum"
+                                dataIndex="minimum"
+                                key="id"
+                                className='classnameofthecolumn'
+
+                            />
+
                         </Table>
                     </>
                 )}

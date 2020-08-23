@@ -67,9 +67,10 @@ interface Props {
     brandDetailData?: any;
     brandEditVisible?: any;
     setBrandEditVisible?: any;
+    setBrandDetailData?:any; 
 }
 
-const AddNewBrand = ({ brandDetailData, brandEditVisible, setBrandEditVisible }: Props) => {
+const AddNewBrand = ({ brandDetailData, brandEditVisible, setBrandEditVisible,setBrandDetailData }: Props) => {
 
     const [updateBrandState, handleUpdateBrandFetch] = useHandleFetch({}, 'updateBrand');
     const [attachImageToItemMultipleState, handleAttachImageToItemMultipleFetch] = useHandleFetch({}, 'attachImageToItemMultiple');
@@ -230,6 +231,12 @@ const AddNewBrand = ({ brandDetailData, brandEditVisible, setBrandEditVisible }:
 
         // @ts-ignore
         if (updateBrandRes && updateBrandRes.status === 'ok') {
+            console.log('updateBrandRes',updateBrandRes);
+            setBrandDetailData({
+                ...brandDetailData,
+                // @ts-ignore
+                ...updateBrandRes
+            })
             openSuccessNotification();
             setBrandEditVisible(false);
 

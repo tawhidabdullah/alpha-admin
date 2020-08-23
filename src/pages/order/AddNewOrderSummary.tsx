@@ -1,14 +1,13 @@
-import React from 'react'
+import React, {memo} from 'react'
 
 
 // import components
-import AddNewOrderProductItem from "./AddNewOrderProductItem";
+import AddNewOrderProductItem from "../order/AddNewOrderProductItem";
 import Empty from "../../components/Empty";
 
 import {
     ShopOutlined
 } from '@ant-design/icons';
-
 
 
 interface Props {
@@ -21,15 +20,20 @@ const AddNewOrderSummary = ({
     productList
 }: Props) => {
     return (
-        <div className='addOrderContainer__container-orderSummary'>
-            <h3 className='addOrderContainer-sectionTitle'>
+        <div
+            style={{
+                // @ts-ignore
+                flexDirection: 'flex'
+            }}
+            className='addOrderContainer__container-orderSummary'>
+                  <h3 className='addOrderContainer-sectionTitle'>
                 <span>
                     <ShopOutlined />
                 </span>
                 Added Products
             </h3>
             <div className='addOrderContainer__container-productItemContainer'>
-                {productList.length > 0 && productList.map(item => {
+                {productList && productList.length > 0 && productList.map(item => {
                     return <AddNewOrderProductItem
                         setProductList={setProductList}
                         productList={productList}
@@ -53,4 +57,4 @@ const AddNewOrderSummary = ({
     )
 }
 
-export default AddNewOrderSummary
+export default memo(AddNewOrderSummary)
