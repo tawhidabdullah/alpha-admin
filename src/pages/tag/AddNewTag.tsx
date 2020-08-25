@@ -117,12 +117,12 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, tagList,
         if (addTagRes && addTagRes.status === 'ok') {
             openSuccessNotification();
 
-            setTagList([...tagList, {
+            setTagList([{
                 id: addTagRes['id'] || '',
                 key: addTagRes['id'] || '',
                 name: addTagRes['name'] || '',
                 description: addTagRes['description'] || '',
-            }])
+            },...tagList])
             actions.resetForm();
             setAddNewCategoryVisible(false);
         }

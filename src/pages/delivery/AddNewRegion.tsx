@@ -144,13 +144,13 @@ const AddNewRegion = ({ addNewCategoryVisible, setAddNewCategoryVisible, regionL
 			if (addRegionRes && addRegionRes.status === 'ok') {
 				openSuccessNotification();
 
-				setRegionList([...regionList, {
+				setRegionList([{
 					id: addRegionRes['id'] || '',
 					key: addRegionRes['id'] || '',
 					name: addRegionRes['name'] || '',
 					// @ts-ignore
 					...addRegionRes
-				}])
+				},...regionList])
 				setAddNewCategoryVisible(false)
 				actions.resetForm();
 			}

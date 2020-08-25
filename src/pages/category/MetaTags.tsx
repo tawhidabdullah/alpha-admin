@@ -99,7 +99,7 @@ class MetaTags extends React.Component {
             <Tag
               className="edit-tag"
               key={tag}
-              closable={index !== 0}
+              closable={true}
               onClose={() => this.handleClose(tag)}
             >
               <span

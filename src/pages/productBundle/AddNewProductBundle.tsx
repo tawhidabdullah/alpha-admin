@@ -82,8 +82,8 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
     const [coverImageId, setCoverImageId] = useState('');
     const [categoryOptions, setCategoryOptions] = useState([]);
     const [selectedTags, setSelectedTags] = useState([]);
-    const [date, setDateFeild] = useState('');
-    const [time, setTimeFeild] = useState('');
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
     const [description, setDescription] = useState('');
     const [productIds, setProductIds] = useState([]);
     const [productList, setProductList] = useState([]);
@@ -119,13 +119,14 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
                 name: values.name.trim(),
                 category: categoryids,
                 tags: tagIds,
-                brand: [brandId],
+                brand: brandId,
                 price: price,
                 description: description,
                 model: values.model,
                 unit: values.unit,
                 image: imagesIds,
-                products
+                products,
+                startDate, endDate,
             }
         });
 
@@ -134,14 +135,14 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
         if (addProductRes && addProductRes.status === 'ok') {
             openSuccessNotification('Bundle Created');
 
-            setBundleList([...bundleList, {
+            setBundleList([{
                 id: addProductRes['id'] || '',
                 key: addProductRes['id'] || '',
                 name: addProductRes['name'] || '',
                 description: addProductRes['description'] || '',
                 // @ts-ignore
                 ...addProductRes
-            }])
+            },...bundleList])
             setAddNewCategoryVisible(false)
             // @ts-ignore
             setmyImages([]);
@@ -313,15 +314,19 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
         }
     }
 
-    const handleDateChange = (date, dateString) => {
-        setDateFeild(dateString);
+
+    const handleStartDataChange = (date, dateString) => {
+        setStartDate(dateString);
         // console.log('date', date, dateString);
     }
 
-    const handleTimeChange = (date, dateString) => {
-        setTimeFeild(dateString);
+    const handleEndDataChange = (date, dateString) => {
+        setEndDate(dateString);
         // console.log('date', date, dateString);
     }
+
+
+    
 
 
 
@@ -533,10 +538,9 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
                                                     width: '48%',
                                                 }}>
                                                     <DatePicker
-                                                        date={date}
-                                                        withTime={true}
-                                                        label='Start Time'
-                                                        onChange={handleDateChange} />
+                                                        date={startDate}
+                                                        label='Start Date'
+                                                        onChange={handleStartDataChange} />
 
                                                 </div>
                                                 <div style={{
@@ -544,11 +548,9 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
                                                 }}>
 
                                                     <DatePicker
-                                                        date={date}
-                                                        withTime={true}
-                                                        placeholder='Select time'
-                                                        label='End Time'
-                                                        onChange={handleTimeChange} />
+                                                        date={endDate}
+                                                        label='End Date'
+                                                        onChange={handleEndDataChange} />
 
                                                 </div>
                                             </div>

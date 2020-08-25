@@ -138,12 +138,12 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, custo
 		if (addCustomerRes && addCustomerRes.status === 'ok') {
 			openSuccessNotification();
 
-			setCustomerList([...customerList, {
+			setCustomerList([{
 				id: addCustomerRes['id'] || '',
 				key: addCustomerRes['id'] || '',
 				// @ts-ignore
 				...addCustomerRes
-			}])
+			},...customerList])
 			setAddNewCategoryVisible(false);
 			actions.resetForm();
 		}

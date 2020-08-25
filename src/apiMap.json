@@ -13,7 +13,7 @@
 			"method": "post"
 		},
 		"ImageListFromLibrary": {
-			"url": "/admin/api/image",
+			"url": "/admin/api/image?limit=limitNumber",
 			"method": "get"
 		},
 		"viewSingleImageFromLibrary": {

@@ -333,7 +333,7 @@ const ProductList = ({ history }: Props) => {
               enterButton={false}
               className='searchbarClassName'
               placeholder="search products.."
-              onSearch={value => handleSearch(value)}
+              onChange={e => handleSearch(e.target.value)}
             // style={{ width: 300 }}
             />
           </div>

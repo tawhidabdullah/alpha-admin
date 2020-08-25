@@ -678,9 +678,6 @@ class Converter {
 
 
 
-
-
-
 	/**
    * @public
    * @method bundleList convert api data from API to general format based on config server
@@ -852,10 +849,9 @@ class Converter {
    * @returns {Object}  converted data
    */
    async getAnalyticsOrders(resData) {
-	if(resData.orders && Object.keys(resData.orders).length > 0){
-		return resData.orders['data']; 
-	}
- 	return []; 
+	   const data = resData.data || []; 
+	   return data; 
+
 	}
 
 
@@ -2771,7 +2767,7 @@ class Converter {
 * @returns {Object}  converted data
 */
 	async orderList(resData) {
-		const data = resData.orders ? resData.orders.data : [];
+		const data = resData.data || [];
 		// const isNext = resData.page.next;
 
 		console.log('orderListDAta',data);

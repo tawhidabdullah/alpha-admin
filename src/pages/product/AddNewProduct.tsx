@@ -154,14 +154,14 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 		if (addProductRes && addProductRes.status === 'ok') {
 			openSuccessNotification('Product Created');
 
-			setProductList([...productList, {
+			setProductList([{
 				id: addProductRes['id'] || '',
 				key: addProductRes['id'] || '',
 				name: addProductRes['name'] || '',
 				description: addProductRes['description'] || '',
 				// @ts-ignore
 				...addProductRes
-			}])
+			},...productList])
 			setAddNewCategoryVisible(false)
 			// @ts-ignore
 			setmyImages([]);
@@ -905,12 +905,10 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 							<MetaTags
 							// @ts-ignore
 							setTags={setBnMetaTags}
-							tags={metaTags}
+							tags={bnMetaTags}
 							 />
-
-	
-</div>
-</div>
+									</div>
+									</div>
 
 
 								</div>

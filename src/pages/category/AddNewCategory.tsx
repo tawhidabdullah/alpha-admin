@@ -145,14 +145,14 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, categ
 			openSuccessNotification('Category Created!');
 			setAddNewCategoryVisible(false)
 
-			setcategoryList([...categoryList, {
+			setcategoryList([{
 				id: addCategoryRes['_id'] || '',
 				key: addCategoryRes['_id'] || '',
 				name: addCategoryRes['name'] || '',
 				description: addCategoryRes['description'] || '',
 				// @ts-ignore
 				...addCategoryRes
-			}])
+			},...categoryList])
 
 			actions.resetForm();
 			// @ts-ignore

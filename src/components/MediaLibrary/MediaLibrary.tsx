@@ -117,7 +117,13 @@ const MediaLibrary = ({
 
 
 	const getImageList = async () => {
-		const imageListRes = await handleImageListFromLibraryFetch({});
+		const imageListRes = await handleImageListFromLibraryFetch({
+			urlOptions: {
+				params: {
+					limitNumber: 10000
+				}
+			}
+		});
 
 
 		// @ts-ignore
@@ -231,7 +237,8 @@ const MediaLibrary = ({
 		},
 		beforeUpload: file => {
 			setfileList(filelist => {
-				return [...fileList, file]
+				const xflelist = filelist;
+				return [...xflelist, file]
 			})
 			return false;
 		},

@@ -81,7 +81,7 @@ interface Props {
 
 const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, brandList, setBrandList }: Props) => {
 
-	const [updateBrandState, handleUpdateBrandFetch] = useHandleFetch({}, 'updateBrand');
+	const [updateBrandState, handleUpdateBrandFetch] = useHandleFetch({}, 'addBrand');
 	const [visible, setvisible] = useState(false);
 	const [myImages, setmyImages] = useState(false);
 	const [visibleMedia, setvisibleMedia] = useState(false);
@@ -124,14 +124,14 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, brandLis
 		if (addBrandRes && addBrandRes.status === 'ok') {
 			openSuccessNotification();
 
-			setBrandList([...brandList, {
+			setBrandList([{
 				id: addBrandRes['id'] || '',
 				key: addBrandRes['id'] || '',
 				name: addBrandRes['name'] || '',
 				description: addBrandRes['description'] || '',
 				// @ts-ignore
 				...addBrandRes
-			}])
+			},...brandList])
 			actions.resetForm();
 			setAddNewCategoryVisible(false);
 		}
@@ -199,7 +199,7 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, brandLis
 							style={{
 								top: '40px'
 							}}
-							title="Add New Organizer"
+							title="Add New Brand"
 							visible={addNewCategoryVisible}
 							onOk={(e: any) => handleSubmit(e)}
 							onCancel={handleCancel}

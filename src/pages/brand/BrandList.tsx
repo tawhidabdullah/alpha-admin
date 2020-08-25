@@ -21,7 +21,7 @@ const { Search } = Input;
 
 const openSuccessNotification = (message?: any) => {
 	notification.success({
-	  message: message || 'Tag Created',
+	  message: message || 'Brand Created',
 	  description: '',
 	  icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
 	});
@@ -310,7 +310,7 @@ const CategoryList = ({history}: Props) => {
             enterButton={false}
             className='searchbarClassName'
           placeholder="search brand.."
-          onSearch={value => handleSearch(value)}
+          onChange={e => handleSearch(e.target.value)}
           // style={{ width: 300 }}
         />
           </div>

@@ -310,9 +310,10 @@
 			display: flex;
 			justify-content: flex-start;
 			flex-wrap: wrap;
-			height: 100%;
+			height: 80vh;
 			align-items: flex-start;
 			align-content: flex-start;
+			overflow-y: scroll;
 
 			&-item {
 				width: 110px;
