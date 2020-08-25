@@ -216,6 +216,27 @@ const NewBrandDetail = (props: Props) => {
                                 </h3>
                             )}
 
+
+                            {tagDetailState['data']['deliveryCharge'] && (
+                                <h3>
+                                    DELIVERY CHARGE:
+                                    <span>
+                                        {tagDetailState['data']['deliveryCharge']}
+                                    </span>
+                                </h3>
+                            )}
+
+
+
+                        {tagDetailState['data']['deliveryName'] && (
+                                <h3>
+                                    DELIVERY LOCATION:
+                                    <span>
+                                        {`${tagDetailState['data']['deliveryName']}, ${tagDetailState['data']['deliveryPickUpLocation']}, ${tagDetailState['data']['deliveryCountryName']}`}
+                                    </span>
+                                </h3>
+                            )}
+
                       
                         </div>
                     </div>

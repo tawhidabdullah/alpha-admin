@@ -19,7 +19,7 @@ const { Search } = Input;
 
 const openSuccessNotification = (message?: any) => {
 	notification.success({
-	  message: message || 'Tag Created',
+	  message: message || 'Post Recipe Created',
 	  description: '',
 	  icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
 	});
@@ -60,7 +60,7 @@ const MyTable = ({data, setcategoryList, history}: myTableProps) => {
 
           	  // @ts-ignore
 		  if(deleteCategoryRes && deleteCategoryRes.status === 'ok'){
-			  openSuccessNotification('Deleted Category'); 
+			  openSuccessNotification('Deleted Recipe Category'); 
 			  const newCategoryList =  data.filter(item => item.id !== id);
 			  setcategoryList(newCategoryList); 
 		  }
@@ -91,7 +91,7 @@ const MyTable = ({data, setcategoryList, history}: myTableProps) => {
                 <>
                 <img src={cover} 
                    onClick={() => {
-                    history.push(`/admin/category/${record.id}`)
+                    history.push(`/admin/posts/category/${record.id}`)
                     // setcategoryDetailVisible(true);
                     setactiveCategoryForEdit(record)
                   }}
@@ -101,8 +101,7 @@ const MyTable = ({data, setcategoryList, history}: myTableProps) => {
                     width: '40px',
                     objectFit: "contain",
                     borderRadius:'3px',
-                  cursor: 'pointer'
-
+                    cursor: 'pointer'
                 }} />
                 </>
               )}
@@ -117,7 +116,7 @@ const MyTable = ({data, setcategoryList, history}: myTableProps) => {
 
               <h4
                 onClick={() => {
-                  history.push(`/admin/category/${record.id}`)
+                  history.push(`/admin/posts/category/${record.id}`)
                   // setcategoryDetailVisible(true);
                   setactiveCategoryForEdit(record)
                 }}
@@ -136,7 +135,7 @@ const MyTable = ({data, setcategoryList, history}: myTableProps) => {
             />
 
 
-<Column
+          <Column
            title="Description" 
            dataIndex="description" 
            key="id" 
@@ -153,7 +152,7 @@ const MyTable = ({data, setcategoryList, history}: myTableProps) => {
          
             />
 
-<Column
+        <Column
            title="Product" 
            dataIndex="productCount" 
            key="id" 
@@ -215,17 +214,13 @@ const MyTable = ({data, setcategoryList, history}: myTableProps) => {
                onConfirm={() => handleDeleteCategory(record.id)}
                title="Are you sure？" okText="Yes" cancelText="No">
            
-		   <span 
+		        <span 
              className='iconSize iconSize-danger'
              > 
              <DeleteOutlined/>
             </span>
        
            </Popconfirm>
-
-
-       
-             
             </Space>
           )}
         />
@@ -297,6 +292,8 @@ const CategoryList = ({history}: Props) => {
 
 
 
+  console.log('postCategoryList', categoryState);
+
 	return (
 		<>
     {/* <h2 className='containerPageTitle'>
@@ -308,14 +305,14 @@ const CategoryList = ({history}: Props) => {
 
           <div className='categoryListContainer__header-searchBar'>
           <h2 className='categoryListContainer__header-title'>
-            Categories
-            </h2>
+              Recipe Categories
+          </h2>
 
 
           <Search
             enterButton={false}
             className='searchbarClassName'
-          placeholder="search categories.."
+          placeholder="search recipe categories.."
           onSearch={value => handleSearch(value)}
         />
           </div>
@@ -325,18 +322,17 @@ const CategoryList = ({history}: Props) => {
           icon={<PlusOutlined />}
           onClick={() => setAddNewCategoryVisible(true)}
         >
-        Add New
-            
-            </Button>
+            Add New
+        </Button>
             </div>
 
             <div className='categoryListContainer__afterHeader'>
             {/* <Search
-      placeholder="search categories.."
-      size="large"
-      onSearch={value => console.log(value)}
-      style={{ width: 300 }}
-    /> */}
+                placeholder="search categories.."
+                size="large"
+                onSearch={value => console.log(value)}
+                style={{ width: 300 }}
+           /> */}
             </div>
 
      
@@ -352,7 +348,7 @@ const CategoryList = ({history}: Props) => {
 			<div style={{
 				marginTop: '50px'
 			}}>
-				<Empty title='No Category found'   />
+				<Empty title='No Recipe Category found'   />
 			</div>
 		)}
 			</div>

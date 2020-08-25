@@ -28,7 +28,7 @@ interface Props {
 }
 
 const NewBrandDetail = (props: Props) => {
-    const [categoryDetailState, handleCategoryDetailFetch] = useHandleFetch({}, 'categoryDetail');
+    const [categoryDetailState, handleCategoryDetailFetch] = useHandleFetch({}, 'postCategoryDetail');
     const [categoryProductsState, handleCategoryProductsFetch] = useHandleFetch({}, 'categoryProducts');
 
     const params = useParams();
@@ -82,7 +82,7 @@ const NewBrandDetail = (props: Props) => {
 
 
 
-    console.log('categoryProductsState', categoryProductsState);
+    console.log('postcategoryDetailState', categoryDetailState);
 
     console.log('brandParams', params);
 
@@ -127,7 +127,7 @@ const NewBrandDetail = (props: Props) => {
 
             <div className='brandDetailContainer__heading'>
                 <h3>
-                    Category Detail
+                   Recipe Category Detail
                 </h3>
 
                 {categoryDetailState.done && categoryDetail && (Object.keys(categoryDetail).length > 0) && (
@@ -154,7 +154,7 @@ const NewBrandDetail = (props: Props) => {
                 avatar paragraph={{ rows: 3 }}
                 loading={categoryDetailState.isLoading}>
                 {categoryDetailState.done && categoryDetail && !(Object.keys(categoryDetail).length > 0) && (
-                    <Empty description='No Category found' image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                    <Empty description='No Recipe category found' image={Empty.PRESENTED_IMAGE_SIMPLE} />
                 )}
 
 
@@ -172,12 +172,7 @@ const NewBrandDetail = (props: Props) => {
                                 <h3>
                                     {categoryDetail['description']}
                                 </h3>
-                                <h3>
-                                    Category type: <span>
-                                        {categoryDetail['type']}
-                                    </span>
-                                </h3>
-
+                          
                                 {categoryDetail['url'] && (
                                     <h3>
                                         URL:
@@ -197,7 +192,7 @@ const NewBrandDetail = (props: Props) => {
                                 <div className='brandDetailContainer__heading'>
                                     <h3>
                                         Icon
-                            </h3>
+                                    </h3>
                                 </div>
 
                                 <div className='brandDetailContainer__inlineBox'>
@@ -258,7 +253,7 @@ const NewBrandDetail = (props: Props) => {
                             <>
                                 <div className='brandDetailContainer__heading'>
                                     <h3>
-                                        Child Categories
+                                        Child recipe categories
                                    </h3>
                                 </div>
 
@@ -306,7 +301,7 @@ const NewBrandDetail = (props: Props) => {
                     <div style={{
                         marginTop: '100px'
                     }}>
-                        <Empty description='No Products exists in this category' image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                        <Empty description='No Products exists in this recipe category' image={Empty.PRESENTED_IMAGE_SIMPLE} />
                     </div>
                 )}
 
@@ -354,10 +349,6 @@ const NewBrandDetail = (props: Props) => {
                                                 borderRadius: '3px',
                                                 cursor: 'pointer'
                                             }} />
-
-
-
-
                                     </>
                                 )}
                             />
@@ -381,11 +372,8 @@ const NewBrandDetail = (props: Props) => {
                                             }}>
                                             {text}
                                         </h4>
-
-
                                     </>
                                 )}
-
                             />
 
                             <Column
@@ -393,7 +381,6 @@ const NewBrandDetail = (props: Props) => {
                                 dataIndex="offerPrice"
                                 key="id"
                                 className='classnameofthecolumn'
-
                             />
 
 
@@ -405,21 +392,18 @@ const NewBrandDetail = (props: Props) => {
 
                             />
 
-<Column
+                            <Column
                                 title="Available"
                                 dataIndex="available"
                                 key="id"
                                 className='classnameofthecolumn'
-
                             />
-
 
                             <Column
                                 title="Minimum"
                                 dataIndex="minimum"
                                 key="id"
                                 className='classnameofthecolumn'
-
                             />
 
 

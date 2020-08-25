@@ -36,11 +36,12 @@ interface Props {
 }
 
 const NewBrandDetail = (props: Props) => {
-    const [tagDetailState, handleTagDetailFetch] = useHandleFetch({}, 'tagDetail');
+    const [tagDetailState, handleTagDetailFetch] = useHandleFetch({}, 'postTagDetail');
     const [tagProductsState, handleTagProductsFetch] = useHandleFetch({}, 'tagProducts');
     const [tagEditVisible, setTagEditVisible] = useState(false);
     const [tagDetailData,setTagDetailData] = useState({}); 
 
+    
 
     const params = useParams();
     const history = useHistory();
@@ -96,7 +97,7 @@ const NewBrandDetail = (props: Props) => {
         <div className='brandDetailContainer'>
             <div className='brandDetailContainer__heading'>
                 <h3>
-                    Tag Detail
+                    Recipe Tag Detail
                 </h3>
 
                 {tagDetailState.done && tagDetailData && (Object.keys(tagDetailData).length > 0) && (
@@ -121,7 +122,7 @@ const NewBrandDetail = (props: Props) => {
                 paragraph={{ rows: 2 }}
                 loading={tagDetailState.isLoading}>
                 {tagDetailState.done && tagDetailData && !(Object.keys(tagDetailData).length > 0) && (
-                    <Empty description='No Tag found' image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                    <Empty description='No Recipe Tag found' image={Empty.PRESENTED_IMAGE_SIMPLE} />
                 )}
 
                 {tagDetailState.done && tagDetailData && (Object.keys(tagDetailData).length > 0) && (
@@ -156,11 +157,12 @@ const NewBrandDetail = (props: Props) => {
             </div>
             <div className='brandDetailContainer__body'>
                 {tagProductsState.isLoading && <DataTableSkeleton />}
+                
                 {tagProductsState.done && !(tagProductsState.data.length > 0) && (
                     <div style={{
                         marginTop: '100px'
                     }}>
-                        <Empty description='No Products exists for this tag' image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                        <Empty description='No Products exists for this recipe tag' image={Empty.PRESENTED_IMAGE_SIMPLE} />
                     </div>
                 )}
 

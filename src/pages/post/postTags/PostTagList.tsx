@@ -40,7 +40,7 @@ import AddNewTag from "./AddNewPostTag"
 
 const openSuccessNotification = (message?: any) => {
 	notification.success({
-		message: message || 'Tag Created',
+		message: message || 'Recipe Tag Created',
 		description: '',
 		icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
 	});
@@ -94,11 +94,10 @@ const MyTable = ({ data, setTagList }) => {
 
 		// @ts-ignore
 		if (deleteTagRes && deleteTagRes.status === 'ok') {
-			openSuccessNotification('Deleted Tag');
+			openSuccessNotification('Deleted Recipe Tag');
 			const newtagList = data.filter(item => item.id !== id);
 			setTagList(newtagList);
 		}
-
 
 	}
 
@@ -137,7 +136,7 @@ const MyTable = ({ data, setTagList }) => {
 
 							<h4
 								onClick={() => {
-									history.push(`/admin/tag/${record.id}`)
+									history.push(`/admin/posts/tag/${record.id}`)
 									// setBrandDetailVisible(true);
 									setactiveCategoryForEdit(record)
 								}}
@@ -179,7 +178,7 @@ const MyTable = ({ data, setTagList }) => {
 					render={(text, record: any) => (
 						<Space size="middle">
 							<a href='##'>
-								<Tooltip placement="top" title='Quick Edit Tag'>
+								<Tooltip placement="top" title='Quick Edit Recipe tag'>
 									<span className='iconSize' onClick={() => {
 										setvisible(true)
 										setactiveCategoryForEdit(record);
@@ -205,11 +204,6 @@ const MyTable = ({ data, setTagList }) => {
 				/>
 			</Table>
 
-
-
-
-
-
 			{activeCategoryForEdit && <QuickEdit
 				tagList={data}
 				setTagList={setTagList}
@@ -230,8 +224,9 @@ const TagList = ({ }: Props) => {
 
 	const [tagList, setTagList] = useState([]);
 
-	const [tagState, handleTagListFetch] = useHandleFetch({}, 'tagList');
+	const [tagState, handleTagListFetch] = useHandleFetch({}, 'postTagList');
 
+	console.log('recipetaglist',tagState); 
 
 	useEffect(() => {
 		const setTags = async () => {
@@ -244,63 +239,13 @@ const TagList = ({ }: Props) => {
 
 
 
-	const [addTagState, handleAddTagFetch] = useHandleFetch({}, 'addTag');
 	const [addNewCategoryVisible, setAddNewCategoryVisible] = useState(false);
-
-	const handleSubmit = async (values: any, actions: any) => {
-		const addTagRes = await handleAddTagFetch({
-			urlOptions: {
-				placeHolders: {
-					id: values.id,
-				}
-			},
-			body: {
-				name: values.name.trim(),
-				description: values.description,
-			},
-		});
-
-		// @ts-ignore
-		if (addTagRes && addTagRes.status === 'ok') {
-			openSuccessNotification();
-
-			setTagList([...tagList, {
-				id: addTagRes['id'] || '',
-				key: addTagRes['id'] || '',
-				name: addTagRes['name'] || '',
-				description: addTagRes['description'] || '',
-			}])
-			actions.resetForm();
-		}
-		actions.setSubmitting(false);
-
-	};
-
-
-
-	const getisSubmitButtonDisabled = (values, isValid) => {
-		if (!values.name || !isValid) {
-			return true;
-		}
-		return false;
-	}
-
-
-	const handleOkAddNewCategory = (e: any) => {
-		setAddNewCategoryVisible(false);
-
-	};
-
-	const handleCancelAddNewCategory = (e: any) => {
-		setAddNewCategoryVisible(false);
-	};
 
 	const handleSearch = (value) => {
 		if (tagState.data.length > 0) {
 			const newTagList = tagState.data.filter(item => item.name.toLowerCase().includes(value.toLowerCase()));
 			setTagList(newTagList);
 		}
-
 	}
 
 	return (
@@ -310,14 +255,13 @@ const TagList = ({ }: Props) => {
 				<div className='categoryListContainer__header'>
 					<div className='categoryListContainer__header-searchBar-tag'>
 						<h2 className='categoryListContainer__header-title'>
-							Tags
-            </h2>
-
+							Recipe Tags
+         				</h2>
 
 						<Search
 							enterButton={false}
 							className='searchbarClassName'
-							placeholder="search tags.."
+							placeholder="search recipe tags.."
 							onSearch={value => handleSearch(value)}
 						/>
 					</div>
@@ -339,9 +283,9 @@ const TagList = ({ }: Props) => {
 
 					{tagState.done && !(tagList.length > 0) && (
 						<div style={{
-							marginTop: '50px'
+							marginTop: '200px'
 						}}>
-							<Empty description='No Tags found' image={Empty.PRESENTED_IMAGE_SIMPLE} />
+							<Empty description='No Recipe tags found' image={Empty.PRESENTED_IMAGE_SIMPLE} />
 						</div>
 					)}
 				</div>

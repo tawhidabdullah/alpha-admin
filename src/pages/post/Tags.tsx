@@ -35,7 +35,7 @@ const Tags = ({
 }: Props) => {
   const [options, setoptions] = useState([]);
   const [selectedOpions, setselectedOptions] = useState([]);
-  const [tagState, handleTagListFetch] = useHandleFetch({}, 'tagList');
+  const [tagState, handleTagListFetch] = useHandleFetch({}, 'postTagList');
   const [searchValue, setsearchValue] = useState('');
 
 

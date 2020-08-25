@@ -52,6 +52,8 @@ class Connector {
     //*replace variable parts in url with actual data if params exists |or| just return the url
 
     const url = manupulateURL(api.url, options.urlOptions);
+    console.log('url',api.url)
+    console.log('manupulatedUrl',url);
 
     // change the formate to text if the server is wooCommerce
     if (config['server'] === 'wooCommerce') {

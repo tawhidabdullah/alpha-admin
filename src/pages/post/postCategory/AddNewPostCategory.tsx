@@ -142,7 +142,7 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, categ
 
 		// @ts-ignore
 		if (addCategoryRes && addCategoryRes.status === 'ok') {
-			openSuccessNotification('Category Created!');
+			openSuccessNotification('Post Category Created!');
 			setAddNewCategoryVisible(false)
 
 			setcategoryList([...categoryList, {
@@ -287,7 +287,7 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, categ
 							style={{
 								top: '40px'
 							}}
-							title="Add New Category"
+							title="Add New Post Category"
 							visible={addNewCategoryVisible}
 							onOk={(e: any) => handleSubmit(e)}
 							onCancel={handleCancel}

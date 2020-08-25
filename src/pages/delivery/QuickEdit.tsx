@@ -60,6 +60,9 @@ const QuickEdit = ({ customer, setvisible, visible, setRegionList, regionList }:
 	const [updateRegionState, handleUpdateRegionFetch] = useHandleFetch({}, 'updateRegion');
 
 
+	console.log('DeliveryRegion',customer);
+
+
 	const [selectedCountryValue, setselectedCountryValue] = useState('');
 	const [selectedCityValue, setselectedCityValue] = useState('');
 
@@ -89,7 +92,7 @@ const QuickEdit = ({ customer, setvisible, visible, setRegionList, regionList }:
 				time: values.time,
 				country: selectedCountryValue,
 				city: selectedCityValue,
-				charge: {}
+				charge: customer.charge
 			},
 		});
 
@@ -117,8 +120,6 @@ const QuickEdit = ({ customer, setvisible, visible, setRegionList, regionList }:
 		setvisible(false)
 
 	};
-
-
 
 
 	const onChangeCity = (value) => {
@@ -223,7 +224,7 @@ const QuickEdit = ({ customer, setvisible, visible, setRegionList, regionList }:
 			}) => (
 					<>
 						<Modal
-							title="Quick Edit"
+							title="Region Edit"
 							visible={visible}
 							onOk={(e: any) => handleSubmit(e)}
 							onCancel={handleCancel}

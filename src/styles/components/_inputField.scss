@@ -1894,10 +1894,12 @@
 
 .notificationListItemContainer {
 	min-height: 300px;
+	max-height: 400px;
 	box-shadow: 0 0.125rem 0.625rem rgba(227, 231, 250, 0.4), 0 0.0625rem 0.125rem rgba(206, 220, 233, 0.5) !important;
 	border-radius: 5px;
 	z-index: 5000000;
 	background-color: #fff;
+	overflow-y: scroll;
 
 	&__item {
 		display: flex;
@@ -1905,7 +1907,12 @@
 	    padding: 15px;
 		transition: all 300ms;
 		cursor: pointer;
-     	z-index: 6000000;
+		 z-index: 6000000;
+		 border-bottom: 1px solid #eee;
+		 
+		 &-active {
+			background-color: #188fff0e;
+		 }
 
 		
 		&:hover {

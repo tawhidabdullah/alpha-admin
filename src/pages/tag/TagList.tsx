@@ -340,7 +340,7 @@ const TagList = ({ }: Props) => {
 
 					{tagState.done && !(tagList.length > 0) && (
 						<div style={{
-							marginTop: '50px'
+							marginTop: '200px'
 						}}>
 							<Empty description='No Tags found' image={Empty.PRESENTED_IMAGE_SIMPLE} />
 						</div>

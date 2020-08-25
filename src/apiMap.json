@@ -69,20 +69,44 @@
 			"method": "post"
 		},
 		"postList": {
-			"url": "/admin/api/post/add",
-			"method": "post"
+			"url": "/admin/api/post",
+			"method": "get"
 		},
 		"postCategoryList": {
-			"url": "/admin/api/post/categories",
-			"method": "post"
+			"url": "/admin/api/post/category",
+			"method": "get"
+		},
+		"postCategoryDetail": {
+			"url": "/admin/api/post/category/:id",
+			"method": "get"
+		},
+		"postSelectCategoryList": {
+			"url": "/admin/api/post/category",
+			"method": "get"
 		},
 		"postAddCategory": {
-			"url": "/admin/api/post/categories/add",
+			"url": "/admin/api/post/category/add",
+			"method": "post"
+		},
+		"postTagList": {
+			"url": "/admin/api/post/tag",
+			"method": "get"
+		},
+		"postTagDetail": {
+			"url": "/admin/api/post/tag/:id",
+			"method": "get"
+		},
+		"postAddTag": {
+			"url": "/admin/api/post/tag/add",
+			"method": "post"
+		},
+		"postUpdateTag": {
+			"url": "/admin/api/post/update/tag",
 			"method": "post"
 		},
 		"postDetail": {
-			"url": "/admin/api/post/:id",
-			"method": "post"
+			"url": "/admin/api/post/:id?category=categoryOne&tags=tagsOne",
+			"method": "get"
 		},
 		"categoryList": {
 			"url": "/api/category?subCategory=isSubCategory&productCount=productCountValue",
@@ -367,6 +391,14 @@
 		"getAllNotification": {
 			"url": "/admin/api/notification",
 			"method": "get"
+		},
+		"markNotificationAsRead": {
+			"url": "/admin/notification/markread",
+			"method": "post"
+		},
+		"markAllNotificationAsRead": {
+			"url": "/admin/notification/markreadall",
+			"method": "post"
 		},
 		"getAnalyticsPageVisitCount": {
 			"url": "/admin/api/analytics/visitCount?type=visitType",

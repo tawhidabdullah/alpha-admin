@@ -13,8 +13,24 @@ const manupulateURL = (url, urlOptions = {}) => {
   return url
     .split('/')
     .map(currentValue => {
-      if (currentValue.includes(':') && !isObjectEmpty(placeHolders)) {
+      if (currentValue.includes(':') && !isObjectEmpty(placeHolders) && !currentValue.includes('?')) {
+        console.log('currentValue',currentValue);
         let actualPlaceholderValue = placeHolders[currentValue.replace(':', '')];
+        console.log('actualPlaceholderValue',actualPlaceholderValue);
+        currentValue = actualPlaceholderValue;
+      }
+      
+      if (currentValue.includes(':') && !isObjectEmpty(placeHolders) && currentValue.includes('?')) {
+        let fuckValue = currentValue.split('?'); 
+        if(fuckValue && fuckValue.length > 0){
+          fuckValue = fuckValue.map(item => {
+            return placeHolders[item.replace(':', '')] ? placeHolders[item.replace(':', '')] : item
+          })
+        }
+        console.log('fuckValue',fuckValue);
+        let actualPlaceholderValue = fuckValue.join('?');
+        console.log('actualPlaceholderValue',actualPlaceholderValue,'currentVAlue',currentValue);
+        console.log('placeHolders',placeHolders);
         currentValue = actualPlaceholderValue;
       }
 

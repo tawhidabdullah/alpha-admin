@@ -117,17 +117,17 @@ const SiderComponent = (props: any) => {
                     <Menu.Item
                         icon={<RadarChartOutlined />}
                         key='655'>
-                        <Link to='/admin/posts'>List Posts</Link>
+                        <Link to='/admin/posts'>List Recipe</Link>
                     </Menu.Item>
 
                     <Menu.Item
                         icon={<TagOutlined />}
                         key='2222444'>
-                        <Link to='/admin/posts/category'>Post Category</Link>
+                        <Link to='/admin/posts/category'>Recipe Category</Link>
                     </Menu.Item>
 
                     <Menu.Item key='955' icon={<TagsOutlined />}>
-                        <Link to='/admin/posts/tag'>Post Tags</Link>
+                        <Link to='/admin/posts/tag'>Recipe Tags</Link>
                     </Menu.Item>
 
                 </SubMenu>

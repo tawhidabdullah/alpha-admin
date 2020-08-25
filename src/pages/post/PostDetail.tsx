@@ -32,21 +32,26 @@ interface Props {
 }
 
 const NewBrandDetail = (props: Props) => {
-    const [productDetailState, handleProductDetailFetch] = useHandleFetch({}, 'bundleDetail');
+    const [productDetailState, handleProductDetailFetch] = useHandleFetch({}, 'postDetail');
 
     const params = useParams();
     const history = useHistory();
     const productId = params['id'];
+
     const [productEditVisible, setProductEditVisible] = useState(false);
 
 
     useEffect(() => {
-
         const getProductDetail = async () => {
+            console.log('fuckit')
             await handleProductDetailFetch({
                 urlOptions: {
+                    params: {
+                        categoryOne: 1,
+                        tagsOne: 1
+                    },
                     placeHolders: {
-                        id: productId
+                        id: productId,
                     }
                 }
             })
@@ -103,7 +108,7 @@ const NewBrandDetail = (props: Props) => {
 
             <div className='brandDetailContainer__heading'>
                 <h3>
-                    Bundle Detail
+                    Recipe Detail
                 </h3>
 
                 {productDetailState.done && productDetailState.data && (Object.keys(productDetailState.data).length > 0) && (
@@ -128,14 +133,14 @@ const NewBrandDetail = (props: Props) => {
                 avatar paragraph={{ rows: 3 }}
                 loading={productDetailState.isLoading}>
                 {productDetailState.done && productDetailState.data && !(Object.keys(productDetailState.data).length > 0) && (
-                    <Empty description='No Product found' image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                    <Empty description='No Recipe found' image={Empty.PRESENTED_IMAGE_SIMPLE} />
                 )}
 
                 {productDetailState.done && productDetailState.data && (Object.keys(productDetailState.data).length > 0) && (
                     <>
                         <div className='brandDetailContainer__header'>
                             <div className='brandDetailContainer__header-coverContainer brandDetailContainer__header-coverContainer-product'>
-                                <img src={productDetailState.data['cover'] && productDetailState.data['cover']['cover']} alt="" />
+                                <img src={productDetailState.data['cover'] && productDetailState.data['cover']} alt="" />
                             </div>
                             <div className='brandDetailContainer__header-info'>
                                 <h2>
@@ -203,7 +208,7 @@ const NewBrandDetail = (props: Props) => {
                                         {productDetailState.data['category'].map(cat => {
                                             return (
                                                 <span
-                                                    onClick={() => history.push(`/admin/category/${cat.id}`)}
+                                                    onClick={() => history.push(`/admin/posts/category/${cat.id}`)}
 
                                                 >
                                                     {cat.name}
@@ -211,10 +216,8 @@ const NewBrandDetail = (props: Props) => {
                                             )
                                         })}
                                         </h3>
-
                                     </>)
                                 }
-
                             </div>
                         </div>
 
@@ -246,7 +249,7 @@ const NewBrandDetail = (props: Props) => {
                             <div className='brandDetailContainer__heading'>
                                 <h3>
                                     Products
-                       </h3>
+                               </h3>
                             </div>
                         )
                         }
@@ -257,7 +260,7 @@ const NewBrandDetail = (props: Props) => {
                                 <div style={{
                                     marginTop: '100px'
                                 }}>
-                                    <Empty description='No Products exists for this Bundle' image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                                    <Empty description='No Products exists for this Recipe' image={Empty.PRESENTED_IMAGE_SIMPLE} />
                                 </div>
                             )}
 
@@ -375,7 +378,6 @@ const NewBrandDetail = (props: Props) => {
                         )}
 
                     </>
-
                 )}
 
             </Skeleton>

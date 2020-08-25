@@ -29,7 +29,8 @@ const Categories = ({ setcategoryIds, categoryOptions, setCategoryOptions }: Pro
 	const [options, setoptions] = useState([]);
 	const [searchValue, setsearchValue] = useState('');
 
-	const [categoryState, handleCategoryListFetch] = useHandleFetch({}, 'categorySelectist');
+	const [categoryState, handleCategoryListFetch] = useHandleFetch({}, 'postSelectCategoryList');
+
 
 	useEffect(() => {
 		const setCategories = async () => {

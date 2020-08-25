@@ -20,7 +20,7 @@ const { Search } = Input;
 
 const openSuccessNotification = (message?: any) => {
 	notification.success({
-	  message: message || 'Tag Created',
+	  message: message || 'Region Created',
 	  description: '',
 	  icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
 	});
@@ -174,7 +174,7 @@ const MyTable = ({data,setRegionList}: myTableProps) => {
             <Space size="middle">
             
             <a href='##'>
-               <Tooltip placement="top" title='Quick Edit Region'>
+               <Tooltip placement="top" title='Edit Region'>
               <span className='iconSize' onClick={() => {
                 setvisible(true)
                 setactiveCategoryForEdit(record); 
@@ -183,7 +183,7 @@ const MyTable = ({data,setRegionList}: myTableProps) => {
             
               </span>
                </Tooltip>
-</a>
+              </a>
 
 
    

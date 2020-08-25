@@ -38,7 +38,7 @@ const validationSchema = Yup.object().shape({
 
 const openSuccessNotification = (message?: any) => {
 	notification.success({
-		message: message || 'Category Updated',
+		message: message || 'Recipe Category Updated',
 		description: '',
 		icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
 	});
@@ -391,7 +391,7 @@ const AddNewBrand = ({ categoryEditVisible,
 							style={{
 								top: '40px'
 							}}
-							title="Category Edit"
+							title="Recipe Category Edit"
 							visible={categoryEditVisible}
 							onOk={(e: any) => handleSubmit(e)}
 							onCancel={handleCancel}

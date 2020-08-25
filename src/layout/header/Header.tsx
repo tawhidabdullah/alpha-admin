@@ -138,10 +138,11 @@ const HeaderComponent = (props: Props) => {
             {getAllNotificationState.done
             && getAllNotificationState.data[0]
             && getAllNotificationState.data.map((item,index) => {
+                console.log('itemNotification',item);
             return (
             <div
               onClick={() => history.push(`/admin/${item.type}/${item.id}`)}
-              className='notificationListItemContainer__item'>
+              className={!item.read ? 'notificationListItemContainer__item notificationListItemContainer__item-active' : 'notificationListItemContainer__item'}>
                 <span className='notificationListItemContainer__item-icon'>
                   {typeIcon[item['type']]}
                 </span>

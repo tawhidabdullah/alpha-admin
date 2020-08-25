@@ -55,7 +55,7 @@ class Converter {
    * @returns {Object}  converted data
    */
   async postCategoryList(resData) {
-	const data = resData.data || [];
+	const data = resData.data && resData.data  ? resData.data : [];
 
 	const formatedData =
 		data.length > 0 &&
@@ -65,27 +65,9 @@ class Converter {
 				key: category._id || '',
 				name: category.name && category.name,
 				description: category.description && category.description,
-				// productCount: category.productCount || 0,
-				parent: category.parent || '',
 				cover: category.cover ? `${config['baseURL']}${category.cover.thumbnail}` : null,
-				subCount:
-					category.subCategory.length === 1
-						? category.subCategory[0] && category.subCategory[0].name ? category.subCategory.length : 0
-						: category.subCategory.length,
-				...(category.subCategory &&
-					category.subCategory.length > 0 &&
-					category.subCategory[0] &&
-					category.subCategory[0]['name'] && {
-					children: category.subCategory.map((subCat) => {
-						return {
-							id: subCat._id || '',
-							key: subCat._id,
-							name: subCat.name && subCat.name,
-							description: subCat.description && subCat.description,
-							cover: subCat.cover ? `${config['baseURL']}${subCat.cover.thumbnail}` : ''
-						};
-					})
-				})
+				icon: category.icon ? `${config['baseURL']}${category.icon}` : null,
+				
 			};
 		});
 
@@ -93,7 +75,28 @@ class Converter {
 };
 
 
+
+		/**
+   * @public
+   * @method postCategoryDetail convert api data from API to general format based on config server
+   * @param {Object} data response objectc from alpha
+   * @returns {Object}  converted data
+   */
+  async postCategoryDetail(resData) {
+	const data = resData;
+
+	if(Object.keys(data).length > 0){
+		return {
+			id: data._id || '',
+			key: data._id || '',
+			name: data.name && data.name,
+			description: data.description && data.description,
+			cover: data.cover ? `${config['baseURL']}${data.cover.thumbnail}` : null,
+			icon: data.icon ? `${config['baseURL']}${data.icon}` : null,
+		}
+	}
 	
+};
 
 	/**
 * @public
@@ -166,6 +169,31 @@ class Converter {
 
 
 
+	
+
+
+		/**
+	* @public
+	* @method categorySelectist convert api data from API to general format based on config server
+	* @param {Object} data response objectc from alpha
+	* @returns {Object}  converted data
+	*/
+	async postSelectCategoryList(resData) {
+
+		const data = resData.data;
+
+		const formatedData =
+			data.length > 0 &&
+			data.map((category) => {
+				return {
+					id: category._id || '',
+					key: category._id || '',
+					title: category.name && category.name,
+				};
+			});
+
+		return formatedData;
+	}
 
 	/**
    * @public
@@ -571,6 +599,88 @@ class Converter {
 
 
 
+	
+	/**
+   * @public
+   * @method postList convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+  async postList(resData) {
+	const data = resData.data;
+	// const isNext = resData.page.next;
+
+	let convertedData =
+		data.length > 0 &&
+		data.map((post) => {
+			return {
+				id: post._id || '',
+				name: post.name && post.name,
+				body: post.body && post.body,
+				preparationTime: post.preparationTime && post.preparationTime,
+				servingSize: post.servingSize && post.servingSize,
+				cookingTime: post.cookingTime && post.cookingTime,
+				cover: `${config['baseURL']}${(post.cover && post.cover['thumbnail']) || ''}`,
+				url: post.url,
+				category: post.category,
+				tags: post.tags,
+			};
+		});
+
+	// convertedData = {
+	// 	data: convertedData,
+	// 	isNext
+	// };
+
+	return convertedData;
+}
+
+
+	
+	/**
+   * @public
+   * @method postDetail convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+  async postDetail(resData) {
+	const data = resData;
+	// const isNext = resData.page.next;
+
+	if(Object.keys(data).length > 0){
+		return {
+			id: data._id || '',
+			name: data.name && data.name,
+			body: data.body && data.body,
+			preparationTime: data.preparationTime && data.preparationTime,
+			servingSize: data.servingSize && data.servingSize,
+			cookingTime: data.cookingTime && data.cookingTime,
+			cover: `${config['baseURL']}${(data.cover && data.cover['medium']) || ''}`,
+			url: data.url,
+			products: data.requiredProducts,
+			category:
+			(data.category &&
+				data.category.length > 0 &&
+				data.category.map((cat) => {
+					return {
+						id: cat._id,
+						name: cat.name
+					};
+				})) ||
+			data.category,
+	 		tags: data.tags && data.tags.length > 0 ? data.tags : [],
+		}
+	}
+	else return {}
+
+}
+
+
+
+
+
+
+
 	/**
    * @public
    * @method bundleList convert api data from API to general format based on config server
@@ -691,9 +801,9 @@ class Converter {
 			return {
 				id: item._id || '',
 				visit: item.count || '',
-				name: item['item'] && item['item']['name'] ,
-				url: item['item'] && item['item']['url'] ,
-				itemId: item['item'] && item['item']['_id'] ,
+				name: item['detail'] && item['detail'][0] && item['detail'][0]['name'] ,
+				url: item['detail'] && item['detail'][0] && item['detail'][0]['url'] ,
+				itemId: item['detail'] && item['detail'][0] && item['detail'][0]['_id'] ,
 			};
 		});
 
@@ -866,6 +976,54 @@ class Converter {
 		return convertedData;
 	}
 
+
+		/**
+   * @public
+   * @method postTagList convert api data from API to general format based on config server
+   * @param {Object} data response objectc from alpha
+   * @returns {Object}  converted data
+   */
+	async postTagList(resData) {
+	const data = resData.data;
+
+		const convertedData =
+			data.length > 0 &&
+			data.map((tag) => {
+				return {
+					id: tag._id || '',
+					key: tag._id || '',
+					name: tag.name && tag.name,
+					description: tag.description && tag.description
+				};
+			});
+
+		return convertedData;
+	}
+
+
+
+	
+		/**
+   * @public
+   * @method postTagDetail convert api data from API to general format based on config server
+   * @param {Object} data response objectc from alpha
+   * @returns {Object}  converted data
+   */
+  async postTagDetail(resData) {
+	const data = resData; 
+
+	if(Object.keys(data).length > 0){
+		return {
+			id: data._id || '',
+			key: data._id || '',
+			name: data.name && data.name,
+			description: data.description && data.description
+		}
+	}
+	else return {}
+	}
+
+	
 	/**
    * @public
    * @method brandList convert api data from API to general format based on config server
@@ -1870,6 +2028,25 @@ class Converter {
 }
 
 
+
+		/**
+   * @public
+   * @method postAddTag convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+
+	async postAddTag(data) {
+		const convertedData = data;
+		if (data && data.inserted) {
+			return {
+				...data.inserted[0],
+				status: 'ok'
+			};
+		}
+		return convertedData;
+	}
+
 	
 	/**
    * @public
@@ -2386,6 +2563,11 @@ class Converter {
 				email: order.shippingAddress['email'],
 				status: order.status,
 				total: order.totalPrice,
+				deliveryCharge: order.totalPrice,
+				deliveryRegion: order.deliveryRegion,
+				deliveryName: order.deliveryRegion && order.deliveryRegion['name'],
+				deliveryPickUpLocation: order.deliveryRegion && order.deliveryRegion['pickUpLocation'],
+				deliveryCountryName: order.deliveryRegion && order.deliveryRegion['countryName'],
 				products: order.products && order.products.length > 0 ? order.products.map(product => {
 					return {
 						id: product._id || '',

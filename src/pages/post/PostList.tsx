@@ -41,7 +41,7 @@ import AddNewProductBundle from "./AddNewPost"
 
 const openSuccessNotification = (message?: any) => {
     notification.success({
-        message: message || 'Post Created',
+        message: message || 'Recipe Created',
         description: '',
         icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
     });
@@ -55,8 +55,6 @@ const openErrorNotification = (message?: any) => {
         icon: <CheckCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
     });
 };
-
-
 
 const validationSchema = Yup.object().shape({
     name: Yup.string().label('Name').required('Name is required').min(3, 'Name must have at least 3 characters'),
@@ -95,7 +93,7 @@ const MyTable = ({ data, setTagList }) => {
 
         // @ts-ignore
         if (deleteTagRes && deleteTagRes.status === 'ok') {
-            openSuccessNotification('Deleted Bundle');
+            openSuccessNotification('Deleted Recipe');
             const newtagList = data.filter(item => item.id !== id);
             setTagList(newtagList);
         }
@@ -140,7 +138,7 @@ const MyTable = ({ data, setTagList }) => {
                         <>
                             <img
                                 onClick={() => {
-                                    history.push(`/admin/bundle/${record.id}`)
+                                    history.push(`/admin/posts/${record.id}`)
                                     setactiveCategoryForEdit(record)
                                 }}
                                 src={cover} alt='cover img' style={{
@@ -164,7 +162,7 @@ const MyTable = ({ data, setTagList }) => {
 
                             <h4
                                 onClick={() => {
-                                    history.push(`/admin/bundle/${record.id}`)
+                                    history.push(`/admin/posts/${record.id}`)
                                     // setBrandDetailVisible(true);
                                     setactiveCategoryForEdit(record)
                                 }}
@@ -237,7 +235,7 @@ const MyTable = ({ data, setTagList }) => {
                     render={(text, record: any) => (
                         <Space size="middle">
                             <a href='##'>
-                                <Tooltip placement="top" title='Quick Edit Bundle'>
+                                <Tooltip placement="top" title='Quick Edit recipe'>
                                     <span className='iconSize' onClick={() => {
                                         setvisible(true)
                                         setactiveCategoryForEdit(record);
@@ -273,7 +271,8 @@ const MyTable = ({ data, setTagList }) => {
                 setTagList={setTagList}
                 setvisible={setvisible}
                 visible={visible}
-                category={activeCategoryForEdit} />}
+                category={activeCategoryForEdit}
+                 />}
         </>
     )
 }
@@ -288,7 +287,11 @@ const TagList = ({ }: Props) => {
 
     const [tagList, setTagList] = useState([]);
 
-    const [tagState, handleTagListFetch] = useHandleFetch({}, 'bundleList');
+    const [tagState, handleTagListFetch] = useHandleFetch({}, 'postList');
+
+
+
+    console.log('postListData',tagState);
 
 
     useEffect(() => {
@@ -331,18 +334,16 @@ const TagList = ({ }: Props) => {
 
     return (
         <>
-
             <div className='categoryListContainer'>
                 <div className='categoryListContainer__header'>
                     <div className='categoryListContainer__header-searchBar-tag'>
                         <h2 className='categoryListContainer__header-title'>
-                            Posts
+                        Recipes
                        </h2>
-
                         <Search
                             enterButton={false}
                             className='searchbarClassName'
-                            placeholder="search posts.."
+                            placeholder="search recipes.."
                             onSearch={value => handleSearch(value)}
                         />
                     </div>
@@ -366,7 +367,7 @@ const TagList = ({ }: Props) => {
                         <div style={{
                             marginTop: '200px'
                         }}>
-                            <Empty description='No Post found' image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                            <Empty description='No Recipe found' image={Empty.PRESENTED_IMAGE_SIMPLE} />
                         </div>
                     )}
                 </div>

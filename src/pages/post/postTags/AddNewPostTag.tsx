@@ -80,7 +80,7 @@ interface Props {
 
 const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, tagList, setTagList }: Props) => {
 
-    const [addTagState, handleAddTagFetch] = useHandleFetch({}, 'addTag');
+    const [addTagState, handleAddTagFetch] = useHandleFetch({}, 'postAddTag');
     const [myImages, setmyImages] = useState(false);
     const [visibleMedia, setvisibleMedia] = useState(false);
     const [coverImageId, setCoverImageId] = useState('');
@@ -190,7 +190,7 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, tagList,
                             style={{
                                 top: '40px'
                             }}
-                            title="Add New Tag"
+                            title="Add New Post Tag"
                             visible={addNewCategoryVisible}
                             onOk={(e: any) => handleSubmit(e)}
                             onCancel={handleCancel}

@@ -79,7 +79,7 @@ const Overview = (props: Props) => {
 
 	return (
 		<div className='overviewContainer'>
-			<div className="overviewContainer__header">
+			{/* <div className="overviewContainer__header">
 
 				{totalUserCountState.done && totalUserCountState.data && (
 					<>
@@ -198,7 +198,7 @@ const Overview = (props: Props) => {
 
 
 			</div>
-
+ */}
 
 			<div className="overviewContainer__body">
 				<PageVisits />

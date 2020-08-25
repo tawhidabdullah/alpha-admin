@@ -457,7 +457,7 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 												label='Unit'
 												value={values.unit}
 												name='unit'
-										    	placeHolder={'1KG,4KG,250GM'}
+										    	placeHolder={'KG,POUND,GM'}
 												isError={(touched.unit && errors.unit) ||
 													(!isSubmitting && addProductState.error['error']['unit'])}
 
@@ -473,7 +473,7 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 											<Input
 											label='BN Unit'
 											value={values.bnUnit}
-											placeHolder={'১কেজি,২কেজি'}
+											placeHolder={'কেজি,গ্রাম'}
 											name='bnUnit'
 											isError={(touched.bnUnit && errors.bnUnit) ||
 												(!isSubmitting && addProductState.error['error']['bnUnit'])}
@@ -485,8 +485,6 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 												setFieldTouched('bnUnit');
 											}}
 										/>
-
-
 
 
 											<Input
@@ -807,22 +805,22 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 
 									<div className='addProductGridContainer__image'>
 
-<div className='addProductGridContainer__item-header'>
-	<h3>
-	Meta Data
-</h3>
+												<div className='addProductGridContainer__item-header'>
+													<h3>
+													Meta Data
+												</h3>
 
-	<Tooltip
-		placement="left" title={"Meta data will be used to make the user's easy and for search engine optimization."}>
-		<a href='###'>
-			<InfoCircleOutlined />
-		</a>
-	</Tooltip>
-</div>
-<div className='addProductGridContainer__item-body'>
+													<Tooltip
+														placement="left" title={"Meta data will be used to make the user's easy and for search engine optimization."}>
+														<a href='###'>
+															<InfoCircleOutlined />
+														</a>
+													</Tooltip>
+												</div>
+								<div className='addProductGridContainer__item-body'>
 
-                                
-<Input
+																
+								<Input
 								label='Meta title'
 								value={values.metaTitle}
 								placeHolder={'category...'}
