@@ -1406,6 +1406,7 @@ class Converter {
 	async productDetail(data) {
 		const convertedData =
 			(Object.keys(data).length > 0 && {
+				...data,
 				id: data._id || data.id || '',
 				name: data.name || '',
 				description: data.description.replace(/<[^>]+>/g, '') || '',
@@ -1528,6 +1529,7 @@ class Converter {
 	async productDetailById(data) {
 		const convertedData =
 			(Object.keys(data).length > 0 && {
+				...data,
 				id: data._id || data.id || '',
 				name: data.name || '',
 				description: data.description.replace(/<[^>]+>/g, '') || '',

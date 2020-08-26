@@ -39,12 +39,13 @@ import { useHandleFetch } from "../../hooks";
 
 
 
-import { Select, Button, Spin, Empty } from 'antd';
+import { Select, Button, Spin, Empty, DatePicker } from 'antd';
 import Moment from "react-moment";
 import moment from 'moment';
 
 const { Option } = Select;
 
+const { RangePicker } = DatePicker;
 
 
 
@@ -201,6 +202,8 @@ const ApiVisits = (props: Props) => {
     const [selectedApiValue, setSelectedApiValue] = useState('date');
     const [orderAnalyticsVisitsState, handleOrderAnalyticsVisitsStateFetch] = useHandleFetch({}, 'getAnalyticsOrders');
     const [orderData, setorderData] = useState([]);
+    const [startDate,setStartDate] = useState('');
+    const [endDate,setEndDate] = useState('');
 
 
     useEffect(()=>{
@@ -210,6 +213,8 @@ const ApiVisits = (props: Props) => {
                 urlOptions: {
                     params: {
                         metricType: selectedApiValue,
+                        startDateValue: startDate,
+                        endDateValue: endDate
                     }
                 }
             }); 
@@ -225,7 +230,7 @@ const ApiVisits = (props: Props) => {
            };
            getAnalyticsOrders(); 
 
-    },[selectedApiValue]); 
+    },[selectedApiValue,startDate,endDate]); 
 
 
     console.log('orderAnalyticsVisitsState',orderAnalyticsVisitsState);
@@ -282,7 +287,35 @@ const ApiVisits = (props: Props) => {
         }
         return order; 
     }
+
+    const getDatePickerValue = () => {
+        if (selectedApiValue === 'hour'){
+            return 'time';
+        }
+        if (selectedApiValue === 'month'){
+            return 'month';
+        }
+        else if (selectedApiValue === 'dayOfWeek'){
+            return 'week';
+        }
+        else if (selectedApiValue === 'year'){
+            return 'year';
+        }
+        
+        return 'date'; 
+    }
     
+
+    const handleStartEndDateRangeDate = (e) => {
+        console.log('dateOrder',moment(e[0]).format());
+        console.log('dateOff',moment(e[1]).format());
+        const startDate = new Date(moment(e[0]).format()); 
+        const endDate = new Date(moment(e[1]).format()); 
+        // @ts-ignore
+        setStartDate(startDate);
+        // @ts-ignore
+        setEndDate(endDate);
+    }; 
 
     return (
         <div className='overviewContainer__userVisits'>
@@ -382,18 +415,17 @@ const ApiVisits = (props: Props) => {
 
 
             </div>
-            {/* <div className="overviewContainer__body-footer">
-                <h3>
-                    <span>
-                        <CalendarOutlined />
-                    </span>
-
-					In the last month
-				</h3>
-            </div> */}
-
+            <div className="overviewContainer__body-footer">
+                  <RangePicker
+                    showTime={true}
+                    onChange={handleStartEndDateRangeDate}
+                    picker={'date'} 
+                    bordered={false}
+                    />
+            </div>
         </div>
-    )
+    ); 
+
 }
 
 export default ApiVisits

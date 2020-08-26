@@ -12,6 +12,7 @@ import CKEditor from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 
+
 import {
 	DeleteOutlined,
 	FileAddOutlined,
@@ -27,8 +28,10 @@ import {
 	EditOutlined
 } from '@ant-design/icons';
 
+
 // import ReactQuill from 'react-quill';
 // import 'react-quill/dist/quill.snow.css';
+
 
 // import components
 import Input from '../../components/Field/Input';
@@ -102,13 +105,15 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 	const [selectedTags, setSelectedTags] = useState([]);
 	const [date, setDateFeild] = useState('');
 	const [time, setTimeFeild] = useState('');
-	const [description, setDescription] = useState('This product...');
-	const [bnDescription, setBNDescription] = useState('এই পণ্য...');
+	const [description, setDescription] = useState('');
+	const [bnDescription, setBNDescription] = useState('');
 	const [metaTags,setMetaTags] = useState([]);
 	const [bnMetaTags,setBnMetaTags] = useState([]);
 	const [editpricingItem,setEditPricingItem] = useState({}); 
 	const [pricingTagActiveKey,setpricingTagActiveKey] = useState('1');
 	const [isPricingEditActive, seTisPricingEditActive] = useState(false); 
+
+
 
 	const makeEmptyCategoryOptions = (setEmpty) => {
 		setEmpty([]);
@@ -133,10 +138,6 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 				image: imagesIds,
 				cover: coverImageId || imagesIds[0] ? imagesIds[0] : '',
 				pricing: pricing,
-				// date: date,
-				// time: time,
-				// venue: values.venue,
-				// purchaseLimit: values.purchaseLimit,
 				metaTitle: values.metaTitle,
 				metaDescription: values.metaDescription,
 				metaTags: metaTags.join(','),
@@ -159,8 +160,8 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 			openSuccessNotification('Product Created');
 
 			setProductList([{
-				id: addProductRes['id'] || '',
-				key: addProductRes['id'] || '',
+				id: addProductRes['_id'] || '',
+				key: addProductRes['_id'] || '',
 				name: addProductRes['name'] || '',
 				description: addProductRes['description'] || '',
 				// @ts-ignore
@@ -224,7 +225,7 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 
 
 	const getisSubmitButtonDisabled = (values, isValid) => {
-		if (!values.name || !(pricing.length > 0) || !isValid) {
+		if (!values.name || !(pricing.length > 0) || !(categoryids.length > 0)  || !isValid) {
 			return true;
 		}
 		return false;
@@ -380,7 +381,7 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 									<div className='addProductGridContainer__name'>
 										<div className='addProductGridContainer__item-header'>
 											<h3>
-												Product Information
+												Product Information *
 			</h3>
 
 											<div className={values.name && values.name.length > 2 ? 'checkicon-active' : 'checkicon'}>
@@ -608,7 +609,7 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 									<div className='addProductGridContainer__price'>
 										<div className='addProductGridContainer__item-header'>
 											<h3>
-												Product Pricing
+												Product Pricing *
 			</h3>
 
 											<div className={pricing && pricing.length > 0 ? 'checkicon-active' : 'checkicon'}>
@@ -972,7 +973,7 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 										<div className='addProductGridContainer-rightItemContainer'>
 											<div className='addProductGridContainer-rightItemContainer-header'>
 												<h3>
-													Categories
+													Categories *
 				</h3>
 
 												<Tooltip

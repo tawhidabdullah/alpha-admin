@@ -136,8 +136,8 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, tagList,
             openSuccessNotification();
 
             setTagList([{
-                id: addTagRes['id'] || '',
-                key: addTagRes['id'] || '',
+                id: addTagRes['_id'] || '',
+                key: addTagRes['_id'] || '',
                 name: addTagRes['name'] || '',
                 description: addTagRes['description'] || '',
             },...tagList])

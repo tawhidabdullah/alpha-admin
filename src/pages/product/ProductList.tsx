@@ -10,7 +10,7 @@ import { useHandleFetch } from "../../hooks";
 // import components
 import { DataTableSkeleton } from "../../components/Placeholders";
 import AddNewProduct from "./AddNewProduct";
-import ProductDetail from "./ProductEdit";
+import ProductEdit from "./ProductEdit";
 import QuickEdit from "./QuickEdit";
 
 const { Column, ColumnGroup } = Table;

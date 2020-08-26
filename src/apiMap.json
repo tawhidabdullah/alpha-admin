@@ -401,31 +401,31 @@
 			"method": "post"
 		},
 		"getAnalyticsPageVisitCount": {
-			"url": "/admin/api/analytics/visitCount?type=visitType",
+			"url": "/admin/api/analytics/visitCount?type=visitType&startDate=startDateValue&endDate=endDateValue",
 			"method": "get"
 		},
 		"getAnalyticsPageBreakDown": {
-			"url": "/admin/api/analytics/breakdown?metric=metricName",
+			"url": "/admin/api/analytics/breakdown?metric=metricName&startDate=startDateValue&endDate=endDateValue",
 			"method": "get"
 		},
 		"getAnalyticsPageVisits": {
-			"url": "/admin/api/analytics/item?type=visitType&metric=item",
+			"url": "/admin/api/analytics/item?type=visitType&metric=item&startDate=startDateValue&endDate=endDateValue",
 			"method": "get"
 		},
 		"getAnalyticsDemographicVisits": {
-			"url": "/admin/api/analytics/user?metric=metricType",
+			"url": "/admin/api/analytics/user?metric=metricType&startDate=startDateValue&endDate=endDateValue",
 			"method": "get"
 		},
 		"getAnalyticsOrders": {
-			"url": "/admin/api/order?metric=metricType",
+			"url": "/admin/api/order?metric=metricType&startDate=startDateValue&endDate=endDateValue",
 			"method": "get"
 		},
 		"getAnalyticsTotalUserCount": {
-			"url": "/admin/api/analytics/user?metric=metricValue",
+			"url": "/admin/api/analytics/user?metric=metricValue&startDate=startDateValue&endDate=endDateValue",
 			"method": "get"
 		},
 		"getTotalUserCount": {
-			"url": "/admin/api/analytics/user?metric=metricValue",
+			"url": "/admin/api/analytics/user?metric=metricValue&startDate=startDateValue&endDate=endDateValue",
 			"method": "get"
 		},
 		"getEmailConfiguration": {

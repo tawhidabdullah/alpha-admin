@@ -131,7 +131,8 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, brandLis
 				description: addBrandRes['description'] || '',
 				// @ts-ignore
 				...addBrandRes
-			},...brandList])
+			},...brandList]); 
+			
 			actions.resetForm();
 			setAddNewCategoryVisible(false);
 		}

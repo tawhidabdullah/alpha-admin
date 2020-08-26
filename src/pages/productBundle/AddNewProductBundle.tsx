@@ -136,8 +136,8 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
             openSuccessNotification('Bundle Created');
 
             setBundleList([{
-                id: addProductRes['id'] || '',
-                key: addProductRes['id'] || '',
+                id: addProductRes['_id'] || '',
+                key: addProductRes['_id'] || '',
                 name: addProductRes['name'] || '',
                 description: addProductRes['description'] || '',
                 // @ts-ignore

@@ -40,6 +40,9 @@ import Tags from "./Tags";
 import Brands from "./Brands";
 import Categories from "./Categories";
 import Pricing from "./Pricing";
+import MetaTags from "../category/MetaTags";
+
+
 
 const { TabPane } = Tabs;
 
@@ -50,22 +53,32 @@ const validationSchema = Yup.object().shape({
 
 const initialValues = {
     name: '',
-    description: '',
-    model: '',
-    unit: '',
-    regular: '',
-    offer: '',
-    available: '',
-    minimum: '',
-    image: [],
-    url: '',
-    cover: '',
-    pricing: [],
-    venue: '',
-    date: '',
-    time: '',
-    purchaseLimit: null
+	description: '',
+	model: '',
+	unit: '',
+	regular: '',
+	offer: '',
+	available: '',
+	minimum: '',
+	image: [],
+	url: '',
+	cover: '',
+	pricing: [],
+	venue: '',
+	date: '',
+	time: '',
+	purchaseLimit: null,
+	bnUnit: '',
+	bnName: '',
+	bnDescription: '',
+	metaTitle: '',
+	bnMetaTitle: '',
+	metaDescription: '',
+	bnMetaDescription: '',
+	metaTags: '',
+	bnMetaTags: '',
 }
+
 
 interface Props {
     productEditVisible?: any;
@@ -105,6 +118,12 @@ const AddNewProduct = ({ productEditVisible,
     const [date, setDateFeild] = useState('');
     const [time, setTimeFeild] = useState('');
     const [description, setDescription] = useState('');
+	const [bnDescription, setBNDescription] = useState('');
+	const [metaTags,setMetaTags] = useState([]);
+	const [bnMetaTags,setBnMetaTags] = useState([]);
+	const [editpricingItem,setEditPricingItem] = useState({}); 
+	const [pricingTagActiveKey,setpricingTagActiveKey] = useState('1');
+	const [isPricingEditActive, seTisPricingEditActive] = useState(false); 
 
 
 
@@ -300,6 +319,17 @@ const AddNewProduct = ({ productEditVisible,
                 image: imagesIds,
                 cover: coverImageId || imagesIds[0] ? imagesIds[0] : '',
                 pricing: pricing,
+                metaTitle: values.metaTitle,
+				metaDescription: values.metaDescription,
+				metaTags: metaTags.join(','),
+				bn: {
+					metaTitle: values.bnMetaTitle,
+					metaDescription: values.bnMetaDescription,
+					metaTags: bnMetaTags.join(','),
+					name: values.bnName.trim(),
+					unit: values.metaUnit,
+					description: values.bnDescription,
+				}
             },
         });
 
@@ -385,7 +415,7 @@ const AddNewProduct = ({ productEditVisible,
 
 
     const getisSubmitButtonDisabled = (values, isValid) => {
-        if (!values.name || !(pricing.length > 0) || !isValid) {
+        if (!values.name || !(pricing.length > 0) || !(categoryids.length > 0) || !isValid) {
             return true;
         }
         return false;
@@ -464,6 +494,24 @@ const AddNewProduct = ({ productEditVisible,
     console.log('productDetailState', productDetailState);
 
 
+    useEffect(()=>{
+
+        if(productDetailState.data && Object.keys(productDetailState.data).length > 0){
+            const metaTags = productDetailState.data.metaTags.split(','); 
+
+            console.log('localMetaTags',metaTags);
+           
+            const bnMetaTags = productDetailState.data.bn['metaTags'].split(','); 
+            setMetaTags(metaTags)
+            setBnMetaTags(bnMetaTags)
+        }
+
+    },[productDetailState['done']])
+
+    
+
+    console.log('productDetailData')
+
     return (
         <Formik
             onSubmit={(values, actions) => handleSubmit(values, actions)}
@@ -471,7 +519,17 @@ const AddNewProduct = ({ productEditVisible,
             validateOnBlur={false}
             enableReinitialize={true}
             initialValues={
-                { ...initialValues, ...productDetailData }
+                { ...initialValues,
+                    ...{
+                    ...productDetailData,
+                    ...( productDetailState['data'] && Object.keys(productDetailState['data']).length > 0 && {
+                        bnMetaTitle: productDetailState['data']['bn'].metaTitle,
+                        bnMetaDescription: productDetailState['data']['bn'].metaDescription,
+                        bnName: productDetailState['data']['bn'].name,
+                        metaUnit: productDetailState['data']['bn'].unit,
+                        bnDescription: productDetailState['data']['bn'].description,
+                      }),
+                } }
             }
         >
             {({
@@ -521,86 +579,152 @@ const AddNewProduct = ({ productEditVisible,
                                             </div>
                                         </div>
                                         <div className='addProductGridContainer__item-body'>
-                                            <Input
-                                                label='Title'
-                                                value={values.name}
-                                                name='name'
-                                                isError={(touched.name && errors.name) ||
-                                                    (!isSubmitting && updateProductState.error['error']['name'])}
+                                        <Input
+												label='Name'
+												value={values.name}
+												placeHolder={'Rafty ox'}
+												name='name'
+												isError={(touched.name && errors.name) ||
+													(!isSubmitting && updateProductState.error['error']['name'])}
 
-                                                errorString={(touched.name && errors.name) ||
-                                                    (!isSubmitting && updateProductState.error['error']['name'])}
-                                                onChange={(e: any) => {
-                                                    handleChange(e);
-                                                    setFieldTouched('name');
-                                                }}
-                                            />
-                                            {/* <div style={{
-                                                display: 'flex',
-                                                justifyContent: 'space-between'
-                                            }}>
-                                                <div style={{
-                                                    width: '48%',
-                                                }}>
-                                                    <DatePicker
-                                                        time={time}
-                                                        date={date}
-                                                        label='Date'
-                                                        onChange={handleDateChange} />
+												errorString={(touched.name && errors.name) ||
+													(!isSubmitting && updateProductState.error['error']['name'])}
+												onChange={(e: any) => {
+													handleChange(e);
+													setFieldTouched('name');
+												}}
+											/>
 
-                                                </div>
-                                                <div style={{
-                                                    width: '48%'
-                                                }}>
+											<Input
+											label='BN Name'
+											value={values.bnName}
+											placeHolder={'রাফতি অক্স'}
+											name='bnName'
+											isError={(touched.bnName && errors.bnName) ||
+												(!isSubmitting && updateProductState.error['error']['bnName'])}
 
-                                                    <DatePicker
-                                                        time={time}
-                                                        date={date}
-                                                        withTime={true}
-                                                        placeholder='Select time'
-                                                        label='Time'
-                                                        onChange={handleTimeChange} />
-
-                                                </div>
-                                            </div>
-                                            <div style={{
-                                                marginBottom: '15px'
-                                            }}></div>
-
-                                            <TextArea
-                                                rows={1}
-                                                label='Venue'
-                                                value={values.venue}
-                                                name='venue'
-                                                isError={(touched.venue && errors.venue) ||
-                                                    (!isSubmitting && updateProductState.error['error']['venue'])}
-
-                                                errorString={(touched.venue && errors.venue) ||
-                                                    (!isSubmitting && updateProductState.error['error']['venue'])}
-                                                onChange={(e: any) => {
-                                                    handleChange(e);
-                                                    setFieldTouched('venue');
-                                                }}
-                                            />
+											errorString={(touched.bnName && errors.bnName) ||
+												(!isSubmitting && updateProductState.error['error']['bnName'])}
+											onChange={(e: any) => {
+												handleChange(e);
+												setFieldTouched('bnName');
+											}}
+										/>
 
 
 
-                                            <Input
-                                                label='Purchase Limit'
-                                                value={values.purchaseLimit}
-                                                type='number'
-                                                name='purchaseLimit'
-                                                isError={(touched.purchaseLimit && errors.purchaseLimit) ||
-                                                    (!isSubmitting && updateProductState.error['error']['purchaseLimit'])}
+											{/* <div style={{
+												display: 'flex',
+												justifyContent: 'space-between'
+											}}>
+												<div style={{
+													width: '48%',
+												}}>
+													<DatePicker
+														label='Date'
+														onChange={handleDateChange} />
 
-                                                errorString={(touched.purchaseLimit && errors.purchaseLimit) ||
-                                                    (!isSubmitting && updateProductState.error['error']['purchaseLimit'])}
-                                                onChange={(e: any) => {
-                                                    handleChange(e);
-                                                    setFieldTouched('purchaseLimit');
-                                                }}
-                                            /> */}
+												</div>
+												<div style={{
+													width: '48%'
+												}}>
 
+													<DatePicker
+														date={date}
+														withTime={true}
+														placeholder='Select time'
+														label='Time'
+														onChange={handleTimeChange} />
+
+												</div>
+											</div> */}
+										
+											{/* 
+											<TextArea
+												rows={1}
+												label='Venue'
+												value={values.venue}
+												name='venue'
+												isError={(touched.venue && errors.venue) ||
+													(!isSubmitting && updateProductState.error['error']['venue'])}
+
+												errorString={(touched.venue && errors.venue) ||
+													(!isSubmitting && updateProductState.error['error']['venue'])}
+												onChange={(e: any) => {
+													handleChange(e);
+													setFieldTouched('venue');
+												}}
+											/>
+
+
+
+											<Input
+												label='Purchase Limit'
+												value={values.purchaseLimit}
+												type='number'
+												name='purchaseLimit'
+												isError={(touched.purchaseLimit && errors.purchaseLimit) ||
+													(!isSubmitting && updateProductState.error['error']['purchaseLimit'])}
+
+												errorString={(touched.purchaseLimit && errors.purchaseLimit) ||
+													(!isSubmitting && updateProductState.error['error']['purchaseLimit'])}
+												onChange={(e: any) => {
+													handleChange(e);
+													setFieldTouched('purchaseLimit');
+												}}
+											/> */}
+
+
+								
+
+											<Input
+												label='Unit'
+												value={values.unit}
+												name='unit'
+										    	placeHolder={'KG,POUND,GM'}
+												isError={(touched.unit && errors.unit) ||
+													(!isSubmitting && updateProductState.error['error']['unit'])}
+
+												errorString={(touched.unit && errors.unit) ||
+													(!isSubmitting && updateProductState.error['error']['unit'])}
+												onChange={(e: any) => {
+													handleChange(e);
+													setFieldTouched('unit');
+												}}
+											/>
+
+
+											<Input
+											label='BN Unit'
+											value={values.bnUnit}
+											placeHolder={'কেজি,গ্রাম'}
+											name='bnUnit'
+											isError={(touched.bnUnit && errors.bnUnit) ||
+												(!isSubmitting && updateProductState.error['error']['bnUnit'])}
+
+											errorString={(touched.bnUnit && errors.bnUnit) ||
+												(!isSubmitting && updateProductState.error['error']['bnUnit'])}
+											onChange={(e: any) => {
+												handleChange(e);
+												setFieldTouched('bnUnit');
+											}}
+										/>
+
+
+											<Input
+												label='Model Number'
+												value={values.model}
+												name='model'
+												isError={(touched.model && errors.model) ||
+													(!isSubmitting && updateProductState.error['error']['model'])}
+
+												errorString={(touched.model && errors.model) ||
+													(!isSubmitting && updateProductState.error['error']['model'])}
+												onChange={(e: any) => {
+													handleChange(e);
+													setFieldTouched('model');
+												}}
+											/>
 
 
                                             <h3 className='inputFieldLabel'>
@@ -631,40 +755,38 @@ const AddNewProduct = ({ productEditVisible,
                                                 />
                                             </div>
 
+
+                                            <h3 className='inputFieldLabel'>
+                                               BN Description
+                                            </h3>
+
+                                            <div style={{
+                                                width: '100%',
+                                                maxWidth: '100%'
+                                            }}>
+                                                <CKEditor
+                                                    editor={ClassicEditor}
+                                                    data={bnDescription}
+                                                    onInit={editor => {
+                                                        // You can store the "editor" and use when it is needed.
+                                                        console.log('Editor is ready to use!', editor);
+                                                    }}
+                                                    onChange={(event, editor) => {
+                                                        const data = editor.getData();
+                                                        setBNDescription(data);
+                                                    }}
+                                                    onBlur={(event, editor) => {
+                                                        console.log('Blur.', editor);
+                                                    }}
+                                                    onFocus={(event, editor) => {
+                                                        console.log('Focus.', editor);
+                                                    }}
+                                                />
+                                            </div>
+
                                             <div style={{
                                                 marginTop:"15px"
                                             }}> </div>
-
-                                            <Input
-                                                label='Model Number'
-                                                value={values.model}
-                                                name='model'
-                                                isError={(touched.model && errors.model) ||
-                                                    (!isSubmitting && updateProductState.error['error']['model'])}
-
-                                                errorString={(touched.model && errors.model) ||
-                                                    (!isSubmitting && updateProductState.error['error']['model'])}
-                                                onChange={(e: any) => {
-                                                    handleChange(e);
-                                                    setFieldTouched('model');
-                                                }}
-                                            />
-
-
-                                            <Input
-                                                label='Unit'
-                                                value={values.unit}
-                                                name='unit'
-                                                isError={(touched.unit && errors.unit) ||
-                                                    (!isSubmitting && updateProductState.error['error']['unit'])}
-
-                                                errorString={(touched.unit && errors.unit) ||
-                                                    (!isSubmitting && updateProductState.error['error']['unit'])}
-                                                onChange={(e: any) => {
-                                                    handleChange(e);
-                                                    setFieldTouched('unit');
-                                                }}
-                                            />
 
                                         </div>
 
@@ -920,6 +1042,120 @@ const AddNewProduct = ({ productEditVisible,
 
                                         </div>
                                     </div>
+
+
+
+
+                                    
+
+
+									<div className='addProductGridContainer__image'>
+
+                                        <div className='addProductGridContainer__item-header'>
+                                            <h3>
+                                            Meta Data
+                                        </h3>
+
+                                            <Tooltip
+                                                placement="left" title={"Meta data will be used to make the user's easy and for search engine optimization."}>
+                                                <a href='###'>
+                                                    <InfoCircleOutlined />
+                                                </a>
+                                            </Tooltip>
+                                        </div>
+                                        <div className='addProductGridContainer__item-body'>
+
+                                                        
+                                        <Input
+                                        label='Meta title'
+                                        value={values.metaTitle}
+                                        placeHolder={'category...'}
+                                        name='metaTitle'
+                                        isError={(touched.metaTitle && errors.metaTitle) ||
+                                        (!isSubmitting && updateProductState.error['error']['metaTitle'])}
+
+                                        errorString={(touched.metaTitle && errors.metaTitle) ||
+                                        (!isSubmitting && updateProductState.error['error']['metaTitle'])}
+                                        onChange={(e: any) => {
+                                        handleChange(e);
+                                        setFieldTouched('metaTitle')
+                                        }}
+                                        />
+
+                                        <Input
+                                        label='BN Meta title'
+                                        value={values.bnMetaTitle}
+                                        placeHolder={'ক্যাটাগড়ি...'}
+                                        name='bnMetaTitle'
+                                        isError={(touched.bnMetaTitle && errors.bnMetaTitle) ||
+                                        (!isSubmitting && updateProductState.error['error']['bnMetaTitle'])}
+
+                                        errorString={(touched.bnMetaTitle && errors.bnMetaTitle) ||
+                                        (!isSubmitting && updateProductState.error['error']['bnMetaTitle'])}
+                                        onChange={(e: any) => {
+                                        handleChange(e);
+                                        setFieldTouched('bnMetaTitle');
+                                        }}
+                                        />
+
+                                        <TextArea
+                                        label='Meta description'
+                                        value={values.metaDescription}
+                                        placeholder={'meta...'}
+                                        name='metaDescription'
+                                        isError={(touched.metaDescription && errors.metaDescription) ||
+                                        (!isSubmitting && updateProductState.error['error']['metaDescription'])}
+
+                                        errorString={(touched.metaDescription && errors.metaDescription) ||
+                                        (!isSubmitting && updateProductState.error['error']['metaDescription'])}
+                                        onChange={(e: any) => {
+                                        handleChange(e);
+                                        setFieldTouched('metaDescription');
+                                        }}
+                                        />
+
+                                        <TextArea
+                                        label='BN Meta Description'
+                                        value={values.bnMetaDescription}
+                                        placeholder={'এইয় মেট...'}
+                                        name='bnMetaDescription'
+                                        isError={(touched.bnMetaDescription && errors.bnMetaDescription) ||
+                                        (!isSubmitting && updateProductState.error['error']['bnMetaDescription'])}
+
+                                        errorString={(touched.bnMetaDescription && errors.bnMetaDescription) ||
+                                        (!isSubmitting && updateProductState.error['error']['bnMetaDescription'])}
+                                        onChange={(e: any) => {
+                                        handleChange(e);
+                                        setFieldTouched('bnMetaDescription');
+                                        }}
+                                        />
+
+                                        <h3 className='inputFieldLabel'>
+                                        Meta Tags (grocery,fashion)
+                                        </h3>
+
+                                        <MetaTags
+                                        // @ts-ignore
+                                        setTags={setMetaTags}
+                                        tags={metaTags}
+                                        />
+
+                                        <div style={{
+                                        marginTop:'15px'
+                                        }}></div>
+
+                                        <h3 className='inputFieldLabel'>
+                                        BN Meta Tags (মুদিখানা,ফ্যাশন)
+                                        </h3>
+
+                                        <MetaTags
+                                        // @ts-ignore
+                                        setTags={setBnMetaTags}
+                                        tags={bnMetaTags}
+                                        />
+                                        </div>
+                                        </div>
+
 
                                 </div>
                                 <div className='addProductGridContainer__right'>

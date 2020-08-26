@@ -151,8 +151,6 @@ export const RAINFALL = {
 };
 
 
-
-
 const MONTHS = [
     "Jan",
     "Feb",
@@ -198,6 +196,8 @@ const localOptions = [
 
 const ApiVisits = (props: Props) => {
     const [selectedApiValue, setSelectedApiValue] = useState('date');
+    const [startDate,setStartDate] = useState('');
+    const [endDate,setEndDate] = useState('');
 
 
 
@@ -214,6 +214,8 @@ const ApiVisits = (props: Props) => {
                 urlOptions: {
                     params: {
                         metricType: selectedApiValue,
+                        startDateValue: startDate,
+                        endDateValue: endDate
                     }
                 }
             }); 
@@ -232,7 +234,7 @@ const ApiVisits = (props: Props) => {
 
            getDemoGraphicVisitsValue(); 
 
-    },[selectedApiValue])
+    },[selectedApiValue,startDate,endDate])
 
 
     console.log('demoGraphicVisitsState',demoGraphicVisitsState);
@@ -292,6 +294,19 @@ const ApiVisits = (props: Props) => {
     const onChange = (value) => {
         setSelectedApiValue(value);
     }
+
+
+    const handleStartEndDateRangeDate = (e) => {
+       if(e && e[0]){
+        const startDate = new Date(moment(e[0]).format()); 
+        const endDate = new Date(moment(e[1]).format()); 
+        // @ts-ignore
+        setStartDate(startDate);
+        // @ts-ignore
+        setEndDate(endDate);
+       }
+      
+    }; 
 
 
 
@@ -393,7 +408,11 @@ const ApiVisits = (props: Props) => {
 
             </div>
             <div className="overviewContainer__body-footer">
-                  <RangePicker picker="week" />
+                  <RangePicker 
+                  showTime={true}
+                  onChange={handleStartEndDateRangeDate}
+                  bordered={false}
+                  picker="date" />
             </div>
 
         </div>

@@ -139,8 +139,8 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, custo
 			openSuccessNotification();
 
 			setCustomerList([{
-				id: addCustomerRes['id'] || '',
-				key: addCustomerRes['id'] || '',
+				id: addCustomerRes['_id'] || '',
+				key: addCustomerRes['_id'] || '',
 				// @ts-ignore
 				...addCustomerRes
 			},...customerList])
