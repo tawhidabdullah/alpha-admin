@@ -39,11 +39,14 @@ import { useHandleFetch } from "../../hooks";
 
 
 
-import { Select, Button, Spin, Empty } from 'antd';
+import { Select, Button, Spin, Empty,DatePicker } from 'antd';
 import Moment from "react-moment";
 import moment from 'moment'; 
 
 const { Option } = Select;
+
+const { RangePicker } = DatePicker;
+
 
 
 
@@ -389,15 +392,9 @@ const ApiVisits = (props: Props) => {
 
 
             </div>
-            {/* <div className="overviewContainer__body-footer">
-                <h3>
-                    <span>
-                        <CalendarOutlined />
-                    </span>
-
-					In the last month
-				</h3>
-            </div> */}
+            <div className="overviewContainer__body-footer">
+                  <RangePicker picker="week" />
+            </div>
 
         </div>
     )

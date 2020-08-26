@@ -250,7 +250,14 @@ const CustomerList = ({history}: Props) => {
   
     useEffect(()=>{
      const setCustomers = async () => {
-       const customers = await handleCustomerListFetch({}); 
+       const customers = await handleCustomerListFetch({
+        urlOptions:{
+          params: {
+            sortItem: 'added',
+            sortOrderValue: '-1'
+          }
+          }
+       }); 
        // @ts-ignore
        setCustomerList(customers); 
      }

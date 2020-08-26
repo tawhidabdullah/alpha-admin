@@ -236,7 +236,14 @@ const TagList = ({ }: Props) => {
 
 	useEffect(() => {
 		const setTags = async () => {
-			const tags = await handleTagListFetch({});
+			const tags = await handleTagListFetch({
+				urlOptions:{
+					params: {
+					  sortItem: 'added',
+					  sortOrderValue: '-1'
+					}
+				  }
+			});
 			// @ts-ignore
 			setTagList(tags);
 		}
@@ -248,34 +255,6 @@ const TagList = ({ }: Props) => {
 	const [addTagState, handleAddTagFetch] = useHandleFetch({}, 'addTag');
 	const [addNewCategoryVisible, setAddNewCategoryVisible] = useState(false);
 
-	const handleSubmit = async (values: any, actions: any) => {
-		const addTagRes = await handleAddTagFetch({
-			urlOptions: {
-				placeHolders: {
-					id: values.id,
-				}
-			},
-			body: {
-				name: values.name.trim(),
-				description: values.description,
-			},
-		});
-
-		// @ts-ignore
-		if (addTagRes && addTagRes.status === 'ok') {
-			openSuccessNotification();
-
-			setTagList([...tagList, {
-				id: addTagRes['id'] || '',
-				key: addTagRes['id'] || '',
-				name: addTagRes['name'] || '',
-				description: addTagRes['description'] || '',
-			}])
-			actions.resetForm();
-		}
-		actions.setSubmitting(false);
-
-	};
 
 
 
@@ -312,7 +291,7 @@ const TagList = ({ }: Props) => {
 					<div className='categoryListContainer__header-searchBar-tag'>
 						<h2 className='categoryListContainer__header-title'>
 							Tags
-            </h2>
+          				</h2>
 
 
 						<Search

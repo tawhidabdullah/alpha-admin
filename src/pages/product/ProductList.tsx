@@ -291,7 +291,14 @@ const ProductList = ({ history }: Props) => {
 
   useEffect(() => {
     const setProducts = async () => {
-      const products = await handleProductListFetch({});
+      const products = await handleProductListFetch({
+        urlOptions:{
+          params: {
+            sortItem: 'added',
+            sortOrderValue: '-1'
+          }
+        }
+      });
       // @ts-ignore
       setProductList(products);
     }

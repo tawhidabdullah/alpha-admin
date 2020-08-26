@@ -255,7 +255,14 @@ const CategoryList = ({history}: Props) => {
 
   useEffect(()=>{
    const setBrands = async () => {
-     const brands = await handlebrandListFetch({}); 
+     const brands = await handlebrandListFetch({
+      urlOptions:{
+        params: {
+          sortItem: 'added',
+          sortOrderValue: '-1'
+        }
+        }
+     }); 
      // @ts-ignore
      setBrandList(brands); 
    }

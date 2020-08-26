@@ -265,7 +265,9 @@ const CategoryList = ({history}: Props) => {
       urlOptions: {
         params: {
           isSubCategory: true,
-          productCountValue: true 
+          productCountValue: true,
+          sortItem: 'added',
+          sortOrderValue: '-1'
         },
       },
      }); 

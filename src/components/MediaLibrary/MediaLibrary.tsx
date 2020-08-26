@@ -115,12 +115,13 @@ const MediaLibrary = ({
 		}
 	};
 
-
 	const getImageList = async () => {
 		const imageListRes = await handleImageListFromLibraryFetch({
 			urlOptions: {
 				params: {
-					limitNumber: 10000
+					limitNumber: 10000,
+					sortItem: 'added',
+		  			sortOrderValue: '-1'
 				}
 			}
 		});

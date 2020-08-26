@@ -13,7 +13,7 @@
 			"method": "post"
 		},
 		"ImageListFromLibrary": {
-			"url": "/admin/api/image?limit=limitNumber",
+			"url": "/admin/api/image?limit=limitNumber&sort=sortItem&sortOrder=sortOrderValue",
 			"method": "get"
 		},
 		"viewSingleImageFromLibrary": {
@@ -49,7 +49,7 @@
 			"method": "post"
 		},
 		"productList": {
-			"url": "/api/product?sort=added&sortOrder=-1",
+			"url": "/api/product?sort=sortItem&sortOrder=sortOrderValue",
 			"method": "get"
 		},
 		"addProduct": {
@@ -73,7 +73,7 @@
 			"method": "get"
 		},
 		"postCategoryList": {
-			"url": "/admin/api/post/category",
+			"url": "/admin/api/post/category?sort=sortItem&sortOrder=sortOrderValue",
 			"method": "get"
 		},
 		"postCategoryDetail": {
@@ -81,7 +81,7 @@
 			"method": "get"
 		},
 		"postSelectCategoryList": {
-			"url": "/admin/api/post/category",
+			"url": "/admin/api/post/category?sort=sortItem&sortOrder=sortOrderValue",
 			"method": "get"
 		},
 		"postAddCategory": {
@@ -89,7 +89,7 @@
 			"method": "post"
 		},
 		"postTagList": {
-			"url": "/admin/api/post/tag",
+			"url": "/admin/api/post/tag?sort=sortItem&sortOrder=sortOrderValue",
 			"method": "get"
 		},
 		"postTagDetail": {
@@ -121,7 +121,7 @@
 			"method": "get"
 		},
 		"categorySelectist": {
-			"url": "/api/category?subCategory=isSubCategory",
+			"url": "/api/category?subCategory=isSubCategory&sort=sortItem&sortOrder=sortOrderValue",
 			"method": "get"
 		},
 		"addCategory": {
@@ -137,7 +137,7 @@
 			"method": "post"
 		},
 		"brandList": {
-			"url": "/api/brand",
+			"url": "/api/brand?sort=sortItem&sortOrder=sortOrderValue",
 			"method": "get"
 		},
 		"brandDetail": {
@@ -165,7 +165,7 @@
 			"method": "get"
 		},
 		"tagList": {
-			"url": "/api/tag",
+			"url": "/api/tag?sort=sortItem&sortOrder=sortOrderValue",
 			"method": "get"
 		},
 		"tagDetail": {
@@ -185,7 +185,7 @@
 			"method": "post"
 		},
 		"customerList": {
-			"url": "/admin/api/customer",
+			"url": "/admin/api/customer?sort=sortItem&sortOrder=sortOrderValue",
 			"method": "get"
 		},
 		"customerDetail": {
@@ -209,7 +209,7 @@
 			"method": "post"
 		},
 		"bundleList": {
-			"url": "/admin/api/bundle",
+			"url": "/admin/api/bundle?sort=sortItem&sortOrder=sortOrderValue",
 			"method": "get"
 		},
 		"addCoupon": {
@@ -229,7 +229,7 @@
 			"method": "post"
 		},
 		"couponList": {
-			"url": "/admin/api/coupon",
+			"url": "/admin/api/coupon?sort=sortItem&sortOrder=sortOrderValue",
 			"method": "get"
 		},
 		"productDetailById": {
@@ -249,7 +249,7 @@
 			"method": "post"
 		},
 		"regionList": {
-			"url": "/admin/api/delivery",
+			"url": "/admin/api/delivery?sort=sortItem&sortOrder=sortOrderValue",
 			"method": "get"
 		},
 		"addRegion": {
@@ -269,7 +269,7 @@
 			"method": "get"
 		},
 		"orderList": {
-			"url": "/admin/api/order",
+			"url": "/admin/api/order?sort=sortItem&sortOrder=sortOrderValue",
 			"method": "get"
 		},
 		"orderListForCustomer": {
@@ -297,7 +297,7 @@
 			"method": "post"
 		},
 		"componentList": {
-			"url": "/admin/api/component",
+			"url": "/admin/api/component?sort=sortItem&sortOrder=sortOrderValue",
 			"method": "get"
 		},
 		"addComponent": {
@@ -317,7 +317,7 @@
 			"method": "post"
 		},
 		"themeList": {
-			"url": "/admin/api/theme",
+			"url": "/admin/api/theme?sort=sortItem&sortOrder=sortOrderValue",
 			"method": "get"
 		},
 		"addTheme": {
@@ -337,7 +337,7 @@
 			"method": "post"
 		},
 		"pageList": {
-			"url": "/admin/api/page",
+			"url": "/admin/api/page?sort=sortItem&sortOrder=sortOrderValue",
 			"method": "get"
 		},
 		"pageDetail": {

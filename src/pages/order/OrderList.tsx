@@ -383,7 +383,14 @@ const CustomerList = ({history}: Props) => {
   
     useEffect(()=>{
      const setOrders = async () => {
-       const regions = await handleRegionListFetch({}); 
+       const regions = await handleRegionListFetch({
+        urlOptions:{
+          params: {
+            sortItem: 'added',
+            sortOrderValue: '-1'
+          }
+          }
+       }); 
        // @ts-ignore
        setOrderList(regions); 
      }
