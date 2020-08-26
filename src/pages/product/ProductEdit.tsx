@@ -20,7 +20,8 @@ import {
     PlusCircleOutlined,
     CloseOutlined,
     CheckOutlined,
-    InfoCircleOutlined
+    InfoCircleOutlined,
+    EditOutlined
 } from '@ant-design/icons';
 import CKEditor from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
@@ -85,6 +86,7 @@ interface Props {
     setProductEditVisible?: any;
     productDetailData?: any;
     setProductDetailData?:any; 
+    
 }
 
 const AddNewProduct = ({ productEditVisible, 
@@ -451,6 +453,34 @@ const AddNewProduct = ({ productEditVisible,
 
 
 
+    const handleUpdatePricing = (priceItem) => {
+
+		const positionInPricing = () => {
+			return pricing.map(item => item.id).indexOf(priceItem.id);
+		  }
+
+		  const index = positionInPricing();
+
+		  // @ts-ignore
+		  const updatedItem = Object.assign({}, pricing[index], { ...priceItem });
+		  const updatePricingList = [...pricing.slice(0, index), updatedItem, ...pricing.slice(index + 1)];
+			 
+		  setPricing(updatePricingList); 
+
+		message.info('Product Pricing Updated');
+		seTisPricingEditActive(true);
+		setpricingTagActiveKey('2'); 
+	}
+
+
+	const handleEditPricing = (id)=> {
+		seTisPricingEditActive(true);
+		const pricingItem = pricing.find(item => item.id === id);
+		if(pricingItem){
+			setEditPricingItem(pricingItem);
+		}
+	}
+
 
     const handleAddPricing = (priceItem) => {
 
@@ -792,155 +822,175 @@ const AddNewProduct = ({ productEditVisible,
 
                                     </div>
 
+                                
                                     <div className='addProductGridContainer__price'>
-                                        <div className='addProductGridContainer__item-header'>
-                                            <h3>
-                                                Product Pricing
+										<div className='addProductGridContainer__item-header'>
+											<h3>
+												Product Pricing *
 			</h3>
 
-                                            <div className={pricing && pricing.length > 0 ? 'checkicon-active' : 'checkicon'}>
-                                                <CheckCircleOutlined />
-                                            </div>
-                                        </div>
+											<div className={pricing && pricing.length > 0 ? 'checkicon-active' : 'checkicon'}>
+												<CheckCircleOutlined />
+											</div>
+										</div>
 
 
-                                        <div className='addProductGridContainer__item-body'>
+										<div className='addProductGridContainer__item-body'>
 
-                                            <Tabs
-                                                animated={true}
-                                                tabPosition="top"
-                                                type='card'
-                                                defaultActiveKey='2'
-                                            >
+											<Tabs
+												animated={true}
+												tabPosition="top"
+												type='card'
+												activeKey={pricingTagActiveKey}
+												onChange={(value) => {
+													setpricingTagActiveKey(`${value}`);
+												}}
+											>
 
-                                                <TabPane tab="Add Variation" key="1">
-                                                    <Pricing handleAddPricing={handleAddPricing} />
-                                                </TabPane>
-                                                <TabPane tab="Pricing List" key="2">
-                                                    <div className='addProductGridContainer__item-body-pricingContainer'>
+												<TabPane tab="Add Variation" key="1">
+													<Pricing 
+													handleAddPricing={handleAddPricing}
+													pricingItem={editpricingItem}
+													handleUpdatePricing={handleUpdatePricing}
+													isPricingEditActive={isPricingEditActive}
+													 />
+												</TabPane>
+												<TabPane
+												
+												 tab="Pricing List" key="2">
+													<div className='addProductGridContainer__item-body-pricingContainer'>
 
-                                                        {pricing.length > 0 && pricing.map(item => {
-                                                            return (
-                                                                <div className='addProductGridContainer__item-body-pricingContainer-item'>
-                                                                    <div className='addProductGridContainer__item-body-pricingContainer-item-edit'>
-                                                                        {/* <span>
-							<EditOutlined />
-							</span> */}
-                                                                        <span className='d' onClick={() => handleDeletePricing(item.id)}>
-                                                                            <DeleteOutlined />
-                                                                        </span>
-                                                                    </div>
-                                                                    <div className='addProductGridContainer__item-body-pricingContainer-item-two'>
-                                                                        <div>
-                                                                            <h3>
-                                                                                Price
+														{pricing.length > 0 && pricing.map(item => {
+															return (
+																<div className='addProductGridContainer__item-body-pricingContainer-item'>
+																	<div className='addProductGridContainer__item-body-pricingContainer-item-edit'>
+																		{/* <span>
+																		<EditOutlined />
+																		</span> */}
+																		<span className='pricingEditIcon' onClick={() => {
+																			handleEditPricing(item.id); 
+																			setpricingTagActiveKey('1');
+
+																		}}>
+																			<EditOutlined />
+																		</span>
+																		<span className='pricingDeleteIcon' onClick={() => handleDeletePricing(item.id)}>
+																			<DeleteOutlined />
+																		</span>
+																	</div>
+																	<div className='addProductGridContainer__item-body-pricingContainer-item-two'>
+																		<div>
+																			<h3>
+																				Price
 						</h3>
-                                                                            <div className='addProductGridContainer__item-body-pricingContainer-item-body'>
+																			<div className='addProductGridContainer__item-body-pricingContainer-item-body'>
 
 
-                                                                                {item.price.offer ? (
-                                                                                    <>
-                                                                                        <h4 >
-                                                                                            {item.price.offer}
+																				{item.price.offer ? (
+																					<>
+																						<h4 >
+																							{item.price.offer}
 
-                                                                                        </h4>
+																						</h4>
 																			/
 																			<h5 style={{
-                                                                                            textDecoration: "line-through"
-                                                                                        }}>
+																							textDecoration: "line-through"
+																						}}>
 
-                                                                                            {item.price.regular}
-                                                                                        </h5>
-                                                                                    </>
-                                                                                ) : (
-                                                                                        <h4>
-                                                                                            {item.price.regular}
+																							{item.price.regular}
+																						</h5>
+																					</>
+																				) : (
+																						<h4>
+																							{item.price.regular}
 
-                                                                                        </h4>
-                                                                                    )}
+																						</h4>
+																					)}
 
 
-                                                                            </div>
-                                                                        </div>
+																			</div>
+																		</div>
 
-                                                                        {item.stock && (
-                                                                            <div>
-                                                                                <Badge
-                                                                                    overflowCount={999}
-                                                                                    count={item.stock.available}>
-                                                                                    <h3>
-                                                                                        Stock
+																		{item.stock && (
+																			<div>
+																				<Badge
+																					overflowCount={999}
+																					count={item.stock.available}>
+																					<h3>
+																						Stock
 									</h3>
-                                                                                </Badge>
-                                                                                <div className='addProductGridContainer__item-body-pricingContainer-item-body'>
-                                                                                    <div>
-                                                                                        <h6>
-                                                                                            min
+																				</Badge>
+																				<div className='addProductGridContainer__item-body-pricingContainer-item-body'>
+																					<div>
+																						<h6>
+																							min
 																							<Badge
-                                                                                                className="site-badge-count-4"
-                                                                                                overflowCount={999}
-                                                                                                count={item.stock.minimum} />
-                                                                                        </h6>
+																								className="site-badge-count-4"
+																								overflowCount={999}
+																								count={item.stock.minimum} />
+																						</h6>
 
 
-                                                                                    </div>
+																					</div>
 
-                                                                                </div>
-                                                                            </div>
-                                                                        )}
+																				</div>
+																			</div>
+																		)}
 
 
 
-                                                                    </div>
+																	</div>
 
-                                                                    {item.attribute
-                                                                        && Object.values(item.attribute).length > 0 && (
-                                                                            <>
-                                                                                <h3>
-                                                                                    Attributes
+																	{item.attribute
+																		&& Object.values(item.attribute).length > 0 && (
+																			<>
+																				<h3>
+																					Attributes
 						</h3>
-                                                                                <div className='addProductGridContainer__item-body-pricingContainer-item-body'>
-                                                                                    {item.attribute
-                                                                                        && Object.keys(item.attribute).length > 0
-                                                                                        && Object.keys(item.attribute).map(attributeItem => {
-                                                                                            return (
-                                                                                                <div>
-                                                                                                    <h6>
-                                                                                                        {attributeItem}
-                                                                                                    </h6>
-                                                                                                    <h4>
-                                                                                                        {item.attribute[attributeItem]}
-                                                                                                    </h4>
-                                                                                                </div>
-                                                                                            )
-                                                                                        })}
-                                                                                </div>
-                                                                            </>
-                                                                        )}
+																				<div className='addProductGridContainer__item-body-pricingContainer-item-body'>
+																					{item.attribute
+																						&& Object.keys(item.attribute).length > 0
+																						&& Object.keys(item.attribute).map(attributeItem => {
+																							return (
+																								<div>
+																									<h6>
+																										{attributeItem}
+																									</h6>
+																									<h4>
+																										{item.attribute[attributeItem]}
+																									</h4>
+																								</div>
+																							)
+																						})}
+																				</div>
+																			</>
+																		)}
 
-                                                                </div>
-                                                            )
-                                                        })}
+																</div>
+															)
+														})}
 
 
-                                                        {!(pricing.length > 0) && <div style={{
-                                                            width: '100%',
-                                                            display: 'flex',
-                                                            justifyContent: 'center'
-                                                        }}>
-                                                            <Empty description='No Pricing added' image={Empty.PRESENTED_IMAGE_SIMPLE} />
-                                                        </div>}
-                                                    </div>
-                                                </TabPane>
+														{!(pricing.length > 0) && <div style={{
+															width: '100%',
+															display: 'flex',
+															justifyContent: 'center'
+														}}>
+															<Empty description='No Pricing added' image={Empty.PRESENTED_IMAGE_SIMPLE} />
+														</div>}
+													</div>
+												</TabPane>
 
-                                            </Tabs>
+											</Tabs>
 
-                                            <div className='addProductGridContainer__item-body-container'>
+											<div className='addProductGridContainer__item-body-container'>
 
-                                            </div>
+											</div>
 
-                                        </div>
-                                    </div>
+										</div>
+									</div>
+
+
 
 
                                     <div className='addProductGridContainer__image'>

@@ -10,7 +10,7 @@ import { useHandleFetch } from "../../hooks";
 // import components
 import { DataTableSkeleton } from "../../components/Placeholders";
 import AddNewProduct from "./AddNewProduct";
-import ProductEdit from "./ProductEdit";
+import ProductQuickEdit from "./ProductQuickEdit";
 import QuickEdit from "./QuickEdit";
 
 const { Column, ColumnGroup } = Table;
@@ -228,7 +228,7 @@ const MyTable = ({ data, setProductList }: myTableProps) => {
               <a href='##'>
                 <Tooltip
 
-                  placement="top" title='Quick Edit Product'>
+                  placement="top" title='Edit Product'>
                   <span className='iconSize' onClick={() => {
                     setvisible(true)
                     setactiveCategoryForEdit(record);
@@ -261,12 +261,12 @@ const MyTable = ({ data, setProductList }: myTableProps) => {
 
 
 
-      {activeCategoryForEdit && <QuickEdit
+      {activeCategoryForEdit && <ProductQuickEdit
         productList={data}
         setProductList={setProductList}
-        setvisible={setvisible}
-        visible={visible}
-        category={activeCategoryForEdit} />}
+        setProductEditVisible={setvisible}
+        productEditVisible={visible}
+        productDetailData={activeCategoryForEdit} />}
 
 
 

@@ -978,6 +978,7 @@ class Converter {
 			data.length > 0 &&
 			data.map((tag) => {
 				return {
+					...tag,
 					id: tag._id || '',
 					key: tag._id || '',
 					name: tag.name && tag.name,
@@ -1026,6 +1027,7 @@ class Converter {
 
 	if(Object.keys(data).length > 0){
 		return {
+			...data,
 			id: data._id || '',
 			key: data._id || '',
 			name: data.name && data.name,
@@ -1088,6 +1090,7 @@ class Converter {
 		const data = Object.keys(resData).length > 0 ? resData : null;
 		if (data) {
 			return {
+				...data,
 				id: data._id || '',
 				key: data._id || '',
 				name: data.name && data.name,
@@ -1130,6 +1133,7 @@ class Converter {
 		const data = Object.keys(resData).length > 0 ? resData : null;
 		if (data) {
 			return {
+				...data,
 				id: data._id || '',
 				key: data._id || '',
 				name: data.name && data.name,

@@ -11,7 +11,9 @@ import {  useHandleFetch } from "../../hooks";
 // import components
 import { DataTableSkeleton } from "../../components/Placeholders";
 import AddNewBrand from "./AddNewBrand"
-import QuickEdit from "./QuickEdit"
+
+// @ts-ignore
+import BrandQuickEdit from "./BrandQuickEdit";
 
 
 
@@ -108,10 +110,6 @@ const MyTable = ({data,setBrandList}: myTableProps) => {
                   borderRadius: '3px',
                   cursor: 'pointer'
                 }} />
-
-
-
-
             </>
           )}
             />
@@ -143,12 +141,11 @@ const MyTable = ({data,setBrandList}: myTableProps) => {
           )}
             />
 
-<Column
+        <Column
            title="Description" 
            dataIndex="description" 
            key="id" 
            className='classnameofthecolumn'
-         
             />
 
 
@@ -206,7 +203,6 @@ const MyTable = ({data,setBrandList}: myTableProps) => {
                </a>
 
 
- 
                <Popconfirm 
                
                onConfirm={() => handleDeleteBrand(record.id)}
@@ -227,12 +223,12 @@ const MyTable = ({data,setBrandList}: myTableProps) => {
 
 
 
-    {activeCategoryForEdit &&   <QuickEdit 
+    {activeCategoryForEdit &&   <BrandQuickEdit 
     brandList={data}
     setBrandList={setBrandList}
-    setvisible={setvisible}
-    visible={visible}
-    category={activeCategoryForEdit}/>}
+    setBrandEditVisible={setvisible}
+    brandEditVisible={visible}
+    brandDetailData={activeCategoryForEdit}/>}
     
     
     </>

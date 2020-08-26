@@ -292,12 +292,6 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 	}
 
 
-	const handleDeletePricing = (id) => {
-		const newPricing = pricing.filter(item => item.id !== id);
-		setPricing(newPricing);
-		message.info('Product Pricing Deleted');
-	}
-
 	const handleEditPricing = (id)=> {
 		seTisPricingEditActive(true);
 		const pricingItem = pricing.find(item => item.id === id);
@@ -305,6 +299,14 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 			setEditPricingItem(pricingItem);
 		}
 	}
+
+
+	const handleDeletePricing = (id) => {
+		const newPricing = pricing.filter(item => item.id !== id);
+		setPricing(newPricing);
+		message.info('Product Pricing Deleted');
+	}
+
 
 
 	const isCategoryInValid = () => {

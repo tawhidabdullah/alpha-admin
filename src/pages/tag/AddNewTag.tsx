@@ -83,7 +83,6 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, tagList,
     const [addTagState, handleAddTagFetch] = useHandleFetch({}, 'addTag');
     const [myImages, setmyImages] = useState(false);
     const [visibleMedia, setvisibleMedia] = useState(false);
-    const [coverImageId, setCoverImageId] = useState('');
     const [tags,setTags] = useState([]);
 	const [bnTags,setBnTags] = useState([]);
 

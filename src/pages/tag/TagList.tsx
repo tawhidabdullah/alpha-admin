@@ -34,6 +34,7 @@ import Input from '../../components/Field/Input';
 import TextArea from '../../components/Field/TextArea';
 import { DataTableSkeleton } from "../../components/Placeholders";
 import QuickEdit from "./QuickEdit"
+import TagQuickEdit from "./TagQuickEdit"
 import AddNewTag from "./AddNewTag"
 
 
@@ -211,12 +212,12 @@ const MyTable = ({ data, setTagList }) => {
 
 
 
-			{activeCategoryForEdit && <QuickEdit
+			{activeCategoryForEdit && <TagQuickEdit
 				tagList={data}
 				setTagList={setTagList}
-				setvisible={setvisible}
-				visible={visible}
-				category={activeCategoryForEdit} />}
+				tagEditVisible={setvisible}
+				setTagEditVisible={visible}
+				tagDetailData={activeCategoryForEdit} />}
 		</>
 	)
 }
