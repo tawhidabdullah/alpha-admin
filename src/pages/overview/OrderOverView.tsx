@@ -41,6 +41,7 @@ import { useHandleFetch } from "../../hooks";
 
 import { Select, Button, Spin, Empty } from 'antd';
 import Moment from "react-moment";
+import moment from 'moment';
 
 const { Option } = Select;
 
@@ -268,6 +269,21 @@ const ApiVisits = (props: Props) => {
     const thisMonth = MONTHS[date.getMonth()]
     
 
+    const getFormateDateValue = (order) => {
+
+        if(selectedApiValue === 'day'){
+            return order ? moment(order).format('MMMM Do YYYY, h:mm:ss a') : order;
+        }
+        else if (selectedApiValue === 'date'){
+            return order ? moment(order).format('MMMM Do YYYY') : order;
+        }
+        else if (selectedApiValue === 'month'){
+            return MONTHS[order - 1];
+        }
+        return order; 
+    }
+    
+
     return (
         <div className='overviewContainer__userVisits'>
             <div className='overviewContainer__body-apiVisits-header'>
@@ -339,7 +355,7 @@ const ApiVisits = (props: Props) => {
                         />
                         <XAxis 
                         dataKey={selectedApiValue} 
-                        tickFormatter={selectedApiValue === 'month' && getMonthNameByOrder}
+                        tickFormatter={getFormateDateValue}
                          />
                         <YAxis
                             // unit="ml"

@@ -128,7 +128,7 @@ const NewBrandDetail = (props: Props) => {
                 avatar paragraph={{ rows: 3 }}
                 loading={productDetailState.isLoading}>
                 {productDetailState.done && productDetailState.data && !(Object.keys(productDetailState.data).length > 0) && (
-                    <Empty description='No Product found' image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                    <Empty description='No Bundle Product found' image={Empty.PRESENTED_IMAGE_SIMPLE} />
                 )}
 
                 {productDetailState.done && productDetailState.data && (Object.keys(productDetailState.data).length > 0) && (
@@ -144,15 +144,19 @@ const NewBrandDetail = (props: Props) => {
                                 <h4>
                                     {productDetailState.data['price']}
                                 </h4>
-                                <h3>
-                                    {productDetailState.data['description']}
-                                </h3>
 
-                                {productDetailState.data['startDate'] && (
+                                {productDetailState.data['description'] && (
+                                    <h3>
+                                    {productDetailState.data['description']}
+                                    </h3>
+                                )}
+                              
+
+                                {/* {productDetailState.data['startDate'] && (
                                     <h3>
                                         START DATE:
                                         <span>
-                                            {productDetailState.data['url']}
+                                            {productDetailState.data['startDate']}
                                         </span>
 
                                     </h3>
@@ -162,11 +166,11 @@ const NewBrandDetail = (props: Props) => {
                                     <h3>
                                         END DATE:
                                         <span>
-                                            {productDetailState.data['url']}
+                                            {productDetailState.data['endDate']}
                                         </span>
 
                                     </h3>
-                                )}
+                                )} */}
 
 
 

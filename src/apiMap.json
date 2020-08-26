@@ -49,7 +49,7 @@
 			"method": "post"
 		},
 		"productList": {
-			"url": "/api/product",
+			"url": "/api/product?sort=added&sortOrder=-1",
 			"method": "get"
 		},
 		"addProduct": {

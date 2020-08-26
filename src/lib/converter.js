@@ -763,6 +763,22 @@ class Converter {
 					parseInt(data.price['offer']) > parseInt(data.price['regular'])
 						? data.price['offer']
 						: data.price['regular'],
+						image:
+				(data.image &&
+					data.image.length > 0 &&
+					data.image.map((img) => {
+						return {
+							id: img._id || '',
+							name: img.name && img.name,
+							cover: `${config['baseURL']}${img.original}`,
+							added: img.added,
+							title: img.title,
+							labels: img.labels,
+							alt: img.alt,
+							caption: img.caption
+						}
+					})) ||
+				[],
 			}
 		}
 

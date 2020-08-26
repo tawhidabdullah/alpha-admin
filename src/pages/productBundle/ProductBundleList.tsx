@@ -197,7 +197,7 @@ const MyTable = ({ data, setTagList }) => {
                     className='classnameofthecolumn'
                 />
 
-                <Column
+                {/* <Column
                     title="Start Date"
                     dataIndex="startDate"
                     key="id"
@@ -226,7 +226,7 @@ const MyTable = ({ data, setTagList }) => {
                     key="id"
                     className='classnameofthecolumn'
 
-                />
+                /> */}
 
                 <Column
 

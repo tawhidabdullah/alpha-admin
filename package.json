@@ -21,6 +21,7 @@
     "craco-less": "^1.17.0",
     "formik": "^2.1.4",
     "isomorphic-fetch": "^2.2.1",
+    "moment": "^2.27.0",
     "node-sass": "^4.13.1",
     "react": "^16.13.0",
     "react-app-rewire-hot-loader": "^2.0.1",

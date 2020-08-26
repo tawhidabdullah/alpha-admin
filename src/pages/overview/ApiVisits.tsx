@@ -41,6 +41,7 @@ import { useHandleFetch } from "../../hooks";
 
 import { Select, Button, Spin, Empty } from 'antd';
 import Moment from "react-moment";
+import moment from 'moment'; 
 
 const { Option } = Select;
 
@@ -164,10 +165,6 @@ const MONTHS = [
     "Dec"
 ];
 
-export const getMonthNameByOrder = (order: number): string | undefined =>
-    MONTHS[order - 1];
-
-
 
 
 
@@ -197,7 +194,7 @@ const localOptions = [
 ]
 
 const ApiVisits = (props: Props) => {
-    const [selectedApiValue, setSelectedApiValue] = useState('');
+    const [selectedApiValue, setSelectedApiValue] = useState('date');
 
 
 
@@ -213,7 +210,7 @@ const ApiVisits = (props: Props) => {
             const uservisitsDataRes =  await handleDemoGraphicVisitsStateFetch({
                 urlOptions: {
                     params: {
-                        metricType: 'day',
+                        metricType: selectedApiValue,
                     }
                 }
             }); 
@@ -232,10 +229,62 @@ const ApiVisits = (props: Props) => {
 
            getDemoGraphicVisitsValue(); 
 
-    },[])
+    },[selectedApiValue])
+
+
+    console.log('demoGraphicVisitsState',demoGraphicVisitsState);
 
 
 
+    
+    const options = [
+        {
+            value: 'date',
+            name: 'Date'
+        },
+        {
+            value: 'hour',
+            name: 'Hour'
+        },
+        {
+            value: 'dayOfWeek',
+            name: 'Day of week'
+        },
+        {
+            value: 'dayOfMonth',
+            name: 'Day of month'
+        },
+         {
+            value: 'month',
+            name: 'Month'
+        },
+        {
+            value: 'year',
+            name: 'Year'
+        }
+    ]
+
+    
+
+    const date = new Date();
+    const thisMonth = MONTHS[date.getMonth()]
+    
+
+
+    const getFormateDateValue = (order) => {
+
+        if(selectedApiValue === 'day'){
+            return order ? moment(order).format('MMMM Do YYYY, h:mm:ss a') : order;
+        }
+        else if (selectedApiValue === 'date'){
+            return order ? moment(order).format('MMMM Do YYYY') : order;
+        }
+        else if (selectedApiValue === 'month'){
+            return order ? MONTHS[order - 1] : order; ;
+        }
+        return order; 
+    }
+    
 
     const onChange = (value) => {
         setSelectedApiValue(value);
@@ -255,6 +304,25 @@ const ApiVisits = (props: Props) => {
                           All users that visited
                         </h3>
                 </div>
+
+
+                <div className='overviewContainer__body-apiVisits-header-controller'>
+                <Select
+                    bordered={false}
+                    showSearch
+                    style={{ width: '130px', borderRadius: '6px', color: '#1890ff' }}
+                    placeholder='Select an api'
+                    optionFilterProp='children'
+                    onChange={onChange}
+                    defaultValue={selectedApiValue}
+                    filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                >
+                    {
+                        options.map((option) => {
+                            return <Option value={option.value}>{option.name}</Option>;
+                        })}
+                </Select>
+            </div>
             </div>
 
             <div className='overviewContainer__body-body'>
@@ -294,11 +362,10 @@ const ApiVisits = (props: Props) => {
                             strokeDasharray="3 3"
                             stroke="#d6d9da"
                         />
-                        <XAxis dataKey="day" 
-                        // tickFormatter={getMonthNameByOrder}
+                        <XAxis dataKey={selectedApiValue} 
+                        tickFormatter={getFormateDateValue}
                          />
                         <YAxis
-                            // unit="ml"
                             orientation="left"
                             width={20}
                             axisLine={false}
@@ -312,8 +379,8 @@ const ApiVisits = (props: Props) => {
                         <Area
                             dataKey="count"
                             name="Count"
-                            // unit="times"
                             type="basis"
+                            unit={selectedApiValue === 'month' ? thisMonth : ''}
                             fill="url(#rainGradient)"
                         />
                     </AreaChart>

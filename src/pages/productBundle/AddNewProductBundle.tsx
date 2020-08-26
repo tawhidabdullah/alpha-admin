@@ -126,7 +126,7 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
                 unit: values.unit,
                 image: imagesIds,
                 products,
-                startDate, endDate,
+                // startDate, endDate,
             }
         });
 
@@ -530,7 +530,7 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 
 
 
-                                            <div style={{
+                                            {/* <div style={{
                                                 display: 'flex',
                                                 justifyContent: 'space-between'
                                             }}>
@@ -553,7 +553,7 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
                                                         onChange={handleEndDataChange} />
 
                                                 </div>
-                                            </div>
+                                            </div> */}
 
 
                                         </div>

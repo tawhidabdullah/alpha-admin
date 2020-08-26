@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Attributes from "./Attributes";
 import AddAttributeValues from "../attribute/AddAttributeValues";
 import InputSmall from '../../components/Field/InputSmall';
@@ -11,10 +11,16 @@ import {
 
 interface Props {
 	handleAddPricing: any;
+	pricingItem?:any; 
+	handleUpdatePricing?:any;
+	isPricingEditActive?:any; 
 }
 
 const Pricing = ({
-	handleAddPricing
+	handleAddPricing,
+	pricingItem,
+	handleUpdatePricing,
+	isPricingEditActive
 }: Props) => {
 
 	const [price, setprice] = useState({
@@ -26,8 +32,43 @@ const Pricing = ({
 		minimum: ""
 	});
 
-
 	const [attributeList, setAttributeList] = useState([]);
+
+
+
+	useEffect(()=>{
+		if(pricingItem && Object.keys(pricingItem).length > 0){
+			setprice({
+				...price,
+				...pricingItem['price']
+			})
+
+			setStock({
+				...stock,
+				...pricingItem['stock']
+			}); 
+
+			const attributeListItems = []; 
+			if(pricingItem.attribute && Object.keys(pricingItem.attribute).length > 0){
+				const attributeKeys = Object.keys(pricingItem.attribute); 
+				attributeKeys.forEach((attributeKey,index) => {
+					attributeListItems.push({
+						name : attributeKey,
+						value : pricingItem.attribute[attributeKey],
+						id: index
+					})
+				})
+			}
+
+			setAttributeList(attributeListItems); 
+
+		}
+	},[pricingItem])
+
+	console.log('pricingItem',pricingItem); 
+	console.log('attributeList',attributeList); 
+
+
 
 	const handlePriceChange = e => {
 		const name = e.target.name;
@@ -97,7 +138,62 @@ const Pricing = ({
 			handleAddPricing(priceItem);
 		}
 
-	}
+	}; 
+
+
+
+	
+	const handleUpdatePricingItem = (e) => {
+		e.preventDefault();
+
+		if (attributeList.length > 0) {
+			const attribute = {};
+
+			for (let item of attributeList) {
+
+				console.log('itemofattribute', item);
+				if (item['value'] && item['name']) {
+					attribute[item['name']] = item['value']
+				}
+			}
+
+
+			const priceItem = {
+				price: price,
+				stock: stock,
+				attribute: attribute,
+				id : pricingItem.id
+			}
+
+
+			setprice({
+				regular: "",
+				offer: ""
+			})
+			setStock({ available: "", minimum: "" })
+			handleUpdatePricing(priceItem);
+			setAttributeList([]);
+		}
+		else {
+			const priceItem = {
+				price: price,
+				stock: stock,
+				attribute: {},
+				id : pricingItem.id
+			}
+
+			setprice({
+				regular: "",
+				offer: ""
+			})
+			setStock({ available: "", minimum: "" })
+			setAttributeList([]);
+			handleUpdatePricing(priceItem);
+		}
+
+	}; 
+
+
 
 
 	const handleAddAttribute = () => {
@@ -224,16 +320,14 @@ const Pricing = ({
 				style={{
 					marginLeft: '10px'
 				}}
-				onClick={handleSavePricing}
+				onClick={isPricingEditActive ? handleUpdatePricingItem :  handleSavePricing}
 				disabled={getiCreatePricingIsDisabled()}
 				className='btnAddToPrice'
 				icon={<CheckOutlined />}
 			>
-				Add To Pricing
+				{isPricingEditActive ? "Update Pricing" : "Add To Pricing"}
+				
 				</Button>
-
-
-
 		</>
 	)
 }

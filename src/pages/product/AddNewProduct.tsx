@@ -23,7 +23,8 @@ import {
 	PlusCircleOutlined,
 	CloseOutlined,
 	CheckOutlined,
-	InfoCircleOutlined
+	InfoCircleOutlined,
+	EditOutlined
 } from '@ant-design/icons';
 
 // import ReactQuill from 'react-quill';
@@ -105,6 +106,9 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 	const [bnDescription, setBNDescription] = useState('এই পণ্য...');
 	const [metaTags,setMetaTags] = useState([]);
 	const [bnMetaTags,setBnMetaTags] = useState([]);
+	const [editpricingItem,setEditPricingItem] = useState({}); 
+	const [pricingTagActiveKey,setpricingTagActiveKey] = useState('1');
+	const [isPricingEditActive, seTisPricingEditActive] = useState(false); 
 
 	const makeEmptyCategoryOptions = (setEmpty) => {
 		setEmpty([]);
@@ -267,12 +271,39 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 	}
 
 
+	const handleUpdatePricing = (priceItem) => {
+
+		const positionInPricing = () => {
+			return pricing.map(item => item.id).indexOf(priceItem.id);
+		  }
+
+		  const index = positionInPricing();
+
+		  // @ts-ignore
+		  const updatedItem = Object.assign({}, pricing[index], { ...priceItem });
+		  const updatePricingList = [...pricing.slice(0, index), updatedItem, ...pricing.slice(index + 1)];
+			 
+		  setPricing(updatePricingList); 
+
+		message.info('Product Pricing Updated');
+		seTisPricingEditActive(true);
+		setpricingTagActiveKey('2'); 
+	}
+
+
 	const handleDeletePricing = (id) => {
 		const newPricing = pricing.filter(item => item.id !== id);
 		setPricing(newPricing);
 		message.info('Product Pricing Deleted');
 	}
 
+	const handleEditPricing = (id)=> {
+		seTisPricingEditActive(true);
+		const pricingItem = pricing.find(item => item.id === id);
+		if(pricingItem){
+			setEditPricingItem(pricingItem);
+		}
+	}
 
 
 	const isCategoryInValid = () => {
@@ -295,6 +326,8 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 	}
 
 
+
+	console.log('pricingingi',pricing);
 
 	return (
 		<Formik
@@ -531,6 +564,9 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 												/>
 											</div>
 													
+												<div style={{
+													marginTop:"15px"
+												}}></div>
 
 											<h3 className='inputFieldLabel'>
 												BN Description
@@ -587,12 +623,23 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 												animated={true}
 												tabPosition="top"
 												type='card'
+												activeKey={pricingTagActiveKey}
+												onChange={(value) => {
+													setpricingTagActiveKey(`${value}`);
+												}}
 											>
 
 												<TabPane tab="Add Variation" key="1">
-													<Pricing handleAddPricing={handleAddPricing} />
+													<Pricing 
+													handleAddPricing={handleAddPricing}
+													pricingItem={editpricingItem}
+													handleUpdatePricing={handleUpdatePricing}
+													isPricingEditActive={isPricingEditActive}
+													 />
 												</TabPane>
-												<TabPane tab="Pricing List" key="2">
+												<TabPane
+												
+												 tab="Pricing List" key="2">
 													<div className='addProductGridContainer__item-body-pricingContainer'>
 
 														{pricing.length > 0 && pricing.map(item => {
@@ -600,9 +647,16 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 																<div className='addProductGridContainer__item-body-pricingContainer-item'>
 																	<div className='addProductGridContainer__item-body-pricingContainer-item-edit'>
 																		{/* <span>
-							<EditOutlined />
-							</span> */}
-																		<span className='d' onClick={() => handleDeletePricing(item.id)}>
+																		<EditOutlined />
+																		</span> */}
+																		<span className='pricingEditIcon' onClick={() => {
+																			handleEditPricing(item.id); 
+																			setpricingTagActiveKey('1');
+
+																		}}>
+																			<EditOutlined />
+																		</span>
+																		<span className='pricingDeleteIcon' onClick={() => handleDeletePricing(item.id)}>
 																			<DeleteOutlined />
 																		</span>
 																	</div>

@@ -253,7 +253,7 @@ const MediaLibrary = ({
 		if (selectedimages && selectedimages.length > 0) {
 			const isImageExist = selectedimages.find(image => image.id === id);
 			if (!isImageExist) {
-				setselectedImages([...selectedimages, image]);
+				setselectedImages([image,...selectedimages]);
 				setactiveImageItem(image);
 			}
 			else {
@@ -262,7 +262,7 @@ const MediaLibrary = ({
 			}
 		}
 		else {
-			setselectedImages([...selectedimages, image]);
+			setselectedImages([image,...selectedimages]);
 			setactiveImageItem(image);
 		}
 

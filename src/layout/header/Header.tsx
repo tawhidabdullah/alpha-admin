@@ -69,7 +69,8 @@ const HeaderComponent = (props: Props) => {
                 display:'flex',
                 justifyContent:'center',
                 alignItems:'center',
-                marginTop:'100px'
+                backgroundColor:"#fff",
+                padding: '0 50px'
             }}>
                 <Spin />
             </div>
@@ -77,12 +78,15 @@ const HeaderComponent = (props: Props) => {
 
         if (getAllNotificationState.done && getAllNotificationState.data && !getAllNotificationState.data[0]) {
             return (
-                <div style={{
+                <div 
+                className='notificationListItemContainer'
+                style={{
                     height:'100%',
                     display:'flex',
                     justifyContent:'center',
                     alignItems:'center',
-                    marginTop:'100px'
+                    backgroundColor:"#fff",
+                    padding: '0 50px'
                 }}>
                      <Empty title='No Notification found' />
                 </div>

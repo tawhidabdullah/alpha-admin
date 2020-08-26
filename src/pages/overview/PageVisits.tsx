@@ -175,7 +175,6 @@ const PageVisits = (props: Props) => {
                                        <a href='##'>
                                        <h4
                                             onClick={() => {
-                                                console.log('myRecord',record);
                                                 history.push(`/admin/${selectedApiValue && selectedApiValue.toLowerCase()}/${record.itemId}`)
                                             }}  
                                             style={{
@@ -184,7 +183,7 @@ const PageVisits = (props: Props) => {
                                                 textTransform:'uppercase',
                                                 cursor: 'pointer'
                                             }}>
-                                            {text}
+                                            {text || `${selectedApiValue} Deleted`}
                                         </h4>
                                        </a>
                                     </>
