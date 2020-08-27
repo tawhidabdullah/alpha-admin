@@ -127,6 +127,32 @@ const MyTable = ({ data, setTagList }) => {
                 dataSource={data}
             >
 
+
+                    <Column
+                    title=""
+                    dataIndex="cover"
+                    key="id"
+                    width={'80px'}
+                    className='classnameofthecolumn'
+                    render={(cover, record: any) => (
+                        <>
+                        <img
+                            onClick={() => {
+                            history.push(`/admin/coupon/${record.id}`)
+                            setactiveCategoryForEdit(record)
+                            }}
+                            src={cover} alt='cover img' style={{
+                            height: '40px',
+                            width: '40px',
+                            objectFit: "contain",
+                            borderRadius: '3px',
+                            cursor: 'pointer'
+                            }} />
+                        </>
+                    )}
+              />
+
+
                 <Column
                     title="Name"
                     dataIndex="name"
@@ -288,7 +314,14 @@ const Couponlist = ({ }: Props) => {
 
     useEffect(() => {
         const setTags = async () => {
-            const tags = await handleTagListFetch({});
+            const tags = await handleTagListFetch({
+                urlOptions:{
+                    params: {
+                      sortItem: 'added',
+                      sortOrderValue: '-1'
+                    }
+                    }
+            });
             // @ts-ignore
             setTagList(tags);
         }
@@ -296,7 +329,7 @@ const Couponlist = ({ }: Props) => {
     }, [])
 
 
-    console.log('tagState', tagState)
+    console.log('couponList', tagState)
 
     const [addNewCategoryVisible, setAddNewCategoryVisible] = useState(false);
 
@@ -339,7 +372,7 @@ const Couponlist = ({ }: Props) => {
                             enterButton={false}
                             className='searchbarClassName'
                             placeholder="search coupon.."
-                            onSearch={value => handleSearch(value)}
+                            onChange={e => handleSearch(e.target.value)}
                         />
                     </div>
                     <Button

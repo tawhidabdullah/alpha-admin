@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useHandleFetch } from '../../hooks';
 import { Select, Skeleton } from 'antd';
+import Empty from "../../components/Empty";
 
 
 interface Props {
@@ -89,6 +90,14 @@ const Tags = ({
                     ))}
                 </Select>}
             </Skeleton>
+
+            {tagState.done && tagState.data && !(tagState.data.length > 0) && (
+                    <div style={{
+                        marginLeft: '32px'
+                    }}>
+                        <Empty title='No Product Found' height={150} />
+                    </div>
+                )}
 
 
         </>

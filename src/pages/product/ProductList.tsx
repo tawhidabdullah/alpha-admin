@@ -111,10 +111,6 @@ const MyTable = ({ data, setProductList }: myTableProps) => {
                   borderRadius: '3px',
                   cursor: 'pointer'
                 }} />
-
-
-
-
             </>
           )}
         />

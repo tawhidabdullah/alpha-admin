@@ -105,6 +105,8 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
             return image.id;
         }) : [];
 
+        console.log('productList',productList);
+
         const products = productList.length > 0 ? productList.map(product => {
             return {
                 _id: product._id,
@@ -134,6 +136,7 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
         // @ts-ignore
         if (addProductRes && addProductRes.status === 'ok') {
             openSuccessNotification('Bundle Created');
+            console.log('addProductBundleRes',addProductRes);
 
             setBundleList([{
                 id: addProductRes['_id'] || '',
@@ -163,6 +166,9 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 
 
     };
+
+
+    console.log('productlistbundle',productList)
 
 
 
@@ -200,9 +206,9 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 
     useEffect(() => {
 
-        if (productIds.length > 0) {
+        if (productIds && productIds.length > 0 && productList) {
             if (productIds.length > productList.length) {
-                const variation = productIds[productIds.length - 1]['pricing'].length > 0 && productIds[productIds.length - 1]['pricing'][0]['_id'];
+                const variation = productIds[productIds.length - 1]['pricing'] && productIds[productIds.length - 1]['pricing'].length > 0 && productIds[productIds.length - 1]['pricing'][0]['_id'];
                 console.log('variation', variation)
 
                 setProductList([...productList, {
@@ -390,7 +396,7 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
                                         </div>
                                         <div className='addProductGridContainer__item-body'>
                                             <Input
-                                                label='Title'
+                                                label='Name'
                                                 value={values.name}
                                                 name='name'
                                                 isError={(touched.name && errors.name) ||

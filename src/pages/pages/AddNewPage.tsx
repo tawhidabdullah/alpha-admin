@@ -148,7 +148,7 @@ const AddNewPage = ({ }: Props) => {
 
 		// @ts-ignore
 		if (addOrderRes && addOrderRes.status === 'ok') {
-			openSuccessNotification();
+			// openSuccessNotification();
 
 
 			actions.resetForm();

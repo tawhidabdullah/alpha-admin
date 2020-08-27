@@ -7,7 +7,7 @@ import { useHandleFetch } from '../../hooks';
 
 
 // import third party ui lib
-import { notification, Modal } from 'antd';
+import { notification, Modal,Tooltip } from 'antd';
 
 import {
     FileOutlined,
@@ -34,6 +34,8 @@ import OrderedProductsSelectProducts from "./OrderedProductsSelectProducts";
 import OrderedProductsSelectedProductItems from "./OrderedProductsSelectedProductItems";
 import FreeSelectProducts from "./FreeSelectProducts";
 import FreeSelectedProductItems from "./FreeSelectedProductItems";
+
+
 
 const validationSchema = Yup.object().shape({
     name: Yup.string().label('Name').required('Name is required').min(3, 'Name must have at least 3 characters'),
@@ -95,6 +97,11 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, tagList,
 
     const handleSubmit = async (values: any, actions: any) => {
 
+        // @ts-ignore
+		const imagesIds = myImages ? myImages.map(image => {
+			return image.id;
+        }) : [];
+        
         const orderedProducts = productList.length > 0 ? productList.map(product => {
             return {
                 _id: product._id,
@@ -121,28 +128,29 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, tagList,
             },
             body: {
                 name: values.name.trim(),
-                code: values.code.trim(),
-                minimumOrder: values.minimumOrder.trim(),
-                amount: values.amount.trim(),
-                amountType: values.amountType.trim(),
+                code: values.code,
+                minimumOrder: values.minimumOrder,
+                amount: values.amount,
+                amountType: values.amountType,
                 freeDelivery: false,
                 orderedProducts: orderedProducts,
                 freeProducts: freeProducts,
+                cover: coverImageId || imagesIds[0] ? imagesIds[0] : '',
             },
         });
 
         // @ts-ignore
         if (addTagRes && addTagRes.status === 'ok') {
             openSuccessNotification();
+            setAddNewCategoryVisible(false);
 
             setTagList([{
                 id: addTagRes['_id'] || '',
                 key: addTagRes['_id'] || '',
                 name: addTagRes['name'] || '',
-                description: addTagRes['description'] || '',
             },...tagList])
+
             actions.resetForm();
-            setAddNewCategoryVisible(false);
         }
         else {
             openErrorNotification();
@@ -397,7 +405,7 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, tagList,
                             <div className='dubbleRowInputs'>
                                 <div className='dubbleRowInputs__item'>
                                     <Input
-                                        label='Amount'
+                                        label='Discount Amount'
                                         value={values.amount}
                                         name='amount'
                                         isError={(touched.amount && errors.amount) ||
@@ -413,7 +421,7 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, tagList,
                                 </div>
                                 <div className='dubbleRowInputs__item'>
                                     <Input
-                                        label='Amount Type'
+                                        label='Discount Amount Type'
                                         value={values.amountType}
                                         name='amountType'
                                         isError={(touched.amountType && errors.amountType) ||
@@ -433,6 +441,84 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, tagList,
 
                             </div>
 
+
+
+                  
+
+
+							<div className='addproductSection-left-header'
+
+								style={{
+									marginBottom: '-5px'
+								}}
+							>
+								<h3 className='inputFieldLabel'>Cover</h3>
+
+							</div>
+
+
+                            <div 
+                            style={{
+                                marginBottom:"-15px"
+                            }}
+                            className='aboutToUploadImagesContainer'>
+								{myImages &&
+									// @ts-ignore
+									myImages.length > 0 && myImages.map((image, index) => {
+										return (
+											<div className='aboutToUploadImagesContainer__item'>
+												<div
+													className='aboutToUploadImagesContainer__item-imgContainer'
+													onClick={() => setCoverImageId(image.id)}
+												>
+													<img src={image.cover} alt={image.alt} />
+												</div>
+
+												<span
+													onClick={() => handleImagesDelete(image.id)}
+													className='aboutToUploadImagesContainer__item-remove'>
+													<CloseOutlined />
+												</span>
+
+
+												{coverImageId === image.id ? (
+													<span className='aboutToUploadImagesContainer__item-cover'>
+														<CheckOutlined />
+													</span>
+												) : !coverImageId && index === 0 && (
+													<span className='aboutToUploadImagesContainer__item-cover'>
+														<CheckOutlined />
+													</span>
+												)}
+
+
+											</div>
+										)
+									})}
+
+
+								<Tooltip
+									title={'Attach images'}>
+
+									<div
+										onClick={() => {
+											setvisibleMedia(true);
+										}}
+										className='aboutToUploadImagesContainer__uploadItem'>
+										{/* <FileAddOutlined />
+													<FileImageTwoTone />
+													<FileImageOutlined /> */}
+										<FileImageFilled />
+										{/* <h5>
+												     Select From Library
+											<     /h5> */}
+										<span className='aboutToUploadImagesContainer__uploadItem-plus'>
+											<PlusOutlined />
+										</span>
+									</div>
+								</Tooltip>
+
+							</div>
 
 
 

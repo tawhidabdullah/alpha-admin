@@ -293,7 +293,14 @@ const TagList = ({ }: Props) => {
 
     useEffect(() => {
         const setTags = async () => {
-            const tags = await handleTagListFetch({});
+            const tags = await handleTagListFetch({
+                urlOptions:{
+                    params: {
+                      sortItem: 'added',
+                      sortOrderValue: '-1'
+                    }
+                    }
+            });
             // @ts-ignore
             setTagList(tags);
         }
@@ -343,7 +350,7 @@ const TagList = ({ }: Props) => {
                             enterButton={false}
                             className='searchbarClassName'
                             placeholder="search bundles.."
-                            onSearch={value => handleSearch(value)}
+                            onChange={e => handleSearch(e.target.value)}
                         />
                     </div>
                     <Button

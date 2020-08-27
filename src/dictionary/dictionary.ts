@@ -1,10 +1,10 @@
 const dictionary = {
-  title: 'Homebazar',
-  signinTitle: 'Signin to Homebazar Sibchar',
-  signupTitle: 'Signup to Homebazar Sibchar',
-  bkashNumber: '01980907868',
-  nagadNumber: '01980907868',
-  rocketNumber: '01980907868',
+  title: 'Alpha Admin',
+  signinTitle: 'Signin to Alpha Admin',
+  signupTitle: 'Signup to Sibchar',
+  bkashNumber: '01793706417',
+  nagadNumber: '01793706417',
+  rocketNumber: '01793706417',
 };
 
 export default dictionary;

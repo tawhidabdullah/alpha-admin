@@ -150,6 +150,7 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, categ
 				key: addCategoryRes['_id'] || '',
 				name: addCategoryRes['name'] || '',
 				description: addCategoryRes['description'] || '',
+				cover: addCategoryRes['cover'] || '',
 				// @ts-ignore
 				...addCategoryRes
 			},...categoryList])
@@ -508,11 +509,8 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, categ
 										</span>
 									</div>
 								</Tooltip>
-
 							</div>
 
-
-							
 
 							<Input
 								label='Meta title'

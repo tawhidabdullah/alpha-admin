@@ -17,6 +17,7 @@ import { Skeleton, Empty, Button, notification, Table, Space, Input as CoolInput
 // import components
 import { DataTableSkeleton } from "../../components/Placeholders";
 import CategoryEdit from "./CategoryEdit";
+import CategoryNewEdit from "./CategoryNewEdit";
 
 
 const { Column, ColumnGroup } = Table;
@@ -117,10 +118,7 @@ const NewBrandDetail = (props: Props) => {
         return columns;
     }
 
-
     const row = categoryDetailState.done && categoryDetail && categoryDetail['image'] ? getImagesInCollumn(categoryDetail['image']) : [];
-
-
 
     return (
         <div className='brandDetailContainer'>
@@ -132,9 +130,9 @@ const NewBrandDetail = (props: Props) => {
 
                 {categoryDetailState.done && categoryDetail && (Object.keys(categoryDetail).length > 0) && (
                     <>
-                        <CategoryEdit
-                            categoryEditVisible={categoryEditVisible}
-                            setCategoryEditVisible={setCategoryEditVisible}
+                        <CategoryNewEdit
+                            addNewCategoryVisible={categoryEditVisible}
+                            setAddNewCategoryVisible={setCategoryEditVisible}
                             categoryDetailData={categoryDetail}
                             setcategoryDetailData={setcategoryDetail}
                         />

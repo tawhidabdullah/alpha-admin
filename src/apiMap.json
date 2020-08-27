@@ -389,7 +389,7 @@
 			"method": "post"
 		},
 		"getAllNotification": {
-			"url": "/admin/api/notification",
+			"url": "/admin/api/notification?limit=limitNumber&sort=sortItem&sortOrder=sortOrderValue",
 			"method": "get"
 		},
 		"markNotificationAsRead": {

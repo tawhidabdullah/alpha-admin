@@ -4,6 +4,7 @@ import { Table, notification,  Space, Tag,Button, Input,Tooltip, Popconfirm  } f
 import { PlusOutlined, EditOutlined, DeleteOutlined,CheckCircleOutlined } from '@ant-design/icons';
 
 import {AddNewCategory,QuickEdit} from "../category"
+import CategoryNewQuickEdit from "./CategoryNewQuickEdit"
 
 /// import hooks
 import { useFetch, useHandleFetch } from "../../hooks";
@@ -138,15 +139,6 @@ const MyTable = ({data, setcategoryList, history}: myTableProps) => {
             />
 
 
-<Column
-           title="Description" 
-           dataIndex="description" 
-           key="id" 
-           className='classnameofthecolumn'
-         
-            />
-
-
          <Column
            title="Sub Cateogory" 
            dataIndex="subCount" 
@@ -200,7 +192,7 @@ const MyTable = ({data, setcategoryList, history}: myTableProps) => {
           render={(text, record : any) => (
             <Space size="middle">
               <a href='##'>
-               <Tooltip placement="top" title='Quick Edit Category'>
+               <Tooltip placement="top" title='Edit Category'>
               <span className='iconSize' onClick={() => {
                 setvisible(true)
                 setactiveCategoryForEdit(record); 
@@ -235,12 +227,13 @@ const MyTable = ({data, setcategoryList, history}: myTableProps) => {
 
     
 
-    {activeCategoryForEdit &&   <QuickEdit 
+    {activeCategoryForEdit &&   <CategoryNewQuickEdit
+    categoryDetailData={activeCategoryForEdit} 
     setcategoryList={setcategoryList}
     categoryList={data}
-    setvisible={setvisible}
-    visible={visible}
-    category={activeCategoryForEdit}/>}
+    setAddNewCategoryVisible={setvisible}
+    addNewCategoryVisible={visible}
+/>}
     
     </>
     )

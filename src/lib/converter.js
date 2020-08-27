@@ -16,6 +16,7 @@ class Converter {
 			data.length > 0 &&
 			data.map((category) => {
 				return {
+					...category,
 					id: category._id || '',
 					key: category._id || '',
 					name: category.name && category.name,
@@ -561,7 +562,7 @@ class Converter {
 					id: product._id || '',
 					name: product.name && product.name,
 					description: product.description && product.description,
-					cover: `${config['baseURL']}${(product.cover && product.cover['thumbnail']) || ''}`,
+					cover: product.cover ? `${config['baseURL']}${(product.cover && product.cover['thumbnail']) || ''}` : product.cover,
 					regularPrice: product.price && product.price['regular'],
 					offerPrice: product.price && product.price['offer'],
 					url: product.url,
@@ -694,7 +695,7 @@ class Converter {
 					id: product._id || '',
 					name: product.name && product.name,
 					description: product.description && product.description,
-					cover: `${config['baseURL']}${(product.cover && product.cover['thumbnail']) || ''}`,
+					cover: product.cover ? `${config['baseURL']}${(product.cover && product.cover['thumbnail']) || ''}` : product.cover,
 					regularPrice: product.price && product.price['regular'],
 					offerPrice: product.price && product.price['offer'],
 					url: product.url,
@@ -926,13 +927,14 @@ class Converter {
 					id: product._id || '',
 					name: product.name && product.name,
 					code: product.code,
+					cover: product.cover ? `${config['baseURL']}${(product.cover && product.cover['thumbnail']) || ''}` : product.cover,
 					minimumOrder: product.minimumOrder,
 					maximumOrder: product.maximumOrder,
 					offerPrice: product.price && product.price['offer'],
 					orderedProducts: product.orderedProducts,
 					freeProducts: product.freeProducts,
 					orderedProductsCount: product.orderedProducts && product.orderedProducts.length,
-					freeProductsCount: product.freeProducts && product.orderedProducts.length,
+					freeProductsCount: product.freeProducts && product.freeProducts.length,
 					amountType: product.amountType,
 					amount: product.amount,
 					freeDelivery: product.freeDelivery,
@@ -945,12 +947,12 @@ class Converter {
 					pricing: product.pricing,
 					date: product.date,
 					time: product.time,
-					venue: product.venue,
-					brand: product.brand,
-					tags: product.tags,
 
 				};
 			});
+
+
+			console.log('convertedCouponData',convertedData);
 
 		// convertedData = {
 		// 	data: convertedData,
@@ -1191,7 +1193,12 @@ class Converter {
 			data.length > 0 &&
 			data.map((page) => {
 				return {
-					...page
+					...page,
+					id: page._id || '',
+					key: page._id || '',
+					name: page.name && page.name,
+					description: page.description && page.description,
+					cover: `${config['baseURL']}${page.cover ? page.cover.thumbnail : ''}`
 				};
 			});
 
@@ -1983,7 +1990,9 @@ class Converter {
 		if (data && data.inserted) {
 			return {
 				...data.inserted[0],
-				status: 'ok'
+				status: 'ok',
+				cover: data.inserted[0].cover ? `${config['baseURL']}${data.inserted[0].cover ? data.inserted[0].cover.thumbnail : ''}` : '',
+
 			};
 		}
 
@@ -2019,7 +2028,9 @@ class Converter {
 		if (data && data.inserted) {
 			return {
 				...data.inserted[0],
-				status: 'ok'
+				status: 'ok',
+				cover: data.inserted[0].cover ? `${config['baseURL']}${data.inserted[0].cover ? data.inserted[0].cover.thumbnail : ''}` : '',
+
 			};
 		}
 
@@ -2114,9 +2125,9 @@ class Converter {
 */
 	async addPage(data) {
 		const convertedData = data;
-		if (data && data.success) {
+		if (data && data[0]) {
 			return {
-				...data.inserted[0],
+				...data[0],
 				status: 'ok'
 			};
 		}
@@ -2136,7 +2147,9 @@ class Converter {
 		if (data && data.inserted) {
 			return {
 				...data.inserted[0],
-				status: 'ok'
+				status: 'ok',
+				cover: data.inserted[0].cover ? `${config['baseURL']}${data.inserted[0].cover ? data.inserted[0].cover.thumbnail : ''}` : '',
+
 			};
 		}
 
@@ -2451,6 +2464,7 @@ class Converter {
 	async categoryDetail(data) {
 
 		const convertedData = {
+			...data,
 			id: data.id || data._id || '',
 			name: data.name && data.name,
 			description: data.description && data.description,
@@ -2520,6 +2534,11 @@ class Converter {
    */
 	async adminRoleRegister(data) {
 		//map props
+
+
+
+
+
 
 		if(data && data.length > 0){
 			return {
@@ -3118,10 +3137,10 @@ class Converter {
    * @returns {Object}  converted data
    */
 	async addCoupon(data) {
-		if (data && data[0]) {
+		if (data && data.inserted) {
 			return {
 				status: 'ok',
-				...data[0]
+				...data.inserted[0]
 			}
 		}
 		return {};
@@ -3129,8 +3148,22 @@ class Converter {
 
 
 
-
-
+	
+	/**
+   * @public
+   * @method addBundle Us convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+  async addBundle(data) {
+	if (data && data.inserted) {
+		return {
+			status: 'ok',
+			...data.inserted[0]
+		}
+	}
+	return {};
+	}
 }
 
 export default Converter;

@@ -164,6 +164,7 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 				key: addProductRes['_id'] || '',
 				name: addProductRes['name'] || '',
 				description: addProductRes['description'] || '',
+				cover: addProductRes['cover'] || '',
 				// @ts-ignore
 				...addProductRes
 			},...productList])

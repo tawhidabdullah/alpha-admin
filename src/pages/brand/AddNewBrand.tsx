@@ -82,7 +82,6 @@ interface Props {
 const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, brandList, setBrandList }: Props) => {
 
 	const [updateBrandState, handleUpdateBrandFetch] = useHandleFetch({}, 'addBrand');
-	const [visible, setvisible] = useState(false);
 	const [myImages, setmyImages] = useState(false);
 	const [visibleMedia, setvisibleMedia] = useState(false);
 	const [coverImageId, setCoverImageId] = useState('');
@@ -129,6 +128,7 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, brandLis
 				key: addBrandRes['id'] || '',
 				name: addBrandRes['name'] || '',
 				description: addBrandRes['description'] || '',
+				cover: addBrandRes['cover'] || '',
 				// @ts-ignore
 				...addBrandRes
 			},...brandList]); 
@@ -290,9 +290,7 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, brandLis
 								}}
 							>
 								<h3 className='inputFieldLabel'>Images</h3>
-
 							</div>
-
 
 							<div className='aboutToUploadImagesContainer'>
 								{myImages &&
