@@ -85,7 +85,7 @@ interface Props {
 
 const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, categoryList, setcategoryList }: Props) => {
 
-	const [addCategoryState, handleAddCategoryFetch] = useHandleFetch({}, 'addCategory');
+	const [addCategoryState, handleAddCategoryFetch] = useHandleFetch({}, 'addCategory','form');
 	const [visible, setvisible] = useState(false);
 	const [myImages, setmyImages] = useState(false);
 	const [myThumbnailImage, setmyThumbnailImage] = useState(false);
@@ -109,34 +109,41 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, categ
 
 		const formData = new FormData();
 
+		const bn = {
+			metaTitle: values.bnMetaTitle,
+			metaDescription: values.bnMetaDescription,
+			metaTags: bnTags.join(','),
+			name: values.bnName.trim(),
+			description: values.bnDescription,
+		}; 
+
 		formData.append("name", values.name.trim());
 		formData.append("description", values.description);
 		formData.append("image", JSON.stringify(imagesIds));
 		formData.append("cover", coverImageId || imagesIds[0] ? imagesIds[0] : '');
 		formData.append("parent", selectedParentId);
 		formData.append('icon', imageFile)
+		formData.append('metaTitle', values.metaTitle)
+		formData.append('metaDescription', values.metaDescription)
+		formData.append('metaTags', values.metaTags)
+		const bnData = JSON.stringify(bn);
+		const bnFormData = new FormData();
+		bnFormData.append("bn",bnData);
+
+		formData.append('bn', bnFormData.get('bn'))
+
+
+
+
+		console.log('addcategoryREsBody',{
+			...formData,
+			// ...bnFormData
+		}); 
 
 
 
 		const addCategoryRes = await handleAddCategoryFetch({
-			body: {
-				name: values.name.trim(),
-				description: values.description,
-				image: imagesIds,
-				cover: coverImageId || imagesIds[0] ? imagesIds[0] : '',
-				parent: selectedParentId,
-				icon: imageFile,
-				metaTitle: values.metaTitle,
-				metaDescription: values.metaDescription,
-				metaTags: tags.join(','),
-				bn: {
-					metaTitle: values.bnMetaTitle,
-					metaDescription: values.bnMetaDescription,
-					metaTags: bnTags.join(','),
-					name: values.bnName.trim(),
-					description: values.bnDescription,
-				}
-			},
+			body: formData,
 		});
 
 

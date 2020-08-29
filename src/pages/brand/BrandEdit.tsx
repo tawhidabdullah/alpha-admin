@@ -189,6 +189,20 @@ const AddNewBrand = ({ brandDetailData, brandEditVisible, setBrandEditVisible,se
 
 
 
+    
+    const handleImagesDelete = (id) => {
+        // @ts-ignore
+        const newImages = myImages && myImages.filter(image => {
+            return image.id !== id;
+        })
+
+        setmyImages(newImages);
+    }
+
+
+
+    
+
 
 
     const handleSubmit = async (values: any, actions: any) => {
@@ -224,6 +238,7 @@ const AddNewBrand = ({ brandDetailData, brandEditVisible, setBrandEditVisible,se
                 });
             }
         }
+
 
 
 
@@ -294,17 +309,6 @@ const AddNewBrand = ({ brandDetailData, brandEditVisible, setBrandEditVisible,se
         return false;
     }
 
-
-
-
-    const handleImagesDelete = (id) => {
-        // @ts-ignore
-        const newImages = myImages && myImages.filter(image => {
-            return image.id !== id;
-        })
-
-        setmyImages(newImages);
-    }
 
 
 

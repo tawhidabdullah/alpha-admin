@@ -104,6 +104,10 @@
 			"url": "/admin/api/post/update/tag",
 			"method": "post"
 		},
+		"categoryUpdateIcon": {
+			"url": "/admin/api/category/update/icon/:id",
+			"method": "post"
+		},
 		"postDetail": {
 			"url": "/admin/api/post/:id?category=categoryOne&tags=tagsOne",
 			"method": "get"

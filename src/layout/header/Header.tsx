@@ -45,9 +45,13 @@ const HeaderComponent = (props: Props) => {
     useEffect(() => {
         const getAllNotification = async () => {
             await handleGetAllNOticationFetch({
-                sortItem: 'added',
-                sortOrderValue: '-1',
-                limit: 100000
+               urlOptions: {
+                   params: {
+                    sortItem: 'added',
+                    sortOrderValue: '-1',
+                    limitNumber: 100000
+                   }
+               }
             });
         }
 

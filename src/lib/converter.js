@@ -24,6 +24,7 @@ class Converter {
 					productCount: category.productCount || 0,
 					parent: category.parent || '',
 					cover: category.cover ? `${config['baseURL']}${category.cover.thumbnail}` : null,
+					icon: category.icon ? `${config['baseURL']}${category.icon}` : null,
 					subCount:
 						category.subCategory.length === 1
 							? category.subCategory[0] && category.subCategory[0].name ? category.subCategory.length : 0
@@ -1703,6 +1704,27 @@ class Converter {
 		return convertedData;
 	}
 
+	
+	/**
+* @public
+* @method categoryUpdateIcon convert api data from API to general format based on config server
+* @param {Object} data response objectc from wc
+* @returns {Object}  converted data
+*/
+async categoryUpdateIcon(data) {
+	const convertedData = data;
+
+	if (data && data.updated) {
+		return {
+			...data.updated,
+			status: 'ok'
+		};
+	}
+
+	return convertedData;
+}
+
+	
 
 	/**
    * @public
@@ -2823,7 +2845,7 @@ class Converter {
 							 item.shippingAddress && item.shippingAddress['lastName'] && item.shippingAddress['lastName'],
 							country: item.shippingAddress && item.shippingAddress['country'] && item.shippingAddress['country'],
 							city: item.shippingAddress && item.shippingAddress['city'] && item.shippingAddress['city'],
-							status: item.status,
+							status: typeof item.status === 'string' ? item.status: item.status && Object.keys(item.status).length > 0 ?  item.status['name'] : 'pending' ,
 							total: item.totalPrice,
 							products: item.products,
 							date_created: item.added,

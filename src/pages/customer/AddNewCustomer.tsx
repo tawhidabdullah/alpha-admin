@@ -71,7 +71,7 @@ const initialValues = {
 
 const openSuccessNotification = (message?: any) => {
 	notification.success({
-		message: message || 'Tag Created',
+		message: message || 'Customer Created!',
 		description: '',
 		icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
 	});

@@ -34,9 +34,8 @@ class Connector {
       credentials: 'include',
       headers: new Headers({
         ...(format === 'json' && {
-          'Content-Type': 'application/json',
+        'Content-Type': 'application/json',
         }),
-        // "Content-Type": "application/x-www-form-urlencoded",
         ...(options.headers && {
           ...options.headers,
         }),
@@ -53,7 +52,8 @@ class Connector {
 
     const url = manupulateURL(api.url, options.urlOptions);
     console.log('url',api.url)
-    console.log('manupulatedUrl',url);
+    console.log('urlOptions',this.options);
+    console.log('format',format);
 
     // change the formate to text if the server is wooCommerce
     if (config['server'] === 'wooCommerce') {
