@@ -266,7 +266,7 @@ const AddNewProduct = ({ productEditVisible,
 
         // @ts-ignore
         if (thumbnailRes && thumbnailRes.status === 'ok') {
-            openSuccessNotification('Seted as thumbnail!')
+            openSuccessNotification('Set as thumbnail!')
             // const positionInBrand = () => {
             //     return productList.map(item => item.id).indexOf(productDetailData.id);
             // }
@@ -303,6 +303,49 @@ const AddNewProduct = ({ productEditVisible,
         const imagesIds = myImages ? myImages.map(image => {
             return image.id;
         }) : [];
+
+
+        
+        if (productDetailData && Object.keys(productDetailData).length > 0) {
+			const aboutToUpdatedImageIds = []; 
+
+			if(imagesIds && imagesIds.length > 0){
+				imagesIds.forEach(imageId => {
+					if(productDetailData && productDetailData['image']){
+						if(!productDetailData['image'].includes(imageId)){
+							aboutToUpdatedImageIds.push(imageId)
+						}
+					}
+				});
+			}
+
+      
+            if (aboutToUpdatedImageIds[0] && aboutToUpdatedImageIds.length > 1) {
+                await handleAttachImageToItemMultipleFetch({
+                    urlOptions: {
+                        placeHolders: {
+                            collection: 'product',
+                            itemId: productDetailData.id
+                        }
+                    },
+                    body: {
+                        image: aboutToUpdatedImageIds
+                    }
+                });
+            }
+            else if (aboutToUpdatedImageIds[0] && aboutToUpdatedImageIds.length < 1) {
+                await handleAttachImageToItemSingleFetch({
+                    urlOptions: {
+                        placeHolders: {
+                            imageId: aboutToUpdatedImageIds[0].id,
+                            collection: 'product',
+                            itemId: productDetailData.id
+                        }
+                    }
+                });
+            }
+        }
+
 
         const updatedProductRes = await handleUpdateProductFetch({
             urlOptions: {
@@ -417,7 +460,7 @@ const AddNewProduct = ({ productEditVisible,
 
 
     const getisSubmitButtonDisabled = (values, isValid) => {
-        if (!values.name || !(pricing.length > 0) || !(categoryids.length > 0) || !isValid) {
+        if (!values.name || !(pricing.length > 0) || !(categoryOptions.length > 0) || !isValid) {
             return true;
         }
         return false;

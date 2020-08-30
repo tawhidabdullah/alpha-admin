@@ -25,6 +25,22 @@ class Converter {
 					parent: category.parent || '',
 					cover: category.cover ? `${config['baseURL']}${category.cover.thumbnail}` : null,
 					icon: category.icon ? `${config['baseURL']}${category.icon}` : null,
+					image:
+					(data.image &&
+						data.image.length > 0 &&
+						data.image.map((img) => {
+							return {
+								id: img._id || '',
+								name: img.name && img.name,
+								cover: `${config['baseURL']}${img.medium}`,
+								added: img.added,
+								title: img.title,
+								labels: img.labels,
+								alt: img.alt,
+								caption: img.caption
+							}
+						})) ||
+					[],
 					subCount:
 						category.subCategory.length === 1
 							? category.subCategory[0] && category.subCategory[0].name ? category.subCategory.length : 0
@@ -569,6 +585,22 @@ class Converter {
 					url: product.url,
 					unit: product.unit,
 					category: product.category,
+					image:
+					(data.image &&
+						data.image.length > 0 &&
+						data.image.map((img) => {
+							return {
+								id: img._id || '',
+								name: img.name && img.name,
+								cover: `${config['baseURL']}${img.original}`,
+								added: img.added,
+								title: img.title,
+								labels: img.labels,
+								alt: img.alt,
+								caption: img.caption
+							}
+						})) ||
+					[],
 					pricing: product.pricing,
 					date: product.date,
 					time: product.time,

@@ -71,7 +71,8 @@ const initialValues = {
 	bnMetaTags: '',
 	image: [],
 	url: '',
-	cover: ''
+	cover: '',
+	displayOrder: '',
 }
 
 const { Option } = Select;
@@ -129,9 +130,54 @@ const AddNewCategory = ({
 		formData.append("cover", coverImageId || imagesIds[0] ? imagesIds[0] : '');
 		formData.append("parent", selectedParentId);
 		formData.append('icon', imageFile)
+		formData.append('displayOrder', values.displayOrder)
 
 
-        console.log('categoryDetailData',categoryDetailData); 
+		console.log('categoryDetailData',categoryDetailData); 
+		console.log('imagesIds',imagesIds); 
+		
+		
+		if (categoryDetailData && Object.keys(categoryDetailData).length > 0) {
+			const aboutToUpdatedImageIds = []; 
+
+			if(imagesIds && imagesIds.length > 0){
+				imagesIds.forEach(imageId => {
+					if(categoryDetailData && categoryDetailData['image']){
+						if(!categoryDetailData['image'].includes(imageId)){
+							aboutToUpdatedImageIds.push(imageId)
+						}
+					}
+				});
+			}
+
+      
+            if (aboutToUpdatedImageIds[0] && aboutToUpdatedImageIds.length > 1) {
+                await handleAttachImageToItemMultipleFetch({
+                    urlOptions: {
+                        placeHolders: {
+                            collection: 'category',
+                            itemId: categoryDetailData.id
+                        }
+                    },
+                    body: {
+                        image: aboutToUpdatedImageIds
+                    }
+                });
+            }
+            else if (aboutToUpdatedImageIds[0] && aboutToUpdatedImageIds.length < 1) {
+                await handleAttachImageToItemSingleFetch({
+                    urlOptions: {
+                        placeHolders: {
+                            imageId: aboutToUpdatedImageIds[0].id,
+                            collection: 'category',
+                            itemId: categoryDetailData.id
+                        }
+                    }
+                });
+            }
+		}
+		
+
 
 		const addCategoryRes = await handleAddCategoryFetch({
             urlOptions: {
@@ -148,11 +194,11 @@ const AddNewCategory = ({
                 icon: imageFile,
                 metaTitle: values.metaTitle,
                 metaDescription: values.metaDescription,
-                metaTags: tags.join(','),
+                metaTags:  tags && tags.length > 0 ?  tags.join(',') : '',
                 bn: {
                     metaTitle: values.bnMetaTitle,
                     metaDescription: values.bnMetaDescription,
-                    metaTags: bnTags.join(','),
+					metaTags:  bnTags && bnTags.length > 0 ?  bnTags.join(',') : '',
                     name: values.bnName.trim(),
                     description: values.bnDescription,
                 }
@@ -161,7 +207,7 @@ const AddNewCategory = ({
 
 		// @ts-ignore
 		if (addCategoryRes && addCategoryRes.status === 'ok') {
-			openSuccessNotification('Category Created!');
+			openSuccessNotification('Category Updated!');
 			setAddNewCategoryVisible(false)
 
 			// setcategoryList([{
@@ -237,7 +283,7 @@ const AddNewCategory = ({
             urlOptions: {
                 placeHolders: {
                     imageId: id,
-                    collection: 'brand',
+                    collection: 'category',
                     itemId: categoryDetailData.id
                 }
             }
@@ -252,7 +298,7 @@ const AddNewCategory = ({
             urlOptions: {
                 placeHolders: {
                     imageId: image.id,
-                    collection: 'brand',
+                    collection: 'category',
                     itemId: categoryDetailData.id
                 }
             }
@@ -430,6 +476,8 @@ const AddNewCategory = ({
 
 
 	console.log('addnewCategoryTags',tags);
+	console.log('categoryDetailData',categoryDetailData);
+	console.log('myImages',myImages);
 
 	return (
 		<Formik
@@ -473,7 +521,7 @@ const AddNewCategory = ({
 							visible={addNewCategoryVisible}
 							onOk={(e: any) => handleSubmit(e)}
 							onCancel={handleCancel}
-							okText='Create'
+							okText='Update'
 							okButtonProps={{
 								loading: isSubmitting,
 								htmlType: "submit",
@@ -543,6 +591,24 @@ const AddNewCategory = ({
 									setFieldTouched('bnDescription');
 								}}
 							/>
+
+
+										<Input
+										label='Display Order'
+										value={values.displayOrder}
+										placeHolder={'1,3,7'}
+										name='displayOrder'
+										type='number'
+										isError={(touched.displayOrder && errors.displayOrder) ||
+											(!isSubmitting && addCategoryState.error['error']['displayOrder'])}
+
+										errorString={(touched.displayOrder && errors.displayOrder) ||
+											(!isSubmitting && addCategoryState.error['error']['displayOrder'])}
+										onChange={(e: any) => {
+											handleChange(e);
+											setFieldTouched('displayOrder');
+										}}
+										/>
 
 							<div style={{
 								marginTop: '25px'
@@ -687,7 +753,8 @@ const AddNewCategory = ({
 
                                             <div
                                                 onClick={() => {
-                                                    setvisibleMedia(true);
+													setvisible(true);
+													setisModalOpenForImages(true);
                                                 }}
                                                 className='aboutToUploadImagesContainer__uploadItem'>
                                                 {/* <FileAddOutlined />

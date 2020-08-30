@@ -71,7 +71,8 @@ const initialValues = {
 	bnMetaTags: '',
 	image: [],
 	url: '',
-	cover: ''
+	cover: '',
+	displayOrder: null,
 }
 
 const { Option } = Select;
@@ -124,6 +125,7 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, categ
 		formData.append("parent", selectedParentId);
 		formData.append('icon', imageFile)
 		formData.append('metaTitle', values.metaTitle)
+		formData.append('displayOrder', values.displayOrder)
 		formData.append('metaDescription', values.metaDescription)
 		formData.append('metaTags', values.metaTags)
 		const bnData = JSON.stringify(bn);
@@ -369,6 +371,23 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, categ
 									setFieldTouched('bnDescription');
 								}}
 							/>
+
+<Input
+										label='Display Order'
+										value={values.displayOrder}
+										placeHolder={'1,3,7'}
+										name='displayOrder'
+										type='number'
+										isError={(touched.displayOrder && errors.displayOrder) ||
+											(!isSubmitting && addCategoryState.error['error']['displayOrder'])}
+
+										errorString={(touched.displayOrder && errors.displayOrder) ||
+											(!isSubmitting && addCategoryState.error['error']['displayOrder'])}
+										onChange={(e: any) => {
+											handleChange(e);
+											setFieldTouched('displayOrder');
+										}}
+										/>
 
 							<div style={{
 								marginTop: '25px'
