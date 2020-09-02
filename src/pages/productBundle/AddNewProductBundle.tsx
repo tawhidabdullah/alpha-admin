@@ -7,24 +7,21 @@ import { useHandleFetch } from '../../hooks';
 // import libraries 
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import { message, Tooltip, Modal, Tabs, Empty, Badge } from 'antd';
+import { message, Tooltip, Modal, Tabs  } from 'antd';
 import CKEditor from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 
 import {
-    DeleteOutlined,
-    FileAddOutlined,
     CheckCircleOutlined,
     FileImageFilled,
-    FileImageOutlined,
-    FileImageTwoTone,
     PlusOutlined,
-    PlusCircleOutlined,
     CloseOutlined,
     CheckOutlined,
     InfoCircleOutlined
 } from '@ant-design/icons';
+
+
 
 // import ReactQuill from 'react-quill';
 // import 'react-quill/dist/quill.snow.css';
@@ -613,7 +610,7 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
                                         <div className='addProductGridContainer__item-header'>
                                             <h3>
                                                 Image
-</h3>
+                                            </h3>
 
                                             <Tooltip
                                                 placement="left" title={'Click on the image to select cover image, By default 1st image is selected as cover'}>
@@ -623,9 +620,6 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
                                             </Tooltip>
                                         </div>
                                         <div className='addProductGridContainer__item-body'>
-
-
-
                                             <div className='aboutToUploadImagesContainer'>
                                                 {myImages &&
                                                     // @ts-ignore
@@ -671,12 +665,12 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
                                                         }}
                                                         className='aboutToUploadImagesContainer__uploadItem'>
                                                         {/* <FileAddOutlined />
-            <FileImageTwoTone />
-            <FileImageOutlined /> */}
+                                                            <FileImageTwoTone />
+                                                            <FileImageOutlined /> */}
                                                         <FileImageFilled />
                                                         {/* <h5>
-             Select From Library
-    <     /h5> */}
+                                                                Select From Library
+                                                        <     /h5> */}
                                                         <span className='aboutToUploadImagesContainer__uploadItem-plus'>
                                                             <PlusOutlined />
                                                         </span>
@@ -698,7 +692,7 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
                                             <div className='addProductGridContainer-rightItemContainer-header'>
                                                 <h3>
                                                     Categories
-				</h3>
+			                                	</h3>
 
                                                 <Tooltip
                                                     color='red'

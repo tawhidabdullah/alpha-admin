@@ -22,14 +22,32 @@ import {
 
 
 
-const Complete = ({ setComponentList, componentList, item, component,componentUpdate }) => {
+const Complete = ({ setComponentList, componentList, item, component,componentUpdate, isLoadingUpdate }) => {
 
     const [localComponentItem, setlocalComponentItem] = useState({
         title: item.title,
         target: item.target,
         text: item.text,
         image: item.image,
-    })
+    }); 
+
+
+    console.log('localComponentItem',localComponentItem); 
+    console.log('componentItem',item); 
+
+
+
+    // useEffect(()=>{
+
+    //     if(item && item.image && item.image.length > 0){
+    //         setlocalComponentItem({
+    //             ...localComponentItem,
+    //             image: 
+    //         })
+    //     }; 
+
+
+    // },item)
 
     const [myImages, setmyImages] = useState([]);
     const [visibleMedia, setvisibleMedia] = useState(false);
@@ -57,17 +75,25 @@ const Complete = ({ setComponentList, componentList, item, component,componentUp
                 image: [...new Set([...localComponentItem.image, ...myImages])]
             })
         }
-        else {
-            setlocalComponentItem({
-                ...localComponentItem,
-                image: []
-            })
-        }
+        // else {
+        //     setlocalComponentItem({
+        //         ...localComponentItem,
+        //         image: []
+        //     })
+        // }
 
     }, [myImages])
 
 
 
+
+    useEffect(()=>{
+
+        if(item && item.image && item.image.length > 0){
+            setmyImages(item.image)
+        }
+
+    },[])
 
 
     const handleImagesDelete = (id) => {
@@ -181,7 +207,8 @@ const Complete = ({ setComponentList, componentList, item, component,componentUp
           className='btnPrimaryClassNameoutline'
           onClick={() => handleComponentItemUpdate()}
         >
-        Save
+
+            {isLoadingUpdate ? "Saving..." : "Save"}
             
             </Button>
             </div>

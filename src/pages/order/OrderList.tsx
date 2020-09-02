@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {withRouter, useHistory} from 'react-router-dom';
-import { Table, Badge, Menu, Dropdown, Space, Tag,Button, Input,Tooltip, Modal, notification, Popconfirm } from 'antd';
+import { Table, Badge, Menu, Dropdown, Space, Tag,Button, Input,Tooltip, Modal, notification, Popconfirm, Select } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined,CheckOutlined,CheckCircleOutlined,DownOutlined  } from '@ant-design/icons';
 
 
@@ -42,6 +42,8 @@ const openSuccessNotification = (message?: any) => {
 
 
 
+  
+const { Option } = Select;
 
 
 interface myTableProps {
@@ -169,6 +171,35 @@ const MyTable = ({data,setOrderList}: myTableProps) => {
         dataSource={data}
         >
 
+
+        <Column
+          title="Code"
+          dataIndex="shortCode"
+          key="id"
+          className='classnameofthecolumn'
+          render={(text, record: any) => (
+            <>
+
+              <h4
+                onClick={() => {
+                  // setvisible(true)
+                  history.push(`/admin/order/${record.id}`)
+                  setactiveCategoryForEdit(record); 
+                }}
+                style={{
+                  fontWeight: 400,
+                  color: '#555',
+                  cursor: 'pointer'
+
+                }}>
+                #{text}
+              </h4>
+
+
+            </>
+          )}
+
+        />
           
         <Column
           title="Name"
@@ -314,8 +345,9 @@ const MyTable = ({data,setOrderList}: myTableProps) => {
           render={(text, record : any) => (
             <Space size="middle">
               <a href='##'>
-               <Tooltip placement="top" title='Quick Edit Region'>
-              <span className='iconSize' onClick={() => {
+               <Tooltip placement="top" title='Edit Order'>
+              <span className='iconSize' 
+              onClick={() => {
                 setvisible(true)
                 setactiveCategoryForEdit(record); 
               }}> 
@@ -377,7 +409,7 @@ const CustomerList = ({history}: Props) => {
     const [orderList,setOrderList] = useState([]); 
 
     const [orderState, handleRegionListFetch] = useHandleFetch({}, 'orderList');
-  
+    const [orderStatusFilterValue,setorderStatusFilterValue] = useState(''); 
 
     console.log('orderState',orderState);
   
@@ -387,7 +419,9 @@ const CustomerList = ({history}: Props) => {
         urlOptions:{
           params: {
             sortItem: 'added',
-            sortOrderValue: '-1'
+            sortOrderValue: '-1',
+            statusValue: orderStatusFilterValue,
+            limitNumber: 500000,
           }
           }
        }); 
@@ -395,7 +429,7 @@ const CustomerList = ({history}: Props) => {
        setOrderList(regions); 
      }
      setOrders(); 
-    },[])
+    },[orderStatusFilterValue])
 
   const [addNewCategoryVisible,setAddNewCategoryVisible] = useState(false);   
 
@@ -412,6 +446,19 @@ const CustomerList = ({history}: Props) => {
 
 
 
+  const onOrderStatusFilterChange = (value) => {
+    setorderStatusFilterValue(value); 
+  }; 
+  const orderFilteringOption =  [
+    {
+      name: 'Pending',
+      value: 'Pending'
+    },
+    {
+      name: 'Completed',
+      value: 'complete'
+    },
+  ]
 
 	return (
 		<>
@@ -436,6 +483,23 @@ const CustomerList = ({history}: Props) => {
           // style={{ width: 300 }}
         />
           </div>
+
+
+    <div>
+
+          <Select
+					style={{ borderRadius: '15px', color: '#3fa6f9', marginRight: '15px' }}
+					placeholder='Select status'
+					optionFilterProp='children'
+					onChange={onOrderStatusFilterChange}
+          defaultValue={'pending'}
+          bordered={false}
+				>
+					{orderFilteringOption.map((option) => {
+							return <Option value={option.value}>{option.name}</Option>;
+						})}
+				</Select>
+
             <Button
           // type="primary"
           className='btnPrimaryClassNameoutline'
@@ -445,6 +509,7 @@ const CustomerList = ({history}: Props) => {
         Add New
             
             </Button>
+            </div>
             </div>
 
             <div className='categoryListContainer__afterHeader'>

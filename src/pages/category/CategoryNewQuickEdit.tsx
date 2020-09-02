@@ -183,6 +183,7 @@ const AddNewCategory = ({
             body: {
                 name: values.name.trim(),
                 description: values.description,
+                displayOrder: values.displayOrder,
                 image: imagesIds,
                 cover: coverImageId || imagesIds[0] ? imagesIds[0] : '',
                 parent: selectedParentId,
@@ -304,7 +305,7 @@ const AddNewCategory = ({
 
         // @ts-ignore
         if (thumbnailRes && thumbnailRes.status === 'ok') {
-            openSuccessNotification('Seted as thumbnail!')
+            openSuccessNotification('Set as thumbnail!')
             // const positionInBrand = () => {
             //     return brandList.map(item => item.id).indexOf(categoryDetailData.id);
             // }
@@ -419,7 +420,7 @@ const AddNewCategory = ({
 
 				// @ts-ignore
 				if(res && res.status === 'ok'){
-					openErrorNotification('Category Icon updated!')
+					openSuccessNotification('Category Icon updated!')
 				}
 				else {
 					openErrorNotification("Couldn't update category icon, Something went wrong")

@@ -86,8 +86,8 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, componen
         if (addComponentRes && addComponentRes.status === 'ok') {
             openSuccessNotification();
             setComponentList([...componentList, {
-                id: addComponentRes['id'] || '',
-                key: addComponentRes['id'] || '',
+                id: addComponentRes['_id'] || '',
+                key: addComponentRes['_id'] || '',
                 groupName: addComponentRes['groupName'] || '',
                 // @ts-ignore
                 ...addComponentRes

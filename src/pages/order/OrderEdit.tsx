@@ -9,36 +9,26 @@ import Input from '../../components/Field/Input';
 import { useHandleFetch } from '../../hooks';
 import OrderInvoice from "./OrderInvoice.jsx";
 import ProductItemForOrderDetail from "./productItemForOrderDetail";
-
+import SelectProducts from "./OrderProductIds";
+import SelectedProductItems from "../productBundle/SelectedProductItems";
 
 const { Option } = Select;
 
 
-const validationSchema = Yup.object().shape({
-    // name: Yup.string()
-    //     .label('Name')
-    //     .required()
-    //     .min(2, 'Name must have at least 2 characters '),
-    // pickUpLocation: Yup.string()
-    //     .label('Pick up Location')
-    //     .required()
-    //     .min(2, 'Pick up Location must have at least 2 characters '),
-    // time: Yup.string()
-    //     .label('Time')
-    //     .required()
-    //     .min(2, 'Time must have at least 2 characters '),
+const validationSchema = Yup.object().shape({});
 
-});
 
 
 
 const openSuccessNotification = (message?: any) => {
     notification.success({
-        message: message || 'Tag Created',
+        message: message || 'Order Updated',
         description: '',
         icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
     });
 };
+
+
 
 
 const openErrorNotification = (message?: any) => {
@@ -77,12 +67,17 @@ const QuickEdit = ({ customer, setTagEditVisible, tagEditVisible }: Props) => {
     const [countryList, setCountryList] = useState([]);
     const [cityList, setCityList] = useState([]);
     const [showInvoice, setShowInvoice] = useState(false);
+    const [productIds, setProductIds] = useState([]);
+    const [productList, setProductList] = useState([]);
+
 
 
 
     const handleSubmit = async (values: any, actions: any) => {
         // console.log('selectedCityValue', selectedCityValue); 
-        console.log('cooles', customer)
+        // console.log('cooles', customer)
+
+
 
         const addRegionRes = await handleUpdateOrderFetch({
             urlOptions: {
@@ -98,10 +93,10 @@ const QuickEdit = ({ customer, setTagEditVisible, tagEditVisible }: Props) => {
                     address2: values.address2,
                     firstName: values.firstName,
                     lastName: values.lastName,
-                    city: selectedCityValue || customer['billingAddress']['city'],
-                    country: selectedCountryValue || customer['billingAddress']['country'],
+                    city: selectedCityValue || customer['shippingAddress']['city'],
+                    country: selectedCountryValue || customer['shippingAddress']['country'],
                 },
-                products: customer.products,
+                products: productList || customer.products,
                 customerId: customer.customerId
                 // charge
             },
@@ -190,8 +185,75 @@ const QuickEdit = ({ customer, setTagEditVisible, tagEditVisible }: Props) => {
 
 
 
+    useEffect(()=>{
+        if(customer && customer['products'] && customer['products'].length > 0){
+            const productIds = customer['products'].map(item => item); 
+            setProductIds(productIds); 
+            const productList = customer.products.map(item => {
+                return {
+                    _id: item.id,
+                    variation: item.variation,
+                    quantity: item.quantity,
+                    totalPrice: item.totalPrice 
+                }
+            }); 
+           setProductList(productList); 
+
+        }; 
+        
+        console.log('customermy',customer);
+    },[customer])
 
 
+    console.log('productList',productList)
+    console.log('productIds',productIds)
+
+    
+
+    useEffect(() => {
+
+        if (productIds && productIds.length > 0 && productList) {
+            if (productIds.length > productList.length) {
+                const variation = productIds[productIds.length - 1]['pricing'] && productIds[productIds.length - 1]['pricing'].length > 0 && productIds[productIds.length - 1]['pricing'][0]['_id'];
+                console.log('variation', variation)
+
+                console.log('productIdsvariation',productIds)
+                setProductList([...productList, {
+                    ...productIds[productIds.length - 1],
+                    _id: productIds[productIds.length - 1]['id'],
+                    variation: variation,
+                    quantity: 1
+                }]);
+            }
+
+
+            else if (productIds.length < productList.length) {
+                console.log('productIds', productIds);
+                console.log('productList', productList);
+
+                const newProductList = productList.filter(item => {
+                    let isTrue = false;
+                    productIds.forEach(product => {
+                        if (product.id === item._id) {
+                            isTrue = true;
+                        }
+                    });
+                    return isTrue;
+                })
+                setProductList(newProductList);
+            }
+
+        }
+        else {
+            setProductList([]);
+        }
+        // console.log('productIds', productIds)
+
+
+    }, [productIds]); 
+
+
+    console.log('productList',productList)
 
     const handleCancel = (e: any) => {
         setTagEditVisible(false);
@@ -216,7 +278,7 @@ const QuickEdit = ({ customer, setTagEditVisible, tagEditVisible }: Props) => {
             validateOnBlur={false}
             enableReinitialize={true}
             initialValues={
-                { ...customer.billingAddress ? customer.billingAddress : {} }
+                { ...customer.shippingAddress ? customer.shippingAddress : {} }
             }
         >
             {({
@@ -441,49 +503,52 @@ const QuickEdit = ({ customer, setTagEditVisible, tagEditVisible }: Props) => {
                                 marginTop: '12px'
                             }}></div>
 
+                                <h3 className='inputFieldLabel'>
+                                        Products
+                                </h3>
+
+                               {customer.products && customer.products.length > 0 && <> 
+                                <SelectProducts
+                                    setProductIds={setProductIds}
+                                    productIds={productIds}
+                                />
+
+                                <div style={{
+                                    marginTop: "15px"
+                                }}></div>
+
+                                <h3 className='inputFieldLabel'>
+                                    Selcted Products
+                                </h3>
+
+                                <SelectedProductItems
+                                    productList={productList}
+                                    setProductList={setProductList}
+                                />
+                               </>}
 
 
-                                    {customer.products && customer.products.length > 0 && (
-                                        <h3 className='inputFieldLabel'>
-                                        Products 
-                                    </h3>
-                                    )}
-
-
-                            {customer.products && customer.products.length > 0 && <> 
-                            
-                                {customer.products.map(item => {
-                    return <ProductItemForOrderDetail
-                        productId={item._id}
-                        quantity={item.quantity}
-                        item={item}
-                        variation={item.variation}
-                    />;
-                })}
-
-                            </>}
-
-
-                            <div style={{
+                        <div style={{
                                 marginTop: '20px'
-                            }}></div>
-                    <Button
-                    onClick={() => setShowInvoice(true)}
-                    className='btnPrimaryClassNameoutline'
-                    >
-                        Generate Invoice
+                        }}></div>
+
+                        <Button
+                        onClick={() => setShowInvoice(true)}
+                        className='btnPrimaryClassNameoutline'
+                        >
+                            Generate Invoice
                         
                         </Button>
 
-            <div style={{
+                         <div style={{
                                 marginBottom: '20px'
                             }}></div>
 
-            <OrderInvoice
-            id={customer.id}
-            setShowInvoice={setShowInvoice}
-             showInvoice={showInvoice} 
-            />
+                            <OrderInvoice
+                            id={customer.id}
+                            setShowInvoice={setShowInvoice}
+                            showInvoice={showInvoice} 
+                            />
 
                             
 

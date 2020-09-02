@@ -1114,6 +1114,22 @@ class Converter {
 	}
 
 
+		/**
+* @public
+* @method updateSiteLogoAndIcon convert api data from API to general format based on config server
+* @param {Object} data response objectc from alpha
+* @returns {Object}  converted data
+*/
+async updateSiteLogoAndIcon(resData) {
+	if (resData.success) {
+		return {
+			status: 'ok'
+		}
+	}
+	return {};
+}
+
+
 
 	/**
 * @public
@@ -1204,7 +1220,7 @@ class Converter {
 					phone: customer.phone || '',
 					address1: customer.address1 || '',
 					address2: customer.address2 || '',
-					created: customer.created || ''
+					created: customer.added || ''
 				};
 			});
 
@@ -1290,6 +1306,12 @@ class Converter {
 									return {
 										cover: `${config['baseURL']}${img.thumbnail ? img.thumbnail : ""}`,
 										id: img._id,
+										name: img.name && img.name,
+										added: img.added,
+										title: img.title,
+										labels: img.labels,
+										alt: img.alt,
+										caption: img.caption
 									}
 								}) : []
 							}
@@ -2446,6 +2468,48 @@ async categoryUpdateIcon(data) {
 	}
 
 
+		/**
+   * @public
+   * @method getSiteSEO convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+  async getSiteSEO(resData) {
+	const convertedData = resData;
+
+	if (resData.data) {
+		return {
+			...resData.data
+		}
+	}
+
+	return convertedData;
+}
+
+
+
+		/**
+   * @public
+   * @method getAdminCredential convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+  async getAdminCredential(resData) {
+	const convertedData = resData;
+
+	if (resData.data) {
+		return {
+			...resData.data
+		}
+	}
+
+	return convertedData;
+}
+
+
+
+
+
 	/**
 * @public
 * @method updateSiteSettings convert api data from API to general format based on config server
@@ -2461,7 +2525,81 @@ async categoryUpdateIcon(data) {
 		}
 
 		return data;
+	}; 
+
+
+
+		/**
+* @public
+* @method updateSiteSEO convert api data from API to general format based on config server
+* @param {Object} data response objectc from wc
+* @returns {Object}  converted data
+*/
+async updateSiteSEO(data) {
+
+	if (data['updated']) {
+		return {
+			...data['updated'],
+			status: 'ok'
+		}
 	}
+
+	return data;
+};
+
+
+
+
+		/**
+* @public
+* @method updateAdminCredential convert api data from API to general format based on config server
+* @param {Object} data response objectc from wc
+* @returns {Object}  converted data
+*/
+async updateAdminCredential(data) {
+
+	if (data && Object.keys(data).length > 0) {
+		return {
+			...data,
+			status: 'ok'
+		}
+	}
+
+	return data;
+};
+
+
+
+
+
+/**
+* @public
+* @method adminUpdatePassword convert api data from API to general format based on config server
+* @param {Object} data response objectc from wc
+* @returns {Object}  converted data
+*/
+async adminUpdatePassword(data) {
+
+	if (data['updated']) {
+		return {
+			...data['updated'],
+			status: 'ok'
+		}
+	}
+
+	return data;
+};
+
+
+
+
+
+
+
+
+	
+
+
 
 	/**
 * @public
@@ -2499,12 +2637,6 @@ async categoryUpdateIcon(data) {
 
 		return convertedData;
 	}
-
-
-
-
-
-
 
 
 
@@ -2644,6 +2776,7 @@ async categoryUpdateIcon(data) {
 		const order = data.order || false;
 		if (order) {
 			return {
+				...order,
 				id: order.id || order._id,
 				shippingAddress: order.shippingAddress,
 				name: order.shippingAddress['firstName'] + " " + order.shippingAddress['lastName'],
@@ -2652,7 +2785,8 @@ async categoryUpdateIcon(data) {
 				address: order.shippingAddress['address'],
 				phone: order.shippingAddress['phone'],
 				email: order.shippingAddress['email'],
-				status: order.status,
+				shortCode: order.shortCode || '',
+				status: typeof order.status === 'string' ? order.status : order.status && Object.keys(order.status).length > 0  ? order.status['name'] : 'pending',
 				total: order.totalPrice,
 				deliveryCharge: order.totalPrice,
 				deliveryRegion: order.deliveryRegion,
@@ -2661,6 +2795,7 @@ async categoryUpdateIcon(data) {
 				deliveryCountryName: order.deliveryRegion && order.deliveryRegion['countryName'],
 				products: order.products && order.products.length > 0 ? order.products.map(product => {
 					return {
+						...product,
 						id: product._id || '',
 						name: product.name && product.name,
 						description: product.description && product.description,
@@ -2871,8 +3006,10 @@ async categoryUpdateIcon(data) {
 			(data.length > 0 &&
 				data.map((item) => {
 					return {
+							...item,
 							id: item.id || item._id,
 							shippingAddress: item.billingAddress,
+							shortCode: item.shortCode || '',
 							name: item.shippingAddress && item.shippingAddress['firstName'] && item.shippingAddress['firstName'] + " " +
 							 item.shippingAddress && item.shippingAddress['lastName'] && item.shippingAddress['lastName'],
 							country: item.shippingAddress && item.shippingAddress['country'] && item.shippingAddress['country'],

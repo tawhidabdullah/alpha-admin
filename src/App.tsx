@@ -41,3 +41,23 @@ const App = () => {
 };
 
 export default App;
+
+/* 
+
+#product 
+#order
+#category
+#order
+#customer
+#customer
+*/
+
+/*
+
+issus ====> 
+error => product bundle ---> item not defined
+error => in component list images will resolve
+error => couldn't order, i._id.toHexString is not a function
+error => Cannot read property 'offer' of undefined
+
+*/

@@ -12,6 +12,7 @@ import AddNewComponent from "./AddNewComponent";
 import ComponentListComponentItem from './ComponentListComponentItem';
 import AddNewComponentItem from './AddNewComponentItem';
 import { category } from '../../state/ducks';
+import { truncate } from 'fs';
 
 
 
@@ -186,12 +187,20 @@ const Component = (props) => {
   
 	useEffect(()=>{
 	 const setComponents = async () => {
-	   const components = await handleComponentListFetch({}); 
+	   const components = await handleComponentListFetch({
+		   urlOptions: {
+			   params: {
+				   imageValue : true
+			   }
+		   }
+	   }); 
 	   // @ts-ignore
 	   setComponentList(components); 
 	 }
 	 setComponents(); 
 	},[])
+
+	console.log('componentListd',componentList); 
 
 	
 
@@ -529,6 +538,7 @@ const Component = (props) => {
 														item={item}
 														component={component}
 														componentUpdate={componentUpdate}
+														isLoadingUpdate={updateComponentState.isLoading}
 														 />
 														
 

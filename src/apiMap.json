@@ -273,7 +273,7 @@
 			"method": "get"
 		},
 		"orderList": {
-			"url": "/admin/api/order?sort=sortItem&sortOrder=sortOrderValue",
+			"url": "/admin/api/order?sort=sortItem&sortOrder=sortOrderValue&limit=limitNumber&status=statusValue",
 			"method": "get"
 		},
 		"orderListForCustomer": {
@@ -301,7 +301,7 @@
 			"method": "post"
 		},
 		"componentList": {
-			"url": "/admin/api/component?sort=sortItem&sortOrder=sortOrderValue",
+			"url": "/admin/api/component?sort=sortItem&sortOrder=sortOrderValue&image=imageValue",
 			"method": "get"
 		},
 		"addComponent": {
@@ -374,6 +374,26 @@
 		},
 		"updateInvoiceSettings": {
 			"url": "/admin/api/settings/update/invoice",
+			"method": "post"
+		},
+		"updateSiteSEO": {
+			"url": "/admin/api/settings/update/seo",
+			"method": "post"
+		},
+		"getSiteSEO": {
+			"url": "/admin/api/settings/seo",
+			"method": "get"
+		},
+		"updateAdminCredential": {
+			"url": "/admin/api/credential/update",
+			"method": "post"
+		},
+		"getAdminCredential": {
+			"url": "/admin/api/credential",
+			"method": "get"
+		},
+		"adminUpdatePassword": {
+			"url": "/admin/api/settings/update/password",
 			"method": "post"
 		},
 		"invoiceSettingsDetail": {
@@ -469,7 +489,7 @@
 			"method": "post"
 		},
 		"login": {
-			"url": "/admin/api/auth/login",
+			"url": "/admin/auth/login",
 			"method": "post"
 		},
 		"attributeList": {

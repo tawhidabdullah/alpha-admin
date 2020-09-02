@@ -159,6 +159,22 @@ const AddNewOrder = ({ }: Props) => {
 	  const [selectedRegion, setSelectedRegion] = useState({});
 	  const [regionDeliveryCharge,setregionDeliveryCharge] = useState([]);
 
+
+
+
+
+
+
+
+	  useEffect(()=>{
+		  if(selectedCustomerData && Object.keys(selectedCustomerData).length > 0){
+			setselectedCityValue(selectedCustomerData['city']); 
+			setselectedCountryValue(selectedCustomerData['country']); 
+		  }
+	  },[selectedCustomerData]); 
+
+	  
+
 	  const isDeliveryChargeExists = (regions) => {
 		if (!regions) {
 		  return false;
@@ -180,6 +196,7 @@ const AddNewOrder = ({ }: Props) => {
 		  };
 	
 		  getAndSetShippingDeliveryCharge();
+		  console.log('selectedCityValue',selectedCityValue); 
 	  }, [selectedCityValue]);
 
 
@@ -223,18 +240,13 @@ const AddNewOrder = ({ }: Props) => {
 	  }, [regionDeliveryCharge]);
 
 
-	const getTotalPrice = (total, charge) => {
-    if (charge) {
-      return parseInt(total) + parseInt(charge);
-    } else {
-      return Math.floor(total);
-    }
-  };
+
 
 
 	  console.log('deliveryRegionState',deliveryRegionState)
 	  console.log('selectedRegion',selectedRegion)
-	  console.log('regionDeliveryCharge',regionDeliveryCharge)
+	  console.log('regionDeliveryCharge',regionDeliveryCharge); 
+	  console.log('selectedCustomerData',selectedCustomerData)
 
 	useEffect(() => {
         const setProducts = async () => {
@@ -267,10 +279,6 @@ const AddNewOrder = ({ }: Props) => {
 
 
 	const handleCheckoutSubmit = async (values: any, actions: any) => {
-		// console.log('selectedCityValue', selectedCityValue)
-		console.log('values', values);
-		console.log('productListcool', productList);
-
 		const products = productList && productList.length > 0 ? productList.map(item => {
 			return {
 				product: item._id,
@@ -319,11 +327,13 @@ const AddNewOrder = ({ }: Props) => {
 		if (!addOrderState['isLoading']) {
 			const error = addOrderState['error'];
 			if (error['isError'] && Object.keys(error['error']).length > 0) {
+
 				if (error['error']['registerError']) {
 					// setServerErrors(error['error']['registerError']);
 				} else if (error['error']['checkoutError']) {
 					// setServerErrors(error['error']['checkoutError']);
 				}
+
 				else {
 					// setServerErrors(error['error']);
 				}
@@ -454,7 +464,6 @@ const AddNewOrder = ({ }: Props) => {
         if (productIds && productIds.length > 0 && productList) {
             if (productIds.length > productList.length) {
                 const variation = productIds[productIds.length - 1]['pricing'] && productIds[productIds.length - 1]['pricing'].length > 0 && productIds[productIds.length - 1]['pricing'][0]['_id'];
-                console.log('variation', variation)
 
                 setProductList([...productList, {
                     ...productIds[productIds.length - 1],
@@ -495,11 +504,6 @@ const AddNewOrder = ({ }: Props) => {
 	// console.log('productList', productList)
 	console.log('selectedCustomerData', selectedCustomerData); 
 
-	const radioStyle = {
-		display: 'block',
-		height: '30px',
-		lineHeight: '30px',
-	  };
 
 	return (
 		<Formik
@@ -695,7 +699,7 @@ const AddNewOrder = ({ }: Props) => {
 											<div className='dubbleRowInputs__item'>
 												<h3 className='inputFieldLabel'>
 													City
-                                    </h3>
+                                			    </h3>
 												<Form.Item
 													// noStyle={true}
 													validateStatus={(addOrderState.error['error']['city']) ? "error" : ""}
@@ -860,7 +864,7 @@ const AddNewOrder = ({ }: Props) => {
 											<div className='dubbleRowInputs__item'>
 												<h3 className='inputFieldLabel'>
 													Country
-									</h3>
+												</h3>
 
 
 												<Form.Item
@@ -902,7 +906,7 @@ const AddNewOrder = ({ }: Props) => {
 
 												>
 													<Select
-														defaultValue={values.city}
+														defaultValue={'Dhaka'}
 														className='selectClassName'
 														notFoundContent={<Empty description='First Select a Country' image={Empty.PRESENTED_IMAGE_SIMPLE} />}
 														showSearch
@@ -995,10 +999,12 @@ const AddNewOrder = ({ }: Props) => {
 											Delivery Region List ({selectedCityValue})
 									    </h3>
 											
-										<Radio.Group
-										value={deliveryRegionName}
-										defaultValue={deliveryRegionName}
-										 name="radiogroup" >
+										{regionDeliveryCharge && regionDeliveryCharge.length > 0 ? (
+											<>
+													<Radio.Group
+													value={deliveryRegionName}
+													defaultValue={deliveryRegionName}
+													 name="radiogroup" >
 											 {regionDeliveryCharge.map(deliveryRegionItem => {
 												 return (
 													<div 
@@ -1028,11 +1034,22 @@ const AddNewOrder = ({ }: Props) => {
 														</h4>
 													</div>
 													</div>
-
 													
 												 )
 											 })}
   										</Radio.Group>
+											</>
+										) : (
+											<>
+											<h4 style={{
+												textAlign: 'center',
+												color:'#777',
+												marginTop: '50px'
+											}}>
+											Delivery not found
+											</h4>
+											</>
+										)}
 										</div>		
 
 
@@ -1042,21 +1059,7 @@ const AddNewOrder = ({ }: Props) => {
 											marginBottom: '50px'
 
 										}}>
-											{/* <h3
-												style={{
-													color: '#666'
-												}}
-											>
-												Total
-												</h3>
-
-											<h3
-												style={{
-													color: '#333'
-												}}
-											>
-												500
-												</h3> */}
+									
 											<Button
 												loading={addOrderState.isLoading}
 												style={{

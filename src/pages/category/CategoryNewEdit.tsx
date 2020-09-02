@@ -112,7 +112,6 @@ const AddNewCategory = ({
 	const [tags,setTags] = useState([]);
 	const [bnTags,setBnTags] = useState([]);
 	const [myImages, setmyImages] = useState(false);
-    const [visibleMedia, setvisibleMedia] = useState(false);
     const [coverImageId, setCoverImageId] = useState('');
     const [myGoddamnImages, setMyGoddamnImages] = useState([]);
 
@@ -193,7 +192,8 @@ const AddNewCategory = ({
                 parent: selectedParentId,
                 icon: imageFile,
                 metaTitle: values.metaTitle,
-                metaDescription: values.metaDescription,
+				metaDescription: values.metaDescription,
+				displayOrder: values.displayOrder,
                 metaTags:  tags && tags.length > 0 ?  tags.join(',') : '',
                 bn: {
                     metaTitle: values.bnMetaTitle,
@@ -307,7 +307,7 @@ const AddNewCategory = ({
 
         // @ts-ignore
         if (thumbnailRes && thumbnailRes.status === 'ok') {
-            openSuccessNotification('Seted as thumbnail!')
+            openSuccessNotification('Set as thumbnail!')
             // const positionInBrand = () => {
             //     return brandList.map(item => item.id).indexOf(categoryDetailData.id);
             // }
@@ -423,7 +423,7 @@ const AddNewCategory = ({
 
 				// @ts-ignore
 				if(res && res.status === 'ok'){
-					openErrorNotification('Category Icon updated!')
+					openSuccessNotification('Category Icon updated!')
 				}
 				else {
 					openErrorNotification("Couldn't update category icon, Something went wrong")
