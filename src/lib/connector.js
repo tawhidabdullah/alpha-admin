@@ -72,7 +72,7 @@ class Connector {
         let convertedData = await converter[item](formattedData); //convert recieved data to app general format
         return convertedData;
       } else {
-        let error = await res[format]();
+        let error = await res['json']();
 
         throw error;
       }

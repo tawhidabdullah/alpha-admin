@@ -240,7 +240,7 @@ const QuickEdit = ({ customer, setvisible, visible, setOrderList, orderList }: P
                             visible={visible}
                             onOk={(e: any) => handleSubmit(e)}
                             onCancel={handleCancel}
-                            okText='Update'
+                            okText='Create'
                             okButtonProps={{
                                 loading: isSubmitting,
                                 htmlType: "submit",

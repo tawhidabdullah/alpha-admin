@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
 
 import { useHandleFetch } from '../../hooks';
 // import third party ui lib
-import { Switch, Select, notification, Modal, Tooltip, Upload, message } from 'antd';
+import { Switch, Select, notification, Modal, Tooltip, Upload, message, } from 'antd';
 
 import {
 	DeleteOutlined,
@@ -34,7 +34,7 @@ import MetaTags from "./MetaTags";
 
 
 const validationSchema = Yup.object().shape({
-	name: Yup.string().label('Name').required('Name is required').min(3, 'Name must have at least 3 characters'),
+	// name: Yup.string().label('Name').required('Name is required').min(3, 'Name must have at least 3 characters'),
 });
 
 const openSuccessNotification = (message?: any) => {
@@ -128,9 +128,14 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, categ
 		formData.append('displayOrder', values.displayOrder)
 		formData.append('metaDescription', values.metaDescription)
 		formData.append('metaTags', values.metaTags)
+
+
+
 		const bnData = JSON.stringify(bn);
 		const bnFormData = new FormData();
 		bnFormData.append("bn",bnData);
+
+
 
 		formData.append('bn', bnFormData.get('bn'))
 
@@ -181,6 +186,41 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, categ
 
 		actions.setSubmitting(false);
 	};
+
+
+
+	console.log('addCategoryState',addCategoryState)
+
+	
+	useEffect(() => {
+		if (!addCategoryState['isLoading']) {
+			const error = addCategoryState['error'];
+			if (error['isError'] && Object.keys(error['error']).length > 0) {
+
+
+				const errors =
+					Object.values(error['error']).length > 0
+						? Object.values(error['error'])
+						: [];
+				errors.forEach((err, i) => {
+					if (typeof err === 'string') {
+						openErrorNotification(err)
+					}
+					else if (typeof err === 'object') {
+						if (err && Object.keys(err).length > 0) {
+							const errs = Object.values(err);
+							errs.forEach(err => {
+								openErrorNotification(err)
+							})
+
+						}
+					}
+				});
+			}
+		}
+	}, [addCategoryState])
+
+
 
 
 
@@ -268,7 +308,6 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, categ
 	);
 
 
-	console.log('addnewCategoryTags',tags);
 
 	return (
 		<Formik

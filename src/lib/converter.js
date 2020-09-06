@@ -2497,6 +2497,7 @@ async categoryUpdateIcon(data) {
    * @param {Object} data response objectc from wc
    * @returns {Object}  converted data
    */
+  
 	async addCategory(data) {
 		const convertedData = data;
 		if (data && data.inserted) {
@@ -2529,12 +2530,15 @@ async categoryUpdateIcon(data) {
 
 		return convertedData;
 	};
+
+
 	/**
    * @public
    * @method addProduct convert api data from API to general format based on config server
    * @param {Object} data response objectc from wc
    * @returns {Object}  converted data
    */
+
 	async addProduct(data) {
 		const convertedData = data;
 		if (data && data.inserted) {
@@ -2571,8 +2575,44 @@ async categoryUpdateIcon(data) {
 }
 
 
+		/**
+   * @public
+   * @method addOrderNote convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+
+  async addOrderNote(data) {
+	const convertedData = data;
+	if (data && data[0]) {
+		return {
+			...data[0],
+			status: 'ok',			
+		};
+	}
+	return convertedData;
+}
 
 		/**
+   * @public
+   * @method updateOrderNote convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+
+	async updateOrderNote(data) {
+		const convertedData = data;
+		if (data && data['updated']) {
+			return {
+				...data['updated'],
+				status: 'ok',			
+			};
+		}
+		return convertedData;
+	}
+
+
+	/**
    * @public
    * @method postAddTag convert api data from API to general format based on config server
    * @param {Object} data response objectc from wc
@@ -2614,6 +2654,22 @@ async categoryUpdateIcon(data) {
 
 
 	/**
+   * @public
+   * @method getOrderNote convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+
+  async getOrderNote(data) {
+	const convertedData = data;
+	return convertedData; 
+}
+
+
+
+
+
+	/**
 * @public
 * @method addTheme convert api data from API to general format based on config server
 * @param {Object} data response objectc from wc
@@ -2630,6 +2686,25 @@ async categoryUpdateIcon(data) {
 
 		return convertedData;
 	}
+
+
+		/**
+* @public
+* @method deleteOrderNote convert api data from API to general format based on config server
+* @param {Object} data response objectc from wc
+* @returns {Object}  converted data
+*/
+async deleteOrderNote(data) {
+	const convertedData = data;
+	if (data && data.success) {
+		return {
+			status: 'ok'
+		};
+	}
+
+	return convertedData;
+}
+
 
 	/**
 * @public
@@ -3550,7 +3625,7 @@ async adminUpdatePassword(data) {
 							payment: item['payment'],
 							customerId: item['customer'] ? item['customer']['_id'] : '',
 							deliveryName: item.deliveryRegion 
-							&& Object.keys(item.deliveryRegion).length > 0 ? `${item.deliveryRegion['name']} (${item.deliveryRegion['pickUpLocation']})`
+							&& Object.keys(item.deliveryRegion).length > 0 ? `${item.deliveryRegion['name']}`
 							: ''
 
 					};
@@ -3644,7 +3719,7 @@ async dealerOrderList(resData) {
 							payment: item['payment'],
 							customerId: item['customer'] ? item['customer']['_id'] : '',
 							deliveryName: item.deliveryRegion 
-							&& Object.keys(item.deliveryRegion).length > 0 ? `${item.deliveryRegion['name']} (${item.deliveryRegion['pickUpLocation']})`
+							&& Object.keys(item.deliveryRegion).length > 0 ? `${item.deliveryRegion['name']}`
 							: ''
 
 						};

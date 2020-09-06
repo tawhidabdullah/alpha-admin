@@ -371,6 +371,22 @@
 			"url": "/admin/api/order/config/status",
 			"method": "get"
 		},
+		"addOrderNote": {
+			"url": "/admin/api/order/notes/add",
+			"method": "post"
+		},
+		"getOrderNote": {
+			"url": "/admin/api/order/notes/:id",
+			"method": "get"
+		},
+		"updateOrderNote": {
+			"url": "/admin/api/order/notes/update/:id",
+			"method": "post"
+		},
+		"deleteOrderNote": {
+			"url": "/admin/api/order/notes/update/delete/:id",
+			"method": "post"
+		},
 		"componentList": {
 			"url": "/admin/api/component?sort=sortItem&sortOrder=sortOrderValue&image=imageValue",
 			"method": "get"

@@ -439,7 +439,6 @@ const CustomerList = ({history}: Props) => {
 
   // console.log('orderState',orderState)
 
-
   const handleSearch = (value) => {
     if(orderState.data.length > 0 ){
       const newOrderList = orderState.data.filter(item => item.name.includes(value)); 

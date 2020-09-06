@@ -48,7 +48,7 @@ import MetaTags from "../category/MetaTags";
 const { TabPane } = Tabs;
 
 const validationSchema = Yup.object().shape({
-    name: Yup.string().label('Name').required('Name is required').min(3, 'Name must have at least 3 characters'),
+    // name: Yup.string().label('Name').required('Name is required').min(3, 'Name must have at least 3 characters'),
 });
 
 
@@ -389,7 +389,7 @@ const AddNewProduct = ({ productEditVisible,
 					metaTags: bnMetaTags.join(','),
 					name: values.bnName.trim(),
 					unit: values.metaUnit,
-					description: values.bnDescription,
+					description: bnDescription,
 				}
             },
         });

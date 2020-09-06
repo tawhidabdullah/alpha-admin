@@ -16,7 +16,8 @@ import {
     PlusOutlined,
     DeleteOutlined,
     EditOutlined,
-    CheckCircleOutlined
+    CheckCircleOutlined,
+    InfoCircleOutlined
 } from '@ant-design/icons';
 
 import { Skeleton, Empty, Popconfirm, Upload, message, Switch, Select, Button, notification, Table, Space, Input as CoolInput, Tooltip, Modal } from 'antd';
@@ -25,11 +26,34 @@ import { Skeleton, Empty, Popconfirm, Upload, message, Switch, Select, Button, n
 // import components
 import { DataTableSkeleton } from "../../components/Placeholders";
 import OrderEdit from "./OrderEdit";
+import OrderNoteEdit from "./OrderNoteEdit";
 import { OrderDetail } from '.';
 
 
 const { Column, ColumnGroup } = Table;
 const { Search } = CoolInput;
+
+
+
+const openSuccessNotification = (message?: any) => {
+    notification.success({
+        message: message || 'Order Updated',
+        description: '',
+        icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
+    });
+};
+
+
+
+
+const openErrorNotification = (message?: any) => {
+    notification.error({
+        message: message || 'Something Went Wrong',
+        description: '',
+        icon: <InfoCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
+    });
+};
+
 
 
 interface Props {
@@ -38,13 +62,20 @@ interface Props {
 
 const NewBrandDetail = (props: Props) => {
     const [tagDetailState, handleTagDetailFetch] = useHandleFetch({}, 'orderDetail');
+    const [orderDetailNotesState, handleOrderDetailNotesFetch] = useHandleFetch({}, 'getOrderNote');
     const [tagProductsState, handleTagProductsFetch] = useHandleFetch({}, 'tagProducts');
+    const [deleteOrderNoteState, handleDeleteOrderNoteFetch] = useHandleFetch({}, 'deleteOrderNote');
     const [tagEditVisible, setTagEditVisible] = useState(false);
+    const [activeOrderNote,setActiveOrderNote] = useState({}); 
+    const [isOrderNoteEdit,setIsOrderNoteEdit] = useState(false)
 
+
+    console.log('orderDetailNotesState',orderDetailNotesState); 
 
     const params = useParams();
     const history = useHistory();
     const tagId = params['id'];
+    const [orderNotes,setOrderNotes] = useState([]); 
 
     useEffect(() => {
 
@@ -55,10 +86,27 @@ const NewBrandDetail = (props: Props) => {
                         id: tagId
                     }
                 }
-            })
+            }); 
+
+           const orderNotes =  await handleOrderDetailNotesFetch({
+                urlOptions: {
+                    placeHolders: {
+                        id: tagId
+                    }
+                }
+            }); 
+
+            // @ts-ignore
+            if(orderNotes) {
+                // @ts-ignore
+                setOrderNotes(orderNotes)
+            }
+            
         };
         getBrandDetail()  ;
     }, [tagId]);
+
+    
 
 
     console.log('orderDetailState', tagDetailState)
@@ -85,9 +133,34 @@ const NewBrandDetail = (props: Props) => {
 
     console.log('brandParams', params);
 
+    const handleDeleteOrderNote = async (id) => {
+       const res =  await handleDeleteOrderNoteFetch({
+            urlOptions: {
+                placeHolders: {
+                    id: id
+                }
+            }
+        }); 
+
+        // @ts-ignore
+        if (res && res.status === 'ok') {
+            const newOrderNoteList = orderNotes && orderNotes.filter(item => item._id !== id);
+			setOrderNotes(newOrderNoteList);
+            openSuccessNotification('Order note deleted!');
+           
+        }
+    } 
 
     return (
         <div className='brandDetailContainer'>
+            <OrderNoteEdit
+             setOrderNotes={setOrderNotes}
+             orderNotes={orderNotes}
+             tagEditVisible={isOrderNoteEdit}
+             setTagEditVisible={setIsOrderNoteEdit}
+             customer={tagDetailState.data}
+             activeNote={activeOrderNote}
+            />
             <div className='brandDetailContainer__heading'>
                 <h3>
                     Order Detail
@@ -97,6 +170,8 @@ const NewBrandDetail = (props: Props) => {
                     <>
                     <div>
                     <OrderEdit
+                            setOrderNotes={setOrderNotes}
+                            orderNotes={orderNotes}
                             tagEditVisible={tagEditVisible}
                             setTagEditVisible={setTagEditVisible}
                             customer={tagDetailState.data}
@@ -108,22 +183,10 @@ const NewBrandDetail = (props: Props) => {
                         >
                             Add note
                       </Button>
-                    <OrderEdit
-                            tagEditVisible={tagEditVisible}
-                            setTagEditVisible={setTagEditVisible}
-                            customer={tagDetailState.data}
-                        />
-                        <Button
-                            onClick={() => setTagEditVisible(true)}
-                            type='link'
-                            icon={<EditOutlined />}
-                        >
-                            Edit
-                      </Button>
                     </div>
-                       
                     </>
                 )}
+
             </div>
             <Skeleton
                 paragraph={{ rows: 2 }}
@@ -133,7 +196,17 @@ const NewBrandDetail = (props: Props) => {
                 )}
 
                 {tagDetailState.done && tagDetailState.data && (Object.keys(tagDetailState.data).length > 0) && (
-                    <div className='brandDetailContainer__header'>
+                    <>
+                    <div style={{
+                        display:'flex',
+
+                    }}>
+                <div
+                style={{
+                    flex: 1,
+                    marginRight: '20px'
+                }}
+                 className='brandDetailContainer__header'>
 
                         <div className='brandDetailContainer__header-info'>
                             <h2>
@@ -231,7 +304,7 @@ const NewBrandDetail = (props: Props) => {
                                 </h3>
                             )}
 
-
+{/* 
                             {tagDetailState['data']['deliveryCharge'] && (
                                 <h3>
                                     DELIVERY CHARGE:
@@ -239,7 +312,7 @@ const NewBrandDetail = (props: Props) => {
                                         {tagDetailState['data']['deliveryCharge']}
                                     </span>
                                 </h3>
-                            )}
+                            )} */}
 
 
 
@@ -255,22 +328,117 @@ const NewBrandDetail = (props: Props) => {
                       
                         </div>
                     </div>
+
+                    <div 
+                    style={{
+                        maxWidth: '35%',
+                        minWidth: '35%'
+                    }}
+                    className='brandDetailContainer__header'>
+
+            <div 
+            style={{
+                width: '100%'
+            }}
+            className='brandDetailContainer__header-info'>
+                <h2>
+                    Notes
+                </h2>
+
+            <div style={{
+                width: '100%'
+            }}>
+                {orderDetailNotesState.done
+                 && orderNotes
+                  && orderNotes.length > 0 && orderNotes.map((noteItem: any) => {
+                      return <div className='OrderNoteItem'>
+                          		<div className='OrderNoteItem__action'>
+																		{/* <span>
+																		<EditOutlined />
+																		</span> */}
+                                                                        <span
+                                                                        className='OrderNoteItem__action-edit'
+                                                                          onClick={() => {
+                                                                        setActiveOrderNote(noteItem); 
+                                                                        setIsOrderNoteEdit(true); 
+
+																		}}>
+																			<EditOutlined />
+																		</span>
+                                                                        <span  
+                                                                         className='OrderNoteItem__action-delete'
+                                                                        onClick={() => handleDeleteOrderNote(noteItem._id)}>
+																			<DeleteOutlined />
+																		</span>
+																	</div>
+                          <h4>
+                              <span>
+                                  NOTE: 
+                              </span>
+                              {` ${noteItem.note}`}
+                          </h4>
+                      
+                              {noteItem.summary && (
+                                  <>
+                                      <h4>
+                                     <span>
+                                          SUMMARY : 
+                                    </span>
+
+
+                                    {` ${noteItem.summary}`}
+                                         </h4>
+                                  </>
+                              )}
+                         
+                      </div>; 
+                  }) }
+
+
+
+            {orderDetailNotesState.done
+                && orderNotes
+                && !(Object.keys(orderNotes).length > 0) && (
+                <>
+                    <div style={{
+                                    width: '100%',
+                                    margin: '100px 0',
+                                    display: 'flex',
+                                    justifyContent:'center'
+                                }}>
+                            <Empty description='No Notes found' image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                    </div>
+                </>
+            )} 
+        </div>
+        </div>
+        </div>
+
+
+        <div></div>
+                    </div>
+                    </>
+          
                 )}
 
             </Skeleton>
 
 
+                            {tagDetailState.done  && (
+                        <>
+                        
             <div className='brandDetailContainer__heading'>
                     <h3>
                         Products
                     </h3>
                 </div>
 
+                        </>
+                    )}
+
           
            
             <div className='brandDetailContainer__body'>
-
-
                 {tagDetailState.done 
                     && tagDetailState.data 
                     && (Object.keys(tagDetailState.data).length > 0) 
@@ -283,6 +451,7 @@ const NewBrandDetail = (props: Props) => {
                 )}
 
 
+                
                 {tagDetailState.done 
                     && tagDetailState.data 
                     && (Object.keys(tagDetailState.data).length > 0) 
@@ -296,13 +465,7 @@ const NewBrandDetail = (props: Props) => {
                                 overflow: 'hidden',
                                 boxShadow: '0 0.125rem 0.625rem rgba(227, 231, 250, 0.3), 0 0.0625rem 0.125rem rgba(206, 220, 233, 0.4)'
                             }}
-                            // expandable={{
-                            //     expandedRowRender: record => <p style={{ margin: 0 }}>{record.name}</p>,
-                            //     rowExpandable: record => record.name !== 'Not Expandable',
-                            //   }}
-                            // bordered={true}
                             size='small'
-                            // pagination={false}
                             dataSource={tagDetailState.data['products']}
                             tableLayout={'auto'}
                             onHeaderRow={column => {
@@ -395,7 +558,6 @@ const NewBrandDetail = (props: Props) => {
                                 className='classnameofthecolumn'
 
                             />
-
 
                         </Table>
 

@@ -475,7 +475,6 @@ const AddNewCategory = ({
     },[])
 
 
-	console.log('addnewCategoryTags',tags);
 
 	return (
 		<Formik
