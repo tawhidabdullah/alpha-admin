@@ -16,13 +16,15 @@ const Tags = ({
     const [options, setoptions] = useState([]);
     const [selectedOpions, setselectedOptions] = useState([]);
     const [tagState, handleTagListFetch] = useHandleFetch({}, 'productList');
+    const [isProductIdsfirstTime,setProductIdsfirstTime] = useState(false); 
 
     useEffect(() => {
         const setTags = async () => {
             const tagListRes = await handleTagListFetch({
                 urlOptions: {
                     params: {
-                        isSubCategory: false
+                        sortItem: 'added',
+                        sortOrderValue: '-1'
                     }
                 }
             });
@@ -43,10 +45,23 @@ const Tags = ({
 
 
 
+    useEffect(()=>{
+
+        if(productIds && productIds.length > 0 && !isProductIdsfirstTime){
+            const selectItems = productIds.map((tag) => {
+                return tag.id
+            });
+
+            setselectedOptions(selectItems);
+            // setoptions(tagOptions);
+        }; 
+
+    },[productIds])
+
+
     const handleChange = (selectItems) => {
         setselectedOptions(selectItems);
-
-        console.log('selectedProducts', selectItems);
+        console.log('selectItems',selectItems); 
 
         if (tagState.done && tagState.data.length > 0 && selectItems.length > 0) {
             const selectedCategoryIds = selectItems.map((item) => {
@@ -57,23 +72,17 @@ const Tags = ({
                     return selectedcategory;
                 }
             });
-            console.log('selectedCategoryIds', selectedCategoryIds);
+
             setProductIds(selectedCategoryIds);
         }
         else {
             setProductIds([])
         }
-
-
     }
-
-
-    // console.log('selectedOpions', selectedOpions);
 
 
     return (
         <>
-
             <Skeleton loading={tagState.isLoading}>
                 {tagState.done && tagState.data.length > 0 && <Select
                     mode="multiple"
@@ -89,8 +98,6 @@ const Tags = ({
                     ))}
                 </Select>}
             </Skeleton>
-
-
         </>
     )
 }

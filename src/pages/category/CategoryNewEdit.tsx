@@ -525,7 +525,6 @@ const AddNewCategory = ({
 							okButtonProps={{
 								loading: isSubmitting,
 								htmlType: "submit",
-								disabled: getisSubmitButtonDisabled(values, isValid)
 							}}
 						>
 							<Input

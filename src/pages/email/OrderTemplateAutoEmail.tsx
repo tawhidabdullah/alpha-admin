@@ -157,6 +157,7 @@ const AddNewBrand = ({ visible, setVisible }: Props) => {
             margin: '10px',
             padding: '10px'
         }}
+        footer={false}
     >
      <Tabs defaultActiveKey="1" >
      <TabPane tab="Customer" key="1">
@@ -206,6 +207,21 @@ const AddNewBrand = ({ visible, setVisible }: Props) => {
             console.log('Focus.', editor);
         }}
         />
+
+<div style={{
+                                          display:'block',
+                                          marginBottom:'20px',
+                                          marginTop:'20px',
+                                      }}>   
+                                      <Button
+                                        onClick={handleSubmit}
+                                        loading={autoEmailTemplate.isLoading}
+                                        className='btnPrimaryClassNameoutline'
+                                        >
+                                        Update Template
+                                        </Button>      
+                                    </div>
+
             </div>
 
             <div style={{
@@ -256,7 +272,15 @@ const AddNewBrand = ({ visible, setVisible }: Props) => {
      </TabPane>
 
     <TabPane tab="Admin" key="2">
-    <Input
+
+    <div style={{
+        display:'flex'
+    }}>
+        <div style={{
+            width: '70%'
+        }}>
+
+<Input
             label='Subject'
             value={admin.subject}
             name='subject'
@@ -295,10 +319,75 @@ onFocus={(event, editor) => {
 }}
 />
 
+        
+<div style={{
+            display:'block',
+            marginBottom:'20px',
+            marginTop:'20px',
+        }}>   
+        <Button
+        onClick={handleSubmit}
+        loading={autoEmailTemplate.isLoading}
+        className='btnPrimaryClassNameoutline'
+        >
+        Update Template
+        </Button>      
+    </div>    
+
+
+        </div>
+        <div style={{
+                width:'30%',
+                overflowY:'auto',
+                background:"#f7f7f7",
+                marginLeft:'20px',
+                padding:'10px',
+                borderRadius:'8px'
+            }}>
+                <h4>Information Tags</h4>
+                <p style={{
+                    fontSize:'12px'
+                }}>
+                    Place the following tags to replace them with actual data while sending email
+                </p>
+                <ul style={{
+                    padding:'15px'
+                }}>
+                    <li style={{
+                        fontSize:'12px',
+                        marginBottom:'10px',
+                        lineHeight:1.7,
+                        fontWeight:500
+                    }}><b style={{
+                        borderRadius:"15px",
+                        backgroundColor:'#ddd',
+                        padding:"1px 10px"
+                    }}>&lt;?=order.added?&gt; :</b> Order time</li>
+                    <li
+                    style={{
+                        fontSize:'12px',
+                        lineHeight:2,
+                        fontWeight:500
+                    }}
+                    ><b
+                    style={{
+                        borderRadius:"15px",
+                        backgroundColor:'#ddd',
+                        padding:"1px 10px"
+                    }}
+                    >&lt;?shippingAddress.firstName?&gt; :</b> Shipping first Name</li>
+                </ul>
+
+        </div>
+    </div>
+
+
+
      
     </TabPane>
 
 </Tabs>
+
 
     </Modal>
     );

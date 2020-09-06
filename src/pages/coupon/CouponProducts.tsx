@@ -57,7 +57,7 @@ const CouponProducts = ({
                         <div
                             onClick={() => history.push(`/admin/product/${productId}`)}
                             className='couponDetailProductItem__cover'>
-                            <img src={productDetailState.data.cover} alt="" />
+                            <img src={productDetailState.data.cover && productDetailState.data.cover['cover']} alt="" />
                         </div>
                         <div className='couponDetailProductItem__info'>
                             <h2

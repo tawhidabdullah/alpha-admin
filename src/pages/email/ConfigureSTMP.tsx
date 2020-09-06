@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
@@ -30,7 +30,6 @@ import TextArea from '../../components/Field/TextArea';
 import MediaLibrary from "../../components/MediaLibrary";
 
 const validationSchema = Yup.object().shape({
-    name: Yup.string().label('Name').required('Name is required').min(3, 'Name must have at least 3 characters'),
 });
 
 
@@ -74,7 +73,25 @@ const ConfigureSTMP = ({  }: Props) => {
     const [emailConfigurationState, handleEmailConfigurationFetch] = useHandleFetch({}, 'configureEmailSTMP');
  
     const [isAuthenticated,setIsAuthenticated] = useState(true);
+    const [configurationData,setConfigurationData] = useState({}); 
 
+
+
+    useEffect(() => {
+      const getEmailConfiguration = async () => {
+          const res = await handleGetEmailConfigurationFetch({});
+          // @ts-ignore
+          if(res){
+              // @ts-ignore
+            setConfigurationData(res); 
+            setIsAuthenticated(res['authentication'])
+          }
+      }; 
+      getEmailConfiguration(); 
+    }, [])
+
+
+    console.log('getEmailConfigurationState',getEmailConfigurationState)
 
     const handleSubmit = async (values: any, actions: any) => {
         const addTagRes = await handleEmailConfigurationFetch({
@@ -83,7 +100,7 @@ const ConfigureSTMP = ({  }: Props) => {
                 "fromName": values.fromName.trim(),
                 "host": values.host.trim(),
                 "encryption":values.encryption.trim(),
-                "port":values.port.trim(),
+                "port":values.port,
                 "authentication": isAuthenticated,
                 "smtpUsername":values.smtpUsername.trim(),
                 "smtpPassword": values.smtpPassword.trim()
@@ -92,10 +109,10 @@ const ConfigureSTMP = ({  }: Props) => {
 
         // @ts-ignore
         if (addTagRes && addTagRes.status === 'ok') {
-            openSuccessNotification('STMP Configuration Updated!');
+           
         }
         else {
-            openErrorNotification("Something went wrong, Couldn't updated STMP configuration");
+            // openErrorNotification("Something went wrong, Couldn't updated STMP configuration");
         }
 
 
@@ -114,6 +131,63 @@ const ConfigureSTMP = ({  }: Props) => {
 
 
 
+    
+	useEffect(() => {
+		if (!emailConfigurationState['isLoading']) {
+			const error = emailConfigurationState['error'];
+			if (error['isError'] && Object.keys(error['error']).length > 0) {
+
+				if (error['error']['registerError']) {
+					// setServerErrors(error['error']['registerError']);
+				} else if (error['error']['checkoutError']) {
+					// setServerErrors(error['error']['checkoutError']);
+				}
+
+				else {
+					// setServerErrors(error['error']);
+				}
+
+				const errors =
+					Object.values(error['error']).length > 0
+						? Object.values(error['error'])
+						: [];
+				errors.forEach((err, i) => {
+					if (typeof err === 'string') {
+						openErrorNotification(err);
+
+					}
+					else if (typeof err === 'object') {
+						if (err && Object.keys(err).length > 0) {
+							const errs = Object.values(err);
+							errs.forEach(err => {
+								openErrorNotification(err);
+							})
+
+						}
+					}
+				});
+			}
+		}
+
+		if (
+			!emailConfigurationState['isLoading'] &&
+			Object.keys(emailConfigurationState.data).length > 0
+		) {
+			if (emailConfigurationState['data']['status'] === 'ok') {
+                openSuccessNotification('STMP Configuration Updated!');
+				// history.push({
+				//   pathname: '/orderDetails',
+				//   state: checkoutState['data']
+				// })
+
+				// clearCart();
+				// setIsModalShown(true);
+			}
+		}
+	}, [emailConfigurationState]);
+
+
+
     const handleAuthenticatedChange = (e) => {
         setIsAuthenticated(e.target.checked);
     }
@@ -127,7 +201,7 @@ const ConfigureSTMP = ({  }: Props) => {
             validateOnBlur={false}
             enableReinitialize={true}
             initialValues={
-                { ...initialValues }
+                { ...initialValues, ...configurationData }
             }
         >
             {({
@@ -195,20 +269,22 @@ const ConfigureSTMP = ({  }: Props) => {
 												<div style={{
 													width: '49%',
 												}}>
-												  <Input
-                                                    label='Port'
-                                                    value={values.port}
-                                                    name='port'
-                                                    isError={(touched.port && errors.port) ||
-                                                        (!isSubmitting && emailConfigurationState.error['error']['port'])}
+                                                      <Input
+                                                    label='Host'
+                                                    value={values.host}
+                                                    name='host'
+                                                    isError={(touched.host && errors.host) ||
+                                                        (!isSubmitting && emailConfigurationState.error['error']['host'])}
 
-                                                    errorString={(touched.port && errors.port) ||
-                                                        (!isSubmitting && emailConfigurationState.error['error']['port'])}
+                                                    errorString={(touched.host && errors.host) ||
+                                                        (!isSubmitting && emailConfigurationState.error['error']['host'])}
                                                     onChange={(e: any) => {
                                                         handleChange(e);
-                                                        setFieldTouched('port');
+                                                        setFieldTouched('host');
                                                     }}
-                                                    />
+                                                     />
+
+												  
 												</div>
 												<div style={{
 													width: '49%'
@@ -280,25 +356,27 @@ const ConfigureSTMP = ({  }: Props) => {
                                             <div style={{
 													width: '49%'
 												}}>
-                                                     <Input
-                                                    label='Host'
-                                                    value={values.host}
-                                                    name='host'
-                                                    type='number'
-                                                    isError={(touched.host && errors.host) ||
-                                                        (!isSubmitting && emailConfigurationState.error['error']['host'])}
+                                                  <Input
+                                                     type='number'
+                                                    label='Port'
+                                                    value={values.port}
+                                                    name='port'
+                                                    isError={(touched.port && errors.port) ||
+                                                        (!isSubmitting && emailConfigurationState.error['error']['port'])}
 
-                                                    errorString={(touched.host && errors.host) ||
-                                                        (!isSubmitting && emailConfigurationState.error['error']['host'])}
+                                                    errorString={(touched.port && errors.port) ||
+                                                        (!isSubmitting && emailConfigurationState.error['error']['port'])}
                                                     onChange={(e: any) => {
                                                         handleChange(e);
-                                                        setFieldTouched('host');
+                                                        setFieldTouched('port');
                                                     }}
-                                                     />
+                                                    />
                                             </div>
 
                                         
-                                            <Checkbox onChange={handleAuthenticatedChange}>
+                                            <Checkbox
+                                            value={isAuthenticated}
+                                             onChange={handleAuthenticatedChange}>
                                                     <span className='checkBoxFieldLabel'>
                                                         Authentication
                                                     </span>

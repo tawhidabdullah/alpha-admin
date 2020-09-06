@@ -37,6 +37,8 @@ const CartOverLayCartItem = ({
 
 
 
+    console.log('productDetailStateByOrder',productDetailState); 
+    
     useEffect(() => {
         setIsLoading(true);
         const getAndSetProduct = async () => {

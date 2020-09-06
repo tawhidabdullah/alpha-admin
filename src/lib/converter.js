@@ -648,6 +648,7 @@ class Converter {
 		data.length > 0 &&
 		data.map((post) => {
 			return {
+				...post,
 				id: post._id || '',
 				name: post.name && post.name,
 				body: post.body && post.body,
@@ -683,6 +684,7 @@ class Converter {
 
 	if(Object.keys(data).length > 0){
 		return {
+			...data,
 			id: data._id || '',
 			name: data.name && data.name,
 			body: data.body && data.body,
@@ -719,12 +721,14 @@ class Converter {
    * @returns {Object}  converted data
    */
 	async bundleList(resData) {
-		const data = resData || [];
+		const data = resData.data || [];
 
 		let convertedData =
 			data.length > 0 &&
 			data.map((product) => {
 				return {
+					...product,
+					anotherPrice: product.price,
 					id: product._id || '',
 					name: product.name && product.name,
 					description: product.description && product.description,
@@ -746,7 +750,7 @@ class Converter {
 					product: product['product'],
 					productCount: product['product'].length,
 					price:
-						parseInt(product.price['offer']) > parseInt(product.price['regular'])
+					parseInt(product.price['offer']) > parseInt(product.price['regular'])
 							? product.price['offer']
 							: product.price['regular'],
 				};
@@ -776,7 +780,7 @@ class Converter {
 				id: data._id || '',
 				name: data.name && data.name,
 				description: data.description && data.description,
-				cover: `${config['baseURL']}${(data.cover && data.cover['thumbnail']) || ''}`,
+				cover: data.cover ? `${config['baseURL']}${(data.cover && data.cover['thumbnail']) || ''}`: '',
 				regularPrice: data.price && data.price['regular'],
 				offerPrice: data.price && data.price['offer'],
 				url: data.url,
@@ -926,6 +930,7 @@ class Converter {
 	async customerDetail(resData) {
 		if(resData){
 			return {
+				...resData,
 				id: resData._id || '',
 				key: resData._id || '',
 				firstName: resData.firstName || '',
@@ -957,6 +962,7 @@ class Converter {
 			data.length > 0 &&
 			data.map((product) => {
 				return {
+					...data,
 					id: product._id || '',
 					name: product.name && product.name,
 					code: product.code,
@@ -964,7 +970,6 @@ class Converter {
 					minimumOrder: product.minimumOrder,
 					maximumOrder: product.maximumOrder,
 					offerPrice: product.price && product.price['offer'],
-					orderedProducts: product.orderedProducts,
 					freeProducts: product.freeProducts,
 					orderedProductsCount: product.orderedProducts && product.orderedProducts.length,
 					freeProductsCount: product.freeProducts && product.freeProducts.length,
@@ -980,7 +985,6 @@ class Converter {
 					pricing: product.pricing,
 					date: product.date,
 					time: product.time,
-
 				};
 			});
 
@@ -1023,6 +1027,41 @@ class Converter {
 
 		return convertedData;
 	}
+
+
+
+
+	
+	/**
+   * @public
+   * @method getSetEmailList convert api data from API to general format based on config server
+   * @param {Object} data response objectc from alpha
+   * @returns {Object}  converted data
+   */
+  async getSetEmailList(resData) {
+	const data = resData.data || [];
+
+	const convertedData =
+		data.length > 0 &&
+		data.map((email) => {
+			return {
+				...email,
+				id: email._id || '',
+				key: email._id || '',
+				"recipient": email.recipient,
+				"subject": email.subject,
+				"html": email.html,
+				"text": email.text,
+				"time":  email.time,
+				"event": email.event
+			};
+		});
+
+	return convertedData;
+}
+
+
+	
 
 
 		/**
@@ -1073,6 +1112,33 @@ class Converter {
 	}
 
 	
+
+
+	
+		/**
+   * @public
+	
+   * @method dealerAreaDetail convert api data from API to general format based on config server
+   * @param {Object} data response objectc from alpha
+   * @returns {Object}  converted data
+   */
+  async dealerAreaDetail(resData) {
+	const data = resData; 
+
+	if(Object.keys(data).length > 0){
+		return {
+			...data,
+			id: data._id || '',
+			key: data._id || '',
+			name: data.name && data.name,
+		}
+	}
+	else return {}
+	}
+
+
+
+	
 	/**
    * @public
    * @method brandList convert api data from API to general format based on config server
@@ -1113,6 +1179,57 @@ class Converter {
 		return {};
 	}
 
+
+	
+	/**
+* @public
+* @method configureEmailSTMP convert api data from API to general format based on config server
+* @param {Object} data response objectc from alpha
+* @returns {Object}  converted data
+*/
+async configureEmailSTMP(resData) {
+	if (resData.success) {
+		return {
+			status: 'ok'
+		}
+	}
+	return {};
+}
+
+
+	
+	/**
+* @public
+* @method getEmailConfiguration convert api data from API to general format based on config server
+* @param {Object} data response objectc from alpha
+* @returns {Object}  converted data
+*/
+async getEmailConfiguration(resData) {
+	console.log('resGetEmail',resData); 
+	if (resData && Object.keys(resData).length > 0) {
+		return {
+			...resData,
+			status: 'ok'
+		}
+	}
+	return {};
+}
+
+	
+	/**
+* @public
+* @method sendCustomEmail convert api data from API to general format based on config server
+* @param {Object} data response objectc from alpha
+* @returns {Object}  converted data
+*/
+async sendCustomEmail(resData) {
+	if (resData && resData.msg) {
+		return {
+			status: 'ok'
+		}
+	}
+	return {};
+}
 
 		/**
 * @public
@@ -1209,10 +1326,86 @@ async updateSiteLogoAndIcon(resData) {
 			data.length > 0 &&
 			data.map((customer) => {
 				return {
+					...customer,
 					id: customer._id || '',
 					key: customer._id || '',
 					firstName: customer.firstName || '',
 					lastName: customer.lastName || '',
+					name: customer.firstName + ' ' + customer.lastName,
+					dealerName: customer.dealer && Object.keys(customer.dealer).length > 0 ? customer['dealer'].firstName + ' ' + customer['dealer'].lastName : 'None',
+					country: customer.country || '',
+					city: customer.city || '',
+					email: customer.email || '',
+					phone: customer.phone || '',
+					address1: customer.address1 || '',
+					address2: customer.address2 || '',
+					created: customer.added || ''
+				};
+			});
+
+		return convertedData;
+	}
+
+
+		/**
+   * @public
+   * @method dealerRegisteredCustomerList convert api data from API to general format based on config server
+   * @param {Object} data response objectc from alpha
+   * @returns {Object}  converted data
+   */
+  async dealerRegisteredCustomerList(resData) {
+	const data = resData.data || [];
+
+	const convertedData =
+		data.length > 0 &&
+		data.map((customer) => {
+			return {
+				...customer,
+				id: customer._id || '',
+				key: customer._id || '',
+				firstName: customer.firstName || '',
+				lastName: customer.lastName || '',
+				name: customer.firstName + ' ' + customer.lastName,
+				dealerName: customer.dealer && Object.keys(customer.dealer).length > 0 ? customer['dealer'].firstName + ' ' + customer['dealer'].lastName : 'None',
+				country: customer.country || '',
+				city: customer.city || '',
+				email: customer.email || '',
+				phone: customer.phone || '',
+				address1: customer.address1 || '',
+				address2: customer.address2 || '',
+				created: customer.added || ''
+			};
+		});
+
+	return convertedData;
+}
+
+
+
+
+
+
+
+
+		/**
+   * @public
+   * @method dealerList convert api data from API to general format based on config server
+   * @param {Object} data response objectc from alpha
+   * @returns {Object}  converted data
+   */
+	async dealerList(resData) {
+		const data = resData.data || [];
+
+		const convertedData =
+			data.length > 0 &&
+			data.map((customer) => {
+				return {
+					...customer,
+					id: customer._id || '',
+					key: customer._id || '',
+					code: customer.code || '',
+					commission: customer.commission || '',
+					depositMoney: customer.depositMoney || '',
 					name: customer.firstName + ' ' + customer.lastName,
 					country: customer.country || '',
 					city: customer.city || '',
@@ -1225,6 +1418,74 @@ async updateSiteLogoAndIcon(resData) {
 			});
 
 		return convertedData;
+	}
+
+
+	
+
+		/**
+   * @public
+   * @method dealerListByArea convert api data from API to general format based on config server
+   * @param {Object} data response objectc from alpha
+   * @returns {Object}  converted data
+   */
+  async dealerListByArea(resData) {
+	const data = resData.data || [];
+
+	const convertedData =
+		data.length > 0 &&
+		data.map((customer) => {
+			return {
+				...customer,
+				id: customer._id || '',
+				key: customer._id || '',
+				code: customer.code || '',
+				commission: customer.commission || '',
+				depositMoney: customer.depositMoney || '',
+				name: customer.firstName + ' ' + customer.lastName,
+				country: customer.country || '',
+				city: customer.city || '',
+				email: customer.email || '',
+				phone: customer.phone || '',
+				address1: customer.address1 || '',
+				address2: customer.address2 || '',
+				created: customer.added || ''
+			};
+		});
+
+	return convertedData;
+}
+
+
+	
+
+
+			/**
+	 * @public
+	 * @method dealerDetail convert api data from API to general format based on config server
+	 * @param {Object} data response objectc from wc
+	 * @returns {Object}  converted data
+	 */
+	async dealerDetail(resData) {
+		if(resData){
+			return {
+				...resData,
+				id: resData._id || '',
+				key: resData._id || '',
+				code: resData.code || '',
+				commission: resData.commission || '',
+				depositMoney: resData.depositMoney || '',
+				name: resData.firstName + ' ' + resData.lastName,
+				country: resData.country || '',
+				city: resData.city || '',
+				email: resData.email || '',
+				phone: resData.phone || '',
+				address1: resData.address1 || '',
+				address2: resData.address2 || '',
+				created: resData.added || ''
+			}
+		}
+		else return resData; 
 	}
 
 
@@ -1554,14 +1815,13 @@ async updateSiteLogoAndIcon(resData) {
 	async couponDetail(data) {
 		const convertedData =
 			(Object.keys(data).length > 0 && {
+				...data,
 				id: data._id || '',
 				name: data.name && data.name,
 				code: data.code,
 				minimumOrder: data.minimumOrder,
 				maximumOrder: data.maximumOrder,
-				orderedProducts: data.orderedProducts | [],
 				freeProducts: data.freeProducts || [],
-				orderedProductsCount: data.orderedProducts && data.orderedProducts.length,
 				freeProductsCount: data.freeProducts && data.orderedProducts.length,
 				amountType: data.amountType,
 				amount: data.amount,
@@ -1758,7 +2018,28 @@ async updateSiteLogoAndIcon(resData) {
 		return convertedData;
 	}
 
+
+		/**
+* @public
+* @method updateCoupon convert api data from API to general format based on config server
+* @param {Object} data response objectc from wc
+* @returns {Object}  converted data
+*/
+async updateCoupon(data) {
+	const convertedData = data;
+
+	if (data && data.updated) {
+		return {
+			...data.updated,
+			status: 'ok'
+		};
+	}
+
+	return convertedData;
+}
 	
+	
+
 	/**
 * @public
 * @method categoryUpdateIcon convert api data from API to general format based on config server
@@ -1818,6 +2099,52 @@ async categoryUpdateIcon(data) {
 		return convertedData;
 	}
 
+
+		/**
+   * @public
+   * @method updateDealerArea convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+  async updateDealerArea(data) {
+	const convertedData = data;
+
+	if (data && data.updated) {
+		return {
+			...data.updated,
+			status: 'ok'
+		};
+	}
+
+	return convertedData;
+}
+
+
+
+		/**
+   * @public
+   * @method updateDealer convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+  async updateDealer(data) {
+	const convertedData = data;
+
+	if (data && data.updated) {
+		return {
+			...data.updated,
+			status: 'ok'
+		};
+	}
+
+	return convertedData;
+}
+
+
+
+
+	
+
 	/**
 * @public
 * @method updatePage convert api data from API to general format based on config server
@@ -1855,6 +2182,28 @@ async categoryUpdateIcon(data) {
 
 		return convertedData;
 	}
+
+
+		/**
+   * @public
+   * @method updateBundle convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+  async updateBundle(data) {
+	const convertedData = data;
+
+	if (data && Object.keys(data).length > 0) {
+		return {
+			...data,
+			status: 'ok'
+		};
+	}
+
+	return convertedData;
+}
+
+
 
 	/**
    * @public
@@ -1930,6 +2279,23 @@ async categoryUpdateIcon(data) {
 		return convertedData;
 	}
 
+
+		/**
+   * @public
+   * @method deletePost convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+  async deletePost(data) {
+	const convertedData = data;
+	if (data && data.success) {
+		return {
+			status: 'ok'
+		};
+	}
+
+	return convertedData;
+}
 
 
 	/**
@@ -2055,6 +2421,76 @@ async categoryUpdateIcon(data) {
 		return convertedData;
 	}
 
+
+	
+	/**
+   * @public
+   * @method addDealerArea convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+  async addDealerArea(data) {
+	const convertedData = data;
+	if (data && data[0]) {
+		return {
+			...data[0],
+			status: 'ok'
+		};
+	}
+
+	return convertedData;
+}
+
+
+	
+	/**
+   * @public
+   * @method dealerAreaList convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+  async dealerAreaList(resData) {
+	const data = resData || [];
+
+		const convertedData =
+			data.length > 0 &&
+			data.map((tag) => {
+				return {
+					...tag,
+					id: tag._id || '',
+					key: tag._id || '',
+					name: tag.name && tag.name,
+				};
+			});
+
+		return convertedData;
+}
+
+
+
+	
+	/**
+   * @public
+   * @method addDealer convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+  async addDealer(data) {
+	const convertedData = data;
+	if (data && data.inserted) {
+		return {
+			...data.inserted[0],
+			status: 'ok'
+		};
+	}
+
+	return convertedData;
+}
+
+
+
+
+
 	/**
    * @public
    * @method addCategory convert api data from API to general format based on config server
@@ -2126,7 +2562,9 @@ async categoryUpdateIcon(data) {
 	if (data && data.inserted) {
 		return {
 			...data.inserted[0],
-			status: 'ok'
+			status: 'ok',
+			cover: data.inserted[0].cover ? `${config['baseURL']}${data.inserted[0].cover ? data.inserted[0].cover.thumbnail : ''}` : '',
+			
 		};
 	}
 	return convertedData;
@@ -2304,6 +2742,43 @@ async categoryUpdateIcon(data) {
 
 		return convertedData;
 	}
+
+		/**
+   * @public
+   * @method deleteDealerArea convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+  async deleteDealerArea(data) {
+	const convertedData = data;
+	if (data && data.success) {
+		return {
+			status: 'ok'
+		};
+	}
+
+	return convertedData;
+}
+
+		/**
+   * @public
+   * @method deleteDealer convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+  async deleteDealer(data) {
+	const convertedData = data;
+	if (data && data.success) {
+		return {
+			status: 'ok'
+		};
+	}
+
+	return convertedData;
+}
+
+
+
 
 
 
@@ -2904,6 +3379,42 @@ async adminUpdatePassword(data) {
 		return formatedData;
 	}
 
+
+	/**
+   * @public
+   * @method getAutoEmailConfiguration convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+  async getAutoEmailConfiguration(data) {
+
+	const formatedData = {
+		...data
+	};
+
+	return formatedData;
+}
+
+
+	/**
+   * @public
+   * @method getEmailDetails convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+  async getEmailDetails(data) {
+
+	const formatedData = {
+		...data
+	};
+
+	return formatedData;
+}
+
+
+
+
+
 	/**
    * @public
    * @method currentCustomerData convert api data from API to general format based on config server
@@ -2953,6 +3464,22 @@ async adminUpdatePassword(data) {
 
 		return data;
 	}
+
+		/**
+   * @public
+   * @method configureAutoEmail convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+  async configureAutoEmail(data) {
+	if (data['success']) {
+		return {
+			status: 'ok'
+		};
+	}
+	return data;
+	}
+
 
 	/**
    * @public
@@ -3021,7 +3548,10 @@ async adminUpdatePassword(data) {
 							paymentMethod: item['payment'] && item['payment']['paymentMethod'],
 							paymentStatus: item['payment'] && item['payment']['status'],
 							payment: item['payment'],
-							customerId: item['customer'] ? item['customer']['_id'] : ''
+							customerId: item['customer'] ? item['customer']['_id'] : '',
+							deliveryName: item.deliveryRegion 
+							&& Object.keys(item.deliveryRegion).length > 0 ? `${item.deliveryRegion['name']} (${item.deliveryRegion['pickUpLocation']})`
+							: ''
 
 					};
 				})) ||
@@ -3036,6 +3566,54 @@ async adminUpdatePassword(data) {
 	}
 
 
+
+		/**
+* @public
+* @method dealerOrderList convert api data from API to general format based on config server
+* @param {Object} data response objectc from wc
+* @returns {Object}  converted data
+*/
+async dealerOrderList(resData) {
+	const data = resData.data || [];
+	// const isNext = resData.page.next;
+
+	console.log('orderListDAta',data);
+
+	let convertedData =
+		(data.length > 0 &&
+			data.map((item) => {
+				return {
+						...item,
+						id: item.id || item._id,
+						shippingAddress: item.billingAddress,
+						shortCode: item.shortCode || '',
+						name: item.shippingAddress && item.shippingAddress['firstName'] && item.shippingAddress['firstName'] + " " +
+						 item.shippingAddress && item.shippingAddress['lastName'] && item.shippingAddress['lastName'],
+						country: item.shippingAddress && item.shippingAddress['country'] && item.shippingAddress['country'],
+						city: item.shippingAddress && item.shippingAddress['city'] && item.shippingAddress['city'],
+						status: typeof item.status === 'string' ? item.status: item.status && Object.keys(item.status).length > 0 ?  item.status['name'] : 'pending' ,
+						total: item.totalPrice,
+						products: item.products,
+						date_created: item.added,
+						paymentMethod: item['payment'] && item['payment']['paymentMethod'],
+						paymentStatus: item['payment'] && item['payment']['status'],
+						payment: item['payment'],
+						customerId: item['customer'] ? item['customer']['_id'] : ''
+
+				};
+			})) ||
+		[];
+
+	// convertedData = {
+	// 	data: convertedData,
+	// 	isNext
+	// };
+
+	return convertedData;
+}
+
+
+
 		/**
 		* @public
 		* @method orderListForCustomer convert api data from API to general format based on config server
@@ -3043,7 +3621,7 @@ async adminUpdatePassword(data) {
 		* @returns {Object}  converted data
 		*/
 		async orderListForCustomer(resData) {
-			const data = resData.orders ? resData.orders.data : [];
+			const data = resData.data || [];
 			// const isNext = resData.page.next;
 
 			let convertedData =
@@ -3051,19 +3629,23 @@ async adminUpdatePassword(data) {
 					data.map((item) => {
 						return {
 							id: item.id || item._id,
+							shortCode: item.shortCode || '',
 							shippingAddress: item.billingAddress,
+							status: typeof item.status === 'string' ? item.status: item.status && Object.keys(item.status).length > 0 ?  item.status['name'] : 'pending' ,
 							name: item.shippingAddress && item.shippingAddress['firstName'] && item.shippingAddress['firstName'] + " " +
 							 item.shippingAddress && item.shippingAddress['lastName'] && item.shippingAddress['lastName'],
 							country: item.shippingAddress && item.shippingAddress['country'] && item.shippingAddress['country'],
 							city: item.shippingAddress && item.shippingAddress['city'] && item.shippingAddress['city'],
-							status: item.status,
 							total: item.totalPrice,
 							products: item.products,
 							date_created: item.added,
 							paymentMethod: item['payment'] && item['payment']['paymentMethod'],
 							paymentStatus: item['payment'] && item['payment']['status'],
 							payment: item['payment'],
-							customerId: item['customer'] ? item['customer']['_id'] : ''
+							customerId: item['customer'] ? item['customer']['_id'] : '',
+							deliveryName: item.deliveryRegion 
+							&& Object.keys(item.deliveryRegion).length > 0 ? `${item.deliveryRegion['name']} (${item.deliveryRegion['pickUpLocation']})`
+							: ''
 
 						};
 					})) ||
@@ -3328,10 +3910,12 @@ async adminUpdatePassword(data) {
    * @returns {Object}  converted data
    */
 	async addCoupon(data) {
-		if (data && data.inserted) {
+		if (data && data[0]) {
 			return {
 				status: 'ok',
-				...data.inserted[0]
+				...data[0],
+				cover: data[0].cover ? `${config['baseURL']}${data[0].cover ? data[0].cover.thumbnail : ''}` : '',
+
 			}
 		}
 		return {};
@@ -3347,10 +3931,15 @@ async adminUpdatePassword(data) {
    * @returns {Object}  converted data
    */
   async addBundle(data) {
-	if (data && data.inserted) {
+	if (data && data[0]) {
 		return {
 			status: 'ok',
-			...data.inserted[0]
+			...data[0],
+			price: parseInt(data[0].price['offer']) > parseInt(data[0].price['regular'])
+							? data[0].price['offer']
+							: data[0].price['regular'],
+			cover: data[0].cover ? `${config['baseURL']}${data[0].cover ? data[0].cover.thumbnail : ''}` : '',
+
 		}
 	}
 	return {};

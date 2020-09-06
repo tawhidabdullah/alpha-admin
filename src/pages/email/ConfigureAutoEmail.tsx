@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
@@ -70,32 +70,66 @@ const ConfigureAutoEmail = ({  }: Props) => {
     const [getAutoEmailConfigurationState, handleGetAutoEmailConfigurationFetch] = useHandleFetch({}, 'getAutoEmailConfiguration');
     const [configureAutoEmailConfigurationState, handleAutoEmailConfigurationFetch] = useHandleFetch({}, 'configureAutoEmail');
  
-    const [isnewCustomerAdmin,setnewCustomerAdmin] = useState(true);
-    const [isnewCustomerCustomer,setnewCustomerCustomer] = useState(true);
-    const [isorderAdmin,setorderAdmin] = useState(true);
-    const [isorderStatusAdmin,setorderStatusAdmin] = useState(true);
-    const [isorderCustomer,setorderCustomer] = useState(true);
-    const [isorderStatusCustomer,setIsorderStatusCustomer] = useState(true);
+    
+    const [isnewCustomerAdmin,setnewCustomerAdmin] = useState(false);
+    const [isnewCustomerCustomer,setnewCustomerCustomer] = useState(false);
+    const [isorderAdmin,setorderAdmin] = useState(false);
+    const [isorderStatusAdmin,setorderStatusAdmin] = useState(false);
+    const [isorderCustomer,setorderCustomer] = useState(false);
+    const [isorderStatusCustomer,setIsorderStatusCustomer] = useState(false);
+    
 
     const [newcustomermodal, setnewcustomermodal] = useState(false);
     const [ordermodal, setordermodal] = useState(false);
     const [orderStatusmodal, setorderStatusmodal] = useState(false);
+    const [autoEmailData,setAutoEmailData] = useState({}); 
 
+
+    console.log('isnewCustomerAdmin',isnewCustomerAdmin); 
+    console.log('isnewCustomerCustomer',isnewCustomerCustomer);
+    
+    
+    useEffect(()=>{
+
+        const getAutoEmailConfiguration = async () => {
+            const res = await handleGetAutoEmailConfigurationFetch({})
+            //@ts-ignore
+            if(res){
+                setAutoEmailData(autoEmailData); 
+                setnewCustomerAdmin(res['newCustomer']['admin']); 
+                setnewCustomerCustomer(res['newCustomer']['user']); 
+                setIsorderStatusCustomer(res['orderStatus']['user']); 
+                setorderStatusAdmin(res['orderStatus']['admin']); 
+                setorderAdmin(res['order']['admin']); 
+                setorderCustomer(res['order']['user']); 
+            }
+        }; 
+        getAutoEmailConfiguration();
+    },[]); 
+
+
+    console.log('getAutoEmailConfigurationState',getAutoEmailConfigurationState); 
 
     const handleUpdateAutoEmail = async () => {
         const updateAutoEmailRes = await handleAutoEmailConfigurationFetch({
             body: {
-                "newCustomerAdmin": isnewCustomerAdmin,
-                "newCustomerCustomer": isnewCustomerCustomer,
-                "orderAdmin": isorderAdmin, 
-                "orderCustomer": isorderStatusAdmin, 
-                "orderStatusAdmin": isorderCustomer, 
-                "orderStatusCustomer": isorderStatusCustomer
+                newCustomer: {
+                    admin: isnewCustomerAdmin,
+                    user: isnewCustomerCustomer
+                },
+                order: {
+                    admin: isorderAdmin,
+                    user: isorderCustomer
+                },
+                orderStatus : {
+                    "admin": isorderStatusAdmin,
+                    "user": isorderStatusCustomer
+                },
             },
         });
 
         // @ts-ignore
-        if (addTagRes && addTagRes.status === 'ok') {
+        if (updateAutoEmailRes && updateAutoEmailRes.status === 'ok') {
             openSuccessNotification('Auto email Configuration Updated!');
         }
         else {
@@ -103,15 +137,6 @@ const ConfigureAutoEmail = ({  }: Props) => {
         }
 
     };
-
-
-
-    const getisSubmitButtonDisabled = (values, isValid) => {
-        if (!values.name || !isValid) {
-            return true;
-        }
-        return false;
-    }
 
 
     return (
@@ -183,7 +208,7 @@ const ConfigureAutoEmail = ({  }: Props) => {
 
 											</div>
 
-</div>
+                                        </div>
 
                                     <div>
 
@@ -191,7 +216,7 @@ const ConfigureAutoEmail = ({  }: Props) => {
                                     <div style={{
                                                     display:'flex',
                                                     alignItems:"center",
-                                            marginTop:'30px'
+                                                    marginTop:'30px'
                                                 }}>
                                                 <div style={{
                                                     marginRight:'15px',
@@ -212,7 +237,7 @@ const ConfigureAutoEmail = ({  }: Props) => {
                                                 </div>
 
 
-                                    <div style={{
+                                     <div style={{
                                                 marginTop:"5px"
                                             }}></div>
 

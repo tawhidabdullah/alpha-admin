@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {withRouter, useHistory} from 'react-router-dom';
-import { Table, Badge, Menu, Dropdown, Space, Tag,Button, Input,Tooltip, Modal, notification, Popconfirm, Select } from 'antd';
+import { Table, Badge, Menu, Dropdown, Space, Tag,Button, 
+  Input, notification, Popconfirm, Select, DatePicker } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined,CheckOutlined,CheckCircleOutlined,DownOutlined  } from '@ant-design/icons';
 
 
@@ -17,9 +18,11 @@ import Empty from "../../components/Empty";
 
 // import lib 
 import Moment from "react-moment";
+import moment from 'moment'; 
 
 const { Column, ColumnGroup } = Table;
 const { Search } = Input;
+const { RangePicker } = DatePicker;
 
 
 
@@ -57,6 +60,9 @@ const MyTable = ({data,setOrderList}: myTableProps) => {
     const [activeCategoryForEdit,setactiveCategoryForEdit] = useState(false); 
     const [deleteOrderState, handleDeleteOrderFetch] = useHandleFetch({}, 'deleteOrder');
     const [updateOrderStatusState, handleUpdateOrderStatusFetch] = useHandleFetch({}, 'updateOrderStatus');
+
+
+
 
     const history = useHistory();
 
@@ -126,7 +132,7 @@ const MyTable = ({data,setOrderList}: myTableProps) => {
           (
             <Menu>
 
-<Menu.Item
+            <Menu.Item
                 onClick={() => handleUpdateOrderStatus(record,id,'pending')}
                 key="1" icon={<CheckOutlined />}>
                 Pending
@@ -152,8 +158,6 @@ const MyTable = ({data,setOrderList}: myTableProps) => {
           )
         )
       };
-
-
 
 
     
@@ -208,7 +212,6 @@ const MyTable = ({data,setOrderList}: myTableProps) => {
           className='classnameofthecolumn'
           render={(text, record: any) => (
             <>
-
               <h4
                 onClick={() => {
                   // setvisible(true)
@@ -230,22 +233,18 @@ const MyTable = ({data,setOrderList}: myTableProps) => {
 
         />
 
-<Column
-           title="Country" 
-           dataIndex="country" 
+
+                
+
+        <Column
+           title="Delivery" 
+           dataIndex="deliveryName" 
            key="id" 
            className='classnameofthecolumn'
          
             />
 
 
-<Column
-           title="City" 
-           dataIndex="city" 
-           key="id" 
-           className='classnameofthecolumn'
-         
-            />
 
           <Column
            title="Created" 
@@ -262,9 +261,7 @@ const MyTable = ({data,setOrderList}: myTableProps) => {
                   color: '#555',
 
                 }}>
-                  <Moment  withTitle>
-                    {text}
-                  </Moment>
+                  {text && moment(text).format('MMMM Do YYYY, h:mm a')}
               </h4>
 
 
@@ -273,8 +270,16 @@ const MyTable = ({data,setOrderList}: myTableProps) => {
             />
 
 
+            <Column
+                title="Total Price" 
+                dataIndex="total" 
+                key="id" 
+                className='classnameofthecolumn'
+                />
+
+
           <Column
-          width={150}
+           align='right'
            title="Status" 
            dataIndex="status" 
            key="id" 
@@ -336,7 +341,7 @@ const MyTable = ({data,setOrderList}: myTableProps) => {
             </>
           )}
         /> */}
-        <Column
+        {/* <Column
         
         className='classnameofthecolumn'
           title=""
@@ -356,44 +361,23 @@ const MyTable = ({data,setOrderList}: myTableProps) => {
 
                </Tooltip>
                </a>
-
-
-
-{/*    
-               <Popconfirm 
-               
-               onConfirm={() => handleDeleteRegion(record.id)}
-               title="Are you sure？" okText="Yes" cancelText="No">
-           
-           <span 
-             className='iconSize iconSize-danger'
-             > 
-             <DeleteOutlined/>
-            </span>
-       
-           </Popconfirm> */}
-
-
-             
-             
             </Space>
           )}
-        />
+        /> */}
       </Table>
 
     
 
-    {/* {activeCategoryForEdit &&   <QuickEdit 
+    {activeCategoryForEdit &&   <QuickEdit 
     setvisible={setvisible}
     visible={visible}
     customer={activeCategoryForEdit}
     orderList={data}
     setOrderList={setOrderList}
-
     />
 
     }
-     */}
+    
     
     </>
     )
@@ -411,6 +395,24 @@ const CustomerList = ({history}: Props) => {
     const [orderState, handleRegionListFetch] = useHandleFetch({}, 'orderList');
     const [orderStatusFilterValue,setorderStatusFilterValue] = useState(''); 
 
+    
+    const [startDate,setStartDate] = useState('');
+    const [endDate,setEndDate] = useState('');
+
+      
+
+    const handleStartEndDateRangeDate = (e) => {
+      console.log('dateOrder',moment(e[0]).format());
+      console.log('dateOff',moment(e[1]).format());
+      const startDate = new Date(moment(e[0]).format()); 
+      const endDate = new Date(moment(e[1]).format()); 
+      // @ts-ignore
+      setStartDate(startDate);
+      // @ts-ignore
+      setEndDate(endDate);
+  }; 
+
+
     console.log('orderState',orderState);
   
     useEffect(()=>{
@@ -422,6 +424,8 @@ const CustomerList = ({history}: Props) => {
             sortOrderValue: '-1',
             statusValue: orderStatusFilterValue,
             limitNumber: 500000,
+            startDateValue: startDate,
+            endDateValue: endDate
           }
           }
        }); 
@@ -429,7 +433,7 @@ const CustomerList = ({history}: Props) => {
        setOrderList(regions); 
      }
      setOrders(); 
-    },[orderStatusFilterValue])
+    },[orderStatusFilterValue,startDate,endDate])
 
   const [addNewCategoryVisible,setAddNewCategoryVisible] = useState(false);   
 
@@ -485,10 +489,44 @@ const CustomerList = ({history}: Props) => {
           </div>
 
 
-    <div>
+         <div>
+
+            <Button
+          // type="primary"
+          className='btnPrimaryClassNameoutline'
+          icon={<PlusOutlined />}
+          onClick={() => history.push('/admin/order/new')}
+        >
+        Add New
+            
+            </Button>
+            </div>
+            </div>
+
+         
+            <div
+              style={{
+                marginTop: '30px'
+              }}
+            className='categoryListContainer__header'>
+           <div></div>
+
+      <div>
+             
+                  <RangePicker
+                    style={{
+                      width: 270,
+                      color: '#3fa6f9'
+                    }}
+                    onChange={handleStartEndDateRangeDate}
+                    picker={'date'} 
+                    bordered={false}
+                    />
+
+
 
           <Select
-					style={{ borderRadius: '15px', color: '#3fa6f9', marginRight: '15px' }}
+					style={{ borderRadius: '15px', color: '#3fa6f9', }}
 					placeholder='Select status'
 					optionFilterProp='children'
 					onChange={onOrderStatusFilterChange}
@@ -499,20 +537,14 @@ const CustomerList = ({history}: Props) => {
 							return <Option value={option.value}>{option.name}</Option>;
 						})}
 				</Select>
+        </div>
 
-            <Button
-          // type="primary"
-          className='btnPrimaryClassNameoutline'
-          icon={<PlusOutlined />}
-          onClick={() => history.push('/order/new')}
-        >
-        Add New
-            
-            </Button>
-            </div>
+       
             </div>
 
-            <div className='categoryListContainer__afterHeader'>
+            <div 
+
+            className='categoryListContainer__afterHeader'>
             {/* <Search
       placeholder="search categories.."
       size="large"

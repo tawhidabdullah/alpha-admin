@@ -194,11 +194,10 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, tagList,
                             onOk={(e: any) => handleSubmit(e)}
                             onCancel={handleCancel}
                             okText='Create'
-                            okButtonProps={{
-                                loading: isSubmitting,
-                                htmlType: "submit",
-                                disabled: getisSubmitButtonDisabled(values, isValid)
-                            }}
+							okButtonProps={{
+								loading: isSubmitting,
+								htmlType: "submit",
+							}}
                         >
                   			<Input
 								label='Name'

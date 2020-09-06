@@ -7,6 +7,7 @@ import DateOrderReport from "./DateOrderReport";
 import HourOrderReport from "./HourOrderReport";
 import MonthOrderReport from "./MonthOrderReport";
 import YearOrderReport from "./YearOrderReport";
+import DeliveryRegionReport from "./DeliveryRegionReport";
 
 // import lib 
 import { message, Tooltip, Modal, Tabs, Empty, Badge } from 'antd';
@@ -82,6 +83,7 @@ const Overview = (props: Props) => {
 	return (
 		<div className='overviewContainer'>
 			<div className="overviewContainer__body">
+				<DeliveryRegionReport/>
 				<ThisWeekOrderReport />
 				<ThisMonthOrderReport />
 			</div>

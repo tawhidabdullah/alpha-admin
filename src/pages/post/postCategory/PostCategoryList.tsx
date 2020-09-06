@@ -135,25 +135,25 @@ const MyTable = ({data, setcategoryList, history}: myTableProps) => {
             />
 
 
-          <Column
+          {/* <Column
            title="Description" 
            dataIndex="description" 
            key="id" 
            className='classnameofthecolumn'
          
-            />
+            /> */}
 
 
-         <Column
+         {/* <Column
            title="Sub Cateogory" 
            dataIndex="subCount" 
            key="id" 
            className='classnameofthecolumn'
          
-            />
+            /> */}
 
         <Column
-           title="Product" 
+           title="Recipes" 
            dataIndex="productCount" 
            key="id" 
            className='classnameofthecolumn'

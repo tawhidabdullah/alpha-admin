@@ -14,6 +14,8 @@ import {
 } from '@ant-design/icons';
 
 
+
+
 const { Search } = Input;
 
 
@@ -62,24 +64,24 @@ const Categories = ({ setcategoryIds, categoryOptions, setCategoryOptions }: Pro
 		if (e.target.value === '') {
 			if (categoryState.data && categoryState.data.length > 0) {
 				// @ts-ignore
-				const categoryNames = categoryState.data.map((cat) => cat.name);
+				const categoryNames = categoryState.data.map((cat) => {
+					return {
+						...cat
+					}
+				});
 				setoptions(categoryNames);
 			}
 		} else {
 			const newOptions =
 				options.length > 0
 					? options.filter((option) => {
-						return option.toLowerCase().includes(searchValue.toLowerCase());
+						return option && option.title.toLowerCase().includes(searchValue.toLowerCase());
 					})
 					: [];
 
 			setoptions(newOptions);
 		}
 	};
-
-	console.log('categoryState', categoryState);
-	console.log('optionsCat', options);
-
 
 	return (
 		<div className='addProduct__categoryBoxContainer'>

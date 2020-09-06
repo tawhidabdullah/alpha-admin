@@ -12,7 +12,7 @@ import { CouponList, CouponDetail } from '../../pages/coupon';
 import { CustomerList, CustomerDetail } from '../../pages/customer';
 import { PagesList, AddNewPage } from '../../pages/pages';
 import { AttributeList } from '../../pages/attribute';
-import { OrderList, AddNewOrder, OrderDetail,OrderAnalytics } from '../../pages/order';
+import { OrderList, AddNewOrder, OrderDetail,OrderAnalytics, ConfigOrderStatus } from '../../pages/order';
 import { Component, ManageThemes, Image, Invoice, SiteInfo } from '../../pages/settings';
 import { Delivery } from '../../pages/delivery';
 import Sms from '../../pages/sms';
@@ -22,6 +22,8 @@ import {AdminList, AdminDetail} from '../../pages/admins';
 import {PostList, PostDetail } from '../../pages/post';
 import {StaffList, StaffDetail} from '../../pages/staff';
 import {ExpenseList, ExpenseDetail} from '../../pages/expense';
+import {DealerList, DealerDetail} from '../../pages/dealer';
+import {AreaDetail, AreaList} from '../../pages/dealer/Area';
 import {PostTagList, PostCategoryList, NewPostCategoryDetail, NewPostTagDetail} from '../../pages/post';
 
 
@@ -166,11 +168,34 @@ const ContentComponent = (props: Props) => {
                 <Route path='/admin/order/overview' exact>
                     <OrderAnalytics />
                 </Route>
+                <Route path='/admin/order/config' exact>
+                    <ConfigOrderStatus />
+                </Route>
+                
 
                 <Route path='/admin/order/:id' exact>
                     <OrderDetail />
                 </Route>
                
+                <Route path='/admin/dealer' exact>
+                    <DealerList />
+                </Route>
+              
+
+                <Route path='/admin/dealer/area' exact>
+                    <AreaList />
+                </Route>
+
+                
+                <Route path='/admin/dealer/area/:id' exact>
+                    <AreaDetail />
+                </Route>
+
+                <Route path='/admin/dealer/:id' exact>
+                    <DealerDetail />
+                </Route>
+          
+
                 <Route path='/admin/staff' exact>
                     <StaffList />
                 </Route>

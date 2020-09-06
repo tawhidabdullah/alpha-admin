@@ -291,7 +291,8 @@ const ProductList = ({ history }: Props) => {
         urlOptions:{
           params: {
             sortItem: 'added',
-            sortOrderValue: '-1'
+            sortOrderValue: '-1',
+            productType: 'product'
           }
         }
       });

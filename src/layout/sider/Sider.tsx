@@ -29,11 +29,7 @@ import {
     FireOutlined,
     MailTwoTone,
     UserAddOutlined,
-    FileExcelOutlined,
-    CalculatorOutlined,
-    CustomerServiceOutlined,
-    MoneyCollectOutlined,
-    UsergroupAddOutlined
+    GlobalOutlined, 
 } from '@ant-design/icons';
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -152,12 +148,11 @@ const SiderComponent = (props: any) => {
                     <Link to='/admin/delivery'>Delivery</Link>
                 </Menu.Item>
 
-                
+{/*                 
                 <SubMenu
                     key='sub33'
                     icon={<CalculatorOutlined />}
                     title='Accounting'
-                // onTitleClick={() => props.history.push('/product')}
                 >
                     <Menu.Item
                         icon={<UsergroupAddOutlined />}
@@ -175,7 +170,7 @@ const SiderComponent = (props: any) => {
                         </Link>
                     </Menu.Item>
 
-                </SubMenu>
+                </SubMenu> */}
 
 
 
@@ -191,9 +186,36 @@ const SiderComponent = (props: any) => {
                     <Menu.Item key='12'>
                         <Link to='/admin/order/new'>Add Order</Link>
                     </Menu.Item>
+                    <Menu.Item key='12'>
+                        <Link to='/admin/order/config'>
+                            Configure order status
+                        </Link>
+                    </Menu.Item>
                 </SubMenu>
 
-                <Menu.Item key='13' icon={<TeamOutlined />}>
+                <SubMenu
+                    key='sub5553'
+                    icon={<TeamOutlined />}
+                    title='Dealer'
+                // onTitleClick={() => props.history.push('/product')}
+                >
+                    <Menu.Item
+                        icon={<TeamOutlined />}
+                        key='666655'>
+                        <Link to='/admin/dealer'>List dealer</Link>
+                    </Menu.Item>
+
+                    <Menu.Item
+                        icon={<GlobalOutlined />}
+                        key='22534522444'>
+                        <Link to='/admin/dealer/area'>Dealer Areas</Link>
+                    </Menu.Item>
+
+
+                </SubMenu>
+
+
+                <Menu.Item key='13' icon={<UserOutlined />}>
                     <Link to='/admin/customer'>Customer</Link>
                 </Menu.Item>
 

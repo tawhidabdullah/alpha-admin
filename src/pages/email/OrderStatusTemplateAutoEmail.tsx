@@ -21,6 +21,7 @@ import {
 } from '@ant-design/icons';
 
 
+
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
@@ -34,7 +35,7 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 
 const validationSchema = Yup.object().shape({
-    name: Yup.string().label('Name').required('Name is required').min(3, 'Name must have at least 3 characters'),
+    // name: Yup.string().label('Name').required('Name is required').min(3, 'Name must have at least 3 characters'),
 });
 
 
@@ -76,9 +77,7 @@ interface Props {
 const AddNewBrand = ({ visible, setVisible }: Props) => {
 
     const [autoEmailTemplate, handleAutoEmailTemplateFetch] = useHandleFetch({}, 'configureAutoEmailTemplate');
-    const [getConfigureAutoEmailTemplate, handleGetConfigureAutoEmailTemplateFetch] = useHandleFetch({}, 'getConfigureAutoEmailTemplate');
-    
-    
+
     const [customer, setcustomer] = useState({
         subject:'',
         body:'',
@@ -88,6 +87,8 @@ const AddNewBrand = ({ visible, setVisible }: Props) => {
         subject:'',
         body:'',
     }); 
+
+
 
     const handleSubmit = async () => {
         const getConfigurationAutoEmailTemplateRes = await handleAutoEmailTemplateFetch({
@@ -139,7 +140,7 @@ const AddNewBrand = ({ visible, setVisible }: Props) => {
 
     return (
         <Modal
-        width={'80vw'}
+        width={'70vw'}
         style={{
             top: '40px'
         }}
@@ -157,6 +158,7 @@ const AddNewBrand = ({ visible, setVisible }: Props) => {
             margin: '10px',
             padding: '10px'
         }}
+        footer={false}
     >
      <Tabs defaultActiveKey="1" >
      <TabPane tab="Customer" key="1">
@@ -206,6 +208,22 @@ const AddNewBrand = ({ visible, setVisible }: Props) => {
             console.log('Focus.', editor);
         }}
         />
+
+        
+                                    <div style={{
+                                          display:'block',
+                                          marginBottom:'20px',
+                                          marginTop:'20px',
+                                      }}>   
+                                      <Button
+                                        onClick={handleSubmit}
+                                        loading={autoEmailTemplate.isLoading}
+                                        className='btnPrimaryClassNameoutline'
+                                        >
+                                        Update Template
+                                        </Button>      
+                                    </div>
+
             </div>
 
             <div style={{
@@ -256,51 +274,122 @@ const AddNewBrand = ({ visible, setVisible }: Props) => {
      </TabPane>
 
     <TabPane tab="Admin" key="2">
-    <Input
-            label='Subject'
-            value={admin.subject}
-            name='subject'
-            onChange={(e:any) => {
-                setadmin({
-                    ...admin,
-                    subject: e.target.value
-                })
-            }}
-        />
 
-<h3 className='inputFieldLabel'>
-	Body
-</h3>
+                    <div style={{
+                        display: 'flex',
+                
+                    }}>
+
+                        <div style={{
+                            width: '70%'
+                        }}>
+   <Input
+                            label='Subject'
+                            value={admin.subject}
+                            name='subject'
+                            onChange={(e:any) => {
+                                setadmin({
+                                    ...admin,
+                                    subject: e.target.value
+                                })
+                            }}
+                        />
+
+                        <h3 className='inputFieldLabel'>
+                            Body
+                        </h3>
 
 
-<CKEditor
-editor={ClassicEditor}
-data={admin.body}
-onInit={editor => {
-    // You can store the "editor" and use when it is needed.
-    console.log('Editor is ready to use!', editor);
-}}
-onChange={(event, editor) => {
-    const data = editor.getData();
-    setadmin({
-        ...admin,
-        body: data
-    })
-}}
-onBlur={(event, editor) => {
-    console.log('Blur.', editor);
-}}
-onFocus={(event, editor) => {
-    console.log('Focus.', editor);
-}}
-/>
+                                <CKEditor
+                                editor={ClassicEditor}
+                                data={admin.body}
+                                onInit={editor => {
+                                    // You can store the "editor" and use when it is needed.
+                                    console.log('Editor is ready to use!', editor);
+                                }}
+                                onChange={(event, editor) => {
+                                    const data = editor.getData();
+                                    setadmin({
+                                        ...admin,
+                                        body: data
+                                    })
+                                }}
+                                onBlur={(event, editor) => {
+                                    console.log('Blur.', editor);
+                                }}
+                                onFocus={(event, editor) => {
+                                    console.log('Focus.', editor);
+                                }}
+                                />
 
-     
-    </TabPane>
 
-</Tabs>
+                                    <div style={{
+                                          display:'block',
+                                          marginBottom:'20px',
+                                          marginTop:'20px',
+                                      }}>   
+                                      <Button
+                                        onClick={handleSubmit}
+                                        loading={autoEmailTemplate.isLoading}
+                                        className='btnPrimaryClassNameoutline'
+                                        >
+                                        Update Template
+                                        </Button>      
+                                    </div>
+                        </div>
 
-    </Modal>
+                        <div style={{
+                width:'30%',
+                overflowY:'auto',
+                background:"#f7f7f7",
+                marginLeft:'20px',
+                padding:'10px',
+                borderRadius:'8px'
+            }}>
+                <h4>Information Tags</h4>
+                <p style={{
+                    fontSize:'12px'
+                }}>
+                    Place the following tags to replace them with actual data while sending email
+                </p>
+                <ul style={{
+                    padding:'15px'
+                }}>
+                    <li style={{
+                        fontSize:'12px',
+                        marginBottom:'10px',
+                        lineHeight:1.7,
+                        fontWeight:500
+                    }}><b style={{
+                        borderRadius:"15px",
+                        backgroundColor:'#ddd',
+                        padding:"1px 10px"
+                    }}>&lt;?=order.added?&gt; :</b> Order time</li>
+                    <li
+                    style={{
+                        fontSize:'12px',
+                        lineHeight:2,
+                        fontWeight:500
+                    }}
+                    ><b
+                    style={{
+                        borderRadius:"15px",
+                        backgroundColor:'#ddd',
+                        padding:"1px 10px"
+                    }}
+                    >&lt;?shippingAddress.firstName?&gt; :</b> Shipping first Name</li>
+                </ul>
+
+        </div>
+
+
+                    </div>
+
+                 
+                                    </TabPane>
+                                    </Tabs>
+
+                                    </Modal>
     );
 };
 

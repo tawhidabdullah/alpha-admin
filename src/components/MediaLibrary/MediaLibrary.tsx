@@ -191,11 +191,12 @@ const MediaLibrary = ({
 			setisDoneOk(true);
 		}
 		else {
-			setmyThumbnailImage(selectedimages);
+			console.log('')
+			console.log('selectedimages,,,',selectedimages[0])
+			setmyImages(selectedimages && selectedimages[0] ? [selectedimages[0]] : []);
 			setisDoneOk(true);
 		}
 		setvisible(false);
-
 	};
 
 	const handleCancel = (e: any) => {

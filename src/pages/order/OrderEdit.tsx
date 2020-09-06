@@ -8,7 +8,6 @@ import { CheckCircleOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import Input from '../../components/Field/Input';
 import { useHandleFetch } from '../../hooks';
 import OrderInvoice from "./OrderInvoice.jsx";
-import ProductItemForOrderDetail from "./productItemForOrderDetail";
 import SelectProducts from "./OrderProductIds";
 import SelectedProductItems from "../productBundle/SelectedProductItems";
 

@@ -141,6 +141,7 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, custo
 			setCustomerList([{
 				id: addCustomerRes['_id'] || '',
 				key: addCustomerRes['_id'] || '',
+				name: addCustomerRes['firstName'] + ' ' + addCustomerRes['lastName'],
 				// @ts-ignore
 				...addCustomerRes
 			},...customerList])
@@ -376,6 +377,7 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, custo
 							}}>
 								<Input
 									label='Password'
+									type='password'
 									value={values.password}
 									name='password'
 									isError={(touched.password && errors.password) ||
@@ -480,7 +482,7 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, custo
 								</div>
 								<div className='dubbleRowInputs__item'>
 									<Input
-										label='More specific address'
+										label='Address 2'
 										value={values.address2}
 										name='address2'
 										isError={(touched.address2 && errors.address2) ||

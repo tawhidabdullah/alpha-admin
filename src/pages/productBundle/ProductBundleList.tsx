@@ -269,11 +269,11 @@ const MyTable = ({ data, setTagList }) => {
 
 
             {activeCategoryForEdit && <ProductBundleQuickEdit
-                tagList={data}
-                setTagList={setTagList}
-                setvisible={setvisible}
-                visible={visible}
-                category={activeCategoryForEdit} />}
+             productList={data}
+             setProductList={setTagList}
+             setAddNewCategoryVisible={setvisible}
+             addNewCategoryVisible={visible}
+             productDetailData={activeCategoryForEdit} />}
         </>
     )
 }
@@ -297,7 +297,8 @@ const TagList = ({ }: Props) => {
                 urlOptions:{
                     params: {
                       sortItem: 'added',
-                      sortOrderValue: '-1'
+                      sortOrderValue: '-1',
+                      productType: 'bundle'
                     }
                     }
             });

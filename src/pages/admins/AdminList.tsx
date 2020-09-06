@@ -137,7 +137,7 @@ const MyTable = ({ data, setTagList }) => {
 
 							<h4
 								onClick={() => {
-									history.push(`/admin/tag/${record.id}`)
+									// history.push(`/admin/tag/${record.id}`)
 									// setBrandDetailVisible(true);
 									setactiveCategoryForEdit(record)
 								}}
@@ -204,7 +204,7 @@ const MyTable = ({ data, setTagList }) => {
 					render={(text, record: any) => (
 						<Space size="middle">
 							<a href='##'>
-								<Tooltip placement="top" title='Quick Edit Tag'>
+								<Tooltip placement="top" title='Edit Admin'>
 									<span className='iconSize' onClick={() => {
 										setvisible(true)
 										setactiveCategoryForEdit(record);

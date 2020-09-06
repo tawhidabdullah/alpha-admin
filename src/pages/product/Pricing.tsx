@@ -206,7 +206,7 @@ const Pricing = ({
 
 
 	const getiCreatePricingIsDisabled = () => {
-		if (!price.regular || !stock.available) {
+		if (!price.regular) {
 			return true;
 		}
 		else return false;
@@ -228,6 +228,7 @@ const Pricing = ({
 						<div className='addProductGridContainer__item-body-variationCard-item-container'>
 							<div className='addProductGridContainer__item-body-variationCard-item-container-left'>
 								<InputSmall
+									type='number'
 									label='Regular  *'
 									value={price.regular}
 									name='regular'
@@ -236,6 +237,7 @@ const Pricing = ({
 							</div>
 							<div className='addProductGridContainer__item-body-variationCard-item-container-right'>
 								<InputSmall
+									type='number'
 									size='small'
 									label='Offer'
 									value={price.offer}
@@ -244,36 +246,6 @@ const Pricing = ({
 								/>
 							</div>
 						</div>
-
-
-
-						<div className='addProductGridContainer__item-body-variationCard-item'>
-							<h4>
-								Stock
-				</h4>
-							<div className='addProductGridContainer__item-body-variationCard-item-container'>
-								<div className='addProductGridContainer__item-body-variationCard-item-container-left'>
-									<InputSmall
-										label='Available  *'
-										value={stock.available}
-										name='available'
-										onChange={handleStockChange}
-									/>
-
-
-								</div>
-								<div className='addProductGridContainer__item-body-variationCard-item-container-right'>
-
-									<InputSmall
-										label='Minimum'
-										value={stock.minimum}
-										name='minimum'
-										onChange={handleStockChange}
-									/>
-								</div>
-							</div>
-						</div>
-
 					</div>
 
 
@@ -301,9 +273,45 @@ const Pricing = ({
 							</div>
 
 						</div>
+
+
+						<div 
+						style={{
+							marginTop:'25px'
+						}}
+						className='addProductGridContainer__item-body-variationCard-item'>
+							<h4>
+								Stock
+							</h4>
+							<div className='addProductGridContainer__item-body-variationCard-item-container'>
+								<div className='addProductGridContainer__item-body-variationCard-item-container-left'>
+									<InputSmall
+										type='number'
+										label='Available'
+										value={stock.available}
+										name='available'
+										onChange={handleStockChange}
+									/>
+
+
+								</div>
+								<div className='addProductGridContainer__item-body-variationCard-item-container-right'>
+
+									<InputSmall
+										type='number'
+										label='Minimum'
+										value={stock.minimum}
+										name='minimum'
+										onChange={handleStockChange}
+									/>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
+
+
 
 
 			{/* <Button

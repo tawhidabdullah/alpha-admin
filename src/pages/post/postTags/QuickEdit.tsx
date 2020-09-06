@@ -45,7 +45,7 @@ interface Props {
 }
 
 const QuickEdit = ({ category, setvisible, visible, tagList, setTagList }: Props) => {
-	const [updateTagState, handleUpdateCategoryFetch] = useHandleFetch({}, 'updateTag');
+	const [updateTagState, handleUpdateCategoryFetch] = useHandleFetch({}, 'postUpdateTag');
 
 	const handleSubmit = async (values: any, actions: any) => {
 		const updateTagRes = await handleUpdateCategoryFetch({

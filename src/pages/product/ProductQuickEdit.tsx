@@ -196,6 +196,21 @@ const AddNewProduct = ({ productEditVisible,
         }
 
 
+        
+        if (productDetailData && productDetailData.description) {
+            setDescription(productDetailData.description); 
+        }
+        else {
+            setDescription('');
+        }
+
+        if (productDetailData && productDetailData.bn && productDetailData.bn['description']) {
+            setBNDescription(productDetailData.bn['description']); 
+        }
+        else {
+            setBNDescription('');
+        }
+
 
     }, [productDetailData]);
 
@@ -591,7 +606,7 @@ const AddNewProduct = ({ productEditVisible,
 
     useEffect(()=>{
 
-        if(productDetailState.data && Object.keys(productDetailState.data).length > 0){
+        if(productDetailState.data && Object.keys(productDetailState.data).length > 0 && productDetailState.data.metaTags){
             const metaTags = productDetailState.data.metaTags.split(','); 
 
             console.log('localMetaTags',metaTags);
@@ -617,7 +632,7 @@ const AddNewProduct = ({ productEditVisible,
                 { ...initialValues,
                     ...{
                     ...productDetailData,
-                    ...( productDetailState['data'] && Object.keys(productDetailState['data']).length > 0 && {
+                    ...( productDetailState['data'] && Object.keys(productDetailState['data']).length > 0 && productDetailState['data']['bn'] && {
                         bnMetaTitle: productDetailState['data']['bn'].metaTitle,
                         bnMetaDescription: productDetailState['data']['bn'].metaDescription,
                         bnName: productDetailState['data']['bn'].name,
@@ -657,10 +672,9 @@ const AddNewProduct = ({ productEditVisible,
                             destroyOnClose={true}
                             okText='Update'
                             okButtonProps={{
-                                loading: isSubmitting,
-                                htmlType: "submit",
-                                disabled: getisSubmitButtonDisabled(values, isValid)
-                            }}
+								loading: isSubmitting,
+								htmlType: "submit",
+							}}
                         >
                             <section className='addProductGridContainer'>
                                 <div className='addProductGridContainer__left'>
@@ -850,6 +864,9 @@ const AddNewProduct = ({ productEditVisible,
                                                 />
                                             </div>
 
+                                            <div style={{
+                                                marginTop: '15px'
+                                            }}></div>
 
                                             <h3 className='inputFieldLabel'>
                                                BN Description
@@ -976,16 +993,19 @@ const AddNewProduct = ({ productEditVisible,
 																			</div>
 																		</div>
 
-																		{item.stock && (
+
+																		{item.stock && item.stock['available'] && (
 																			<div>
 																				<Badge
 																					overflowCount={999}
 																					count={item.stock.available}>
 																					<h3>
 																						Stock
-									</h3>
+																					</h3>
 																				</Badge>
-																				<div className='addProductGridContainer__item-body-pricingContainer-item-body'>
+																				{item.stock['minimum'] && (
+																					<>
+																			<div className='addProductGridContainer__item-body-pricingContainer-item-body'>
 																					<div>
 																						<h6>
 																							min
@@ -999,6 +1019,9 @@ const AddNewProduct = ({ productEditVisible,
 																					</div>
 
 																				</div>
+																					</>
+																				)}
+									
 																			</div>
 																		)}
 

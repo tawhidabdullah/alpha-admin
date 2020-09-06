@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Modal, notification } from 'antd';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
@@ -11,7 +11,19 @@ import { CheckCircleOutlined, PlusOutlined, EditOutlined, DeleteOutlined, EditFi
 import AccessCheckbox from "./AccessCheckbox";
 
 const validationSchema = Yup.object().shape({
-	name: Yup.string().label('Name').required('Name is required').min(3, 'Name must have at least 3 characters'),
+// 	name: Yup.string().label('Name').required('Name is required').min(3, 'Name must have at least 3 characters'),
+//     phone: Yup.string()
+//     .required('Please tell us your mobile number.')
+//     .max(13, 'Please enter a valid mobile number.'),
+//    password: Yup.string()
+//     .label('Password')
+//     .required()
+//     .min(6, 'Password must have at least 6 characters'),
+//   passwordConfirmation: Yup.string()
+//     .label('Confirm password')
+//     .required()
+//     .min(6, 'Confirm password must have at least 6 characters')
+//     .oneOf([Yup.ref('password'), null], 'Passwords must match'),
 });
 
 
@@ -60,21 +72,26 @@ const QuickEdit = ({ category, setvisible, visible, tagList, setTagList }: Props
 
 
 	const handleSubmit = async (values: any, actions: any) => {
+		console.log('adminValues',values);
 		const updateTagRes = await handleUpdateCategoryFetch({
 			urlOptions: {
 				placeHolders: {
-					id: values.id,
+					id: category._id,
 				}
 			},
 			body: {
 				name: values.name,
-				access: accesscheckedList
+				access: accesscheckedList,
+                phone: values.phone,
+                password: values.password,
+                password2: values.passwordConfirmation,
 			},
 		});
 
 		// @ts-ignore
 		if (updateTagRes && updateTagRes.status === 'ok') {
 			openSuccessNotification();
+			setvisible(false)
 
 			const positionInTag = () => {
 				return tagList.map(item => item.id).indexOf(category.id);
@@ -93,7 +110,6 @@ const QuickEdit = ({ category, setvisible, visible, tagList, setTagList }: Props
 		}
 
 		actions.setSubmitting(false);
-		setvisible(false)
 	};
 
 
@@ -102,12 +118,67 @@ const QuickEdit = ({ category, setvisible, visible, tagList, setTagList }: Props
 	};
 
 
-	const getisSubmitButtonDisabled = (values, isValid) => {
-		if (!values.name || !isValid) {
-			return true;
+
+
+	
+	useEffect(() => {
+		if (!updateTagState['isLoading']) {
+			const error = updateTagState['error'];
+			if (error['isError'] && Object.keys(error['error']).length > 0) {
+
+				if (error['error']['registerError']) {
+					// setServerErrors(error['error']['registerError']);
+				} else if (error['error']['checkoutError']) {
+					// setServerErrors(error['error']['checkoutError']);
+				}
+
+				else {
+					// setServerErrors(error['error']);
+				}
+
+				const errors =
+					Object.values(error['error']).length > 0
+						? Object.values(error['error'])
+						: [];
+				errors.forEach((err, i) => {
+					if (typeof err === 'string') {
+						openErrorNotification(err);
+
+					}
+					else if (typeof err === 'object') {
+						if (err && Object.keys(err).length > 0) {
+							const errs = Object.values(err);
+							errs.forEach(err => {
+								openErrorNotification(err);
+							})
+
+						}
+					}
+				});
+			}
 		}
-		return false;
-	}
+
+		if (
+			!updateTagState['isLoading'] &&
+			Object.keys(updateTagState.data).length > 0
+		) {
+			if (updateTagState['data']['status'] === 'ok') {
+				// openSuccessNotification('Order Created Successfully');
+				// history.push({
+				//   pathname: '/orderDetails',
+				//   state: checkoutState['data']
+				// })
+
+				// clearCart();
+				// setIsModalShown(true);
+			}
+		}
+	}, [updateTagState]);
+
+
+
+
+
 
 	return (
 		<Formik
@@ -132,8 +203,9 @@ const QuickEdit = ({ category, setvisible, visible, tagList, setTagList }: Props
 				handleReset,
 			}) => (
 					<>
+					{console.log('errors',errors)}
 						<Modal
-							title="Quick Edit"
+							title="Edit Admin"
 							visible={visible}
 							onOk={(e: any) => handleSubmit(e)}
 							onCancel={handleCancel}
@@ -141,7 +213,6 @@ const QuickEdit = ({ category, setvisible, visible, tagList, setTagList }: Props
 							okButtonProps={{
 								loading: isSubmitting,
 								htmlType: "submit",
-								disabled: getisSubmitButtonDisabled(values, isValid)
 							}}
 						>
 							<Input
@@ -161,8 +232,8 @@ const QuickEdit = ({ category, setvisible, visible, tagList, setTagList }: Props
 
 
 							<h3 className='inputFieldLabel'>
-                                    Select Admin Access 
-                                </h3>
+                                Select Admin Access 
+                            </h3>
 
 							<AccessCheckbox 
 							defaultValue={category.role}
@@ -170,6 +241,76 @@ const QuickEdit = ({ category, setvisible, visible, tagList, setTagList }: Props
                             checkedList={accesscheckedList}
                             setCheckedList={setAccessCheckedList}
                             />
+
+
+						
+						<div style={{
+							marginTop: '20px',
+							marginBottom: '20px',
+						}}>
+							<div style={{
+								borderBottom:'1px solid #eee',
+								marginBottom: '15px',
+								marginTop: '15px',
+							}}>
+							<h3 className='inputFieldLabel'>
+                                Phone and password is required to update admin *
+                            </h3>
+							
+							</div>
+							
+							<Input
+                                label='Phone'
+                                value={values.phone}
+                                name='phone'
+                                isError={(touched.phone && errors.phone) ||
+                                    (!isSubmitting && updateTagState.error['error']['phone'])}
+
+                                errorString={(touched.phone && errors.phone) ||
+                                    (!isSubmitting && updateTagState.error['error']['phone'])}
+                                onChange={(e: any) => {
+                                    handleChange(e);
+                                    setFieldTouched('phone');
+                                }}
+                            />
+
+
+                      
+                           
+
+                           <Input
+                                label='Password'
+                                value={values.password}
+                                name='password'
+                                type='password'
+                                isError={(touched.password && errors.password) ||
+                                    (!isSubmitting && updateTagState.error['error']['password'])}
+
+                                errorString={(touched.password && errors.password) ||
+                                    (!isSubmitting && updateTagState.error['error']['password'])}
+                                onChange={(e: any) => {
+                                    handleChange(e);
+                                    setFieldTouched('password');
+                                }}
+                            />
+
+
+                            <Input
+                                label='Confirm Password'
+                                value={values.passwordConfirmation}
+                                name='passwordConfirmation'
+                                type='password'
+                                isError={(touched.passwordConfirmation && errors.passwordConfirmation) ||
+                                    (!isSubmitting && updateTagState.error['error']['password2'])}
+
+                                errorString={(touched.passwordConfirmation && errors.passwordConfirmation) ||
+                                    (!isSubmitting && updateTagState.error['error']['password2'])}
+                                onChange={(e: any) => {
+                                    handleChange(e);
+                                    setFieldTouched('passwordConfirmation');
+                                }}
+                            />
+						</div>
                            
 						</Modal>
 

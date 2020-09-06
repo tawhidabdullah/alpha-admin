@@ -18,8 +18,8 @@ import { LogoutOutlined,
     UserOutlined,
      } from '@ant-design/icons';
 import Moment from 'react-moment';
-import moment from 'moment';
 import { Layout, Badge, Dropdown, Menu, Spin } from 'antd';
+import moment from "moment";
 const { Header } = Layout;
 
 
@@ -150,7 +150,6 @@ const HeaderComponent = (props: Props) => {
             {getAllNotificationState.done
             && getAllNotificationState.data[0]
             && getAllNotificationState.data.map((item,index) => {
-                console.log('itemNotification',item);
             return (
             <div
               onClick={() => history.push(`/admin/${item.type}/${item.id}`)}
@@ -166,9 +165,7 @@ const HeaderComponent = (props: Props) => {
                         {item.text}
                     </h4>
                     <h2>
-                    <Moment >
-                        {item.added}
-                    </Moment>
+                    {item.added && moment(item.added).format('MMMM Do YYYY, h:mm a')}
                     </h2>
                 </div>
             </div>

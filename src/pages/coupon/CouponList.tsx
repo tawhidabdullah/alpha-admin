@@ -35,6 +35,7 @@ import TextArea from '../../components/Field/TextArea';
 import { DataTableSkeleton } from "../../components/Placeholders";
 import CouponQuickEdit from "./CouponQuickEdit"
 import AddNewCoupon from "./AddNewCoupon"
+import moment from 'moment'
 
 
 
@@ -90,8 +91,6 @@ const MyTable = ({ data, setTagList }) => {
             }
         });
 
-
-
         // @ts-ignore
         if (deleteTagRes && deleteTagRes.status === 'ok') {
             openSuccessNotification('Deleted Coupon');
@@ -99,9 +98,7 @@ const MyTable = ({ data, setTagList }) => {
             setTagList(newtagList);
         }
 
-
     }
-
 
     const handleOk = (e: any) => {
         setvisible(false);
@@ -181,6 +178,33 @@ const MyTable = ({ data, setTagList }) => {
                 />
 
                 <Column
+                    title="Code"
+                    dataIndex="code"
+                    key="id"
+                    className='classnameofthecolumn'
+
+                />
+
+                
+                <Column
+                    title="Discount"
+                    dataIndex="amount"
+                    key="id"
+                    className='classnameofthecolumn'
+
+                />
+
+
+
+                {/* <Column
+                    title="Order Products"
+                    dataIndex="orderedProductsCount"
+                    key="id"
+                    className='classnameofthecolumn'
+
+                /> */}
+
+                <Column
                     title="Order Products"
                     dataIndex="orderedProductsCount"
                     key="id"
@@ -189,14 +213,15 @@ const MyTable = ({ data, setTagList }) => {
                 />
 
 
-                <Column
+                {/* <Column
                     title="Free Products"
                     dataIndex="freeProductsCount"
                     key="id"
                     className='classnameofthecolumn'
-                />
+                /> */}
 
                 <Column
+                    width={150}
                     title="Start Date"
                     dataIndex="startDate"
                     key="id"
@@ -209,12 +234,11 @@ const MyTable = ({ data, setTagList }) => {
                                 style={{
                                     fontWeight: 400,
                                     color: '#555',
-                                    cursor: 'pointer'
+                                    cursor: 'pointer',
+                                    fontSize: '13px'
                                 }}>
                                     
-                               <Moment>
-                                {text}
-                               </Moment>
+                                    {text && moment(text).format('MMMM Do YYYY, h:mm:ss a')}
                             </h4>
 
 
@@ -225,6 +249,7 @@ const MyTable = ({ data, setTagList }) => {
                 />
 
                 <Column
+                     width={150}
                     title="End Date"
                     dataIndex="endDate"
                     key="id"
@@ -239,10 +264,8 @@ const MyTable = ({ data, setTagList }) => {
                                     color: '#555',
                                     cursor: 'pointer'
                                 }}>
-                                    
-                               <Moment>
-                                {text}
-                               </Moment>
+                                    {text && moment(text).format('MMMM Do YYYY, h:mm:ss a')}
+                               
                             </h4>
                         </>
                     )}
@@ -258,7 +281,7 @@ const MyTable = ({ data, setTagList }) => {
                     render={(text, record: any) => (
                         <Space size="middle">
                             <a href='##'>
-                                <Tooltip placement="top" title='Quick Edit Bundle'>
+                                <Tooltip placement="top" title='Edit Coupon'>
                                     <span className='iconSize' onClick={() => {
                                         setvisible(true)
                                         setactiveCategoryForEdit(record);
@@ -292,8 +315,8 @@ const MyTable = ({ data, setTagList }) => {
             {activeCategoryForEdit && <CouponQuickEdit
                 tagList={data}
                 setTagList={setTagList}
-                setvisible={setvisible}
-                visible={visible}
+                setAddNewCategoryVisible={setvisible}
+                addNewCategoryVisible={visible}
                 category={activeCategoryForEdit} />}
         </>
     )

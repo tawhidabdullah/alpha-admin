@@ -88,6 +88,9 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, brandLis
 	const [tags,setTags] = useState([]);
 	const [bnTags,setBnTags] = useState([]);
 
+
+
+	console.log('brandImages',myImages);
 	const handleSubmit = async (values: any, actions: any) => {
 
 		// @ts-ignore
@@ -124,8 +127,8 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, brandLis
 			openSuccessNotification();
 
 			setBrandList([{
-				id: addBrandRes['id'] || '',
-				key: addBrandRes['id'] || '',
+				id: addBrandRes['_id'] || '',
+				key: addBrandRes['_id'] || '',
 				name: addBrandRes['name'] || '',
 				description: addBrandRes['description'] || '',
 				cover: addBrandRes['cover'] || '',
@@ -208,7 +211,6 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, brandLis
 							okButtonProps={{
 								loading: isSubmitting,
 								htmlType: "submit",
-								disabled: getisSubmitButtonDisabled(values, isValid)
 							}}
 						>
 							<Input
@@ -328,7 +330,12 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, brandLis
 									})}
 
 
-								<Tooltip
+									{ 
+									!myImages || 
+									// @ts-ignore
+									(myImages && !(myImages && myImages.length > 0)) ? (
+										<>
+										<Tooltip
 									title={'Attach images'}>
 
 									<div
@@ -336,18 +343,14 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, brandLis
 											setvisibleMedia(true);
 										}}
 										className='aboutToUploadImagesContainer__uploadItem'>
-										{/* <FileAddOutlined />
-													<FileImageTwoTone />
-													<FileImageOutlined /> */}
 										<FileImageFilled />
-										{/* <h5>
-												     Select From Library
-											<     /h5> */}
 										<span className='aboutToUploadImagesContainer__uploadItem-plus'>
 											<PlusOutlined />
 										</span>
 									</div>
 								</Tooltip>
+										</>
+									) : ""}
 
 							</div>
 
@@ -452,7 +455,7 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, brandLis
 							visible={visibleMedia}
 							setmyImages={setmyImages}
 							myImages={myImages}
-							isModalOpenForImages={true}
+							isModalOpenForImages={false}
 
 						/>
 					</>

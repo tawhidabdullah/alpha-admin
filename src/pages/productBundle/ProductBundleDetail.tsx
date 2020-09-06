@@ -108,18 +108,19 @@ const NewBrandDetail = (props: Props) => {
 
                 {productDetailState.done && productDetailState.data && (Object.keys(productDetailState.data).length > 0) && (
                     <>
-                        {/* <ProductBundleEdit
-                            productEditVisible={productEditVisible}
-                            setProductEditVisible={setProductEditVisible}
+                     <ProductBundleEdit
+                          setAddNewCategoryVisible={setProductEditVisible}
+                         addNewCategoryVisible={productEditVisible}
                             productDetailData={productDetailState.data}
-                        /> */}
-                        {/* <Button
+
+                        /> 
+                         <Button
                             onClick={() => setProductEditVisible(true)}
                             type='link'
                             icon={<EditOutlined />}
                         >
                             Edit
-                      </Button> */}
+                      </Button> 
                     </>
                 )}
 
@@ -245,40 +246,6 @@ const NewBrandDetail = (props: Props) => {
                         )}
 
 
-
-                        {productDetailState.done && productDetailState.data && Object.keys(productDetailState.data).length > 0 && productDetailState.data['products'] && (
-                            <div className='brandDetailContainer__heading'>
-                                <h3>
-                                    Products
-                       </h3>
-                            </div>
-                        )
-                        }
-
-
-                        <div className='brandDetailContainer__body'>
-                            {productDetailState.done && productDetailState.data && productDetailState.data['products'] && !(productDetailState.data['products'].length > 0) && (
-                                <div style={{
-                                    marginTop: '100px'
-                                }}>
-                                    <Empty description='No Products exists for this Bundle' image={Empty.PRESENTED_IMAGE_SIMPLE} />
-                                </div>
-                            )}
-
-                            {productDetailState.done && productDetailState.data && Object.keys(productDetailState.data).length > 0 && (
-                                <>
-                                    {productDetailState.data['products'] && productDetailState.data['products'].length > 0 &&
-                                        productDetailState.data['products'].map(product => {
-                                            return (
-                                                <CouponProducts
-                                                    quantity={product.quantity}
-                                                    productId={product['_id']} />
-                                            )
-                                        })}
-                                </>
-                            )}
-                        </div>
-
                         {productDetailState.data['image'] && productDetailState.data['image'].length > 0 && (
                             <>
                                 <div className='brandDetailContainer__heading'>
@@ -377,6 +344,47 @@ const NewBrandDetail = (props: Props) => {
                                 }}></div>
                             </>
                         )}
+
+
+
+
+                        
+
+
+                    {productDetailState.done && productDetailState.data && Object.keys(productDetailState.data).length > 0 && productDetailState.data['products'] && (
+                            <div className='brandDetailContainer__heading'>
+                                <h3>
+                                    Products
+                       </h3>
+                            </div>
+                        )
+                        }
+
+
+                        <div className='brandDetailContainer__body'>
+                            {productDetailState.done && productDetailState.data && productDetailState.data['products'] && !(productDetailState.data['products'].length > 0) && (
+                                <div style={{
+                                    marginTop: '100px'
+                                }}>
+                                    <Empty description='No Products exists for this Bundle' image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                                </div>
+                            )}
+
+                            {productDetailState.done && productDetailState.data && Object.keys(productDetailState.data).length > 0 && (
+                                <>
+                                    {productDetailState.data['products'] && productDetailState.data['products'].length > 0 &&
+                                        productDetailState.data['products'].map(product => {
+                                            return (
+                                                <CouponProducts
+                                                    quantity={product.quantity}
+                                                    productId={product['_id']} />
+                                            )
+                                        })}
+                                </>
+                            )}
+                        </div>
+
+
 
                     </>
 

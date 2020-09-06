@@ -159,7 +159,8 @@ const AddNewCategory = ({
                         image: aboutToUpdatedImageIds
                     }
                 });
-            }
+			}
+			
             else if (aboutToUpdatedImageIds[0] && aboutToUpdatedImageIds.length < 1) {
                 await handleAttachImageToItemSingleFetch({
                     urlOptions: {
@@ -522,7 +523,6 @@ const AddNewCategory = ({
 							okButtonProps={{
 								loading: isSubmitting,
 								htmlType: "submit",
-								disabled: getisSubmitButtonDisabled(values, isValid)
 							}}
 						>
 							<Input

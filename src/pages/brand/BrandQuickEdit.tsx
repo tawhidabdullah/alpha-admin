@@ -88,6 +88,8 @@ const AddNewBrand = ({ brandDetailData,
  }: Props) => {
 
     const [updateBrandState, handleUpdateBrandFetch] = useHandleFetch({}, 'updateBrand');
+    const [brandDetailState, handleBrandDetailFetch] = useHandleFetch({}, 'brandDetail');
+
     const [attachImageToItemMultipleState, handleAttachImageToItemMultipleFetch] = useHandleFetch({}, 'attachImageToItemMultiple');
     const [attachImageToItemSingleState, handleAttachImageToItemSingleFetch] = useHandleFetch({}, 'attachImageToItemSingle');
     const [detachImageFromItemMultipleState, handleDetachImageFromItemMultipleFetch] = useHandleFetch({}, 'detachImageFromItemMultiple');
@@ -106,22 +108,40 @@ const AddNewBrand = ({ brandDetailData,
 
 
     useEffect(() => {
-        if (brandDetailData && Object.keys(brandDetailData).length > 0) {
+        const getBrandDetail = async () => {
+            const brandDetailRes = await handleBrandDetailFetch({
+                urlOptions: {
+                    placeHolders: {
+                        id: brandDetailData.id
+                    }
+                }
+            }); 
 
-            const images = brandDetailData.image;
+        };
+
+        getBrandDetail();
+
+    }, [brandDetailData]);
+
+
+    
+    useEffect(() => {
+        if (brandDetailState.data && Object.keys(brandDetailState.data).length > 0) {
+
+            const images = brandDetailState.data.image;
             if (images && images.length > 0) {
                 setmyImages(images);
                 setMyGoddamnImages(images);
             }
 
-            if (brandDetailData.cover && brandDetailData.cover['id']) {
+            if (brandDetailState.data.cover && brandDetailState.data.cover['id']) {
                 // @ts-ignore
-                setmyImages([brandDetailData.cover, ...images]);
-                setCoverImageId(brandDetailData.cover['id']);
+                setmyImages([brandDetailState.data.cover]);
+                setCoverImageId(brandDetailState.data.cover['id']);
             }
 
         }
-    }, [brandDetailData]); 
+    }, [brandDetailState.data]); 
 
 
     useEffect(() => {
@@ -377,15 +397,15 @@ const AddNewBrand = ({ brandDetailData,
                                 top: '40px'
                             }}
                             title="Brand Edit"
+                            destroyOnClose={true}
                             visible={brandEditVisible}
                             onOk={(e: any) => handleSubmit(e)}
                             onCancel={handleCancel}
                             okText='Update'
                             okButtonProps={{
-                                loading: isSubmitting,
-                                htmlType: "submit",
-                                disabled: getisSubmitButtonDisabled(values, isValid)
-                            }}
+								loading: isSubmitting,
+								htmlType: "submit",
+							}}
                         >
                 					<Input
 								label='Name'
@@ -465,7 +485,9 @@ const AddNewBrand = ({ brandDetailData,
                                     marginBottom: '-5px'
                                 }}
                             >
-                                <h3 className='inputFieldLabel'>Images</h3>
+                                <h3 className='inputFieldLabel'>
+                                    Cover
+                                </h3>
                                 {/* <div  >
 					<FileOutlined />
 					<span>Media Center</span>
@@ -520,26 +542,30 @@ const AddNewBrand = ({ brandDetailData,
                                             })}
 
 
-                                        <Tooltip
-                                            title={'Attach images'}>
+                                    { 
+									!myImages || 
+									// @ts-ignore
+									(myImages && !(myImages && myImages.length > 0)) ? (
+										<>
+										<Tooltip
+									title={'Attach images'}>
 
-                                            <div
-                                                onClick={() => {
-                                                    setvisibleMedia(true);
-                                                }}
-                                                className='aboutToUploadImagesContainer__uploadItem'>
-                                                {/* <FileAddOutlined />
-													<FileImageTwoTone />
-													<FileImageOutlined /> */}
-                                                <FileImageFilled />
-                                                {/* <h5>
-												     Select From Library
-											<     /h5> */}
-                                                <span className='aboutToUploadImagesContainer__uploadItem-plus'>
-                                                    <PlusOutlined />
-                                                </span>
-                                            </div>
-                                        </Tooltip>
+									<div
+										onClick={() => {
+											setvisibleMedia(true);
+										}}
+										className='aboutToUploadImagesContainer__uploadItem'>
+										<FileImageFilled />
+										<span className='aboutToUploadImagesContainer__uploadItem-plus'>
+											<PlusOutlined />
+										</span>
+									</div>
+								</Tooltip>
+										</>
+									) : ""}
+
+
+                            
                                     </>
                                 )}
 
@@ -645,7 +671,7 @@ const AddNewBrand = ({ brandDetailData,
                             myImages={myImages}
                             myGoddamnImages={myGoddamnImages}
                             setMyGoddamnImages={setMyGoddamnImages}
-                            isModalOpenForImages={true}
+                            isModalOpenForImages={false}
 
                         />
                     </>

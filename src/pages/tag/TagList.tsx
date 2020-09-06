@@ -215,8 +215,8 @@ const MyTable = ({ data, setTagList }) => {
 			{activeCategoryForEdit && <TagQuickEdit
 				tagList={data}
 				setTagList={setTagList}
-				tagEditVisible={setvisible}
-				setTagEditVisible={visible}
+				tagEditVisible={visible}
+				setTagEditVisible={setvisible}
 				tagDetailData={activeCategoryForEdit} />}
 		</>
 	)

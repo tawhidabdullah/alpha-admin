@@ -75,7 +75,7 @@ const { Search } = CoolInput;
 const MyTable = ({ data, setTagList }) => {
     const [visible, setvisible] = useState(false);
     const [activeCategoryForEdit, setactiveCategoryForEdit] = useState(false);
-    const [deleteTagState, handleDeleteTagFetch] = useHandleFetch({}, 'deleteBundle');
+    const [deleteTagState, handleDeleteTagFetch] = useHandleFetch({}, 'deletePost');
 
     const history = useHistory();
 
@@ -179,9 +179,11 @@ const MyTable = ({ data, setTagList }) => {
                     )}
                 />
 
+
+
                 <Column
-                    title="Price"
-                    dataIndex="price"
+                    title="Preparation Time"
+                    dataIndex="preparationTime"
                     key="id"
                     className='classnameofthecolumn'
 
@@ -189,45 +191,24 @@ const MyTable = ({ data, setTagList }) => {
 
 
                 <Column
-                    title="Product"
-                    dataIndex="productCount"
+                    title="Cooking Time"
+                    dataIndex="cookingTime"
                     key="id"
                     className='classnameofthecolumn'
                 />
 
+                
                 <Column
-                    title="Start Date"
-                    dataIndex="startDate"
+                    title="People"
+                    dataIndex="servingSize"
                     key="id"
                     className='classnameofthecolumn'
-                    render={(text, record: any) => (
-                        <>
-                            <h4
-                                style={{
-                                    fontWeight: 400,
-                                    color: '#555',
-                                    cursor: 'pointer'
-                                }}>
-                                <Moment >
-                                    {text}
-                                </Moment>
-
-                            </h4>
-                        </>
-                    )}
-
                 />
 
-                <Column
-                    title="End Date"
-                    dataIndex="endDate"
-                    key="id"
-                    className='classnameofthecolumn'
 
-                />
-
-                <Column
-
+            
+    
+                 <Column
                     className='classnameofthecolumn'
                     title=""
                     key="action"
@@ -235,7 +216,7 @@ const MyTable = ({ data, setTagList }) => {
                     render={(text, record: any) => (
                         <Space size="middle">
                             <a href='##'>
-                                <Tooltip placement="top" title='Quick Edit recipe'>
+                                <Tooltip placement="top" title='Edit recipe'>
                                     <span className='iconSize' onClick={() => {
                                         setvisible(true)
                                         setactiveCategoryForEdit(record);
@@ -267,11 +248,12 @@ const MyTable = ({ data, setTagList }) => {
 
 
             {activeCategoryForEdit && <ProductBundleQuickEdit
-                tagList={data}
-                setTagList={setTagList}
-                setvisible={setvisible}
-                visible={visible}
-                category={activeCategoryForEdit}
+
+                 productList={data}
+                 setProductList={setTagList}
+                setAddNewCategoryVisible={setvisible}
+                addNewCategoryVisible={visible}
+                productDetailData={activeCategoryForEdit}
                  />}
         </>
     )
@@ -296,7 +278,14 @@ const TagList = ({ }: Props) => {
 
     useEffect(() => {
         const setTags = async () => {
-            const tags = await handleTagListFetch({});
+            const tags = await handleTagListFetch({
+                urlOptions:{
+					params: {
+					  sortItem: 'added',
+					  sortOrderValue: '-1'
+					}
+				  }
+            });
             // @ts-ignore
             setTagList(tags);
         }

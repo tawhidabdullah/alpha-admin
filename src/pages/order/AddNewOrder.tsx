@@ -8,7 +8,7 @@ import { useHandleFetch } from '../../hooks';
 
 
 // import third party ui lib
-import { Upload,Radio , message, Switch, Select, Button, notification, Modal, Empty, Steps, Form, Checkbox } from 'antd';
+import { Upload,Radio , message, Select, Button, notification, Empty, Steps, Form } from 'antd';
 
 import {
 	FileOutlined,
@@ -137,8 +137,6 @@ const AddNewOrder = ({ }: Props) => {
 
 	const [cityListState, handleCityListFetch] = useHandleFetch([], 'cityList');
 
-	const [countryList, setCountryList] = useState([]);
-	const [cityList, setCityList] = useState([]);
 	const [current, setCurrent] = useState(0);
 	const [selectedCustomerData, setSelectedCustomerData] = useState({});
 	const [productIds, setProductIds] = useState([]);
@@ -309,10 +307,23 @@ const AddNewOrder = ({ }: Props) => {
 
 		// @ts-ignore
 		if (addOrderRes && addOrderRes.status === 'ok') {
-			openSuccessNotification();
+			// openSuccessNotification();
 
 
 			actions.resetForm();
+
+
+			setCurrent(0); 
+			setProductIds([]); 
+			setProductList([]); 
+			setCustomerId([]); 
+			setselectedCityValue(''); 
+			setselectedCountryValue('')
+			setDeliveryRegionName(''); 
+			setSelectedRegion({}); 
+			setregionDeliveryCharge([]); 
+			setSelectedCustomerData({}); 
+
 		}
 		else {
 			openErrorNotification("Couldn't create order, Something went wrong")
@@ -985,12 +996,18 @@ const AddNewOrder = ({ }: Props) => {
 											setProductList={setProductList}
 											productList={productList} />
 
-										<div>
+										<div style={{
+											display:"flex",
+											flexDirection:'column',
+											justifyContent:"center",
+											alignItems:'center'
+										}}>
 
 										<h3 
 										style={{
 											marginTop:'20px',
-											display:'block'
+											display:'inline-block',
+											textAlign:'center'
 										}}
 										className='addOrderContainer-sectionTitle'>
 											<span>
@@ -1002,6 +1019,12 @@ const AddNewOrder = ({ }: Props) => {
 										{regionDeliveryCharge && regionDeliveryCharge.length > 0 ? (
 											<>
 													<Radio.Group
+													style={{
+														display:'flex',
+														justifyContent:'center',
+														flexWrap:'wrap'
+
+													}}
 													value={deliveryRegionName}
 													defaultValue={deliveryRegionName}
 													 name="radiogroup" >

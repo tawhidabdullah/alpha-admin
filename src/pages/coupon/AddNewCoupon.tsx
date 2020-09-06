@@ -132,9 +132,9 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, tagList,
                 minimumOrder: values.minimumOrder,
                 amount: values.amount,
                 amountType: values.amountType,
-                freeDelivery: false,
+                // freeDelivery: false,
                 orderedProducts: orderedProducts,
-                freeProducts: freeProducts,
+                // freeProducts: freeProducts,
                 cover: coverImageId || imagesIds[0] ? imagesIds[0] : '',
             },
         });
@@ -452,16 +452,12 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, tagList,
 									marginBottom: '-5px'
 								}}
 							>
-								<h3 className='inputFieldLabel'>Cover</h3>
-
+								<h3 className='inputFieldLabel'>
+                                    Cover
+                                </h3>
 							</div>
 
-
-                            <div 
-                            style={{
-                                marginBottom:"-15px"
-                            }}
-                            className='aboutToUploadImagesContainer'>
+							<div className='aboutToUploadImagesContainer'>
 								{myImages &&
 									// @ts-ignore
 									myImages.length > 0 && myImages.map((image, index) => {
@@ -497,7 +493,15 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, tagList,
 									})}
 
 
-								<Tooltip
+       
+
+
+                                { 
+									!myImages || 
+									// @ts-ignore
+									(myImages && !(myImages && myImages.length > 0)) ? (
+										<>
+										<Tooltip
 									title={'Attach images'}>
 
 									<div
@@ -505,21 +509,23 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, tagList,
 											setvisibleMedia(true);
 										}}
 										className='aboutToUploadImagesContainer__uploadItem'>
-										{/* <FileAddOutlined />
-													<FileImageTwoTone />
-													<FileImageOutlined /> */}
 										<FileImageFilled />
-										{/* <h5>
-												     Select From Library
-											<     /h5> */}
 										<span className='aboutToUploadImagesContainer__uploadItem-plus'>
 											<PlusOutlined />
 										</span>
 									</div>
 								</Tooltip>
+										</>
+									) : ""}
+                               
+                                
 
 							</div>
 
+
+
+
+              
 
 
                             <h3 className='inputFieldLabel'>
@@ -545,7 +551,7 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, tagList,
                             />
 
 
-                            <h3 className='inputFieldLabel'>
+                            {/* <h3 className='inputFieldLabel'>
                                 Free Products
                                 </h3>
 
@@ -565,7 +571,7 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, tagList,
                             <OrderedProductsSelectedProductItems
                                 productList={freeProductList}
                                 setProductList={setFreeProductList}
-                            />
+                            /> */}
 
 
 
@@ -576,7 +582,7 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, tagList,
                             visible={visibleMedia}
                             setmyImages={setmyImages}
                             myImages={myImages}
-                            isModalOpenForImages={true}
+                            isModalOpenForImages={false}
 
                         />
                     </>

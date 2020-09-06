@@ -110,10 +110,9 @@ const AddNewBrand = ({ brandDetailData, brandEditVisible, setBrandEditVisible,se
 
             if (brandDetailData.cover && brandDetailData.cover['id']) {
                 // @ts-ignore
-                setmyImages([brandDetailData.cover, ...images]);
+                setmyImages([brandDetailData.cover]);
                 setCoverImageId(brandDetailData.cover['id']);
             }
-
         }
     }, [brandDetailData]); 
 
@@ -374,10 +373,9 @@ const AddNewBrand = ({ brandDetailData, brandEditVisible, setBrandEditVisible,se
                             onCancel={handleCancel}
                             okText='Update'
                             okButtonProps={{
-                                loading: isSubmitting,
-                                htmlType: "submit",
-                                disabled: getisSubmitButtonDisabled(values, isValid)
-                            }}
+								loading: isSubmitting,
+								htmlType: "submit",
+							}}
                         >
                 					<Input
 								label='Name'
@@ -457,7 +455,9 @@ const AddNewBrand = ({ brandDetailData, brandEditVisible, setBrandEditVisible,se
                                     marginBottom: '-5px'
                                 }}
                             >
-                                <h3 className='inputFieldLabel'>Images</h3>
+                                <h3 className='inputFieldLabel'>
+                                    Cover
+                                </h3>
                                 {/* <div  >
 					<FileOutlined />
 					<span>Media Center</span>
@@ -512,26 +512,27 @@ const AddNewBrand = ({ brandDetailData, brandEditVisible, setBrandEditVisible,se
                                             })}
 
 
-                                        <Tooltip
-                                            title={'Attach images'}>
+{ 
+									!myImages || 
+									// @ts-ignore
+									(myImages && !(myImages && myImages.length > 0)) ? (
+										<>
+										<Tooltip
+									title={'Attach images'}>
 
-                                            <div
-                                                onClick={() => {
-                                                    setvisibleMedia(true);
-                                                }}
-                                                className='aboutToUploadImagesContainer__uploadItem'>
-                                                {/* <FileAddOutlined />
-													<FileImageTwoTone />
-													<FileImageOutlined /> */}
-                                                <FileImageFilled />
-                                                {/* <h5>
-												     Select From Library
-											<     /h5> */}
-                                                <span className='aboutToUploadImagesContainer__uploadItem-plus'>
-                                                    <PlusOutlined />
-                                                </span>
-                                            </div>
-                                        </Tooltip>
+									<div
+										onClick={() => {
+											setvisibleMedia(true);
+										}}
+										className='aboutToUploadImagesContainer__uploadItem'>
+										<FileImageFilled />
+										<span className='aboutToUploadImagesContainer__uploadItem-plus'>
+											<PlusOutlined />
+										</span>
+									</div>
+								</Tooltip>
+										</>
+									) : ""}
                                     </>
                                 )}
 
@@ -637,7 +638,7 @@ const AddNewBrand = ({ brandDetailData, brandEditVisible, setBrandEditVisible,se
                             myImages={myImages}
                             myGoddamnImages={myGoddamnImages}
                             setMyGoddamnImages={setMyGoddamnImages}
-                            isModalOpenForImages={true}
+                            isModalOpenForImages={false}
 
                         />
                     </>

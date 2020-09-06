@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
@@ -35,7 +35,6 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 
 const validationSchema = Yup.object().shape({
-    name: Yup.string().label('Name').required('Name is required').min(3, 'Name must have at least 3 characters'),
 });
 
 
@@ -72,7 +71,6 @@ const ComposeCustomEmail = ({  }: Props) => {
 
     const [sendCustomerEmailState, handleSendCustomEmailFetch] = useHandleFetch({}, 'sendCustomEmail');
  
-    const [isAuthenticated,setIsAuthenticated] = useState(true);
     const [html,sethtml] = useState('');
 
 
@@ -81,37 +79,78 @@ const ComposeCustomEmail = ({  }: Props) => {
             body: {
                 "recipient": values.recipient.trim(),
                 "subject": values.subject.trim(),
-               
+                html : html
             },
         });
 
         // @ts-ignore
         if (addTagRes && addTagRes.status === 'ok') {
+            sethtml('');
+            actions.resetForm();
             openSuccessNotification('Email Sent!');
         }
         else {
-            openErrorNotification("Something went wrong, Couldn't send email");
+            // openErrorNotification("Something went wrong, Couldn't send email");
         }
-
 
         actions.setSubmitting(false);
 
     };
 
+	useEffect(() => {
+		if (!sendCustomerEmailState['isLoading']) {
+			const error = sendCustomerEmailState['error'];
+			if (error['isError'] && Object.keys(error['error']).length > 0) {
+
+				if (error['error']['registerError']) {
+					// setServerErrors(error['error']['registerError']);
+				} else if (error['error']['checkoutError']) {
+					// setServerErrors(error['error']['checkoutError']);
+				}
+
+				else {
+					// setServerErrors(error['error']);
+				}
+
+				const errors =
+					Object.values(error['error']).length > 0
+						? Object.values(error['error'])
+						: [];
+				errors.forEach((err, i) => {
+					if (typeof err === 'string') {
+						openErrorNotification(err);
+
+					}
+					else if (typeof err === 'object') {
+						if (err && Object.keys(err).length > 0) {
+							const errs = Object.values(err);
+							errs.forEach(err => {
+								openErrorNotification(err);
+							})
+
+						}
+					}
+				});
+			}
+		}
+
+		if (
+			!sendCustomerEmailState['isLoading'] &&
+			Object.keys(sendCustomerEmailState.data).length > 0
+		) {
+			// if (sendCustomerEmailState['data']['status'] === 'ok') {
+            //     openSuccessNotification('Email Sent!');
+			// }
+		}
+	}, [sendCustomerEmailState]);
 
 
-    const getisSubmitButtonDisabled = (values, isValid) => {
-        if (!values.name || !isValid) {
-            return true;
-        }
-        return false;
-    }
 
 
 
-    const handleAuthenticatedChange = (e) => {
-        setIsAuthenticated(e.target.checked);
-    }
+
+
+
 
 
 

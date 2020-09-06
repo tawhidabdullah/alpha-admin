@@ -155,7 +155,6 @@ const NewBrandDetail = (props: Props) => {
                                     {productDetailData['description']}
                                 </h3>
 
-
                                 {productDetailData['url'] && (
                                     <h3>
                                         URL:
@@ -165,6 +164,8 @@ const NewBrandDetail = (props: Props) => {
 
                                     </h3>
                                 )}
+
+                                
                                 {/* 
                                 {productDetailData['tags'] && productDetailData['tags'].length > 0 &&
                                     (<>

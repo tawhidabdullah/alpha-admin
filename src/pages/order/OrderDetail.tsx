@@ -95,7 +95,20 @@ const NewBrandDetail = (props: Props) => {
 
                 {tagDetailState.done && tagDetailState.data && (Object.keys(tagDetailState.data).length > 0) && (
                     <>
-                        <OrderEdit
+                    <div>
+                    <OrderEdit
+                            tagEditVisible={tagEditVisible}
+                            setTagEditVisible={setTagEditVisible}
+                            customer={tagDetailState.data}
+                        />
+                        <Button
+                            onClick={() => setTagEditVisible(true)}
+                            type='link'
+                            icon={<PlusOutlined />}
+                        >
+                            Add note
+                      </Button>
+                    <OrderEdit
                             tagEditVisible={tagEditVisible}
                             setTagEditVisible={setTagEditVisible}
                             customer={tagDetailState.data}
@@ -107,6 +120,8 @@ const NewBrandDetail = (props: Props) => {
                         >
                             Edit
                       </Button>
+                    </div>
+                       
                     </>
                 )}
             </div>

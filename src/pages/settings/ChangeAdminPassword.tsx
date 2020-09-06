@@ -86,10 +86,11 @@ const ChangeAdminPassword = ({ }: Props) => {
 
         }
         getSiteSettings();
-    }, [UpdateSiteSettingsState])
+    }, [UpdateSiteSettingsState]);
 
 
 
+    console.log('siteSettingsState',siteSettingsState)
 
     // console.log('siteSettingsState', siteSettingsState);
 

@@ -12,8 +12,10 @@ import { DataTableSkeleton } from "../../components/Placeholders";
 import AddNewCustomer from "./AddNewCustomer";
 import QuickEdit from "./QuickEdit";
 import Empty from "../../components/Empty";
+import moment from "moment";
 const { Column, ColumnGroup } = Table;
 const { Search } = Input;
+
 
 
 
@@ -117,24 +119,60 @@ const MyTable = ({data,setCustomerList}: myTableProps) => {
             />
 
 
-          <Column
-           title="Country" 
-           dataIndex="country" 
-           key="id" 
-           className='classnameofthecolumn'
-         
-            />
-
-
-          <Column
+          {/* <Column
            title="City" 
            dataIndex="city" 
            key="id" 
            className='classnameofthecolumn'
+            /> */}
+
+     
+
+        <Column
+           title="Dealer" 
+           dataIndex="dealerName" 
+           key="id" 
+           className='classnameofthecolumn'
+           render={(text, record: any) => (
+            <>
+              <h4
+                onClick={() => {
+                  // go to dealer detail
+                  // history.push(`/admin/dealer/${record.id}`)
+                }}
+                style={{
+                  fontWeight: 400,
+                  color: '#555',
+                  cursor: 'pointer'
+                }}>
+                {text}
+              </h4>
+            </>
+          )}
+            />
+
+         
+
+            
+          <Column
+           title="Order" 
+           dataIndex="orderCount" 
+           key="id" 
+           className='classnameofthecolumn'
          
             />
 
-           <Column
+        <Column
+           title="Total Price" 
+           dataIndex="totalOrderPrice" 
+           key="id" 
+           className='classnameofthecolumn'
+         
+            />
+
+
+      <Column
+           width={150}
            title="Created" 
            dataIndex="created" 
            key="id" 
@@ -143,9 +181,7 @@ const MyTable = ({data,setCustomerList}: myTableProps) => {
             <Space size="middle">
             
             <h5>
-              <Moment>
-                {text}
-              </Moment>
+              {text && moment(text).format('MMMM Do YYYY, h:mm a')}
             </h5>
              
             </Space>
@@ -189,7 +225,7 @@ const MyTable = ({data,setCustomerList}: myTableProps) => {
           render={(text, record : any) => (
             <Space size="middle">
               <a href='##'>
-               <Tooltip placement="top" title='Quick Edit Customer'>
+               <Tooltip placement="top" title='Edit Customer'>
               <span className='iconSize' onClick={() => {
                 setvisible(true)
                 setactiveCategoryForEdit(record); 
@@ -247,6 +283,8 @@ const CustomerList = ({history}: Props) => {
 
     const [customerState, handleCustomerListFetch] = useHandleFetch({}, 'customerList');
   
+
+    console.log('customerList',customerList); 
   
     useEffect(()=>{
      const setCustomers = async () => {

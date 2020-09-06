@@ -158,17 +158,17 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 		// @ts-ignore
 		if (addProductRes && addProductRes.status === 'ok') {
 			openSuccessNotification('Product Created');
+			setAddNewCategoryVisible(false)
 
 			setProductList([{
+				// @ts-ignore
+				...addProductRes,
 				id: addProductRes['_id'] || '',
 				key: addProductRes['_id'] || '',
 				name: addProductRes['name'] || '',
 				description: addProductRes['description'] || '',
 				cover: addProductRes['cover'] || '',
-				// @ts-ignore
-				...addProductRes
 			},...productList])
-			setAddNewCategoryVisible(false)
 			// @ts-ignore
 			setmyImages([]);
 			setCoverImageId('');
@@ -374,7 +374,6 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 							okButtonProps={{
 								loading: isSubmitting,
 								htmlType: "submit",
-								disabled: getisSubmitButtonDisabled(values, isValid)
 							}}
 						>
 
@@ -697,16 +696,18 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 																			</div>
 																		</div>
 
-																		{item.stock && (
+																		{item.stock && item.stock['available'] && (
 																			<div>
 																				<Badge
 																					overflowCount={999}
 																					count={item.stock.available}>
 																					<h3>
 																						Stock
-									</h3>
+																					</h3>
 																				</Badge>
-																				<div className='addProductGridContainer__item-body-pricingContainer-item-body'>
+																				{item.stock['minimum'] && (
+																					<>
+																			<div className='addProductGridContainer__item-body-pricingContainer-item-body'>
 																					<div>
 																						<h6>
 																							min
@@ -720,6 +721,9 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 																					</div>
 
 																				</div>
+																					</>
+																				)}
+									
 																			</div>
 																		)}
 

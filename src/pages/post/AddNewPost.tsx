@@ -164,13 +164,16 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
             openSuccessNotification('Recipe Created');
             setAddNewCategoryVisible(false)
 
-            setBundleList([...bundleList, {
+            setBundleList([{
+                 // @ts-ignore
+                 ...addProductRes,
                 id: addProductRes['id'] || '',
                 key: addProductRes['id'] || '',
                 name: addProductRes['name'] || '',
-                // @ts-ignore
-                ...addProductRes
-            }])
+                cover: addProductRes['cover'] || '',
+
+               
+            },...bundleList])
             // @ts-ignore
             setmyImages([]);
             setCoverImageId('');

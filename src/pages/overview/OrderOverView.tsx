@@ -10,9 +10,7 @@ import {
     XAxis,
     YAxis,
     Tooltip,
-    Legend,
     Area,
-    Line
 } from "recharts";
 
 import {

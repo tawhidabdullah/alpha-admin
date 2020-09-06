@@ -52,12 +52,58 @@ export default App;
 #customer
 */
 
+
+/*
+
+fix ===>
+
+// # product add -> category name search dile crash kore
+// # add order -> make delivery zone align as horizontal
+// # double notification -> when creating order 
+// # customer detail -> customer er order history hobe
+// # customer list => add orderCount and totalOrderPrice field to show
+# customer List =>  user will be able to sort with them (sort=totalOrderPrice&sortOrder=-1) 
+// # order analytics -> add metric=deliveryRegion 
+# at the footer of analytic charts -> add a show data button -> on clicked show data as table 
+# price price field - make input type number 
+# delivery region edit
+# email api implementation
+# check if the tag edit works properly 
+# on open product quick epit site crashes 
+# product bundle detail -> show images in product bundle detail 
+# fix the attach image in bundle 
+# amount type will be drowpdown
+# add meta tags autofill in all items 
+# add porst/add product => categories scrolbar
+# update all the item quick edit to item edit 
+# make order edit functionality to quick order edit
+
+
+feat ===> 
+
+# dealer
+# bundle edit
+# coupon edit
+# post edit
+# post category edit
+# post tag edit (maybe)
+# notification
+# admin roles
+# dynamic order status
+# add dealer code at add order. 
+# add coupon code at add order. 
+*/
+
+
+/* 
+
+*/
+
+
 /*
 
 issus ====> 
 error => product bundle ---> item not defined
-error => in component list images will resolve
-error => couldn't order, i._id.toHexString is not a function
 error => Cannot read property 'offer' of undefined
-
+error => coupon cover is coming as array in coupon list
 */

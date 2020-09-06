@@ -29,7 +29,8 @@ const Demo = ({ label, type, defaultValue, value, onChange, disabled, isError, e
             // rules={[{ required: true }]}
                 >
                      <Input
-                     size={size}
+                    type={type}
+                    size={size}
                     allowClear 
                     name={name}
                     disabled={disabled}

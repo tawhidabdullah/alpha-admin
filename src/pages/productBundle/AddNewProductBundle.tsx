@@ -39,6 +39,7 @@ import Categories from "../product/Categories";
 import Pricing from "../product/Pricing";
 import SelectProducts from "./SelectProducts";
 import SelectedProductItems from "./SelectedProductItems";
+import MetaTags from "../category/MetaTags";
 
 const { TabPane } = Tabs;
 
@@ -52,7 +53,15 @@ const initialValues = {
     bundlePrice: null,
     startDate: "",
     endDate: "",
-    description: ''
+    description: '',
+    bnName: '',
+	bnDescription: '',
+	metaTitle: '',
+	bnMetaTitle: '',
+	metaDescription: '',
+	bnMetaDescription: '',
+	metaTags: '',
+	bnMetaTags: '',
 }
 
 
@@ -82,9 +91,11 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [description, setDescription] = useState('');
+	const [bnDescription, setBNDescription] = useState('');
     const [productIds, setProductIds] = useState([]);
     const [productList, setProductList] = useState([]);
-
+	const [metaTags,setMetaTags] = useState([]);
+	const [bnMetaTags,setBnMetaTags] = useState([]);
 
     const [price, setPrice] = useState({
         regular: null,
@@ -126,6 +137,21 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
                 image: imagesIds,
                 products,
                 // startDate, endDate,
+                metaTitle: values.metaTitle,
+				metaDescription: values.metaDescription,
+				metaTags: metaTags.join(','),
+
+				
+				bn: {
+					metaTitle: values.bnMetaTitle,
+					metaDescription: values.bnMetaDescription,
+					metaTags: bnMetaTags.join(','),
+					name: values.bnName.trim(),
+					unit: values.metaUnit,
+					description: values.bnDescription,
+                }
+                
+
             }
         });
 
@@ -384,7 +410,7 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
                                     <div className='addProductGridContainer__name'>
                                         <div className='addProductGridContainer__item-header'>
                                             <h3>
-                                                Bundle Information
+                                                Bundle Information *
 			                                </h3>
 
                                             <div className={values.name && values.name.length > 2 ? 'checkicon-active' : 'checkicon'}>
@@ -392,48 +418,103 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
                                             </div>
                                         </div>
                                         <div className='addProductGridContainer__item-body'>
-                                            <Input
-                                                label='Name'
-                                                value={values.name}
-                                                name='name'
-                                                isError={(touched.name && errors.name) ||
-                                                    (!isSubmitting && addProductState.error['error']['name'])}
+                                        <Input
+												label='Name'
+												value={values.name}
+												placeHolder={'Rafty ox'}
+												name='name'
+												isError={(touched.name && errors.name) ||
+													(!isSubmitting && addProductState.error['error']['name'])}
 
-                                                errorString={(touched.name && errors.name) ||
-                                                    (!isSubmitting && addProductState.error['error']['name'])}
-                                                onChange={(e: any) => {
-                                                    handleChange(e);
-                                                    setFieldTouched('name');
-                                                }}
-                                            />
+												errorString={(touched.name && errors.name) ||
+													(!isSubmitting && addProductState.error['error']['name'])}
+												onChange={(e: any) => {
+													handleChange(e);
+													setFieldTouched('name');
+												}}
+											/>
 
-                                            <h3 className='inputFieldLabel'>
-                                                Description
-                                            </h3>
+											<Input
+											label='BN Name'
+											value={values.bnName}
+											placeHolder={'রাফতি অক্স'}
+											name='bnName'
+											isError={(touched.bnName && errors.bnName) ||
+												(!isSubmitting && addProductState.error['error']['bnName'])}
 
-                                            <div style={{
-                                                width: '100%',
-                                                maxWidth: '100%'
-                                            }}>
-                                                <CKEditor
-                                                    editor={ClassicEditor}
-                                                    data={description}
-                                                    onInit={editor => {
-                                                        // You can store the "editor" and use when it is needed.
-                                                        console.log('Editor is ready to use!', editor);
-                                                    }}
-                                                    onChange={(event, editor) => {
-                                                        const data = editor.getData();
-                                                        setDescription(data);
-                                                    }}
-                                                    onBlur={(event, editor) => {
-                                                        console.log('Blur.', editor);
-                                                    }}
-                                                    onFocus={(event, editor) => {
-                                                        console.log('Focus.', editor);
-                                                    }}
-                                                />
-                                            </div>
+											errorString={(touched.bnName && errors.bnName) ||
+												(!isSubmitting && addProductState.error['error']['bnName'])}
+											onChange={(e: any) => {
+												handleChange(e);
+												setFieldTouched('bnName');
+											}}
+										/>
+
+
+
+                                    
+
+											<h3 className='inputFieldLabel'>
+												Description
+                                             </h3>
+
+											<div style={{
+												width: '100%',
+												maxWidth: '100%'
+											}}>
+												<CKEditor
+													editor={ClassicEditor}
+													data={description}
+													onInit={editor => {
+														// You can store the "editor" and use when it is needed.
+														console.log('Editor is ready to use!', editor);
+													}}
+													onChange={(event, editor) => {
+														const data = editor.getData();
+														setDescription(data);
+													}}
+													onBlur={(event, editor) => {
+														console.log('Blur.', editor);
+													}}
+													onFocus={(event, editor) => {
+														console.log('Focus.', editor);
+													}}
+												/>
+											</div>
+													
+												<div style={{
+													marginTop:"15px"
+												}}></div>
+
+											<h3 className='inputFieldLabel'>
+												BN Description
+                                             </h3>
+
+											<div style={{
+												width: '100%',
+												maxWidth: '100%'
+											}}>
+												<CKEditor
+													editor={ClassicEditor}
+													data={bnDescription}
+													onInit={editor => {
+														// You can store the "editor" and use when it is needed.
+														console.log('Editor is ready to use!', editor);
+													}}
+													onChange={(event, editor) => {
+														const data = editor.getData();
+														setBNDescription(data);
+													}}
+													onBlur={(event, editor) => {
+														console.log('Blur.', editor);
+													}}
+													onFocus={(event, editor) => {
+														console.log('Focus.', editor);
+													}}
+												/>
+											</div>
+
+
 
                                             {/* <div style={{
 												display: 'flex',
@@ -500,7 +581,7 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 
                                             <div className='addProductGridContainer__item-body-variationCard-item'>
                                                 <h4>
-                                                    Price
+                                                    Price *
 			                                	</h4>
                                                 <div className='addProductGridContainer__item-body-variationCard-item-container'>
                                                     <div className='addProductGridContainer__item-body-variationCard-item-container-left'>
@@ -684,6 +765,116 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
                                     </div>
 
 
+
+                                    <div className='addProductGridContainer__image'>
+
+<div className='addProductGridContainer__item-header'>
+    <h3>
+    Meta Data
+</h3>
+
+    <Tooltip
+        placement="left" title={"Meta data will be used to make the user's easy and for search engine optimization."}>
+        <a href='###'>
+            <InfoCircleOutlined />
+        </a>
+    </Tooltip>
+</div>
+<div className='addProductGridContainer__item-body'>
+
+                
+<Input
+label='Meta title'
+value={values.metaTitle}
+placeHolder={'category...'}
+name='metaTitle'
+isError={(touched.metaTitle && errors.metaTitle) ||
+(!isSubmitting && addProductState.error['error']['metaTitle'])}
+
+errorString={(touched.metaTitle && errors.metaTitle) ||
+(!isSubmitting && addProductState.error['error']['metaTitle'])}
+onChange={(e: any) => {
+handleChange(e);
+setFieldTouched('metaTitle')
+}}
+/>
+
+<Input
+label='BN Meta title'
+value={values.bnMetaTitle}
+placeHolder={'ক্যাটাগড়ি...'}
+name='bnMetaTitle'
+isError={(touched.bnMetaTitle && errors.bnMetaTitle) ||
+(!isSubmitting && addProductState.error['error']['bnMetaTitle'])}
+
+errorString={(touched.bnMetaTitle && errors.bnMetaTitle) ||
+(!isSubmitting && addProductState.error['error']['bnMetaTitle'])}
+onChange={(e: any) => {
+handleChange(e);
+setFieldTouched('bnMetaTitle');
+}}
+/>
+
+<TextArea
+label='Meta description'
+value={values.metaDescription}
+placeholder={'meta...'}
+name='metaDescription'
+isError={(touched.metaDescription && errors.metaDescription) ||
+(!isSubmitting && addProductState.error['error']['metaDescription'])}
+
+errorString={(touched.metaDescription && errors.metaDescription) ||
+(!isSubmitting && addProductState.error['error']['metaDescription'])}
+onChange={(e: any) => {
+handleChange(e);
+setFieldTouched('metaDescription');
+}}
+/>
+
+<TextArea
+label='BN Meta Description'
+value={values.bnMetaDescription}
+placeholder={'এইয় মেট...'}
+name='bnMetaDescription'
+isError={(touched.bnMetaDescription && errors.bnMetaDescription) ||
+(!isSubmitting && addProductState.error['error']['bnMetaDescription'])}
+
+errorString={(touched.bnMetaDescription && errors.bnMetaDescription) ||
+(!isSubmitting && addProductState.error['error']['bnMetaDescription'])}
+onChange={(e: any) => {
+handleChange(e);
+setFieldTouched('bnMetaDescription');
+}}
+/>
+
+<h3 className='inputFieldLabel'>
+Meta Tags (grocery,fashion)
+</h3>
+
+<MetaTags
+// @ts-ignore
+setTags={setMetaTags}
+tags={metaTags}
+/>
+
+<div style={{
+marginTop:'15px'
+}}></div>
+
+<h3 className='inputFieldLabel'>
+BN Meta Tags (মুদিখানা,ফ্যাশন)
+</h3>
+
+<MetaTags
+// @ts-ignore
+setTags={setBnMetaTags}
+tags={bnMetaTags}
+/>
+</div>
+</div>
+
+
+
                                 </div>
                                 <div className='addProductGridContainer__right'>
                                     <div className='addProductGridContainer__category'>
@@ -691,7 +882,7 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
                                         <div className='addProductGridContainer-rightItemContainer'>
                                             <div className='addProductGridContainer-rightItemContainer-header'>
                                                 <h3>
-                                                    Categories
+                                                    Categories *
 			                                	</h3>
 
                                                 <Tooltip

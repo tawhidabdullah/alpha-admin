@@ -41,7 +41,14 @@ const Brands = ({ setCustomerId, setSelectedCustomerData }: Props) => {
 
     useEffect(() => {
         const setBrands = async () => {
-            const brandListRes = await handleTagListFetch({});
+            const brandListRes = await handleTagListFetch({
+                urlOptions:{
+                    params: {
+                      sortItem: 'added',
+                      sortOrderValue: '-1'
+                    }
+                    }
+            });
 
             // @ts-ignore
             if (brandListRes && brandListRes.length > 0) {

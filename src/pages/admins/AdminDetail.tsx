@@ -147,10 +147,7 @@ const NewBrandDetail = (props: Props) => {
                     </div>
                 )}
 
-            </Skeleton>
-
-
-   
+            </Skeleton>   
         </div>
     )
 }

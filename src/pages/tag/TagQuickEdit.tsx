@@ -13,7 +13,6 @@ import MetaTags from "../../pages/category/MetaTags";
 
 const validationSchema = Yup.object().shape({
     name: Yup.string().label('Name').required('Name is required').min(3, 'Name must have at least 3 characters'),
-    description: Yup.string().label('Description').required('Description is required')
 });
 
 
@@ -94,24 +93,23 @@ const QuickEdit = ({ tagEditVisible, setTagEditVisible, tagDetailData,setTagList
 
         // @ts-ignore
         if (updateTagRes && updateTagRes.status === 'ok') {
-            // setTagDetailData({
-            //     id:values.id,
-            //     key:values.id,
-            //     name: values.name,
-            //     description: values.description,
-            // })
+     
 
-            setTagList([{
-                id: updateTagRes['_id'] || '',
-                key: updateTagRes['_id'] || '',
-                name: updateTagRes['name'] || '',
-                description: updateTagRes['description'] || '',
-                ...tagDetailData
-            },...tagList])
+			const positionInTag = () => {
+				return tagList.map(item => item.id).indexOf(values.id);
+			}
+
+			const index = positionInTag();
+
+			// @ts-ignore
+			const updatedItem = Object.assign({}, tagList[index], { ...updateTagRes });
+			const updateTagList = [...tagList.slice(0, index), updatedItem, ...tagList.slice(index + 1)];
+			setTagList(updateTagList);
 
 
             console.log('categoryupdateTagRes',updateTagRes);
             openSuccessNotification();
+			setTagEditVisible(false)
 
             // const positionInTag = () => {
             //     return tagList.map(item => item.id).indexOf(category.id);
@@ -129,7 +127,6 @@ const QuickEdit = ({ tagEditVisible, setTagEditVisible, tagDetailData,setTagList
         }
 
         actions.setSubmitting(false);
-        setTagEditVisible(false)
     };
 
 
@@ -139,7 +136,7 @@ const QuickEdit = ({ tagEditVisible, setTagEditVisible, tagDetailData,setTagList
 
 
     const getisSubmitButtonDisabled = (values, isValid) => {
-        if (!values.name || !values.description || !isValid) {
+        if (!values.name || !isValid) {
             return true;
         }
         return false;
@@ -209,11 +206,10 @@ const QuickEdit = ({ tagEditVisible, setTagEditVisible, tagDetailData,setTagList
                             onOk={(e: any) => handleSubmit(e)}
                             onCancel={handleCancel}
                             okText='Update'
-                            okButtonProps={{
-                                loading: isSubmitting,
-                                htmlType: "submit",
-                                disabled: getisSubmitButtonDisabled(values, isValid)
-                            }}
+							okButtonProps={{
+								loading: isSubmitting,
+								htmlType: "submit",
+							}}
                         >
                                  			<Input
 								label='Name'

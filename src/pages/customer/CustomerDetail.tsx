@@ -28,11 +28,11 @@ import { Skeleton, Empty, Popconfirm, Upload, message, Switch, Select, Button, n
 // import components
 import { DataTableSkeleton } from "../../components/Placeholders";
 import CustomerEdit from "./CustomerEdit";
+import moment from "moment";
 
 
 const { Column, ColumnGroup } = Table;
 const { Search } = CoolInput;
-
 
 interface Props {
     productRecord?: any;
@@ -45,6 +45,8 @@ const NewBrandDetail = (props: Props) => {
     const [customerDetailData,setCustomerDetailData] = useState({}); 
 
 
+
+    console.log('customerDetailData',customerDetailData); 
     const params = useParams();
     const history = useHistory();
     const customerId = params['id'];
@@ -238,7 +240,36 @@ const NewBrandDetail = (props: Props) => {
                         >
                           
           
+          
+
         <Column
+          title="Code"
+          dataIndex="shortCode"
+          key="id"
+          className='classnameofthecolumn'
+          render={(text, record: any) => (
+            <>
+
+              <h4
+                onClick={() => {
+                  // setvisible(true)
+                  history.push(`/admin/order/${record.id}`)
+                }}
+                style={{
+                  fontWeight: 400,
+                  color: '#555',
+                  cursor: 'pointer'
+
+                }}>
+                #{text}
+              </h4>
+
+
+            </>
+          )}
+
+        />
+    <Column
           title="Name"
           dataIndex="name"
           key="id"
@@ -266,43 +297,51 @@ const NewBrandDetail = (props: Props) => {
 
         />
 
-               <Column
-                title="Country" 
-                dataIndex="country" 
-                key="id" 
-                className='classnameofthecolumn'
+
                 
-                    />
+
+        <Column
+           title="Delivery" 
+           dataIndex="deliveryName" 
+           key="id" 
+           className='classnameofthecolumn'
+         
+            />
 
 
-                <Column
-                title="City" 
-                dataIndex="city" 
-                key="id" 
-                className='classnameofthecolumn'
-                />
 
-                <Column
-                title="Created" 
-                dataIndex="date_created" 
-                key="id" 
-                className='classnameofthecolumn'
-                render={(text, record: any) => (
+          <Column
+           title="Created" 
+           dataIndex="date_created" 
+           key="id" 
+           className='classnameofthecolumn'
+           render={(text, record: any) => (
             <>
 
               <h4
+               
                 style={{
                   fontWeight: 400,
                   color: '#555',
 
                 }}>
-                  <Moment  withTitle>
-                    {text}
-                  </Moment>
+                  {text && moment(text).format('MMMM Do YYYY, h:mm a')}
               </h4>
+
+
             </>
           )}
             />
+
+
+              <Column
+                title="Total Price" 
+                dataIndex="total" 
+                key="id" 
+                className='classnameofthecolumn'
+                />
+
+
 
 
           <Column

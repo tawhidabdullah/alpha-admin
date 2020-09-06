@@ -76,7 +76,7 @@ const { Search } = CoolInput;
 const MyTable = ({ data, setTagList }) => {
 	const [visible, setvisible] = useState(false);
 	const [activeCategoryForEdit, setactiveCategoryForEdit] = useState(false);
-	const [deleteTagState, handleDeleteTagFetch] = useHandleFetch({}, 'deleteTag');
+	const [deleteTagState, handleDeleteTagFetch] = useHandleFetch({}, 'postDeleteTag');
 
 	const history = useHistory();
 
@@ -133,7 +133,6 @@ const MyTable = ({ data, setTagList }) => {
 					className='classnameofthecolumn'
 					render={(text, record: any) => (
 						<>
-
 							<h4
 								onClick={() => {
 									history.push(`/admin/posts/tag/${record.id}`)
@@ -147,8 +146,6 @@ const MyTable = ({ data, setTagList }) => {
 								}}>
 								{text}
 							</h4>
-
-
 						</>
 					)}
 				/>
@@ -161,14 +158,6 @@ const MyTable = ({ data, setTagList }) => {
 
 				/>
 
-
-				<Column
-					title="Product"
-					dataIndex="productCount"
-					key="id"
-					className='classnameofthecolumn'
-				/>
-
 				<Column
 
 					className='classnameofthecolumn'
@@ -178,7 +167,7 @@ const MyTable = ({ data, setTagList }) => {
 					render={(text, record: any) => (
 						<Space size="middle">
 							<a href='##'>
-								<Tooltip placement="top" title='Quick Edit Recipe tag'>
+								<Tooltip placement="top" title='Edit Recipe tag'>
 									<span className='iconSize' onClick={() => {
 										setvisible(true)
 										setactiveCategoryForEdit(record);

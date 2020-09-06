@@ -49,7 +49,7 @@
 			"method": "post"
 		},
 		"productList": {
-			"url": "/api/product?sort=sortItem&sortOrder=sortOrderValue",
+			"url": "/api/product?sort=sortItem&sortOrder=sortOrderValue&type=productType",
 			"method": "get"
 		},
 		"addProduct": {
@@ -58,6 +58,10 @@
 		},
 		"updateProduct": {
 			"url": "/admin/api/product/update/:id",
+			"method": "post"
+		},
+		"deletePost": {
+			"url": "/admin/api/post/update/delete/:id",
 			"method": "post"
 		},
 		"deleteProduct": {
@@ -69,7 +73,7 @@
 			"method": "post"
 		},
 		"postList": {
-			"url": "/admin/api/post",
+			"url": "/admin/api/post?sort=sortItem&sortOrder=sortOrderValue",
 			"method": "get"
 		},
 		"postCategoryList": {
@@ -101,7 +105,11 @@
 			"method": "post"
 		},
 		"postUpdateTag": {
-			"url": "/admin/api/post/update/tag",
+			"url": "/admin/api/post/tag/update/:id",
+			"method": "post"
+		},
+		"postDeleteTag": {
+			"url": "/admin/api/post/update/tag/delete/:id",
 			"method": "post"
 		},
 		"categoryUpdateIcon": {
@@ -200,8 +208,63 @@
 			"url": "/admin/api/bundle/add",
 			"method": "post"
 		},
+
+
+		"addDealer": {
+			"url": "/admin/api/dealer/add",
+			"method": "post"
+		},
+		"updateDealer": {
+			"url": "/admin/api/dealer/update/:id",
+			"method": "post"
+		},
+		"deleteDealer": {
+			"url": "/admin/api/dealer/update/delete/:id",
+			"method": "post"
+		},
+		"dealerList": {
+			"url": "/admin/api/dealer?sort=sortItem&sortOrder=sortOrderValue",
+			"method": "get"
+		},
+		"dealerDetail": {
+			"url": "/admin/api/dealer/:id",
+			"method": "get"
+		},
+		"dealerOrderList": {
+			"url": "/admin/api/dealer/:id/order",
+			"method": "get"
+		},
+		"dealerRegisteredCustomerList": {
+			"url": "/admin/api/dealer/:id/customer",
+			"method": "get"
+		},
+		"dealerAreaDetail": {
+			"url": "/admin/api/dealer/area/:id",
+			"method": "get"
+		},
+		"addDealerArea": {
+			"url": "/admin/api/dealer/area/add",
+			"method": "post"
+		},
+		"updateDealerArea": {
+			
+			"url": "/admin/api/dealer/area/update/:id",
+			"method": "post"
+		},
+		"deleteDealerArea": {
+			"url": "/admin/api/dealer/area/update/delete/:id",
+			"method": "post"
+		},
+		"dealerAreaList": {
+			"url": "/admin/api/dealer/area",
+			"method": "get"
+		},
+		"dealerListByArea": {
+			"url": "/admin/api/dealer/area/:id/dealer",
+			"method": "get"
+		},
 		"bundleDetail": {
-			"url": "/admin/api/bundle/:id",
+			"url": "/api/product/:id",
 			"method": "get"
 		},
 		"updateBundle": {
@@ -213,7 +276,7 @@
 			"method": "post"
 		},
 		"bundleList": {
-			"url": "/admin/api/bundle?sort=sortItem&sortOrder=sortOrderValue",
+			"url": "/api/product?type=productType&sort=sortItem&sortOrder=sortOrderValue",
 			"method": "get"
 		},
 		"addCoupon": {
@@ -273,7 +336,7 @@
 			"method": "get"
 		},
 		"orderList": {
-			"url": "/admin/api/order?sort=sortItem&sortOrder=sortOrderValue&limit=limitNumber&status=statusValue",
+			"url": "/admin/api/order?sort=sortItem&sortOrder=sortOrderValue&limit=limitNumber&status=statusValue&startDate=startDateValue&endDate=endDateValue",
 			"method": "get"
 		},
 		"orderListForCustomer": {
@@ -299,6 +362,14 @@
 		"deleteOrder": {
 			"url": "/admin/api/order/update/delete/:id",
 			"method": "post"
+		},
+		"configureOrderStatus": {
+			"url": "/admin/api/order/config/status",
+			"method": "post"
+		},
+		"getOrderStatusConfiguration": {
+			"url": "/admin/api/order/config/status",
+			"method": "get"
 		},
 		"componentList": {
 			"url": "/admin/api/component?sort=sortItem&sortOrder=sortOrderValue&image=imageValue",
@@ -444,6 +515,7 @@
 			"url": "/admin/api/order?metric=metricType&startDate=startDateValue&endDate=endDateValue",
 			"method": "get"
 		},
+		
 		"getAnalyticsTotalUserCount": {
 			"url": "/admin/api/analytics/user?metric=metricValue&startDate=startDateValue&endDate=endDateValue",
 			"method": "get"
@@ -480,7 +552,7 @@
 			"url": "/admin/api/email/inbox",
 			"method": "get"
 		},
-		"getSetEmailDetails": {
+		"getEmailDetails": {
 			"url": "/admin/api/email/inbox/:id",
 			"method": "get"
 		},

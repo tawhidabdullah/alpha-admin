@@ -23,7 +23,8 @@ const Tags = ({
             const tagListRes = await handleTagListFetch({
                 urlOptions: {
                     params: {
-                        isSubCategory: false
+                        sortItem: 'added',
+                        sortOrderValue: '-1'
                     }
                 }
             });

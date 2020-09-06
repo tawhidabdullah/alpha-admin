@@ -26,6 +26,7 @@ import { Skeleton, Empty, Button, notification, Table, Space, Input as CoolInput
 import { DataTableSkeleton } from "../../components/Placeholders";
 import CouponEdit from "./CouponEdit";
 import CouponProducts from "./CouponProducts";
+import  moment from 'moment'
 
 
 const { Column, ColumnGroup } = Table;
@@ -122,15 +123,7 @@ const NewBrandDetail = (props: Props) => {
 
                                 </h3>
                             )}
-                            {tagDetailState.data['code'] && (
-                                <h3>
-                                    CODE:
-                                    <span>
-                                        {tagDetailState.data['code']}
-                                    </span>
-
-                                </h3>
-                            )}
+                          
 
                             {tagDetailState.data['amount'] && (
                                 <h3>
@@ -142,24 +135,35 @@ const NewBrandDetail = (props: Props) => {
                                 </h3>
                             )}
 
-                            {tagDetailState.data['freeDelivery'] && (
+
+                            {tagDetailState.data['startDate'] && (
                                 <h3>
-                                    FREE DELIVERY:
+                                    START DATE:
                                     <span>
-                                        {tagDetailState.data['freeDelivery']}
+                                    {moment(tagDetailState.data['startDate']).format('MMMM Do YYYY, h:mm:ss a')}
                                     </span>
 
                                 </h3>
                             )}
 
 
+
+                            {tagDetailState.data['endDate'] && (
+                                <h3>
+                                    END DATE:
+                                    <span>
+                                    {moment(tagDetailState.data['endDate']).format('MMMM Do YYYY, h:mm:ss a')}
+                                    </span>
+
+                                </h3>
+                            )}
                         </div>
                     </div>
                 )}
 
             </Skeleton>
 
-            {/* <div className='brandDetailContainer__heading'>
+            <div className='brandDetailContainer__heading'>
                 <h3>
                     Ordered Products
                 </h3>
@@ -187,8 +191,8 @@ const NewBrandDetail = (props: Props) => {
                 )}
 
 
-            </div> */}
-            {tagDetailState.done && tagDetailState.data && Object.keys(tagDetailState.data).length > 0 && tagDetailState.data['freeProducts'] && (
+            </div>
+            {/* {tagDetailState.done && tagDetailState.data && Object.keys(tagDetailState.data).length > 0 && tagDetailState.data['freeProducts'] && (
                 <div className='brandDetailContainer__heading'>
                     <h3>
                         Free Products
@@ -220,7 +224,7 @@ const NewBrandDetail = (props: Props) => {
                     </>
                 )}
 
-            </div>
+            </div> */}
         </div>
     )
 }

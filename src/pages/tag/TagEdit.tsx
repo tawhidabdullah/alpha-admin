@@ -13,7 +13,6 @@ import MetaTags from "../../pages/category/MetaTags";
 
 const validationSchema = Yup.object().shape({
     name: Yup.string().label('Name').required('Name is required').min(3, 'Name must have at least 3 characters'),
-    description: Yup.string().label('Description').required('Description is required')
 });
 
 
@@ -101,6 +100,7 @@ const QuickEdit = ({ tagEditVisible, setTagEditVisible, tagDetailData,setTagDeta
             })
             console.log('categoryupdateTagRes',updateTagRes);
             openSuccessNotification();
+			setTagEditVisible(false)
 
             // const positionInTag = () => {
             //     return tagList.map(item => item.id).indexOf(category.id);
@@ -118,7 +118,6 @@ const QuickEdit = ({ tagEditVisible, setTagEditVisible, tagDetailData,setTagDeta
         }
 
         actions.setSubmitting(false);
-        setTagEditVisible(false)
     };
 
 
@@ -128,7 +127,7 @@ const QuickEdit = ({ tagEditVisible, setTagEditVisible, tagDetailData,setTagDeta
 
 
     const getisSubmitButtonDisabled = (values, isValid) => {
-        if (!values.name || !values.description || !isValid) {
+        if (!values.name || !isValid) {
             return true;
         }
         return false;
@@ -198,11 +197,10 @@ const QuickEdit = ({ tagEditVisible, setTagEditVisible, tagDetailData,setTagDeta
                             onOk={(e: any) => handleSubmit(e)}
                             onCancel={handleCancel}
                             okText='Update'
-                            okButtonProps={{
-                                loading: isSubmitting,
-                                htmlType: "submit",
-                                disabled: getisSubmitButtonDisabled(values, isValid)
-                            }}
+							okButtonProps={{
+								loading: isSubmitting,
+								htmlType: "submit",
+							}}
                         >
                                  			<Input
 								label='Name'
