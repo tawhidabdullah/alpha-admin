@@ -24,8 +24,6 @@ interface Props {
   setTagIds?: any;
   selectedTags?: any;
   setSelectedTags?: any;
-  tagIds?:any; 
-  customer:any; 
 }
 
 
@@ -143,7 +141,7 @@ const Tags = ({
   };
 
 
-  console.log('selectedTags', selectedTags)
+  console.log('dealerAreaList', tagState)
 
 
 
@@ -178,20 +176,7 @@ const Tags = ({
       )}
 
 
-      {/* 
-      {tagState.done && tagState.data.length > 0 && options.length > 0 && <Select
-        mode="multiple"
-        placeholder="search tags"
-        value={selectedOpions}
-        onChange={handleChange}
-        style={{ width: '100%' }}
-      >
-        {options.filter(o => !selectedOpions.includes(o)).map(item => (
-          <Select.Option key={item} value={item}>
-            {item}
-          </Select.Option>
-        ))}
-      </Select>} */}
+
 
       {tagState.done && tagState.data.length > 0 && options.length > 0 && (
         <>

@@ -37,7 +37,7 @@ interface Props {
 
 const NewBrandDetail = (props: Props) => {
     const [tagDetailState, handleTagDetailFetch] = useHandleFetch({}, 'postTagDetail');
-    const [tagProductsState, handleTagProductsFetch] = useHandleFetch({}, 'tagProducts');
+    const [tagProductsState, handleTagProductsFetch] = useHandleFetch({}, 'tagPostList');
     const [tagEditVisible, setTagEditVisible] = useState(false);
     const [tagDetailData,setTagDetailData] = useState({}); 
 
@@ -103,8 +103,8 @@ const NewBrandDetail = (props: Props) => {
                 {tagDetailState.done && tagDetailData && (Object.keys(tagDetailData).length > 0) && (
                     <>
                         <TagEdit
-                            tagEditVisible={tagEditVisible}
-                            setTagEditVisible={setTagEditVisible}
+                            addNewCategoryVisible={tagEditVisible}
+                            setAddNewCategoryVisible={setTagEditVisible}
                             tagDetailData={tagDetailData}
                             setTagDetailData={setTagDetailData}
                         />
@@ -152,7 +152,7 @@ const NewBrandDetail = (props: Props) => {
 
             <div className='brandDetailContainer__heading'>
                 <h3>
-                    Products
+                    Recipes 
                 </h3>
             </div>
             <div className='brandDetailContainer__body'>
@@ -162,7 +162,7 @@ const NewBrandDetail = (props: Props) => {
                     <div style={{
                         marginTop: '100px'
                     }}>
-                        <Empty description='No Products exists for this recipe tag' image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                        <Empty description='No Recipes found' image={Empty.PRESENTED_IMAGE_SIMPLE} />
                     </div>
                 )}
 
@@ -205,7 +205,7 @@ const NewBrandDetail = (props: Props) => {
                                     <>
                                         <img
                                             onClick={() => {
-                                                history.push(`/admin/product/${record.id}`)
+                                                history.push(`/admin/posts/${record.id}`)
                                             }}
                                             src={cover} alt='cover img' style={{
                                                 height: '40px',
@@ -231,7 +231,7 @@ const NewBrandDetail = (props: Props) => {
                                     <>
                                         <h4
                                             onClick={() => {
-                                                history.push(`/admin/product/${record.id}`)
+                                                history.push(`/admin/posts/${record.id}`)
                                             }}
                                             style={{
                                                 fontWeight: 400,

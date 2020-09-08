@@ -72,6 +72,15 @@
 			"url": "/admin/api/post/add",
 			"method": "post"
 		},
+		"tagPostList": {
+			"url": "/api/post/tag/:id/post?sort=sortItem&sortOrder=sortOrderValue",
+			"method": "get"
+		},
+		"categoryPostList": {
+			"url": "/api/post/category/:id/post?sort=sortItem&sortOrder=sortOrderValue",
+			"method": "get"
+		},
+		
 		"postList": {
 			"url": "/admin/api/post?sort=sortItem&sortOrder=sortOrderValue",
 			"method": "get"
@@ -83,6 +92,14 @@
 		"postCategoryDetail": {
 			"url": "/admin/api/post/category/:id",
 			"method": "get"
+		},
+		"postCategoryUpdate": {
+			"url": "/admin/api/post/category/update/:id",
+			"method": "post"
+		},
+		"postCategoryDelete": {
+			"url": "/admin/api/post/category/update/delete/:id",
+			"method": "post"
 		},
 		"postSelectCategoryList": {
 			"url": "/admin/api/post/category?sort=sortItem&sortOrder=sortOrderValue",
@@ -109,7 +126,7 @@
 			"method": "post"
 		},
 		"postDeleteTag": {
-			"url": "/admin/api/post/update/tag/delete/:id",
+			"url": "/admin/api/post/tag/update//delete/:id",
 			"method": "post"
 		},
 		"categoryUpdateIcon": {

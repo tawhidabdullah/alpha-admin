@@ -3,10 +3,8 @@ import React from 'react';
 // import pages
 import Login from './pages/auth/login';
 
-
-
 // import layouts
-import Sider from "./layout/sider";
+import Sider from './layout/sider';
 import Header from './layout/header';
 import Content from './layout/content';
 // import Footer from './layout/footer';
@@ -15,29 +13,27 @@ import Content from './layout/content';
 import { Layout } from 'antd';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
-
 const App = () => {
-	return (
-		<Router>
-			<Switch>
-				<Route path='/admin/login' exact>
-					<Login />
-				</Route>
-			</Switch>
-			<Switch>
+  return (
+    <Router>
+      <Switch>
+        <Route path='/admin/login' exact>
+          <Login />
+        </Route>
+      </Switch>
+      <Switch>
+        <Layout style={{ minHeight: '100vh' }}>
+          <Header />
 
-				<Layout style={{ minHeight: '100vh' }}>
-					<Header />
-
-					<Layout className='site-layout'>
-						<Sider />
-						<Content />
-					</Layout>
-					{/* <Footer /> */}
-				</Layout>
-			</Switch>
-		</Router>
-	);
+          <Layout className='site-layout'>
+            <Sider />
+            <Content />
+          </Layout>
+          {/* <Footer /> */}
+        </Layout>
+      </Switch>
+    </Router>
+  );
 };
 
 export default App;
@@ -51,7 +47,6 @@ export default App;
 #customer
 #customer
 */
-
 
 /*
 
@@ -94,16 +89,18 @@ feat ===>
 # add coupon code at add order. 
 */
 
-
 /* 
 
 */
 
-
 /*
 
 issus ====> 
-error => product bundle ---> item not defined
-error => Cannot read property 'offer' of undefined
-error => coupon cover is coming as array in coupon list
+
+error => product bundle ---> item not defined. 
+error => Cannot read property 'offer' of undefined. 
+error => coupon cover is coming as array in coupon list.
+error => update post tag => Cannot read property 'name' of undefined. 
+error => add post category => checkMime is not defined probably because of the image.
+
 */

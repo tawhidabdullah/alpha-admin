@@ -671,6 +671,82 @@ class Converter {
 }
 
 
+	/**
+   * @public
+   * @method tagPostList convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+  async tagPostList(resData) {
+	const data = resData.data;
+	// const isNext = resData.page.next;
+
+	let convertedData =
+		data.length > 0 &&
+		data.map((post) => {
+			return {
+				...post,
+				id: post._id || '',
+				name: post.name && post.name,
+				body: post.body && post.body,
+				preparationTime: post.preparationTime && post.preparationTime,
+				servingSize: post.servingSize && post.servingSize,
+				cookingTime: post.cookingTime && post.cookingTime,
+				cover: `${config['baseURL']}${(post.cover && post.cover['thumbnail']) || ''}`,
+				url: post.url,
+				category: post.category,
+				tags: post.tags,
+			};
+		});
+
+	// convertedData = {
+	// 	data: convertedData,
+	// 	isNext
+	// };
+
+	return convertedData;
+}
+
+
+	/**
+   * @public
+   * @method categoryPostList convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+  async categoryPostList(resData) {
+	const data = resData.data;
+	// const isNext = resData.page.next;
+
+	let convertedData =
+		data.length > 0 &&
+		data.map((post) => {
+			return {
+				...post,
+				id: post._id || '',
+				name: post.name && post.name,
+				body: post.body && post.body,
+				preparationTime: post.preparationTime && post.preparationTime,
+				servingSize: post.servingSize && post.servingSize,
+				cookingTime: post.cookingTime && post.cookingTime,
+				cover: `${config['baseURL']}${(post.cover && post.cover['thumbnail']) || ''}`,
+				url: post.url,
+				category: post.category,
+				tags: post.tags,
+			};
+		});
+
+	return convertedData;
+}
+
+
+
+
+
+
+
+
+
 	
 	/**
    * @public
@@ -2279,6 +2355,27 @@ async categoryUpdateIcon(data) {
 		return convertedData;
 	}
 
+		/**
+   * @public
+   * @method postCategoryDelete convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+  async postCategoryDelete(data) {
+	const convertedData = data;
+	if (data && data.success) {
+		return {
+			status: 'ok'
+		};
+	}
+
+	return convertedData;
+}
+
+
+	
+
+
 
 		/**
    * @public
@@ -2440,6 +2537,46 @@ async categoryUpdateIcon(data) {
 
 	return convertedData;
 }
+
+
+
+	/**
+   * @public
+   * @method postAddCategory convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+  async postAddCategory(data) {
+	const convertedData = data;
+	if (data && data[0]) {
+		return {
+			...data[0],
+			status: 'ok'
+		};
+	}
+
+	return convertedData;
+}
+
+	/**
+   * @public
+   * @method postCategoryUpdate convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+  async postCategoryUpdate(data) {
+	const convertedData = data;
+	if (data && data[0]) {
+		return {
+			...data[0],
+			status: 'ok'
+		};
+	}
+
+	return convertedData;
+}
+
+
 
 
 	
@@ -2687,6 +2824,31 @@ async categoryUpdateIcon(data) {
 		return convertedData;
 	}
 
+	
+
+
+	
+	
+	/**
+* @public
+* @method postDeleteTag convert api data from API to general format based on config server
+* @param {Object} data response objectc from wc
+* @returns {Object}  converted data
+*/
+async postDeleteTag(data) {
+	const convertedData = data;
+	if (data && data.success) {
+		return {
+			status: 'ok'
+		};
+	}
+
+	return convertedData;
+}
+
+
+
+	
 
 		/**
 * @public

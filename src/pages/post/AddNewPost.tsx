@@ -167,8 +167,8 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
             setBundleList([{
                  // @ts-ignore
                  ...addProductRes,
-                id: addProductRes['id'] || '',
-                key: addProductRes['id'] || '',
+                id: addProductRes['_id'] || '',
+                key: addProductRes['_id'] || '',
                 name: addProductRes['name'] || '',
                 cover: addProductRes['cover'] || '',
 

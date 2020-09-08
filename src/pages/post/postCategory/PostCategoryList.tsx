@@ -45,7 +45,7 @@ interface myTableProps {
 const MyTable = ({data, setcategoryList, history}: myTableProps) => {
     const [visible,setvisible] = useState(false);   
     const [activeCategoryForEdit,setactiveCategoryForEdit] = useState(false); 
-    const [deleteCategoryState, handleDeleteCategoryFetch] = useHandleFetch({}, 'deleteCategory');
+    const [deleteCategoryState, handleDeleteCategoryFetch] = useHandleFetch({}, 'postCategoryDelete');
       // console.log('activeCategoryForEdit',activeCategoryForEdit); 
 
 

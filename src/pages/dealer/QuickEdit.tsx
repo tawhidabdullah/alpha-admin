@@ -163,7 +163,6 @@ const QuickEdit = ({ customer, setvisible, visible, customerList, setCustomerLis
 			  }
 			
 			  actions.setSubmitting(false);
-			  setvisible(false)
 	};
 	
 
@@ -435,10 +434,6 @@ const QuickEdit = ({ customer, setvisible, visible, customerList, setCustomerLis
 										}}
 									/>
 								</div>
-
-
-
-
 							</div>
 
 
@@ -567,7 +562,6 @@ const QuickEdit = ({ customer, setvisible, visible, customerList, setCustomerLis
 											</div>
 											<div className='addProductGridContainer-rightItemContainer-body'>
 												<Areas
-												customer={customer}
 													setSelectedTags={setSelectedTags}
 													selectedTags={selectedTags}
 													setTagIds={setTagIds} />

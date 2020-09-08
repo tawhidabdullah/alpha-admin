@@ -557,11 +557,10 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, custo
 												</h3>
 											</div>
 											<div className='addProductGridContainer-rightItemContainer-body'>
-												{/* <Areas
-													tagIds={tagIds}
+												<Areas
 													setSelectedTags={setSelectedTags}
 													selectedTags={selectedTags}
-													setTagIds={setTagIds} /> */}
+													setTagIds={setTagIds} />
 											</div>
 										</div>
 

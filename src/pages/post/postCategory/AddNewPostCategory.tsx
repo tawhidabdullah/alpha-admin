@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
 
 import { useHandleFetch } from '../../../hooks';
 // import third party ui lib
-import { Switch, Select, notification, Modal, Tooltip, Upload, message } from 'antd';
+import { Switch, Select, notification, Modal, Tooltip, Upload, message, } from 'antd';
 
 import {
 	DeleteOutlined,
@@ -34,12 +34,12 @@ import MetaTags from "./MetaTags";
 
 
 const validationSchema = Yup.object().shape({
-	name: Yup.string().label('Name').required('Name is required').min(3, 'Name must have at least 3 characters'),
+	// name: Yup.string().label('Name').required('Name is required').min(3, 'Name must have at least 3 characters'),
 });
 
 const openSuccessNotification = (message?: any) => {
 	notification.success({
-		message: message || 'Category Updated',
+		message: message || 'Recipe Category Created',
 		description: '',
 		icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
 	});
@@ -71,7 +71,8 @@ const initialValues = {
 	bnMetaTags: '',
 	image: [],
 	url: '',
-	cover: ''
+	cover: '',
+	displayOrder: null,
 }
 
 const { Option } = Select;
@@ -85,7 +86,7 @@ interface Props {
 
 const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, categoryList, setcategoryList }: Props) => {
 
-	const [addCategoryState, handleAddCategoryFetch] = useHandleFetch({}, 'postAddCategory');
+	const [addCategoryState, handleAddCategoryFetch] = useHandleFetch({}, 'postAddCategory','form');
 	const [visible, setvisible] = useState(false);
 	const [myImages, setmyImages] = useState(false);
 	const [myThumbnailImage, setmyThumbnailImage] = useState(false);
@@ -109,50 +110,64 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, categ
 
 		const formData = new FormData();
 
+		const bn = {
+			metaTitle: values.bnMetaTitle,
+			metaDescription: values.bnMetaDescription,
+			metaTags: bnTags.join(','),
+			name: values.bnName.trim(),
+			description: values.bnDescription,
+		}; 
+
 		formData.append("name", values.name.trim());
 		formData.append("description", values.description);
 		formData.append("image", JSON.stringify(imagesIds));
 		formData.append("cover", coverImageId || imagesIds[0] ? imagesIds[0] : '');
 		formData.append("parent", selectedParentId);
 		formData.append('icon', imageFile)
+		formData.append('metaTitle', values.metaTitle)
+		formData.append('displayOrder', values.displayOrder)
+		formData.append('metaDescription', values.metaDescription)
+		formData.append('metaTags', values.metaTags)
+
+
+
+		const bnData = JSON.stringify(bn);
+		const bnFormData = new FormData();
+		bnFormData.append("bn",bnData);
+
+
+
+		formData.append('bn', bnFormData.get('bn'))
+
+
+
+
+		console.log('addcategoryREsBody',{
+			...formData,
+			// ...bnFormData
+		}); 
 
 
 
 		const addCategoryRes = await handleAddCategoryFetch({
-			body: {
-				name: values.name.trim(),
-				description: values.description,
-				image: imagesIds,
-				cover: coverImageId || imagesIds[0] ? imagesIds[0] : '',
-				parent: selectedParentId,
-				icon: imageFile,
-				metaTitle: values.metaTitle,
-				metaDescription: values.metaDescription,
-				metaTags: tags.join(','),
-				bn: {
-					metaTitle: values.bnMetaTitle,
-					metaDescription: values.bnMetaDescription,
-					metaTags: bnTags.join(','),
-					name: values.bnName.trim(),
-					description: values.bnDescription,
-				}
-			},
+			body: formData,
 		});
 
 
 		// @ts-ignore
 		if (addCategoryRes && addCategoryRes.status === 'ok') {
-			openSuccessNotification('Post Category Created!');
+			openSuccessNotification('Recipe Category Created!');
 			setAddNewCategoryVisible(false)
 
-			setcategoryList([...categoryList, {
+			setcategoryList([{
 				id: addCategoryRes['_id'] || '',
 				key: addCategoryRes['_id'] || '',
 				name: addCategoryRes['name'] || '',
 				description: addCategoryRes['description'] || '',
+				cover: addCategoryRes['cover'] || '',
 				// @ts-ignore
 				...addCategoryRes
-			}])
+			},...categoryList])
 
 			actions.resetForm();
 			// @ts-ignore
@@ -171,6 +186,41 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, categ
 
 		actions.setSubmitting(false);
 	};
+
+
+
+	console.log('addCategoryState',addCategoryState)
+
+	
+	useEffect(() => {
+		if (!addCategoryState['isLoading']) {
+			const error = addCategoryState['error'];
+			if (error['isError'] && Object.keys(error['error']).length > 0) {
+
+
+				const errors =
+					Object.values(error['error']).length > 0
+						? Object.values(error['error'])
+						: [];
+				errors.forEach((err, i) => {
+					if (typeof err === 'string') {
+						openErrorNotification(err)
+					}
+					else if (typeof err === 'object') {
+						if (err && Object.keys(err).length > 0) {
+							const errs = Object.values(err);
+							errs.forEach(err => {
+								openErrorNotification(err)
+							})
+
+						}
+					}
+				});
+			}
+		}
+	}, [addCategoryState])
+
+
 
 
 
@@ -258,7 +308,6 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, categ
 	);
 
 
-	console.log('addnewCategoryTags',tags);
 
 	return (
 		<Formik
@@ -287,7 +336,7 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, categ
 							style={{
 								top: '40px'
 							}}
-							title="Add New Post Category"
+							title="Add New Category"
 							visible={addNewCategoryVisible}
 							onOk={(e: any) => handleSubmit(e)}
 							onCancel={handleCancel}
@@ -295,7 +344,6 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, categ
 							okButtonProps={{
 								loading: isSubmitting,
 								htmlType: "submit",
-								disabled: getisSubmitButtonDisabled(values, isValid)
 							}}
 						>
 							<Input
@@ -361,44 +409,25 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, categ
 									setFieldTouched('bnDescription');
 								}}
 							/>
+{/* 
+<Input
+										label='Display Order'
+										value={values.displayOrder}
+										placeHolder={'1,3,7'}
+										name='displayOrder'
+										type='number'
+										isError={(touched.displayOrder && errors.displayOrder) ||
+											(!isSubmitting && addCategoryState.error['error']['displayOrder'])}
 
-							<div style={{
-								marginTop: '25px'
-							}}></div>
+										errorString={(touched.displayOrder && errors.displayOrder) ||
+											(!isSubmitting && addCategoryState.error['error']['displayOrder'])}
+										onChange={(e: any) => {
+											handleChange(e);
+											setFieldTouched('displayOrder');
+										}}
+										/>
 
-							<div className='switchLabelContainer'>
-								<Switch
-									checked={isparentCategoryChecked}
-									defaultChecked onChange={onSwitchChange} />
-								<div className='switchLabelContainer-textContainer'>
-									<h5 >Top level Category</h5>
-									<h5 className='switchLabelContainer-desc'>Disable to select a Parent Category</h5>
-								</div>
-							</div>
-
-							{!isparentCategoryChecked && (
-								<>
-									<h3 className='inputFieldLabel'>Parent Category</h3>
-									<Select
-										showSearch
-										style={{ width: 300 }}
-										placeholder='Select a Parent Category'
-										optionFilterProp='children'
-										onChange={onChangeSelect}
-										// onFocus={onFocus}
-										// onBlur={onBlur}
-										// onSearch={onSearch}
-										filterOption={(input, option: any) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-									>
-										{categoryList.length > 0 && categoryList.map(category => {
-											return <Option value={category.id}>{category.name}</Option>
-										})}
-
-
-									</Select>
-								</>
-							)}
-
+			 */}
 
 							<div
 								style={{
@@ -508,11 +537,8 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, categ
 										</span>
 									</div>
 								</Tooltip>
-
 							</div>
 
-
-							
 
 							<Input
 								label='Meta title'

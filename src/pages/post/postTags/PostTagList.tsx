@@ -196,9 +196,9 @@ const MyTable = ({ data, setTagList }) => {
 			{activeCategoryForEdit && <QuickEdit
 				tagList={data}
 				setTagList={setTagList}
-				setvisible={setvisible}
-				visible={visible}
-				category={activeCategoryForEdit} />}
+				setAddNewCategoryVisible={setvisible}
+				addNewCategoryVisible={visible}
+				tagDetailData={activeCategoryForEdit} />}
 		</>
 	)
 }

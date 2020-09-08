@@ -47,7 +47,6 @@ const NewBrandDetail = (props: Props) => {
 
 
 
-    console.log('customerDetailData',customerDetailData); 
     const params = useParams();
     const history = useHistory();
     const customerId = params['id'];
@@ -125,6 +124,7 @@ const NewBrandDetail = (props: Props) => {
                             visible={tagEditVisible}
                             setvisible={setTagEditVisible}
                             customer={customerDetailData}
+                            setCustomerDetailData={setCustomerDetailData}
                         />
                         <Button
                             onClick={() => setTagEditVisible(true)}
@@ -444,7 +444,7 @@ const NewBrandDetail = (props: Props) => {
                             // bordered={true}
                             size='small'
                             // pagination={false}
-                            dataSource={orderListState.data}
+                            dataSource={registeredCustomerListState.data}
                             tableLayout={'auto'}
                             onHeaderRow={column => {
                                 return {

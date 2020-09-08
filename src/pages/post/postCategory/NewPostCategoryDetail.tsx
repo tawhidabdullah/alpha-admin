@@ -29,7 +29,7 @@ interface Props {
 
 const NewBrandDetail = (props: Props) => {
     const [categoryDetailState, handleCategoryDetailFetch] = useHandleFetch({}, 'postCategoryDetail');
-    const [categoryProductsState, handleCategoryProductsFetch] = useHandleFetch({}, 'categoryProducts');
+    const [categoryProductsState, handleCategoryProductsFetch] = useHandleFetch({}, 'categoryPostList');
 
     const params = useParams();
     const history = useHistory();
@@ -133,10 +133,11 @@ const NewBrandDetail = (props: Props) => {
                 {categoryDetailState.done && categoryDetail && (Object.keys(categoryDetail).length > 0) && (
                     <>
                         <CategoryEdit
-                            categoryEditVisible={categoryEditVisible}
-                            setCategoryEditVisible={setCategoryEditVisible}
+                            addNewCategoryVisible={categoryEditVisible}
+                            setAddNewCategoryVisible={setCategoryEditVisible}
                             categoryDetailData={categoryDetail}
                             setcategoryDetailData={setcategoryDetail}
+
                         />
 
                         <Button
@@ -249,41 +250,6 @@ const NewBrandDetail = (props: Props) => {
                         )}
 
 
-                        {categoryDetail['subCategory'] && categoryDetail['subCategory'].length > 0 && (
-                            <>
-                                <div className='brandDetailContainer__heading'>
-                                    <h3>
-                                        Child recipe categories
-                                   </h3>
-                                </div>
-
-                                <div className='smallcatCardContainer'>
-                                    {categoryDetail['subCategory'].map(subCat => {
-                                        return (
-                                            <div
-                                                onClick={() => history.push(`/admin/category/${subCat.id}`)}
-                                                className='smallcatCardContainer__card'>
-                                                <div className='smallcatCardContainer__card-coverbox'>
-                                                    <img src={subCat.cover} alt="" />
-                                                </div>
-                                                <div className='smallcatCardContainer__card-info'>
-                                                    <h3>
-                                                        {subCat.name}
-                                                    </h3>
-                                                </div>
-                                            </div>
-                                        )
-                                    })}
-
-                                </div>
-
-                                <div style={{
-                                    marginBottom: "25px"
-                                }}></div>
-                            </>
-                        )}
-
-
                     </>
 
                 )}
@@ -292,7 +258,7 @@ const NewBrandDetail = (props: Props) => {
 
             <div className='brandDetailContainer__heading'>
                 <h3>
-                    Products
+                    Recipes
                 </h3>
             </div>
             <div className='brandDetailContainer__body'>
@@ -301,7 +267,7 @@ const NewBrandDetail = (props: Props) => {
                     <div style={{
                         marginTop: '100px'
                     }}>
-                        <Empty description='No Products exists in this recipe category' image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                        <Empty description='No recipes exists in this category' image={Empty.PRESENTED_IMAGE_SIMPLE} />
                     </div>
                 )}
 
@@ -339,7 +305,7 @@ const NewBrandDetail = (props: Props) => {
                                     <>
                                         <img
                                             onClick={() => {
-                                                history.push(`/admin/product/${record.id}`)
+                                                history.push(`/admin/posts/${record.id}`)
                                                 // go to product detail
                                             }}
                                             src={cover} alt='cover img' style={{
@@ -362,7 +328,7 @@ const NewBrandDetail = (props: Props) => {
                                     <>
                                         <h4
                                             onClick={() => {
-                                                history.push(`/admin/product/${record.id}`)
+                                                history.push(`/admin/posts/${record.id}`)
                                             }}
                                             style={{
                                                 fontWeight: 400,

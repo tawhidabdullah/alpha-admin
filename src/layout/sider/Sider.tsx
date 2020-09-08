@@ -107,7 +107,7 @@ const SiderComponent = (props: any) => {
                 <SubMenu
                     key='sub333'
                     icon={<GoldOutlined />}
-                    title='Recipies'
+                    title='Recipes'
                 // onTitleClick={() => props.history.push('/product')}
                 >
                     <Menu.Item

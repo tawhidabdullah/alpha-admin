@@ -39,7 +39,7 @@ const validationSchema = Yup.object().shape({
 
 const openSuccessNotification = (message?: any) => {
     notification.success({
-        message: message || 'Tag Created',
+        message: message || 'Recipe Tag Created',
         description: '',
         icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
     });
@@ -116,15 +116,18 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, tagList,
         // @ts-ignore
         if (addTagRes && addTagRes.status === 'ok') {
             openSuccessNotification();
+            setAddNewCategoryVisible(false);
 
             setTagList([...tagList, {
-                id: addTagRes['id'] || '',
-                key: addTagRes['id'] || '',
+				// @ts-ignore
+				...addTagRes,
+                id: addTagRes['_id'] || '',
+                key: addTagRes['_id'] || '',
                 name: addTagRes['name'] || '',
                 description: addTagRes['description'] || '',
-            }])
+			}])
+			
             actions.resetForm();
-            setAddNewCategoryVisible(false);
         }
         else {
             openErrorNotification();
