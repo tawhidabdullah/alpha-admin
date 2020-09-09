@@ -1,146 +1,211 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useHistory } from "react-router";
-
+import { useParams, useHistory } from 'react-router';
 
 // import hooks
-import { useHandleFetch } from "../../hooks";
+import { useHandleFetch } from '../../hooks';
 
 // import lib
 import {
-    FileOutlined,
-    InboxOutlined,
-    RadiusUpleftOutlined,
-    RadiusUprightOutlined,
-    RadiusBottomleftOutlined,
-    RadiusBottomrightOutlined,
-    PlusOutlined,
-    DeleteOutlined,
-    EditOutlined,
-    CheckCircleOutlined
+  FileOutlined,
+  InboxOutlined,
+  RadiusUpleftOutlined,
+  RadiusUprightOutlined,
+  RadiusBottomleftOutlined,
+  RadiusBottomrightOutlined,
+  PlusOutlined,
+  DeleteOutlined,
+  EditOutlined,
+  CheckCircleOutlined,
 } from '@ant-design/icons';
 
-import { Skeleton, Empty, Popconfirm, Upload, message, Switch, Select, Button, notification, Table, Space, Input as CoolInput, Tooltip, Modal } from 'antd';
-
+import {
+  Skeleton,
+  Empty,
+  Popconfirm,
+  Upload,
+  message,
+  Switch,
+  Select,
+  Button,
+  notification,
+  Table,
+  Space,
+  Input as CoolInput,
+  Tooltip,
+  Modal,
+} from 'antd';
 
 // import components
-import { DataTableSkeleton } from "../../components/Placeholders";
-import StaffEdit from "./StaffEdit";
-
+import { DataTableSkeleton } from '../../components/Placeholders';
+import StaffEdit from './StaffEdit';
+import moment from 'moment';
 
 const { Column, ColumnGroup } = Table;
 const { Search } = CoolInput;
 
-
 interface Props {
-    productRecord?: any;
+  productRecord?: any;
 }
 
 const NewBrandDetail = (props: Props) => {
-    const [tagDetailState, handleTagDetailFetch] = useHandleFetch({}, 'tagDetail');
-    const [tagProductsState, handleTagProductsFetch] = useHandleFetch({}, 'tagProducts');
-    const [tagEditVisible, setTagEditVisible] = useState(false);
+  const [tagDetailState, handleTagDetailFetch] = useHandleFetch(
+    {},
+    'staffDetail'
+  );
+  const [tagProductsState, handleTagProductsFetch] = useHandleFetch(
+    {},
+    'tagProducts'
+  );
+  const [tagEditVisible, setTagEditVisible] = useState(false);
 
+  const params = useParams();
+  const tagId = params['id'];
+  const [customerDetail, setCustomerDetail] = useState({});
 
-    const params = useParams();
-    const history = useHistory();
-    const tagId = params['id'];
+  useEffect(() => {
+    const getBrandDetail = async () => {
+      const res = await handleTagDetailFetch({
+        urlOptions: {
+          placeHolders: {
+            id: tagId,
+          },
+        },
+      });
 
-    useEffect(() => {
+      // @ts-ignore
+      if (res) {
+        // @ts-ignore
+        setCustomerDetail(res);
+      }
+    };
 
-        const getBrandDetail = async () => {
-            await handleTagDetailFetch({
-                urlOptions: {
-                    placeHolders: {
-                        id: tagId
-                    }
-                }
-            })
-        };
+    getBrandDetail();
+  }, [tagId]);
 
-        getBrandDetail();
+  useEffect(() => {
+    const getTagProducts = async () => {
+      await handleTagProductsFetch({
+        urlOptions: {
+          placeHolders: {
+            id: tagId,
+          },
+        },
+      });
+    };
 
-    }, [tagId]);
+    getTagProducts();
+  }, [tagId]);
 
-    useEffect(() => {
-        const getTagProducts = async () => {
-            await handleTagProductsFetch({
-                urlOptions: {
-                    placeHolders: {
-                        id: tagId
-                    }
-                }
-            })
-        };
+  console.log('tagProductsState', tagProductsState);
 
-        getTagProducts();
+  console.log('brandParams', params);
+  console.log('staffDetail', tagDetailState);
 
-    }, [tagId]);
+  return (
+    <div className='brandDetailContainer'>
+      <div className='brandDetailContainer__heading'>
+        <h3>Staff Detail</h3>
 
+        {tagDetailState.done &&
+          customerDetail &&
+          Object.keys(customerDetail).length > 0 && (
+            <>
+              <StaffEdit
+                addNewCategoryVisible={tagEditVisible}
+                setAddNewCategoryVisible={setTagEditVisible}
+                customer={customerDetail}
+                setCustomer={setCustomerDetail}
+              />
+              <Button
+                onClick={() => setTagEditVisible(true)}
+                type='link'
+                icon={<EditOutlined />}
+              >
+                Edit
+              </Button>
+            </>
+          )}
+      </div>
+      <Skeleton paragraph={{ rows: 2 }} loading={tagDetailState.isLoading}>
+        {tagDetailState.done &&
+          customerDetail &&
+          !(Object.keys(customerDetail).length > 0) && (
+            <Empty
+              description='No Staffs found'
+              image={Empty.PRESENTED_IMAGE_SIMPLE}
+            />
+          )}
 
-
-
-    console.log('tagProductsState', tagProductsState);
-
-    console.log('brandParams', params);
-
-
-    return (
-        <div className='brandDetailContainer'>
-            <div className='brandDetailContainer__heading'>
-                <h3>
-                    Staff Detail
-                </h3>
-
-                {tagDetailState.done && tagDetailState.data && (Object.keys(tagDetailState.data).length > 0) && (
-                    <>
-                        <StaffEdit
-                            visible={tagEditVisible}
-                            setvisible={setTagEditVisible}
-                            customer={tagDetailState.data}
-                        />
-                        <Button
-                            onClick={() => setTagEditVisible(true)}
-                            type='link'
-                            icon={<EditOutlined />}
-                        >
-                            Edit
-                      </Button>
-                    </>
+        {tagDetailState.done &&
+          customerDetail &&
+          Object.keys(customerDetail).length > 0 && (
+            <div className='brandDetailContainer__header'>
+              <div className='brandDetailContainer__header-info'>
+                <h2>{customerDetail['name']}</h2>
+                <h3>{customerDetail['description']}</h3>
+                {customerDetail['designation'] && (
+                  <h3>
+                    DESIGNATION:
+                    <span>{customerDetail['designation']}</span>
+                  </h3>
                 )}
+                {customerDetail['salary'] && (
+                  <h3>
+                    SALARY:
+                    <span>{customerDetail['salary']}</span>
+                  </h3>
+                )}
+
+                {customerDetail['NID'] && (
+                  <h3>
+                    NID:
+                    <span>{customerDetail['NID']}</span>
+                  </h3>
+                )}
+
+                {customerDetail['joiningDate'] && (
+                  <h3>
+                    JOINED:
+                    <span>
+                      {customerDetail['joiningDate'] &&
+                        moment(customerDetail['joiningDate']).format(
+                          'MMMM Do YYYY, h:mm a'
+                        )}
+                    </span>
+                  </h3>
+                )}
+
+                {customerDetail['fatherName'] && (
+                  <h3>
+                    FATHER'S NAME:
+                    <span>{customerDetail['fatherName']}</span>
+                  </h3>
+                )}
+                {customerDetail['motherName'] && (
+                  <h3>
+                    MOTHER'S NAME:
+                    <span>{customerDetail['motherName']}</span>
+                  </h3>
+                )}
+
+                {customerDetail['phone'] && (
+                  <h3>
+                    PHONE:
+                    <span>{customerDetail['phone']}</span>
+                  </h3>
+                )}
+                {customerDetail['email'] && (
+                  <h3>
+                    EMAIL:
+                    <span>{customerDetail['email']}</span>
+                  </h3>
+                )}
+              </div>
             </div>
-            <Skeleton
-                paragraph={{ rows: 2 }}
-                loading={tagDetailState.isLoading}>
-                {tagDetailState.done && tagDetailState.data && !(Object.keys(tagDetailState.data).length > 0) && (
-                    <Empty description='No Staffs found' image={Empty.PRESENTED_IMAGE_SIMPLE} />
-                )}
+          )}
+      </Skeleton>
 
-                {tagDetailState.done && tagDetailState.data && (Object.keys(tagDetailState.data).length > 0) && (
-                    <div className='brandDetailContainer__header'>
-
-                        <div className='brandDetailContainer__header-info'>
-                            <h2>
-                                {tagDetailState.data['name']}
-                            </h2>
-                            <h3>
-                                {tagDetailState.data['description']}
-                            </h3>
-                            {tagDetailState.data['url'] && (
-                                <h3>
-                                    URL:
-                                    <span>
-                                        {tagDetailState.data['url']}
-                                    </span>
-
-                                </h3>
-                            )}
-                        </div>
-                    </div>
-                )}
-
-            </Skeleton>
-
-            <div className='brandDetailContainer__heading'>
+      {/* <div className='brandDetailContainer__heading'>
                 <h3>
                     Products
                 </h3>
@@ -258,9 +323,9 @@ const NewBrandDetail = (props: Props) => {
                     </>
                 )}
 
-            </div>
-        </div>
-    )
-}
+            </div> */}
+    </div>
+  );
+};
 
-export default NewBrandDetail
+export default NewBrandDetail;

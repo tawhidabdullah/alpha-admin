@@ -102,5 +102,5 @@ error => Cannot read property 'offer' of undefined.
 error => coupon cover is coming as array in coupon list.
 error => update post tag => Cannot read property 'name' of undefined. 
 error => add post category => checkMime is not defined probably because of the image.
-
+error => updated page => thumnails is not defined
 */

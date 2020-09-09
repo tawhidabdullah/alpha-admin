@@ -307,19 +307,6 @@ const AddNewCategory = ({
         // @ts-ignore
         if (thumbnailRes && thumbnailRes.status === 'ok') {
             openSuccessNotification('Set as thumbnail!')
-            // const positionInBrand = () => {
-            //     return brandList.map(item => item.id).indexOf(categoryDetailData.id);
-            // }
-
-            // const index = positionInBrand();
-
-            // const prevItem = brandList.find(item => item.id === productRecord.id);
-
-            // if (prevItem) {
-            //     const updatedItem = Object.assign({}, brandList[index], { ...prevItem, cover: image.cover });
-            //     const updateBrandList = [...brandList.slice(0, index), updatedItem, ...brandList.slice(index + 1)];
-            //     setBrandList(updateBrandList);
-            // }
         }
         else {
             openErrorNotification("Couldn't set as thumbnail, Something went wrong")

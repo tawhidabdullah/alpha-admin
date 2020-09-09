@@ -1,44 +1,65 @@
 import React, { useState, useEffect } from 'react';
 import { withRouter, useHistory } from 'react-router-dom';
-import { notification, Empty, Table, Badge, Menu, Dropdown, Space, Tag, Button, Input, Tooltip, Popconfirm } from 'antd';
-import { CheckCircleOutlined, PlusOutlined, EditOutlined, DeleteOutlined, EditFilled } from '@ant-design/icons';
-
+import {
+  notification,
+  Empty,
+  Table,
+  Badge,
+  Menu,
+  Dropdown,
+  Space,
+  Tag,
+  Button,
+  Input,
+  Tooltip,
+  Popconfirm,
+} from 'antd';
+import {
+  CheckCircleOutlined,
+  DownOutlined,
+  PlusOutlined,
+  EditOutlined,
+  DeleteOutlined,
+  CheckOutlined,
+} from '@ant-design/icons';
 
 /// import hooks
-import { useHandleFetch } from "../../hooks";
+import { useHandleFetch } from '../../hooks';
 
 // import components
-import { DataTableSkeleton } from "../../components/Placeholders";
-import AddNewProduct from "./AddNewProduct";
-import ProductQuickEdit from "./ProductQuickEdit";
-import QuickEdit from "./QuickEdit";
+import { DataTableSkeleton } from '../../components/Placeholders';
+import AddNewProduct from './AddNewProduct';
+import ProductQuickEdit from './ProductQuickEdit';
+// import QuickEdit from './QuickEdit';
 
 const { Column, ColumnGroup } = Table;
 const { Search } = Input;
 
-
-
-const openSuccessNotification = () => {
+const openSuccessNotification = (msg?: any) => {
   notification.success({
-    message: 'Product Deleted',
+    message: msg || 'Product Deleted',
     description: '',
     icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
   });
 };
-
-
 
 interface myTableProps {
   data: any;
   setProductList: any;
 }
 
-
 const MyTable = ({ data, setProductList }: myTableProps) => {
   const [visible, setvisible] = useState(false);
   const [activeCategoryForEdit, setactiveCategoryForEdit] = useState(false);
-  const [deleteProductState, handleDeleteProductFetch] = useHandleFetch({}, 'deleteProduct');
+  const [deleteProductState, handleDeleteProductFetch] = useHandleFetch(
+    {},
+    'deleteProduct'
+  );
   const [productDetailVisible, setproductDetailVisible] = useState(false);
+  const [updateOrderStatusState, handleUpdateOrderStatusFetch] = useHandleFetch(
+    {},
+    'updateStock'
+  );
 
   const history = useHistory();
 
@@ -47,20 +68,85 @@ const MyTable = ({ data, setProductList }: myTableProps) => {
       urlOptions: {
         placeHolders: {
           id,
-        }
-      }
+        },
+      },
     });
 
     // @ts-ignore
     if (deleteProductRes && deleteProductRes.status === 'ok') {
       openSuccessNotification();
-      const newProductList = data.filter(item => item.id !== id);
+      const newProductList = data.filter((item) => item.id !== id);
       setProductList(newProductList);
     }
 
     // console.log('deleteProductRes', deleteProductRes)
-  }
+  };
 
+  const handleUpdateOrderStatus = async (record, id, newStatus) => {
+    const updateOrderStatusRes = await handleUpdateOrderStatusFetch({
+      urlOptions: {
+        params: {
+          inStock: newStatus,
+        },
+        placeHolders: {
+          id,
+        },
+      },
+    });
+
+    // @ts-ignore
+    if (updateOrderStatusRes && updateOrderStatusRes.status === 'ok') {
+      openSuccessNotification('Updated Stock');
+
+      const positionInTag = () => {
+        return data.map((item) => item.id).indexOf(id);
+      };
+
+      const index = positionInTag();
+      console.log('recordis', record, index);
+
+      // @ts-ignore
+      const updatedItem = Object.assign({}, data[index], {
+        inStock: newStatus,
+      });
+      const updateOrderList = [
+        ...data.slice(0, index),
+        updatedItem,
+        ...data.slice(index + 1),
+      ];
+      console.log('updateOrderList', updateOrderList, '-----', setProductList);
+      setProductList(updateOrderList);
+    }
+  };
+
+  const StatusItemMenu = (record, id) => {
+    return (
+      <Menu>
+        <Menu.Item
+          onClick={() => handleUpdateOrderStatus(record, id, true)}
+          key='1'
+          icon={<CheckOutlined />}
+        >
+          In stock
+        </Menu.Item>
+
+        <Menu.Item
+          onClick={() => handleUpdateOrderStatus(record, id, false)}
+          key='1'
+          icon={<CheckOutlined />}
+        >
+          Out of stock
+        </Menu.Item>
+
+        {/* <Menu.Item
+                      onClick={() => handleUpdateOrderStatus(record,id,'deliver')}
+                      key="1" icon={<CheckOutlined />}>
+                      Delivered
+                    </Menu.Item>
+              */}
+      </Menu>
+    );
+  };
 
   return (
     <>
@@ -69,7 +155,8 @@ const MyTable = ({ data, setProductList }: myTableProps) => {
           paddingTop: '10px',
           borderRadius: '5px !important',
           overflow: 'hidden',
-          boxShadow: '0 0.125rem 0.625rem rgba(227, 231, 250, 0.3), 0 0.0625rem 0.125rem rgba(206, 220, 233, 0.4)'
+          boxShadow:
+            '0 0.125rem 0.625rem rgba(227, 231, 250, 0.3), 0 0.0625rem 0.125rem rgba(206, 220, 233, 0.4)',
         }}
         // expandable={{
         //     expandedRowRender: record => <p style={{ margin: 0 }}>{record.name}</p>,
@@ -80,105 +167,120 @@ const MyTable = ({ data, setProductList }: myTableProps) => {
         // pagination={false}
         dataSource={data}
         tableLayout={'auto'}
-        onHeaderRow={column => {
+        onHeaderRow={(column) => {
           return {
             style: {
-              color: 'red !important'
-            }
-
+              color: 'red !important',
+            },
           };
         }}
       >
         <Column
-          title=""
-          dataIndex="cover"
-          key="id"
+          title=''
+          dataIndex='cover'
+          key='id'
           width={'80px'}
-
           className='classnameofthecolumn'
-
           render={(cover, record: any) => (
             <>
               <img
                 onClick={() => {
-                  history.push(`/admin/product/${record.id}`)
-                  setactiveCategoryForEdit(record)
+                  history.push(`/admin/product/${record.id}`);
+                  setactiveCategoryForEdit(record);
                 }}
-                src={cover} alt='cover img' style={{
+                src={cover}
+                alt='cover img'
+                style={{
                   height: '40px',
                   width: '40px',
-                  objectFit: "contain",
+                  objectFit: 'contain',
                   borderRadius: '3px',
-                  cursor: 'pointer'
-                }} />
+                  cursor: 'pointer',
+                }}
+              />
             </>
           )}
         />
 
         <Column
-          title="Name"
-          dataIndex="name"
-          key="id"
+          title='Name'
+          dataIndex='name'
+          key='id'
           className='classnameofthecolumn'
           render={(text, record: any) => (
             <>
-
               <h4
                 onClick={() => {
-                  history.push(`/admin/product/${record.id}`)
-                  setactiveCategoryForEdit(record)
+                  history.push(`/admin/product/${record.id}`);
+                  setactiveCategoryForEdit(record);
                 }}
                 style={{
                   fontWeight: 400,
                   color: '#555',
-                  cursor: 'pointer'
-
-                }}>
+                  cursor: 'pointer',
+                }}
+              >
                 {text}
               </h4>
-
-
             </>
           )}
-
         />
 
         <Column
-          title="Offer Price"
-          dataIndex="offerPrice"
-          key="id"
+          title='Offer Price'
+          dataIndex='offerPrice'
+          key='id'
           className='classnameofthecolumn'
-
         />
-
 
         <Column
-          title="Price"
-          dataIndex="price"
-          key="id"
+          title='Price'
+          dataIndex='price'
+          key='id'
           className='classnameofthecolumn'
-
         />
 
+        <Column
+          title='Available'
+          dataIndex='available'
+          key='id'
+          className='classnameofthecolumn'
+        />
 
-                      <Column
-                                title="Available"
-                                dataIndex="available"
-                                key="id"
-                                className='classnameofthecolumn'
-
-                            />
-
-
-                            <Column
-                                title="Minimum"
-                                dataIndex="minimum"
-                                key="id"
-                                className='classnameofthecolumn'
-
-                            />
-
-
+        <Column
+          align='right'
+          title='Stock'
+          dataIndex='inStock'
+          key='id'
+          className='classnameofthecolumn'
+          render={(text, record: any) => (
+            <>
+              <Dropdown
+                overlay={() => StatusItemMenu(record, record.id)}
+                placement='bottomRight'
+              >
+                <a href='##'>
+                  <span
+                    // className={'product-attributeTag'}
+                    style={{
+                      fontSize: '12px',
+                    }}
+                  >
+                    {text ? 'In Stock' : 'Out of stock'}
+                    <span
+                      style={{
+                        marginLeft: '5px',
+                        fontSize: '10px',
+                      }}
+                    >
+                      <DownOutlined />
+                    </span>
+                  </span>
+                </a>
+              </Dropdown>
+            </>
+          )}
+        />
 
         {/* <Column
           title="Unit"
@@ -214,109 +316,97 @@ const MyTable = ({ data, setProductList }: myTableProps) => {
           )}
         /> */}
         <Column
-
           className='classnameofthecolumn'
-          title=""
-          key="action"
+          title=''
+          key='action'
           align='right'
           render={(text, record: any) => (
-            <Space size="middle">
+            <Space size='middle'>
               <a href='##'>
-                <Tooltip
-
-                  placement="top" title='Edit Product'>
-                  <span className='iconSize' onClick={() => {
-                    setvisible(true)
-                    setactiveCategoryForEdit(record);
-                  }}>
+                <Tooltip placement='top' title='Edit Product'>
+                  <span
+                    className='iconSize'
+                    onClick={() => {
+                      setvisible(true);
+                      setactiveCategoryForEdit(record);
+                    }}
+                  >
                     <EditOutlined />
-
                   </span>
                 </Tooltip>
               </a>
 
               <Popconfirm
-
                 onConfirm={() => handleDeleteProduct(record.id)}
-                title="Are you sure？" okText="Yes" cancelText="No">
-                <span
-                  className='iconSize iconSize-danger'
-                >
+                title='Are you sure？'
+                okText='Yes'
+                cancelText='No'
+              >
+                <span className='iconSize iconSize-danger'>
                   <DeleteOutlined />
                 </span>
-
               </Popconfirm>
-
-
-
-
             </Space>
           )}
         />
       </Table>
 
-
-
-      {activeCategoryForEdit && <ProductQuickEdit
-        productList={data}
-        setProductList={setProductList}
-        setProductEditVisible={setvisible}
-        productEditVisible={visible}
-        productDetailData={activeCategoryForEdit} />}
-
-
-
-
+      {activeCategoryForEdit && (
+        <ProductQuickEdit
+          productList={data}
+          setProductList={setProductList}
+          setProductEditVisible={setvisible}
+          productEditVisible={visible}
+          productDetailData={activeCategoryForEdit}
+        />
+      )}
     </>
-  )
-}
-
+  );
+};
 
 interface Props {
   history: any;
 }
 
 const ProductList = ({ history }: Props) => {
-
-
-
   const [productList, setProductList] = useState([]);
 
-  const [productState, handleProductListFetch] = useHandleFetch({}, 'productList');
-
+  const [productState, handleProductListFetch] = useHandleFetch(
+    {},
+    'productList'
+  );
 
   useEffect(() => {
     const setProducts = async () => {
       const products = await handleProductListFetch({
-        urlOptions:{
+        urlOptions: {
           params: {
             sortItem: 'added',
             sortOrderValue: '-1',
-            productType: 'product'
-          }
-        }
+            productType: 'product',
+          },
+        },
       });
       // @ts-ignore
       setProductList(products);
-    }
+    };
     setProducts();
-  }, [])
+  }, []);
 
+  console.log('myFuckingProductList', productList);
 
   const [addNewCategoryVisible, setAddNewCategoryVisible] = useState(false);
 
-
   // console.log('productState', productState)
-
 
   const handleSearch = (value) => {
     if (productState.data.length > 0) {
-      const newProductList = productState.data.filter(item => item.name.toLowerCase().includes(value.toLowerCase()));
+      const newProductList = productState.data.filter((item) =>
+        item.name.toLowerCase().includes(value.toLowerCase())
+      );
       setProductList(newProductList);
     }
-
-  }
-
+  };
 
   return (
     <>
@@ -325,20 +415,15 @@ const ProductList = ({ history }: Props) => {
     </h2> */}
       <div className='categoryListContainer'>
         <div className='categoryListContainer__header'>
-
-
           <div className='categoryListContainer__header-searchBar'>
-            <h2 className='categoryListContainer__header-title'>
-              Products
-            </h2>
-
+            <h2 className='categoryListContainer__header-title'>Products</h2>
 
             <Search
               enterButton={false}
               className='searchbarClassName'
-              placeholder="search products.."
-              onChange={e => handleSearch(e.target.value)}
-            // style={{ width: 300 }}
+              placeholder='search products..'
+              onChange={(e) => handleSearch(e.target.value)}
+              // style={{ width: 300 }}
             />
           </div>
 
@@ -349,9 +434,7 @@ const ProductList = ({ history }: Props) => {
             onClick={() => setAddNewCategoryVisible(true)}
           >
             Add New
-      </Button>
-
-
+          </Button>
         </div>
 
         <div className='categoryListContainer__afterHeader'>
@@ -363,36 +446,34 @@ const ProductList = ({ history }: Props) => {
     /> */}
         </div>
 
-
         <div className='categoryListContainer__categoryList'>
-          {productState.done && productList.length > 0 && <MyTable
-            setProductList={setProductList}
-            data={productList} />}
+          {productState.done && productList.length > 0 && (
+            <MyTable setProductList={setProductList} data={productList} />
+          )}
           {productState.isLoading && <DataTableSkeleton />}
           {productState.done && !(productList.length > 0) && (
-            <div style={{
-              marginTop: '200px'
-            }}>
-              <Empty description='No Products found' image={Empty.PRESENTED_IMAGE_SIMPLE} />
+            <div
+              style={{
+                marginTop: '200px',
+              }}
+            >
+              <Empty
+                description='No Products found'
+                image={Empty.PRESENTED_IMAGE_SIMPLE}
+              />
             </div>
           )}
         </div>
       </div>
 
-
-      {productState.done &&
+      {productState.done && (
         <AddNewProduct
           addNewCategoryVisible={addNewCategoryVisible}
           setAddNewCategoryVisible={setAddNewCategoryVisible}
           productList={productState.data}
           setProductList={setProductList}
-
-
-        />}
-
-
-
-
+        />
+      )}
     </>
   );
 };

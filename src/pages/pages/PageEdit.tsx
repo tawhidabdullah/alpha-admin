@@ -6,6 +6,9 @@ import * as Yup from 'yup';
 // import hhooks
 import { useHandleFetch } from '../../hooks';
 
+// import lib
+import { useParams } from 'react-router-dom';
+
 // import third party ui lib
 import {
   Upload,
@@ -51,7 +54,7 @@ const { Step } = Steps;
 
 const openSuccessNotification = (message?: any) => {
   notification.success({
-    message: message || 'Page Created',
+    message: message || 'Page Updated',
     description: '',
     icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
   });
@@ -99,17 +102,63 @@ const steps = [
 interface Props {}
 
 const AddNewPage = ({}: Props) => {
-  const [addPageState, handleAddPageFetch] = useHandleFetch({}, 'addPage');
-  const [content, setContent] = useState('<p>Hello from the new page !</p>');
-  const [bnContent, setBnContent] = useState('<p>হ্যালো নতুন পেজ থেকে!</p>');
+  const [addPageState, handleAddPageFetch] = useHandleFetch({}, 'updatePage');
+  const [content, setContent] = useState('');
+  const [bnContent, setBnContent] = useState('');
   const [myImages, setmyImages] = useState(false);
   const [visibleMedia, setvisibleMedia] = useState(false);
   const [coverImageId, setCoverImageId] = useState('');
   const [tags, setTags] = useState([]);
   const [bnTags, setBnTags] = useState([]);
 
+  const [tagDetailState, handleTagDetailFetch] = useHandleFetch(
+    {},
+    'pageDetail'
+  );
+  const [tagDetailData, setTagDetailData] = useState({});
+
+  const params = useParams();
+  const tagId = params['id'];
+
+  useEffect(() => {
+    const getBrandDetail = async () => {
+      const tagDetailRes = await handleTagDetailFetch({
+        urlOptions: {
+          placeHolders: {
+            id: tagId,
+          },
+        },
+      });
+
+      // @ts-ignore
+      if (tagDetailRes) {
+        console.log('tagDetailRes', tagDetailRes);
+        // @ts-ignore
+        setTagDetailData(tagDetailRes);
+      }
+    };
+
+    getBrandDetail();
+  }, [tagId]);
+
+  useEffect(() => {
+    if (tagDetailData && Object.keys(tagDetailData).length > 0) {
+      setContent(tagDetailData['content'] || '');
+      setBnContent(
+        tagDetailData['bn'] && tagDetailData['bn']['content']
+          ? tagDetailData['bn']['content']
+          : ''
+      );
+    }
+  }, [tagDetailData]);
+
   const handleAddPageSubmit = async (values: any, actions: any) => {
     const addOrderRes = await handleAddPageFetch({
+      urlOptions: {
+        placeHolders: {
+          id: tagDetailData._id,
+        },
+      },
       body: {
         name: values.name,
         content: content,
@@ -213,7 +262,21 @@ const AddNewPage = ({}: Props) => {
     }
   }, [addPageState]);
 
-  console.log('myImagesdx', myImages);
+  useEffect(() => {
+    if (tagDetailData && Object.keys(tagDetailData).length > 0) {
+      const metaTags =
+        tagDetailData.metaTags && tagDetailData.metaTags.split(',');
+
+      console.log('localMetaTags', metaTags);
+
+      const bnMetaTags =
+        tagDetailData.bn &&
+        tagDetailData.bn['metaTags'] &&
+        tagDetailData.bn['metaTags'].split(',');
+      setTags(metaTags);
+      setBnTags(bnMetaTags);
+    }
+  }, []);
 
   return (
     <Formik
@@ -221,7 +284,29 @@ const AddNewPage = ({}: Props) => {
       validationSchema={validationSchema}
       validateOnBlur={false}
       enableReinitialize={true}
-      initialValues={{ ...initialValues }}
+      initialValues={{
+        ...initialValues,
+        ...tagDetailData,
+        ...(tagDetailData &&
+          Object.keys(tagDetailData).length > 0 && {
+            bnMetaTitle:
+              tagDetailData['bn'] &&
+              tagDetailData['bn'].metaTitle &&
+              tagDetailData['bn'].metaTitle,
+            bnMetaDescription:
+              tagDetailData['bn'] &&
+              tagDetailData['bn'].metaDescription &&
+              tagDetailData['bn'].metaDescription,
+            bnName:
+              tagDetailData['bn'] &&
+              tagDetailData['bn'].name &&
+              tagDetailData['bn'].name,
+            bnDescription:
+              tagDetailData['bn'] &&
+              tagDetailData['bn'].description &&
+              tagDetailData['bn'].description,
+          }),
+      }}
     >
       {({
         handleChange,
