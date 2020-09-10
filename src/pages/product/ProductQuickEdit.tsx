@@ -219,17 +219,27 @@ const AddNewProduct = ({ productEditVisible,
     useEffect(() => {
         if (productDetailState.done && Object.keys(productDetailState).length > 0) {
 
-            const images = productDetailState.data.image;
-            if (images && images.length > 0) {
-                setmyImages(images);
-            }
 
-            if (productDetailState.data.cover && productDetailState.data.cover['id']) {
-                // @ts-ignore
-                setmyImages([productDetailState.data.cover, ...images]);
-                console.log('catcat', [productDetailState.data.cover, ...images]);
-                setCoverImageId(productDetailState.data.cover['id']);
-            }
+            const images = productDetailState.data.image;
+			let mahImages = []; 
+
+			if (images && images.length > 0) {
+				mahImages = images;
+			}
+	
+			if (productDetailState.data.cover && productDetailState.data.cover['id']) {
+				const ixists = images.find(item => item.id === productDetailState.data.cover['id']);
+				if(!ixists){
+					mahImages = [productDetailState.data.cover, ...mahImages]
+				}
+
+				setCoverImageId(productDetailState.data.cover['id']);
+			}
+	
+				// @ts-ignore
+                setmyImages(mahImages);
+
+    
         }
     }, [productDetailState])
 
@@ -380,13 +390,13 @@ const AddNewProduct = ({ productEditVisible,
                 pricing: pricing,
                 metaTitle: values.metaTitle,
 				metaDescription: values.metaDescription,
-                metaTags: metaTags.join(','),
+                metaTags: metaTags && metaTags.length > 0 ? metaTags.join(',') : '',
                 
 
 				bn: {
 					metaTitle: values.bnMetaTitle,
 					metaDescription: values.bnMetaDescription,
-					metaTags: bnMetaTags.join(','),
+                    metaTags: bnMetaTags && bnMetaTags.length > 0 ? bnMetaTags.join(',') : '',
 					name: values.bnName.trim(),
 					unit: values.metaUnit,
 					description: bnDescription,
@@ -488,6 +498,16 @@ const AddNewProduct = ({ productEditVisible,
 
     const handleCancel = (e: any) => {
         setProductEditVisible(false);
+        setmyImages(false);
+        setCoverImageId('');
+        setPricing([]);
+        setTagIds([]);
+        setSelectedTags([]);
+        setBrandId("");
+        setcategoryIds([]);
+        setCategoryOptions([]);
+        setMetaTags([]); 
+        setBnMetaTags([]); 
     };
 
 
@@ -612,8 +632,8 @@ const AddNewProduct = ({ productEditVisible,
             console.log('localMetaTags',metaTags);
            
             const bnMetaTags = productDetailState.data.bn['metaTags'].split(','); 
-            setMetaTags(metaTags)
-            setBnMetaTags(bnMetaTags)
+            setMetaTags(metaTags || [])
+            setBnMetaTags(bnMetaTags || [])
         }
 
     },[productDetailState['done']])
@@ -1177,6 +1197,10 @@ const AddNewProduct = ({ productEditVisible,
                                             )}
 
                                         </div>
+
+
+
+
                                     </div>
 
 

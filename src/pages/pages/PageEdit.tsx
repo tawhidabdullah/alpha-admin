@@ -116,6 +116,8 @@ const AddNewPage = ({}: Props) => {
     'pageDetail'
   );
   const [tagDetailData, setTagDetailData] = useState({});
+  const [setImageAsThumbnailToItemState, handleSetImageAsThumbnailToItemFetch] = useHandleFetch({}, 'setImageAsThumbnailToItem');
+  const [detachImageFromItemSingleState, handleDetachImageFromItemSingleFetch] = useHandleFetch({}, 'detachImageFromItemSingle');
 
   const params = useParams();
   const tagId = params['id'];
@@ -140,6 +142,19 @@ const AddNewPage = ({}: Props) => {
 
     getBrandDetail();
   }, [tagId]);
+
+  useEffect(() => {
+    if (tagDetailData && Object.keys(tagDetailData).length > 0) {
+
+        if (tagDetailData.cover && tagDetailData.cover['id']) {
+            // @ts-ignore
+            setmyImages([tagDetailData.cover]);
+            setCoverImageId(tagDetailData.cover['id']);
+        }
+    }
+}, [tagDetailData]); 
+
+
 
   useEffect(() => {
     if (tagDetailData && Object.keys(tagDetailData).length > 0) {
@@ -181,16 +196,16 @@ const AddNewPage = ({}: Props) => {
     // @ts-ignore
     if (addOrderRes && addOrderRes.status === 'ok') {
       // openSuccessNotification();
-      setCoverImageId('');
-      setBnTags([]);
-      setTags([]);
-      setContent('');
-      setBnContent('');
-      setvisibleMedia();
-      setmyImages([]);
-      actions.resetForm();
+      // setCoverImageId('');
+      // setBnTags([]);
+      // setTags([]);
+      // setContent('');
+      // setBnContent('');
+      // setvisibleMedia();
+      // setmyImages([]);
+      // actions.resetForm();
     } else {
-      openErrorNotification("Couldn't create page, Something went wrong");
+      openErrorNotification("Couldn't Update page, Something went wrong");
     }
 
     actions.setSubmitting(false);
@@ -213,6 +228,64 @@ const AddNewPage = ({}: Props) => {
 
     setmyImages(newImages);
   };
+
+
+  
+  const handleSetImageAsThumnail = async image => {
+
+    const thumbnailRes = await handleSetImageAsThumbnailToItemFetch({
+        urlOptions: {
+            placeHolders: {
+                imageId: image.id,
+                collection: 'page',
+                itemId: tagDetailData.id
+            }
+        }
+    });
+
+
+    // @ts-ignore
+    if (thumbnailRes && thumbnailRes.status === 'ok') {
+        openSuccessNotification('Seted as thumbnail!')
+        // const positionInBrand = () => {
+        //     return brandList.map(item => item.id).indexOf(brandDetailData.id);
+        // }
+
+        // const index = positionInBrand();
+
+        // const prevItem = brandList.find(item => item.id === productRecord.id);
+
+        // if (prevItem) {
+        //     const updatedItem = Object.assign({}, brandList[index], { ...prevItem, cover: image.cover });
+        //     const updateBrandList = [...brandList.slice(0, index), updatedItem, ...brandList.slice(index + 1)];
+        //     setBrandList(updateBrandList);
+        // }
+    }
+    else {
+        openErrorNotification("Couldn't set as thumbnail, Something went wrong")
+    }
+
+}
+
+
+
+
+
+
+  useEffect(() => {
+    // @ts-ignore
+    if (myImages && myImages[0] && myImages.length < 2) {
+
+        if (coverImageId !== myImages[0].id) {
+            setCoverImageId(myImages[0].id);
+            handleSetImageAsThumnail(myImages[0]);
+        }
+
+    }
+
+}, [myImages])
+
+
 
   useEffect(() => {
     if (!addPageState['isLoading']) {
@@ -250,7 +323,7 @@ const AddNewPage = ({}: Props) => {
       Object.keys(addPageState.data).length > 0
     ) {
       if (addPageState['data']['status'] === 'ok') {
-        openSuccessNotification('Page Created Successfully');
+        openSuccessNotification('Page Updated Successfully');
         // history.push({
         //   pathname: '/orderDetails',
         //   state: checkoutState['data']
@@ -277,6 +350,22 @@ const AddNewPage = ({}: Props) => {
       setBnTags(bnMetaTags);
     }
   }, []);
+
+  
+  const handleDetachSingleImage = async id => {
+    console.log('dure',id)
+    console.log('dure2',tagDetailData)
+    await handleDetachImageFromItemSingleFetch({
+        urlOptions: {
+            placeHolders: {
+                imageId: id,
+                collection: 'page',
+                itemId: tagDetailData.id
+            }
+        }
+    });
+}
+
 
   return (
     <Formik
@@ -322,7 +411,9 @@ const AddNewPage = ({}: Props) => {
       }) => (
         <>
           <div className='addNewPageContainer'>
-            <h3 className='addNewPageContainer__heading'>Add New Page</h3>
+            <h3 className='addNewPageContainer__heading'>
+              Edit Page
+            </h3>
 
             <div className='addNewPageContainer__header'>
               <div className='dubbleRowInputs'>
@@ -388,74 +479,81 @@ const AddNewPage = ({}: Props) => {
 
               <h3 className='inputFieldLabel'>Thumbnail</h3>
 
+          
+
               <div className='aboutToUploadImagesContainer'>
-                {myImages &&
-                  // @ts-ignore
-                  myImages.length > 0 &&
-                  myImages.map((image, index) => {
-                    return (
-                      <div className='aboutToUploadImagesContainer__item'>
+
+{tagDetailData && Object.keys(tagDetailData).length > 0 && (
+    <>
+        {myImages &&
+            // @ts-ignore
+            myImages.length > 0 && myImages.map((image, index) => {
+                return (
+                    <div className='aboutToUploadImagesContainer__item'>
                         <div
-                          className='aboutToUploadImagesContainer__item-imgContainer'
-                          onClick={() => setCoverImageId(image.id)}
+                            className='aboutToUploadImagesContainer__item-imgContainer'
+                            onClick={() => {
+                                setCoverImageId(image.id);
+                                // handleSetImageAsThumnail(image);
+                            }}
                         >
-                          <img src={image.cover} alt={image.alt} />
+                            <img src={image.cover} alt={image.alt} />
                         </div>
 
                         <span
-                          onClick={() => handleImagesDelete(image.id)}
-                          className='aboutToUploadImagesContainer__item-remove'
-                        >
-                          <CloseOutlined />
-                        </span>
-                      </div>
-                    );
-                  })}
+                            onClick={() => {
+                                handleImagesDelete(image.id)
+                                handleDetachSingleImage(image.id)
+                            }
 
-                {myImages ? (
-                  !myImages[0] && (
-                    <Tooltip title={'Attach images'}>
-                      <div
-                        onClick={() => {
-                          setvisibleMedia(true);
-                        }}
-                        className='aboutToUploadImagesContainer__uploadItem'
-                      >
-                        {/* <FileAddOutlined />
-														<FileImageTwoTone />
-														<FileImageOutlined /> */}
-                        <FileImageFilled />
-                        {/* <h5>
-														 Select From Library
-												<     /h5> */}
-                        <span className='aboutToUploadImagesContainer__uploadItem-plus'>
-                          <PlusOutlined />
+                            }
+                            className='aboutToUploadImagesContainer__item-remove'>
+                            <CloseOutlined />
                         </span>
-                      </div>
-                    </Tooltip>
-                  )
-                ) : (
-                  <Tooltip title={'Attach images'}>
-                    <div
-                      onClick={() => {
-                        setvisibleMedia(true);
-                      }}
-                      className='aboutToUploadImagesContainer__uploadItem'
-                    >
-                      {/* <FileAddOutlined />
-												<FileImageTwoTone />
-												<FileImageOutlined /> */}
-                      <FileImageFilled />
-                      {/* <h5>
-												 Select From Library
-										<     /h5> */}
-                      <span className='aboutToUploadImagesContainer__uploadItem-plus'>
-                        <PlusOutlined />
-                      </span>
+
+
+                        {coverImageId === image.id ? (
+                            <span className='aboutToUploadImagesContainer__item-cover'>
+                                <CheckOutlined />
+                            </span>
+                        ) : !coverImageId && index === 0 && (
+                            <span className='aboutToUploadImagesContainer__item-cover'>
+                                <CheckOutlined />
+                            </span>
+                        )}
+
+
                     </div>
-                  </Tooltip>
-                )}
-              </div>
+                )
+            })}
+
+
+{ 
+!myImages || 
+// @ts-ignore
+(myImages && !(myImages && myImages.length > 0)) ? (
+<>
+<Tooltip
+title={'Attach images'}>
+
+<div
+onClick={() => {
+setvisibleMedia(true);
+}}
+className='aboutToUploadImagesContainer__uploadItem'>
+<FileImageFilled />
+<span className='aboutToUploadImagesContainer__uploadItem-plus'>
+<PlusOutlined />
+</span>
+</div>
+</Tooltip>
+</>
+) : ""}
+    </>
+)}
+
+
+</div>
 
               <p
                 style={{
@@ -653,7 +751,7 @@ const AddNewPage = ({}: Props) => {
               onClick={(e: any) => handleSubmit(e)}
               className='btnPrimaryClassNameoutline'
             >
-              Create page
+              Update page
             </Button>
           </div>
 

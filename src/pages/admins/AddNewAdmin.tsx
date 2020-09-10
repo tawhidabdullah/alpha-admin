@@ -37,12 +37,10 @@ const validationSchema = Yup.object().shape({
     .max(13, 'Please enter a valid mobile number.'),
    password: Yup.string()
     .label('Password')
-    .required()
-    .min(6, 'Password must have at least 6 characters'),
+    .required(),
   passwordConfirmation: Yup.string()
     .label('Confirm password')
     .required()
-    .min(6, 'Confirm password must have at least 6 characters')
     .oneOf([Yup.ref('password'), null], 'Passwords must match'),
 });
 
@@ -83,7 +81,8 @@ const plainOptions = [
     'getBlog', 'postBlog', 
     'getPage', 'postPage',
     'analytics',
-    'accounts'
+    'accounts',
+    'getDealer', 'postDealer', 
 ];
 
 
@@ -104,6 +103,10 @@ const AddNewAdminRoles = ({ addNewCategoryVisible, setAddNewCategoryVisible, tag
 
 
     const handleSubmit = async (values: any, actions: any) => {
+        let roles = [...accesscheckedList]; 
+        if(accesscheckedList.length === 14){
+            roles.unshift('superAdmin')
+        }
         const addTagRes = await handleAddTagFetch({
             body: {
                 name: values.name.trim(),
@@ -111,9 +114,7 @@ const AddNewAdminRoles = ({ addNewCategoryVisible, setAddNewCategoryVisible, tag
                 phone: values.phone,
                 password: values.password,
                 password2: values.passwordConfirmation,
-                access: accesscheckedList,
-
-            },
+                access: roles,            },
         });
 
         // @ts-ignore
@@ -121,6 +122,8 @@ const AddNewAdminRoles = ({ addNewCategoryVisible, setAddNewCategoryVisible, tag
             // openSuccessNotification();
 
             setTagList([...tagList, {
+                // @ts-ignore
+                ...addTagRes,
                 id: addTagRes['id'] || '',
                 key: addTagRes['id'] || '',
                 name: addTagRes['name'] || '',
@@ -134,7 +137,6 @@ const AddNewAdminRoles = ({ addNewCategoryVisible, setAddNewCategoryVisible, tag
 
 
         actions.setSubmitting(false);
-
     };
 
 
@@ -354,5 +356,9 @@ const AddNewAdminRoles = ({ addNewCategoryVisible, setAddNewCategoryVisible, tag
 
     );
 };
+
+
+
+
 
 export default AddNewAdminRoles;

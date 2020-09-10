@@ -1,5 +1,4 @@
 // @ts-nocheck
-
 import React, { useState, useEffect } from 'react';
 
 // import hooks
@@ -8,7 +7,7 @@ import { useHandleFetch } from '../../hooks';
 // import libraries
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import { message, Tooltip, Modal, Tabs, Empty, Badge } from 'antd';
+import { message, Tooltip, Modal, Tabs, Empty, Badge, Spin } from 'antd';
 import CKEditor from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
@@ -87,6 +86,7 @@ const AddNewProduct = ({
   setProductList: setBundleList,
   productDetailData,
 }: Props) => {
+
   const [addProductState, handleAddProductFetch] = useHandleFetch(
     {},
     'updatePost'
@@ -107,17 +107,24 @@ const AddNewProduct = ({
   const [coverImageId, setCoverImageId] = useState('');
   const [categoryOptions, setCategoryOptions] = useState([]);
   const [selectedTags, setSelectedTags] = useState([]);
-  const [date, setDateFeild] = useState('');
-  const [time, setTimeFeild] = useState('');
-  const [description, setDescription] = useState('');
   const [body, setBody] = useState('');
   const [bnBody, setBnBody] = useState('');
   const [productIds, setProductIds] = useState([]);
   const [productList, setProductList] = useState([]);
-  const [bnDescription, setBNDescription] = useState('এই পণ্য...');
   const [metaTags, setMetaTags] = useState([]);
   const [bnMetaTags, setBnMetaTags] = useState([]);
 
+
+
+  const [attachImageToItemMultipleState, handleAttachImageToItemMultipleFetch] = useHandleFetch({}, 'attachImageToItemMultiple');
+  const [attachImageToItemSingleState, handleAttachImageToItemSingleFetch] = useHandleFetch({}, 'attachImageToItemSingle');
+  const [detachImageFromItemMultipleState, handleDetachImageFromItemMultipleFetch] = useHandleFetch({}, 'detachImageFromItemMultiple');
+  const [detachImageFromItemSingleState, handleDetachImageFromItemSingleFetch] = useHandleFetch({}, 'detachImageFromItemSingle');
+  const [setImageAsThumbnailToItemState, handleSetImageAsThumbnailToItemFetch] = useHandleFetch({}, 'setImageAsThumbnailToItem');
+
+
+
+  console.log('myPostState',productDetailState)
   useEffect(() => {
     const getProductDetail = async () => {
       await handleProductDetailFetch({
@@ -125,12 +132,119 @@ const AddNewProduct = ({
           placeHolders: {
             id: productDetailData.id,
           },
+          params: {
+            imageValue: 1
+          }
         },
       });
     };
 
     getProductDetail();
   }, [productDetailData]);
+
+
+
+
+  useEffect(() => {
+    if (productDetailState.data && Object.keys(productDetailState.data).length > 0) {
+
+      const images = productDetailState.data.image;
+			let mahImages = []; 
+
+			if (images && images.length > 0) {
+				mahImages = images;
+			}
+	
+			if (productDetailState.data.cover && productDetailState.data.cover['id']) {
+				const ixists = images.find(item => item.id === productDetailState.data.cover['id']);
+				if(!ixists){
+					mahImages = [productDetailState.data.cover, ...mahImages]
+				}
+
+				setCoverImageId(productDetailState.data.cover['id']);
+			}
+	
+				// @ts-ignore
+        setmyImages(mahImages);
+      
+      
+    }
+}, [productDetailState.data]); 
+
+
+useEffect(() => {
+    // @ts-ignore
+    if (myImages && myImages[0] && myImages.length < 2) {
+
+        if (coverImageId !== myImages[0].id) {
+            setCoverImageId(myImages[0].id);
+            handleSetImageAsThumnail(myImages[0]);
+        }
+
+    }
+
+}, [myImages])
+
+
+console.log('myLoadImages',myImages)
+
+
+  const handleDetachSingleImage = async id => {
+      await handleDetachImageFromItemSingleFetch({
+          urlOptions: {
+              placeHolders: {
+                  imageId: id,
+                  collection: 'post',
+                  itemId: productDetailData.id
+              }
+          }
+      });
+  }
+
+
+
+  const handleSetImageAsThumnail = async image => {
+
+      const thumbnailRes = await handleSetImageAsThumbnailToItemFetch({
+          urlOptions: {
+              placeHolders: {
+                  imageId: image.id,
+                  collection: 'post',
+                  itemId: productDetailData.id
+              }
+          }
+      });
+
+
+      // @ts-ignore
+      if (thumbnailRes && thumbnailRes.status === 'ok') {
+          openSuccessNotification('Set as thumbnail!')
+      }
+      else {
+          openErrorNotification("Couldn't set as thumbnail, Something went wrong")
+      }
+
+  }
+
+
+
+  
+  const handleImagesDelete = (id) => {
+      // @ts-ignore
+      const newImages = myImages && myImages.filter(image => {
+          return image.id !== id;
+      })
+
+      setmyImages(newImages);
+  }
+
+
+
+
+
+
+
+  
 
   useEffect(() => {
     if (productDetailData && productDetailData.brand) {
@@ -160,41 +274,76 @@ const AddNewProduct = ({
     }
   }, [productDetailData]);
 
-  useEffect(() => {
-    if (productDetailState.done && Object.keys(productDetailState).length > 0) {
-      const images = productDetailState.data.image;
-      if (images && images.length > 0) {
-        setmyImages(images);
-      }
 
-      if (
-        productDetailState.data.cover &&
-        productDetailState.data.cover['id']
-      ) {
-        // @ts-ignore
-        setmyImages([productDetailState.data.cover, ...images]);
-        console.log('catcat', [productDetailState.data.cover, ...images]);
-        setCoverImageId(productDetailState.data.cover['id']);
-      }
+
+  
+  useEffect(()=>{
+    if(
+        productDetailState.done && productDetailState['data'] 
+    && Object.keys(productDetailState['data']).length > 0
+     && ['requiredProducts'] && productDetailState['data']['requiredProducts'].length > 0){
+        const productIds = productDetailState['data']['requiredProducts'].map(item => item); 
+        setProductIds(productIds); 
+        const productList = productDetailState['data']['requiredProducts'].map(item => {
+            return {
+                ...item,
+                _id: item._id,
+                variation: item.variation,
+                quantity: item.quantity,
+            }
+        }); 
+       setProductList(productList);
+
+    }; 
+    
+},[productDetailState])
+
+console.log('couponDetialQuickEdit',productDetailState);
+
+useEffect(() => {
+
+    if (productIds.length > 0) {
+        if (productIds.length > productList.length) {
+            const variation = productIds[productIds.length - 1]['pricing'].length > 0 && productIds[productIds.length - 1]['pricing'][0]['_id'];
+            console.log('variation', variation)
+
+            setProductList([...productList, {
+                ...productIds[productIds.length - 1],
+                _id: productIds[productIds.length - 1]['id'],
+                variation: variation,
+                quantity: 1
+            }]);
+        }
+
+
+        else if (productIds.length < productList.length) {
+            console.log('productIds', productIds);
+            console.log('productList', productList);
+
+            const newProductList = productList.filter(item => {
+                let isTrue = false;
+                productIds.forEach(product => {
+                    if (product.id === item._id) {
+                        isTrue = true;
+                    }
+                });
+                return isTrue;
+            })
+            setProductList(newProductList);
+
+        }
+
     }
-  }, [productDetailState]);
-
-  useEffect(() => {
-    console.log('thumnail', myImages);
-    // @ts-ignore
-    if (myImages && myImages[0] && myImages.length < 2) {
-      console.log('thumnail2', myImages);
-
-      if (coverImageId !== myImages[0].id) {
-        setCoverImageId(myImages[0].id);
-        // handleSetImageAsThumnail(myImages[0]);
-      }
+    else {
+        setProductList([]);
     }
-  }, [myImages]);
+    // console.log('productIds', productIds)
 
-  const makeEmptyCategoryOptions = (setEmpty) => {
-    setEmpty([]);
-  };
+
+}, [productIds])
+
+
+
 
   const handleSubmit = async (values: any, actions: any) => {
     // @ts-ignore
@@ -216,6 +365,50 @@ const AddNewProduct = ({
             };
           })
         : [];
+
+
+        if (productDetailData && Object.keys(productDetailData).length > 0) {
+          const aboutToUpdatedImageIds = []; 
+
+    
+          if(imagesIds && imagesIds.length > 0){
+            imagesIds.forEach(imageId => {
+              if(productDetailData && productDetailData['image']){
+                if(!productDetailData['image'].includes(imageId)){
+                  aboutToUpdatedImageIds.push(imageId)
+                }
+              }
+            });
+          }
+    
+          
+                if (aboutToUpdatedImageIds[0] && aboutToUpdatedImageIds.length > 1) {
+                    await handleAttachImageToItemMultipleFetch({
+                        urlOptions: {
+                            placeHolders: {
+                                collection: 'post',
+                                itemId: productDetailData.id
+                            }
+                        },
+                        body: {
+                            image: aboutToUpdatedImageIds
+                        }
+                    });
+                }
+                else if (aboutToUpdatedImageIds[0] && aboutToUpdatedImageIds.length < 1) {
+                    await handleAttachImageToItemSingleFetch({
+                        urlOptions: {
+                            placeHolders: {
+                                imageId: aboutToUpdatedImageIds[0].id,
+                                collection: 'post',
+                                itemId: productDetailData.id
+                            }
+                        }
+                    });
+                }
+            }
+            
+
 
     const addProductRes = await handleAddProductFetch({
       urlOptions: {
@@ -321,155 +514,20 @@ const AddNewProduct = ({
     }
   }, [addProductState]);
 
-  useEffect(() => {
-    if (
-      productDetailData &&
-      productDetailData['products'] &&
-      productDetailData['products'].length > 0
-    ) {
-      const productIds = productDetailData['products'].map((item) => {
-        return {
-          ...item,
-          _id: item.id,
-          variation: item.variation,
-          quantity: item.quantity,
-          totalPrice: item.totalPrice,
-        };
-      });
-      setProductIds(productIds);
-      const productList = productDetailData.requiredProducts.map((item) => {
-        return {
-          ...item,
-          _id: item.id,
-          variation: item.variation,
-          quantity: item.quantity,
-          totalPrice: item.totalPrice,
-        };
-      });
-      setProductList(productList);
-    }
-
-    console.log('productDetailDatamy', productDetailData);
-  }, [productDetailData]);
-
-  useEffect(() => {
-    if (productIds && productIds && productIds.length > 0) {
-      if (productIds.length > (productList && productList.length)) {
-        const variation =
-          productIds[productIds.length - 1]['pricing'].length > 0 &&
-          productIds[productIds.length - 1]['pricing'][0]['_id'];
-        console.log('variation', variation);
-
-        setProductList([
-          ...productList,
-          {
-            ...productIds[productIds.length - 1],
-            _id: productIds[productIds.length - 1]['id'],
-            variation: variation,
-            quantity: 1,
-          },
-        ]);
-      } else if (
-        productIds &&
-        productIds.length < (productList && productList.length)
-      ) {
-        console.log('productIds', productIds);
-        console.log('productList', productList);
-
-        const newProductList = productList.filter((item) => {
-          let isTrue = false;
-          productIds.forEach((product) => {
-            if (product.id === item._id) {
-              isTrue = true;
-            }
-          });
-          return isTrue;
-        });
-        setProductList(newProductList);
-      }
-    } else {
-      setProductList([]);
-    }
-    // console.log('productIds', productIds)
-  }, [productIds]);
+  
 
   const handleCancel = (e: any) => {
     setAddNewCategoryVisible(false);
+    setmyImages(false);
+    setCoverImageId('');
+    setPricing([]);
+    setTagIds([]);
+    setSelectedTags([]);
+    setBrandId('');
+    setcategoryIds([]);
+    setCategoryOptions([]);
   };
 
-  const getisSubmitButtonDisabled = (values, isValid) => {
-    if (!values.name || !(pricing.length > 0) || !isValid) {
-      return true;
-    }
-    return false;
-  };
-
-  const handleImagesDelete = (id) => {
-    // @ts-ignore
-    const newImages =
-      myImages &&
-      // @ts-ignore
-      myImages.filter((image) => {
-        return image.id !== id;
-      });
-
-    setmyImages(newImages);
-  };
-
-  const handleDeleteFromSelectedImage = () => {};
-
-  const handleThumbnailImageDelete = (id) => {
-    // @ts-ignore
-    const newImages =
-      myThumbnailImage &&
-      // @ts-ignore
-      myThumbnailImage.filter((image) => {
-        return image.id !== id;
-      });
-
-    if (newImages.length > 0) {
-      setmyThumbnailImage(newImages);
-    } else setmyThumbnailImage(false);
-  };
-
-  const handleAddPricing = (priceItem) => {
-    setPricing([
-      {
-        ...priceItem,
-        id: pricing.length,
-      },
-      ...pricing,
-    ]);
-    message.info('Product Pricing Added');
-  };
-
-  const handleDeletePricing = (id) => {
-    const newPricing = pricing.filter((item) => item.id !== id);
-    setPricing(newPricing);
-    message.info('Product Pricing Deleted');
-  };
-
-  const isCategoryInValid = () => {
-    if (
-      addProductState.error['error']['category'] &&
-      !categoryids &&
-      categoryids.length
-    ) {
-      return true;
-    } else if (categoryids && categoryids.length > 0) {
-      return false;
-    }
-  };
-
-  const handleDateChange = (date, dateString) => {
-    setDateFeild(dateString);
-    // console.log('date', date, dateString);
-  };
-
-  const handleTimeChange = (date, dateString) => {
-    setTimeFeild(dateString);
-    // console.log('date', date, dateString);
-  };
 
   useEffect(() => {
     if (productDetailData && Object.keys(productDetailData).length > 0) {
@@ -482,8 +540,8 @@ const AddNewProduct = ({
         productDetailData.bn &&
         productDetailData.bn['metaTags'] &&
         productDetailData.bn['metaTags'].split(',');
-      setMetaTags(metaTags);
-      setBnMetaTags(bnMetaTags);
+      setMetaTags(metaTags || []);
+      setBnMetaTags(bnMetaTags || []);
     }
   }, []);
 
@@ -914,84 +972,107 @@ const AddNewProduct = ({
                   </div>
                 </div>
 
+          
+
                 <div className='addProductGridContainer__image'>
-                  <div className='addProductGridContainer__item-header'>
-                    <h3>Image</h3>
 
-                    <Tooltip
-                      placement='left'
-                      title={
-                        'Click on the image to select cover image, By default 1st image is selected as cover'
-                      }
-                    >
-                      <a href='###'>
-                        <InfoCircleOutlined />
-                      </a>
-                    </Tooltip>
-                  </div>
-                  <div className='addProductGridContainer__item-body'>
-                    <div className='aboutToUploadImagesContainer'>
-                      {myImages &&
-                        // @ts-ignore
-                        myImages.length > 0 &&
-                        // @ts-ignore
-                        myImages.map((image, index) => {
-                          return (
-                            <div className='aboutToUploadImagesContainer__item'>
-                              <div
-                                className='aboutToUploadImagesContainer__item-imgContainer'
-                                onClick={() => setCoverImageId(image.id)}
-                              >
-                                <img src={image.cover} alt={image.alt} />
-                              </div>
+<div className='addProductGridContainer__item-header'>
+    <h3>
+        Image
+</h3>
 
-                              <span
-                                onClick={() => handleImagesDelete(image.id)}
-                                className='aboutToUploadImagesContainer__item-remove'
-                              >
-                                <CloseOutlined />
-                              </span>
+    <Tooltip
+        placement="left" title={'Click on the image to select cover image, By default 1st image is selected as cover'}>
+        <a href='###'>
+            <InfoCircleOutlined />
+        </a>
+    </Tooltip>
+</div>
 
-                              {coverImageId === image.id ? (
-                                <span className='aboutToUploadImagesContainer__item-cover'>
-                                  <CheckOutlined />
-                                </span>
-                              ) : (
-                                !coverImageId &&
-                                index === 0 && (
-                                  <span className='aboutToUploadImagesContainer__item-cover'>
-                                    <CheckOutlined />
-                                  </span>
-                                )
-                              )}
-                            </div>
-                          );
-                        })}
+<div
+                                            style={{
+                                                padding: "10px"
+                                            }}
+                                            className='aboutToUploadImagesContainer'>
+                                            {productDetailState.isLoading && (
+                                                <div style={{
+                                                    padding: '20px 0'
+                                                }}>
+                                                    <Spin />
+                                                </div>
+                                            )}
+                                            {productDetailState.done && (
+                                                <>
+                                                    {myImages &&
+                                                        // @ts-ignore
+                                                        myImages.length > 0 && myImages.map((image, index) => {
+                                                            return (
+                                                                <div className='aboutToUploadImagesContainer__item'>
+                                                                    <div
+                                                                        className='aboutToUploadImagesContainer__item-imgContainer'
+                                                                        onClick={() => {
+                                                                            setCoverImageId(image.id);
+                                                                            handleSetImageAsThumnail(image);
+                                                                        }}
+                                                                    >
+                                                                        <img src={image.cover} alt={image.alt} />
+                                                                    </div>
 
-                      <Tooltip title={'Attach images'}>
-                        <div
-                          onClick={() => {
-                            setvisible(true);
-                            setisModalOpenForImages(true);
-                            setisModalOpenForThumbnail(false);
-                          }}
-                          className='aboutToUploadImagesContainer__uploadItem'
-                        >
-                          {/* <FileAddOutlined />
-                                                        <FileImageTwoTone />
-                                                        <FileImageOutlined /> */}
-                          <FileImageFilled />
-                          {/* <h5>
-                                                                        Select From Library
-                                                                <     /h5> */}
-                          <span className='aboutToUploadImagesContainer__uploadItem-plus'>
-                            <PlusOutlined />
-                          </span>
-                        </div>
-                      </Tooltip>
-                    </div>
-                  </div>
-                </div>
+                                                                    <span
+                                                                        onClick={() => {
+                                                                            handleImagesDelete(image.id)
+                                                                            handleDetachSingleImage(image.id)
+                                                                        }
+
+                                                                        }
+                                                                        className='aboutToUploadImagesContainer__item-remove'>
+                                                                        <CloseOutlined />
+                                                                    </span>
+
+
+                                                                    {coverImageId === image.id ? (
+                                                                        <span className='aboutToUploadImagesContainer__item-cover'>
+                                                                            <CheckOutlined />
+                                                                        </span>
+                                                                    ) : !coverImageId && index === 0 && (
+                                                                        <span className='aboutToUploadImagesContainer__item-cover'>
+                                                                            <CheckOutlined />
+                                                                        </span>
+                                                                    )}
+
+
+                                                                </div>
+                                                            )
+                                                        })}
+
+
+                                                    <Tooltip
+                                                        title={'Attach images'}>
+
+                                                        <div
+                                                            onClick={() => {
+                                                                setvisible(true);
+                                                                setisModalOpenForImages(true);
+                                                                setisModalOpenForThumbnail(false);
+                                                            }}
+                                                            className='aboutToUploadImagesContainer__uploadItem'>
+                                                            {/* <FileAddOutlined />
+													<FileImageTwoTone />
+													<FileImageOutlined /> */}
+                                                            <FileImageFilled />
+                                                            {/* <h5>
+												     Select From Library
+											<     /h5> */}
+                                                            <span className='aboutToUploadImagesContainer__uploadItem-plus'>
+                                                                <PlusOutlined />
+                                                            </span>
+                                                        </div>
+                                                    </Tooltip>
+                                                </>
+                                            )}
+                                        </div>
+                                  </div>
+
 
                 <div className='addProductGridContainer__image'>
                   <div className='addProductGridContainer__item-header'>

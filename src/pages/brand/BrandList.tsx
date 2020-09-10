@@ -17,6 +17,14 @@ import BrandQuickEdit from "./BrandQuickEdit";
 
 
 
+// import state
+import { isAccess } from "../../utils";
+import { connect } from "react-redux";
+
+
+
+
+
 const { Column } = Table;
 const { Search } = Input;
 
@@ -45,10 +53,11 @@ const openSuccessNotification = (message?: any) => {
 interface myTableProps {
   data: any; 
   setBrandList: any; 
+  roles?:any; 
 } 
 
 
-const MyTable = ({data,setBrandList}: myTableProps) => {
+const MyTable = ({data,setBrandList,roles}: myTableProps) => {
     const [visible,setvisible] = useState(false);   
     const [activeCategoryForEdit,setactiveCategoryForEdit] = useState(false); 
     const [deleteBrandState, handleDeleteBrandFetch] = useHandleFetch({}, 'deleteBrand');
@@ -182,43 +191,51 @@ const MyTable = ({data,setBrandList}: myTableProps) => {
             </>
           )}
         /> */}
-        <Column
+
+
+{isAccess('postCatalogue',roles) && (
+					      <Column
         
-        className='classnameofthecolumn'
-          title=""
-          key="action"
-          align='right'
-          render={(text, record : any) => (
-            <Space size="middle">
-                <a href='##'>
-               <Tooltip placement="top" title='Quick Edit Brand'>
-              <span className='iconSize' onClick={() => {
-                setvisible(true)
-                setactiveCategoryForEdit(record); 
-              }}> 
-              <EditOutlined />
-            
-              </span>
-               </Tooltip>
-               </a>
+                className='classnameofthecolumn'
+                  title=""
+                  key="action"
+                  align='right'
+                  render={(text, record : any) => (
+                    <Space size="middle">
+                        <a href='##'>
+                       <Tooltip placement="top" title='Quick Edit Brand'>
+                      <span className='iconSize' onClick={() => {
+                        setvisible(true)
+                        setactiveCategoryForEdit(record); 
+                      }}> 
+                      <EditOutlined />
+                    
+                      </span>
+                       </Tooltip>
+                       </a>
+        
+        
+                       <Popconfirm 
+                       
+                       onConfirm={() => handleDeleteBrand(record.id)}
+                       title="Are you sure？" okText="Yes" cancelText="No">
+                   
+                   <span 
+                     className='iconSize iconSize-danger'
+                     > 
+                     <DeleteOutlined/>
+                    </span>
+                   </Popconfirm>
+        
+        
+                    </Space>
+                  )}
+                />
+                 )}
 
 
-               <Popconfirm 
-               
-               onConfirm={() => handleDeleteBrand(record.id)}
-               title="Are you sure？" okText="Yes" cancelText="No">
-           
-           <span 
-             className='iconSize iconSize-danger'
-             > 
-             <DeleteOutlined/>
-            </span>
-           </Popconfirm>
 
-
-            </Space>
-          )}
-        />
+   
       </Table>
 
 
@@ -237,10 +254,10 @@ const MyTable = ({data,setBrandList}: myTableProps) => {
 
 
 interface Props {
-    history: any; 
+  roles: any; 
 }
 
-const CategoryList = ({history}: Props) => {
+const CategoryList = ({roles}: Props) => {
 
 
   const [brandList,setBrandList] = useState([]);
@@ -317,15 +334,20 @@ const CategoryList = ({history}: Props) => {
           // style={{ width: 300 }}
         />
           </div>
-            <Button
-          // type="primary"
-          className='btnPrimaryClassNameoutline'
-          icon={<PlusOutlined />}
-          onClick={() => setAddNewCategoryVisible(true)}
-        >
-        Add New
-            
-            </Button>
+
+          {isAccess('postCatalogue',roles) && (
+					  <Button
+            // type="primary"
+            className='btnPrimaryClassNameoutline'
+            icon={<PlusOutlined />}
+            onClick={() => setAddNewCategoryVisible(true)}
+           >
+           Add New
+          </Button>
+                 )}
+
+
+          
             </div>
 
             <div className='categoryListContainer__afterHeader'>
@@ -340,7 +362,8 @@ const CategoryList = ({history}: Props) => {
      
 			
 			<div className='categoryListContainer__categoryList'>
-        {brandState.done && brandList.length > 0 && <MyTable 
+        {brandState.done && brandList.length > 0 && <MyTable
+        roles={roles} 
           setBrandList={setBrandList}
         data={brandList} />}
         {brandState.isLoading && <DataTableSkeleton />}
@@ -365,4 +388,12 @@ const CategoryList = ({history}: Props) => {
 	);
 };
 
-export default withRouter(CategoryList);
+
+
+const mapStateToProps = state => ({
+  roles: state.globalState,
+})
+
+// @ts-ignore
+export default connect(mapStateToProps, null)(CategoryList);
+

@@ -3,7 +3,7 @@ import {withRouter} from 'react-router-dom';
 import { Table, notification,  Space, Tag,Button, Input,Tooltip, Popconfirm  } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined,CheckCircleOutlined } from '@ant-design/icons';
 
-import {QuickEdit} from "../../category"; 
+import QuickEdit from "./QuickEdit"; 
 import AddNewPostCategory from "./AddNewPostCategory";
 
 /// import hooks
@@ -197,7 +197,7 @@ const MyTable = ({data, setcategoryList, history}: myTableProps) => {
           render={(text, record : any) => (
             <Space size="middle">
               <a href='##'>
-               <Tooltip placement="top" title='Quick Edit Category'>
+               <Tooltip placement="top" title='Edit Category'>
               <span className='iconSize' onClick={() => {
                 setvisible(true)
                 setactiveCategoryForEdit(record); 
@@ -231,9 +231,9 @@ const MyTable = ({data, setcategoryList, history}: myTableProps) => {
     {activeCategoryForEdit &&   <QuickEdit 
     setcategoryList={setcategoryList}
     categoryList={data}
-    setvisible={setvisible}
-    visible={visible}
-    category={activeCategoryForEdit}/>}
+    setAddNewCategoryVisible={setvisible}
+    addNewCategoryVisible={visible}
+    categoryDetailData={activeCategoryForEdit}/>}
     
     </>
     )

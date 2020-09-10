@@ -112,6 +112,7 @@ const NewBrandDetail = (props: Props) => {
                             visible={tagEditVisible}
                             setvisible={setTagEditVisible}
                             customer={customerDetailData}
+                            setCustomerDetailData={setCustomerDetailData}
                         />
                         <Button
                             onClick={() => setTagEditVisible(true)}

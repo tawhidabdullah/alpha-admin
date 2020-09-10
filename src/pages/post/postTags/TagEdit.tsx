@@ -81,7 +81,7 @@ interface Props {
 const AddNewBrand = ({ addNewCategoryVisible, 
     setAddNewCategoryVisible, setTagDetailData, tagDetailData }: Props) => {
 
-    const [addTagState, handleAddTagFetch] = useHandleFetch({}, 'postAddTag');
+    const [addTagState, handleAddTagFetch] = useHandleFetch({}, 'postUpdateTag');
     const [myImages, setmyImages] = useState(false);
     const [visibleMedia, setvisibleMedia] = useState(false);
     const [tags,setTags] = useState([]);
@@ -118,10 +118,9 @@ const AddNewBrand = ({ addNewCategoryVisible,
             openSuccessNotification();
             setAddNewCategoryVisible(false);
             setTagDetailData({
+				...tagDetailData,
                 	// @ts-ignore
 				...addTagRes,
-                id: addTagRes['_id'] || '',
-                key: addTagRes['_id'] || '',
                 name: addTagRes['name'] || '',
                 description: addTagRes['description'] || '',
             })
@@ -150,9 +149,6 @@ const AddNewBrand = ({ addNewCategoryVisible,
         }
         return false;
     }
-
-
-
 
     const handleImagesDelete = (id) => {
         // @ts-ignore

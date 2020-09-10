@@ -13,8 +13,18 @@ import AddNewCustomer from "./AddNewDealer";
 import QuickEdit from "./QuickEdit";
 import Empty from "../../components/Empty";
 import moment from "moment";
+
+// import state
+import { isAccess } from "../../utils";
+import { connect } from "react-redux";
+
+
+
+
 const { Column, ColumnGroup } = Table;
 const { Search } = Input;
+
+
 
 
 
@@ -43,10 +53,11 @@ const openSuccessNotification = (message?: any) => {
 interface myTableProps {
   data: any; 
   setCustomerList?:any; 
+  roles?:any; 
 } 
 
 
-const MyTable = ({data,setCustomerList}: myTableProps) => {
+const MyTable = ({data,setCustomerList, roles}: myTableProps) => {
     const [visible,setvisible] = useState(false);   
     const [activeCategoryForEdit,setactiveCategoryForEdit] = useState(false); 
 
@@ -242,45 +253,51 @@ const MyTable = ({data,setCustomerList}: myTableProps) => {
             </>
           )}
         /> */}
-        <Column
+
+{isAccess('postDealer',roles) && (
+              <Column
         
-        className='classnameofthecolumn'
-          title=""
-          key="action"
-          align='right'
-          render={(text, record : any) => (
-            <Space size="middle">
-              <a href='##'>
-               <Tooltip placement="top" title='Edit Dealer'>
-              <span className='iconSize' onClick={() => {
-                setvisible(true)
-                setactiveCategoryForEdit(record); 
-              }}> 
-              <EditOutlined />
-            
-              </span>
-               </Tooltip>
-               </a>
-
+              className='classnameofthecolumn'
+                title=""
+                key="action"
+                align='right'
+                render={(text, record : any) => (
+                  <Space size="middle">
+                    <a href='##'>
+                     <Tooltip placement="top" title='Edit Dealer'>
+                    <span className='iconSize' onClick={() => {
+                      setvisible(true)
+                      setactiveCategoryForEdit(record); 
+                    }}> 
+                    <EditOutlined />
+                  
+                    </span>
+                     </Tooltip>
+                     </a>
+      
+                   
+      
+                    
+                     <Popconfirm 
+                     
+                     onConfirm={() => handleDeleteCustomer(record.id)}
+                     title="Are you sure？" okText="Yes" cancelText="No">
+                 
+                 <span 
+                   className='iconSize iconSize-danger'
+                   > 
+                   <DeleteOutlined/>
+                  </span>
              
-
-              
-               <Popconfirm 
-               
-               onConfirm={() => handleDeleteCustomer(record.id)}
-               title="Are you sure？" okText="Yes" cancelText="No">
-           
-           <span 
-             className='iconSize iconSize-danger'
-             > 
-             <DeleteOutlined/>
-            </span>
-       
-           </Popconfirm>
-             
-            </Space>
+                 </Popconfirm>
+                   
+                  </Space>
+                )}
+              />
           )}
-        />
+
+
+
       </Table>
 
     
@@ -299,10 +316,10 @@ const MyTable = ({data,setCustomerList}: myTableProps) => {
 
 
 interface Props {
-    history: any; 
+  roles: any; 
 }
 
-const CustomerList = ({history}: Props) => {
+const CustomerList = ({roles}: Props) => {
 
 
     const [customerList,setCustomerList] = useState([]); 
@@ -373,15 +390,19 @@ const CustomerList = ({history}: Props) => {
           // style={{ width: 300 }}
         />
           </div>
-            <Button
-          // type="primary"
-          className='btnPrimaryClassNameoutline'
-          icon={<PlusOutlined />}
-          onClick={() => setAddNewCategoryVisible(true)}
-        >
-        Add New
-            
-            </Button>
+
+          {isAccess('postDealer',roles) && (
+        <Button
+        // type="primary"
+        className='btnPrimaryClassNameoutline'
+        icon={<PlusOutlined />}
+        onClick={() => setAddNewCategoryVisible(true)}
+      >
+      Add New
+          
+          </Button>
+          )}
+    
             </div>
 
             <div className='categoryListContainer__afterHeader'>
@@ -397,6 +418,7 @@ const CustomerList = ({history}: Props) => {
 			
 			<div className='categoryListContainer__categoryList'>
         {customerState.done && customerList.length > 0 && <MyTable
+        roles={roles}
         setCustomerList={setCustomerList}
          data={customerList} />}
         {customerState.isLoading && <DataTableSkeleton />}
@@ -423,4 +445,14 @@ const CustomerList = ({history}: Props) => {
 	);
 };
 
-export default withRouter(CustomerList);
+
+
+const mapStateToProps = state => ({
+  roles: state.globalState,
+})
+
+// @ts-ignore
+export default connect(mapStateToProps, null)(CustomerList);
+
+
+

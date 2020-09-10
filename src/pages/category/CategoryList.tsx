@@ -13,6 +13,14 @@ import { useFetch, useHandleFetch } from "../../hooks";
 import { DataTableSkeleton } from "../../components/Placeholders";
 import Empty from "../../components/Empty";
 
+
+// import state
+import { isAccess } from "../../utils";
+import { connect } from "react-redux";
+
+
+
+
 const { Column, ColumnGroup } = Table;
 const { Search } = Input;
 
@@ -42,10 +50,11 @@ interface myTableProps {
   data: any; 
   setcategoryList?:any; 
   history?: any; 
+  roles?:any; 
 } 
 
 
-const MyTable = ({data, setcategoryList, history}: myTableProps) => {
+const MyTable = ({data, setcategoryList, history, roles}: myTableProps) => {
     const [visible,setvisible] = useState(false);   
     const [activeCategoryForEdit,setactiveCategoryForEdit] = useState(false); 
     const [deleteCategoryState, handleDeleteCategoryFetch] = useHandleFetch({}, 'deleteCategory');
@@ -183,46 +192,41 @@ const MyTable = ({data, setcategoryList, history}: myTableProps) => {
             </>
           )}
         /> */}
-        <Column
         
-        className='classnameofthecolumn'
-          title=""
-          key="action"
-          align='right'
-          render={(text, record : any) => (
-            <Space size="middle">
-              <a href='##'>
-               <Tooltip placement="top" title='Edit Category'>
-              <span className='iconSize' onClick={() => {
-                setvisible(true)
-                setactiveCategoryForEdit(record); 
-              }}> 
-              <EditOutlined />
-            
+      {isAccess('postCatalogue',roles) && (
+          <Column
+            className='classnameofthecolumn'
+            title=""
+            key="action"
+            align='right'
+            render={(text, record : any) => (
+              <Space size="middle">
+                <a href='##'>
+                 <Tooltip placement="top" title='Edit Category'>
+                <span className='iconSize' onClick={() => {
+                  setvisible(true)
+                  setactiveCategoryForEdit(record); 
+                }}> 
+                <EditOutlined />
+              
+                </span>
+                 </Tooltip>
+                 </a>
+                 <Popconfirm 
+                 onConfirm={() => handleDeleteCategory(record.id)}
+                 title="Are you sure？" okText="Yes" cancelText="No">
+                 <span 
+               className='iconSize iconSize-danger'
+               > 
+               <DeleteOutlined/>
               </span>
-               </Tooltip>
-               </a>
+             </Popconfirm>
+              </Space>
+            )}
+          />
+  )}
 
 
-               <Popconfirm 
-               
-               onConfirm={() => handleDeleteCategory(record.id)}
-               title="Are you sure？" okText="Yes" cancelText="No">
-           
-		   <span 
-             className='iconSize iconSize-danger'
-             > 
-             <DeleteOutlined/>
-            </span>
-       
-           </Popconfirm>
-
-
-       
-             
-            </Space>
-          )}
-        />
       </Table>
 
     
@@ -242,9 +246,10 @@ const MyTable = ({data, setcategoryList, history}: myTableProps) => {
 
 interface Props {
     history: any; 
+    roles?:any; 
 }
 
-const CategoryList = ({history}: Props) => {
+const CategoryList = ({history, roles}: Props) => {
 
 
   
@@ -296,6 +301,8 @@ const CategoryList = ({history}: Props) => {
 
 
 
+
+
 	return (
 		<>
     {/* <h2 className='containerPageTitle'>
@@ -318,15 +325,20 @@ const CategoryList = ({history}: Props) => {
           onChange={e => handleSearch(e.target.value)}
         />
           </div>
+
+            {isAccess('postCatalogue',roles) && (
             <Button
-          // type="primary"
-          className='btnPrimaryClassNameoutline'
-          icon={<PlusOutlined />}
-          onClick={() => setAddNewCategoryVisible(true)}
-        >
-        Add New
-            
+            // type="primary"
+            className='btnPrimaryClassNameoutline'
+            icon={<PlusOutlined />}
+            onClick={() => setAddNewCategoryVisible(true)}
+            >
+            Add New
+
             </Button>
+            )}
+
+           
             </div>
 
             <div className='categoryListContainer__afterHeader'>
@@ -342,6 +354,7 @@ const CategoryList = ({history}: Props) => {
 			
 			<div className='categoryListContainer__categoryList'>
         {categoryState.done && categoryList.length > 0 && <MyTable 
+        roles={roles}
         history={history}
         setcategoryList={setcategoryList}
         data={categoryList} />}
@@ -374,4 +387,10 @@ const CategoryList = ({history}: Props) => {
 	);
 };
 
-export default withRouter(CategoryList);
+const mapStateToProps = state => ({
+  roles: state.globalState,
+})
+
+// @ts-ignore
+export default connect(mapStateToProps, null)(withRouter(CategoryList));
+

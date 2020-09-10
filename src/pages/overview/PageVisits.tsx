@@ -143,6 +143,7 @@ const PageVisits = (props: Props) => {
                 {pageVisitsState.done && pageVisitsState.data && pageVisitsState.data.length > 0 && (
                     <>
                         <Table
+                        pagination={{ defaultPageSize: 6}}
                             style={{
                             }}
                             // expandable={{

@@ -141,11 +141,6 @@ const AddNewBrand = ({ brandDetailData, brandEditVisible, setBrandEditVisible,se
                 }
             }
         });
-
-
-
-
-
     }
 
 
@@ -322,8 +317,8 @@ const AddNewBrand = ({ brandDetailData, brandEditVisible, setBrandEditVisible,se
             console.log('localMetaTags',metaTags);
            
             const bnMetaTags = brandDetailData.bn && brandDetailData.bn['metaTags'] && brandDetailData.bn['metaTags'].split(','); 
-            setTags(metaTags)
-            setBnTags(bnMetaTags)
+            setTags(metaTags || [])
+            setBnTags(bnMetaTags || [])
         }
 
     },[])

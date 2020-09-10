@@ -24,7 +24,7 @@ import { LogoutOutlined,
     } from '@ant-design/icons';
 
 import Moment from 'react-moment';
-import moment from 'moment';
+import moment from 'moment'; 
 
 import { Layout, Badge, Dropdown, Menu, Spin } from 'antd';
 
@@ -41,7 +41,7 @@ const NotificationList = (props: Props) => {
 
     const history = useHistory();
 
-    const [getAllNotificationState, handleGetAllNOticationFetch] = useHandleFetch({}, 'getAllNotification');
+    const [getAllNotificationState, handleGetAllNOticationFetch] = useHandleFetch({}, 'getAllNotificationPage');
 
 
     const handleMenuClick = (e) => {
@@ -52,7 +52,13 @@ const NotificationList = (props: Props) => {
 
     useEffect(() => {
         const getAllNotification = async () => {
-            await handleGetAllNOticationFetch({});
+            await handleGetAllNOticationFetch({
+                urlOptions: {
+                    params: {
+                        limitNumber: 5000
+                    }
+                }
+            });
         }
 
         getAllNotification();
@@ -120,9 +126,7 @@ const NotificationList = (props: Props) => {
                                     {item.text}
                                 </h4>
                                 <h2>
-                                <Moment >
-                                    {item.added}
-                                </Moment>
+                                {item.added && moment(item.added).format('MMMM Do YYYY, h:mm a')}
                                 </h2>
                             </div>
                         </div>

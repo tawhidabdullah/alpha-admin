@@ -316,6 +316,12 @@ const AddNewBrand = ({ brandDetailData,
 
     const handleCancel = (e: any) => {
         setBrandEditVisible(false);
+        setBnTags([]);
+        setTags([]); 
+        setCoverImageId(''); 
+        setvisibleMedia(false); 
+        setmyImages(false)
+    
     };
 
 
@@ -351,8 +357,8 @@ const AddNewBrand = ({ brandDetailData,
             console.log('localMetaTags',metaTags);
            
             const bnMetaTags = brandDetailData.bn && brandDetailData.bn['metaTags'] && brandDetailData.bn['metaTags'].split(','); 
-            setTags(metaTags)
-            setBnTags(bnMetaTags)
+            setTags(metaTags || [])
+            setBnTags(bnMetaTags || [])
         }
 
     },[])

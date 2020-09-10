@@ -16,27 +16,27 @@ const { Option } = Select;
 
 
 const validationSchema = Yup.object().shape({
-    firstName: Yup.string()
-      .label('Firstname')
-      .required()
-      .min(2, 'First name must have at least 2 characters '),
-    lastName: Yup.string()
-      .label('Lastname')
-      .required()
-      .min(2, 'Lastname must have at least 2 characters '),
-    phone: Yup.string()
-      .required('Please tell us your mobile number.')
-      .max(13, 'Please enter a valid mobile number.'),
-    password: Yup.string()
-      .label('Password')
-      .required()
-      .min(6, 'Password must have at least 6 characters'),
-    address1: Yup.string()
-      .label('Address line 1')
-      .required()
-      .min(3, 'Address line 1 must have at least 3 characters '),
+    // firstName: Yup.string()
+    //   .label('Firstname')
+    //   .required()
+    //   .min(2, 'First name must have at least 2 characters '),
+    // lastName: Yup.string()
+    //   .label('Lastname')
+    //   .required()
+    //   .min(2, 'Lastname must have at least 2 characters '),
+    // phone: Yup.string()
+    //   .required('Please tell us your mobile number.')
+    //   .max(13, 'Please enter a valid mobile number.'),
+    // password: Yup.string()
+    //   .label('Password')
+    //   .required()
+    //   .min(6, 'Password must have at least 6 characters'),
+    // address1: Yup.string()
+    //   .label('Address line 1')
+    //   .required()
+    //   .min(3, 'Address line 1 must have at least 3 characters '),
   
-    email: Yup.string().label('Email').email('Please enter a valid email'),
+    // email: Yup.string().label('Email').email('Please enter a valid email'),
   });
 
 
@@ -111,8 +111,8 @@ const QuickEdit = ({ customer, setvisible, visible, customerList, setCustomerLis
             address2: values.address2,
             firstName: values.firstName,
             lastName: values.lastName,
-            country: selectedCountryValue,
-            city: selectedCityValue,
+            country: selectedCountryValue || customer.country,
+            city: selectedCityValue || customer.city,
 		},
 	  });
 	
@@ -128,17 +128,19 @@ const QuickEdit = ({ customer, setvisible, visible, customerList, setCustomerLis
 				  const index = positionInTag();
 		
 				  // @ts-ignore
-				  const updatedItem = Object.assign({}, tagList[index], { ...updateCustomerRes });
+				  const updatedItem = Object.assign({}, customerList[index], { ...updateCustomerRes, 
+					name: updateCustomerRes.firstName + ' ' + updateCustomerRes.lastName,
+				});
 				  const updateTagList = [...customerList.slice(0, index), updatedItem, ...customerList.slice(index + 1)];
 				  setCustomerList(updateTagList); 
-				
+				  setvisible(false)
 			  }
 			  else {
 				openErrorNotification();
 			  }
 			
 			  actions.setSubmitting(false);
-			  setvisible(false)
+			  
 	};
 	
 
@@ -200,6 +202,52 @@ const QuickEdit = ({ customer, setvisible, visible, customerList, setCustomerLis
 
 
 
+	
+	useEffect(() => {
+		if (!updateCustomerState['isLoading']) {
+		  const error = updateCustomerState['error'];
+		  if (error['isError'] && Object.keys(error['error']).length > 0) {
+			if (error['error']['registerError']) {
+			  // setServerErrors(error['error']['registerError']);
+			} else if (error['error']['checkoutError']) {
+			  // setServerErrors(error['error']['checkoutError']);
+			} else {
+			  // setServerErrors(error['error']);
+			}
+	
+			const errors =
+			  Object.values(error['error']).length > 0
+				? Object.values(error['error'])
+				: [];
+			errors.forEach((err, i) => {
+			  if (typeof err === 'string') {
+				openErrorNotification(err);
+			  } else if (typeof err === 'object') {
+				if (err && Object.keys(err).length > 0) {
+				  const errs = Object.values(err);
+				  errs.forEach((err) => {
+					openErrorNotification(err);
+				  });
+				}
+			  }
+			});
+		  }
+		}
+	
+		if (!updateCustomerState['isLoading'] && Object.keys(updateCustomerState.data).length > 0) {
+		  if (updateCustomerState['data']['status'] === 'ok') {
+			// openSuccessNotification('Order Created Successfully');
+			// history.push({
+			//   pathname: '/orderDetails',
+			//   state: checkoutState['data']
+			// })
+			// clearCart();
+			// setIsModalShown(true);
+		  }
+		}
+	  }, [updateCustomerState]);
+	
+
 
 
 
@@ -214,7 +262,6 @@ const QuickEdit = ({ customer, setvisible, visible, customerList, setCustomerLis
 		if(!isValid ||
             !values.firstName ||
             !values.lastName ||
-            !values.password ||
             !values.phone ||
             !values.address1){
 			return true; 
@@ -246,7 +293,7 @@ const QuickEdit = ({ customer, setvisible, visible, customerList, setCustomerLis
 		}) => (
 			<>
 			<Modal
-			title="Quick Edit"
+			title="Customer Edit"
 			visible={visible}
 			onOk={(e : any) => handleSubmit(e)}
 			onCancel={handleCancel}
@@ -254,7 +301,7 @@ const QuickEdit = ({ customer, setvisible, visible, customerList, setCustomerLis
 			okButtonProps={{
 			loading: isSubmitting,
 			htmlType: "submit",
-			disabled: getisSubmitButtonDisabled(values, isValid)
+			// disabled: getisSubmitButtonDisabled(values, isValid)
 			}}
 			bodyStyle={{
                 margin: '0',
@@ -414,7 +461,7 @@ const QuickEdit = ({ customer, setvisible, visible, customerList, setCustomerLis
          </div>
          <div className='dubbleRowInputs__item'>
          <Input 
-			   label='More specific address'
+			   label='Address 2'
 			   value={values.address2}
 			   name='address2'
 			   isError={(touched.address2 && errors.address2) ||

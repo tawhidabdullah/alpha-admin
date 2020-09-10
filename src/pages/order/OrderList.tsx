@@ -32,6 +32,14 @@ import AddNewOrder from './AddNewOrder';
 import QuickEdit from './QuickEdit';
 import Empty from '../../components/Empty';
 
+
+
+// import state
+import { isAccess } from "../../utils";
+import { connect } from "react-redux";
+
+
+
 // import lib
 import Moment from 'react-moment';
 import moment from 'moment';
@@ -61,9 +69,10 @@ const { Option } = Select;
 interface myTableProps {
   data: any;
   setOrderList: any;
+  roles: any; 
 }
 
-const MyTable = ({ data, setOrderList }: myTableProps) => {
+const MyTable = ({ data, setOrderList, roles }: myTableProps) => {
   const [visible, setvisible] = useState(false);
   const [activeCategoryForEdit, setactiveCategoryForEdit] = useState(false);
   const [deleteOrderState, handleDeleteOrderFetch] = useHandleFetch(
@@ -145,12 +154,41 @@ const MyTable = ({ data, setOrderList }: myTableProps) => {
         </Menu.Item>
 
         <Menu.Item
+          onClick={() => handleUpdateOrderStatus(record, id, 'processing')}
+          key='1'
+          icon={<CheckOutlined />}
+        >
+          Processing
+        </Menu.Item>
+
+
+        <Menu.Item
+          onClick={() => handleUpdateOrderStatus(record, id, 'sentForDelivery')}
+          key='1'
+          icon={<CheckOutlined />}
+        >
+          Sent for delivery 
+        </Menu.Item>
+
+
+
+        <Menu.Item
           onClick={() => handleUpdateOrderStatus(record, id, 'complete')}
           key='1'
           icon={<CheckOutlined />}
         >
           Completed
         </Menu.Item>
+
+        <Menu.Item
+          onClick={() => handleUpdateOrderStatus(record, id, 'cancel')}
+          key='1'
+          icon={<CheckOutlined />}
+        >
+          Cancel
+        </Menu.Item>
+
+
 
         {/* <Menu.Item
                 onClick={() => handleUpdateOrderStatus(record,id,'deliver')}
@@ -265,29 +303,49 @@ const MyTable = ({ data, setOrderList }: myTableProps) => {
           className='classnameofthecolumn'
           render={(text, record: any) => (
             <>
-              <Dropdown
-                overlay={() => StatusItemMenu(record, record.id)}
-                placement='bottomRight'
-              >
-                <a href='##'>
-                  <span
-                    // className={'product-attributeTag'}
-                    style={{
-                      fontSize: '12px',
-                    }}
+                  {isAccess('postOrder',roles) ? (
+                    <Dropdown
+                    overlay={() => StatusItemMenu(record, record.id)}
+                    placement='bottomRight'
                   >
-                    {text}
-                    <span
-                      style={{
-                        marginLeft: '5px',
-                        fontSize: '10px',
-                      }}
-                    >
-                      <DownOutlined />
-                    </span>
-                  </span>
-                </a>
-              </Dropdown>
+                    <a href='##'>
+                      <span
+                        // className={'product-attributeTag'}
+                        style={{
+                          fontSize: '12px',
+                        }}
+                      >
+                        {text}
+                        <span
+                          style={{
+                            marginLeft: '5px',
+                            fontSize: '10px',
+                          }}
+                        >
+                          <DownOutlined />
+                        </span>
+                      </span>
+                    </a>
+                  </Dropdown>
+          ) : (
+            <a href='##'>
+            <span
+              // className={'product-attributeTag'}
+              style={{
+                fontSize: '12px',
+              }}
+            >
+              {text}
+              <span
+                style={{
+                  marginLeft: '5px',
+                  fontSize: '10px',
+                }}
+              >
+              </span>
+            </span>
+          </a>
+          )}
             </>
           )}
         />
@@ -357,14 +415,16 @@ const MyTable = ({ data, setOrderList }: myTableProps) => {
 };
 
 interface Props {
-  history: any;
+  history?: any;
+  roles?: any; 
 }
 
-const CustomerList = ({ history }: Props) => {
+const CustomerList = ({ history, roles }: Props) => {
   const [orderList, setOrderList] = useState([]);
 
-  const [orderState, handleRegionListFetch] = useHandleFetch({}, 'orderList');
+  const [orderState, handleOrderListFetch] = useHandleFetch({}, 'orderList');
   const [orderStatusFilterValue, setorderStatusFilterValue] = useState('');
+  const [deliveryRegionNameValue, setdeliveryRegionNameValue] = useState('');
 
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
@@ -384,7 +444,7 @@ const CustomerList = ({ history }: Props) => {
 
   useEffect(() => {
     const setOrders = async () => {
-      const regions = await handleRegionListFetch({
+      const regions = await handleOrderListFetch({
         urlOptions: {
           params: {
             sortItem: 'added',
@@ -393,6 +453,7 @@ const CustomerList = ({ history }: Props) => {
             limitNumber: 500000,
             startDateValue: startDate,
             endDateValue: endDate,
+            deliveryRegionNameValue: deliveryRegionNameValue
           },
         },
       });
@@ -400,9 +461,45 @@ const CustomerList = ({ history }: Props) => {
       setOrderList(regions);
     };
     setOrders();
-  }, [orderStatusFilterValue, startDate, endDate]);
+  }, [orderStatusFilterValue, startDate, endDate, deliveryRegionNameValue]);
 
-  const [addNewCategoryVisible, setAddNewCategoryVisible] = useState(false);
+
+
+  const [regionList,setRegionList] = useState([]); 
+  const [regionState, handleRegionListFetch] = useHandleFetch({}, 'regionList');
+  
+  
+  useEffect(()=>{
+   const setRegions = async () => {
+     const regions = await handleRegionListFetch({
+      urlOptions: {
+        params: {
+          sortItem: 'added',
+          sortOrderValue: '-1',
+        },
+      },
+     }); 
+
+     // @ts-ignore
+     if(regions && regions.length > 0){
+       // @ts-ignore
+       const regionListOptions = regions.map(item => {
+         return {
+          name: item.name,
+          value: item.name,
+         }
+       })
+       // @ts-ignore
+     setRegionList(regionListOptions); 
+     }
+     
+   }
+   setRegions(); 
+  },[])
+
+
+  console.log('regionList33',regionList)
+
 
   // console.log('orderState',orderState)
 
@@ -418,14 +515,33 @@ const CustomerList = ({ history }: Props) => {
   const onOrderStatusFilterChange = (value) => {
     setorderStatusFilterValue(value);
   };
+
+
+  const deliveryRegionFilterChange = (value) => {
+    setdeliveryRegionNameValue(value); 
+  }
+  
   const orderFilteringOption = [
     {
       name: 'Pending',
-      value: 'Pending',
+      value: 'pending',
     },
+    {
+      name: 'Processing',
+      value: 'processing',
+    },
+    {
+      name: 'Sent for delivery',
+      value: 'sentForDelivery',
+    },
+    
     {
       name: 'Completed',
       value: 'complete',
+    },
+    {
+      name: 'Cancel',
+      value: 'cancel',
     },
   ];
 
@@ -449,7 +565,10 @@ const CustomerList = ({ history }: Props) => {
           </div>
 
           <div>
-            <Button
+
+             
+          {isAccess('postOrder',roles) && (
+              <Button
               // type="primary"
               className='btnPrimaryClassNameoutline'
               icon={<PlusOutlined />}
@@ -457,6 +576,9 @@ const CustomerList = ({ history }: Props) => {
             >
               Add New
             </Button>
+          )}
+
+      
           </div>
         </div>
 
@@ -478,6 +600,30 @@ const CustomerList = ({ history }: Props) => {
               picker={'date'}
               bordered={false}
             />
+
+              {regionList && regionList.length > 0 && (
+                <>
+                      <Select
+                      
+                      showSearch
+                      style={{ borderRadius: '15px', color: '#3fa6f9', width: '150px' }}
+                      placeholder='Delivery Region'
+                      optionFilterProp='children'
+                      onChange={deliveryRegionFilterChange}
+                      // defaultValue={'pending'}
+                      bordered={false}
+                      filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+
+            >
+              {regionList.map((option) => {
+                return <Option value={option.value}>{option.name}</Option>;
+              })}
+            </Select>
+
+
+                </>
+              )}
+      
 
             <Select
               style={{ borderRadius: '15px', color: '#3fa6f9' }}
@@ -505,7 +651,7 @@ const CustomerList = ({ history }: Props) => {
 
         <div className='categoryListContainer__categoryList'>
           {orderState.done && orderList.length > 0 && (
-            <MyTable setOrderList={setOrderList} data={orderList} />
+            <MyTable roles={roles} setOrderList={setOrderList} data={orderList} />
           )}
           {orderState.isLoading && <DataTableSkeleton />}
 
@@ -526,4 +672,13 @@ const CustomerList = ({ history }: Props) => {
   );
 };
 
-export default withRouter(CustomerList);
+
+const mapStateToProps = state => ({
+  roles: state.globalState,
+})
+
+// @ts-ignore
+export default connect(mapStateToProps, null)(CustomerList);
+
+
+

@@ -224,20 +224,27 @@ const AddNewProduct = ({
 
   useEffect(() => {
     if (productDetailState.done && Object.keys(productDetailState).length > 0) {
+   
       const images = productDetailState.data.image;
-      if (images && images.length > 0) {
-        setmyImages(images);
-      }
+			let mahImages = []; 
 
-      if (
-        productDetailState.data.cover &&
-        productDetailState.data.cover['id']
-      ) {
-        // @ts-ignore
-        setmyImages([productDetailState.data.cover, ...images]);
-        console.log('catcat', [productDetailState.data.cover, ...images]);
-        setCoverImageId(productDetailState.data.cover['id']);
-      }
+			if (images && images.length > 0) {
+				mahImages = images;
+			}
+	
+			if (productDetailState.data.cover && productDetailState.data.cover['id']) {
+				const ixists = images.find(item => item.id === productDetailState.data.cover['id']);
+				if(!ixists){
+					mahImages = [productDetailState.data.cover, ...mahImages]
+				}
+
+				setCoverImageId(productDetailState.data.cover['id']);
+			}
+	
+				// @ts-ignore
+        setmyImages(mahImages);
+
+
     }
   }, [productDetailState]);
 
@@ -574,8 +581,8 @@ const AddNewProduct = ({
       console.log('localMetaTags', metaTags);
 
       const bnMetaTags = productDetailState.data.bn['metaTags'].split(',');
-      setMetaTags(metaTags);
-      setBnMetaTags(bnMetaTags);
+      setMetaTags(metaTags || []);
+      setBnMetaTags(bnMetaTags || []);
     }
   }, [productDetailState['done']]);
 

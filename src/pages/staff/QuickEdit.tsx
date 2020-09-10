@@ -144,7 +144,6 @@ const StaffQuickEdit = ({
       body: {
         phone: values.phone,
         email: values.email,
-        password: values.password,
         address: values.address,
         firstName: values.firstName,
         lastName: values.lastName,

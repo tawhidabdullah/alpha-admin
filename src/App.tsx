@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 
 // import pages
 import Login from './pages/auth/login';
@@ -9,11 +9,38 @@ import Header from './layout/header';
 import Content from './layout/content';
 // import Footer from './layout/footer';
 
+// import state
+import { glboalOperations } from "./state/ducks/globalState";
+import { credentialsOperations } from "./state/ducks/credentials";
+import { connect } from "react-redux";
+
+
 // import libraries
 import { Layout } from 'antd';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
-const App = () => {
+// import hooks
+import { useHandleFetch } from "./hooks";
+
+const App = ({saveRoles,saveCredentials}) => {
+
+  const [getAdminCredentialState, handleAdminCredentCialsFetch] = useHandleFetch({}, 'getAdminCredential');
+
+
+
+  useEffect(() => {
+      const getCredenCials = async () => {
+          const res = await handleAdminCredentCialsFetch({});
+          // saveCredentials(res); 
+        // @ts-ignore
+        if(res && res['role']) {
+          saveRoles(res['role'] || [])
+        }
+      }
+      getCredenCials();
+  }, []);
+
+
   return (
     <Router>
       <Switch>
@@ -36,7 +63,21 @@ const App = () => {
   );
 };
 
-export default App;
+
+const mapDispathToProps = {
+  saveRoles: glboalOperations.saveRoles,
+  saveCredentials: credentialsOperations.saveCredentials,
+};
+
+const mapStateToProps = state => ({
+  globalState: state.globalState,
+})
+
+// @ts-ignore
+export default connect(mapStateToProps, mapDispathToProps)(App);
+
+
+
 
 /* 
 
@@ -102,5 +143,25 @@ error => Cannot read property 'offer' of undefined.
 error => coupon cover is coming as array in coupon list.
 error => update post tag => Cannot read property 'name' of undefined. 
 error => add post category => checkMime is not defined probably because of the image.
-error => updated page => thumnails is not defined
+page update => {"image":"selected image are not attached to page with given id"}.
+order list => add delivery filtering drowndown
+recipe category => fix recipe category edit and others'
+add site map => at site info add a extra tab, --sitemap-- then in there show, site maps, and
+in below show update button which will update the site map. 
+make components images to update at once.  
+
+*/
+
+
+/* 
+
+Off work left to do: 
+Filtering order by deliveryzone
+making Post category work perfectly
+update component at once. 
+order status is not working properly
+admin roles
+give resolved images when create a component
+check if productlist returns cover
+make admin list section work properly
 */

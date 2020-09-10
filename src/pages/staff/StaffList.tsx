@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { withRouter, useHistory } from 'react-router-dom';
+import { CSVLink } from "react-csv";
+ 
+
+
 import {
   Table,
   Badge,
@@ -20,6 +24,7 @@ import {
   DeleteOutlined,
   EditFilled,
   CheckCircleOutlined,
+  DownloadOutlined
 } from '@ant-design/icons';
 import Moment from 'react-moment';
 
@@ -186,7 +191,7 @@ const MyTable = ({ data, setCustomerList }: myTableProps) => {
           render={(text, record: any) => (
             <Space size='middle'>
               <a href='##'>
-                <Tooltip placement='top' title='Quick Edit Staff'>
+                <Tooltip placement='top' title='Edit Staff'>
                   <span
                     className='iconSize'
                     onClick={() => {
@@ -261,6 +266,36 @@ const CustomerList = ({ history }: Props) => {
 
   // console.log('customerState',customerState)
 
+  const headers = [
+    { label: "Name", key: "name" },
+    { label: "Phone", key: "phone" },
+    { label: "Designation", key: "designation" },
+    { label: "Salary", key: "salary" },
+    { label: "joined", key: "joiningDate" },
+  ];
+   
+
+  const getData = () => {
+    if(customerList && customerList.length > 0){
+      const csvData = customerList.map(item => {
+        return {
+          name: item.name,
+          phone: item.phone,
+          designation: item.designation,
+          salary: item.salary,
+          joiningDate : item.joiningDate ? moment(item.joiningDate).format('MMMM Do YYYY, h:mm a') : ''
+        }
+      })
+
+      return csvData; 
+    }
+    else return []; 
+  }; 
+
+
+  const data = getData();
+
+
   return (
     <>
       {/* <h2 className='containerPageTitle'>
@@ -279,6 +314,33 @@ const CustomerList = ({ history }: Props) => {
               // style={{ width: 300 }}
             />
           </div>
+
+        <div style={{
+          display:'flex',
+          alignItems:'center'
+        }}>
+        
+        {customerList && customerList.length > 0 && (
+          <>
+          <div style={{
+          display:'flex',
+          alignItems:'center',
+          marginRight: '25px'
+        }}>
+        <CSVLink
+         filename={"staff-list.csv"}
+         data={data} headers={headers}>
+          Export as csv 
+        </CSVLink>
+        <span style={{
+          color:'#1890ff',
+          marginLeft: '10px'
+        }}>
+        <DownloadOutlined />
+        </span>
+        </div>
+          </>
+        )}
           <Button
             // type="primary"
             className='btnPrimaryClassNameoutline'
@@ -287,6 +349,9 @@ const CustomerList = ({ history }: Props) => {
           >
             Add New
           </Button>
+        </div>
+
+        
         </div>
 
         <div className='categoryListContainer__afterHeader'>

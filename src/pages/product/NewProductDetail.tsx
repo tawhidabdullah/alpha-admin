@@ -5,7 +5,9 @@ import { useParams, useHistory } from 'react-router';
 import { useHandleFetch } from '../../hooks';
 
 // import lib
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { EditOutlined } from '@ant-design/icons';
+
+
 
 import {
   Skeleton,
@@ -24,14 +26,21 @@ import {
 import { DataTableSkeleton } from '../../components/Placeholders';
 import ProductEdit from './ProductEdit';
 
+
+// import state
+import { isAccess } from "../../utils";
+import { connect } from "react-redux";
+
+
+
 const { Column, ColumnGroup } = Table;
 const { Search } = CoolInput;
 
 interface Props {
-  productRecord?: any;
+  roles: any; 
 }
 
-const NewBrandDetail = (props: Props) => {
+const NewBrandDetail = ({roles}: Props) => {
   const [productDetailState, handleProductDetailFetch] = useHandleFetch(
     {},
     'productDetailById'
@@ -115,13 +124,16 @@ const NewBrandDetail = (props: Props) => {
                 productDetailData={productDetailData}
                 setProductDetailData={setProductDetailData}
               />
-              <Button
-                onClick={() => setProductEditVisible(true)}
-                type='link'
-                icon={<EditOutlined />}
-              >
-                Edit
-              </Button>
+                 {isAccess('postCatalogue',roles) && (
+                  <Button
+                  onClick={() => setProductEditVisible(true)}
+                  type='link'
+                  icon={<EditOutlined />}
+                >
+                  Edit
+                </Button>
+                 )}
+            
             </>
           )}
       </div>
@@ -452,4 +464,12 @@ const NewBrandDetail = (props: Props) => {
   );
 };
 
-export default NewBrandDetail;
+
+const mapStateToProps = state => ({
+  roles: state.globalState,
+})
+
+// @ts-ignore
+export default connect(mapStateToProps, null)(NewBrandDetail);
+
+

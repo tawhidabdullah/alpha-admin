@@ -163,44 +163,70 @@ const DeliveryRegionReport = (props: Props) => {
 
         
              {orderAnalyticsVisitsState.done && orderData && orderData.length > 0 && (
-                    <ResponsiveContainer width="100%" height={300}>
-                    <AreaChart data={orderData} fontSize={12}>
-                        <defs>
-                            <linearGradient id="rainGradient" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="0%" stopColor="#1890ff" />
-                                <stop offset="100%" stopColor="#3066BE22" />
-                            </linearGradient>
-                        </defs>
-                        <CartesianGrid
-                            vertical={false}
-                            strokeDasharray="3 3"
-                            stroke="#d6d9da"
-                        />
-                        <XAxis 
-                         dataKey={'name'} 
-                        //  tickFormatter={getWeekNameByOrder}
-                         />
-                        <YAxis
-                            // unit="ml"
-                            orientation="left"
-                            width={20}
-                            axisLine={false}
-                            tickLine={false}
-                        />
-                        <Tooltip
-                            cursor={false}
-                            contentStyle={TooltipContainerStyles}
-                            formatter={(value, name) => [`${value}`, `${name}`]}
-                        />
-                        <Area
-                            dataKey="count"
-                            name="Count"
-                            type="basis"
-                            fill="url(#rainGradient)"
-                        />
-                    </AreaChart>
-                </ResponsiveContainer>
-               )}
+                 <>
+                 
+                 <Table
+                 pagination={{ defaultPageSize: 5}}
+                            style={{
+                            }}
+                            // expandable={{
+                            //     expandedRowRender: record => <p style={{ margin: 0 }}>{record.name}</p>,
+                            //     rowExpandable: record => record.name !== 'Not Expandable',
+                            //   }}
+                            // bordered={true}
+                            size='small'
+                            // pagination={false}
+                            dataSource={orderData}
+                            tableLayout={'auto'}
+                            onHeaderRow={column => {
+                                return {
+                                    style: {
+                                        color: 'red !important'
+                                    }
+
+                                };
+                            }}
+                        >
+                
+
+                            <Column
+                                title="Name"
+                                dataIndex="name"
+                                key="id"
+                                className='classnameofthecolumn'
+                                render={(text, record: any) => (
+                                    <>
+                                       <a href='##'>
+                                       <h4
+                                            onClick={() => {
+                                                // history.push(`/admin/${selectedApiValue && selectedApiValue.toLowerCase()}/${record.itemId}`)
+                                            }}  
+                                            style={{
+                                                fontWeight: 400,
+                                                color: '#555',
+                                                textTransform:'uppercase',
+                                                cursor: 'pointer'
+                                            }}>
+                                            {text || `Deleted`}
+                                        </h4>
+                                       </a>
+                                    </>
+                                )}
+                            />
+
+                            <Column
+                                title="Count"
+                                dataIndex="count"
+                                key="id"
+                                className='classnameofthecolumn'
+
+                            />
+
+
+                        </Table>
+
+                 </>
+                     )}
 
 
                 {orderAnalyticsVisitsState.done && !(orderAnalyticsVisitsState.data.length > 0) && (

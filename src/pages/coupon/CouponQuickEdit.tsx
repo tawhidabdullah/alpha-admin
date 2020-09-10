@@ -86,6 +86,7 @@ interface Props {
 const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, tagList, setTagList, category }: Props) => {
 
     const [addCouponState, handleAddCouponStateFetch] = useHandleFetch({}, 'updateCoupon');
+    const [couponDetailState, handleCouponDetailFetch] = useHandleFetch({}, 'couponDetail');
     const [myImages, setmyImages] = useState(false);
     const [visibleMedia, setvisibleMedia] = useState(false);
     const [coverImageId, setCoverImageId] = useState('');
@@ -95,6 +96,57 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, tagList,
     const [freeProductList, setFreeProductList] = useState([]);
 
 
+    useEffect(() => {
+
+        const getProductDetail = async () => {
+            await handleCouponDetailFetch({
+                urlOptions: {
+                    placeHolders: {
+                        id: category.id
+                    }
+                }
+            })
+        };
+
+        getProductDetail();
+
+    }, [category]);
+
+
+    useEffect(() => {
+        if (couponDetailState.data && Object.keys(couponDetailState.data).length > 0) {
+
+            const images = couponDetailState.data.image;
+            if (images && images.length > 0) {
+                setmyImages(images);
+            }
+
+            if (couponDetailState.data.cover && couponDetailState.data.cover['id']) {
+                // @ts-ignore
+                setmyImages([couponDetailState.data.cover]);
+                setCoverImageId(couponDetailState.data.cover['id']);
+            }
+
+        }
+    }, [couponDetailState.data]); 
+
+
+    useEffect(() => {
+        // @ts-ignore
+        if (myImages && myImages[0] && myImages.length < 2) {
+
+            if (coverImageId !== myImages[0].id) {
+                setCoverImageId(myImages[0].id);
+            }
+
+        }
+
+    }, [myImages])
+
+
+
+
+    
 
     const handleSubmit = async (values: any, actions: any) => {
 
@@ -232,11 +284,15 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, tagList,
 
 
     useEffect(()=>{
-        if(category && category['orderedProducts'] && category['orderedProducts'].length > 0){
-            const productIds = category['orderedProducts'].map(item => item); 
+        if(
+            couponDetailState.done && couponDetailState['data'] 
+        && Object.keys(couponDetailState['data']).length > 0
+         && ['orderedProducts'] && couponDetailState['data']['orderedProducts'].length > 0){
+            const productIds = couponDetailState['data']['orderedProducts'].map(item => item); 
             setProductIds(productIds); 
-            const productList = category.orderedProducts.map(item => {
+            const productList = couponDetailState['data']['orderedProducts'].map(item => {
                 return {
+                    ...item,
                     _id: item._id,
                     variation: item.variation,
                     quantity: item.quantity,
@@ -246,9 +302,9 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, tagList,
 
         }; 
         
-        console.log('customermy',category);
-    },[category])
+    },[couponDetailState])
 
+    console.log('couponDetialQuickEdit',couponDetailState);
 
     useEffect(() => {
 

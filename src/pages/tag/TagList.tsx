@@ -23,6 +23,11 @@ import {
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
+// import state
+import { isAccess } from "../../utils";
+import { connect } from "react-redux";
+
+
 
 
 /// import hooks
@@ -74,7 +79,7 @@ const { Search } = CoolInput;
 
 
 
-const MyTable = ({ data, setTagList }) => {
+const MyTable = ({ data, setTagList, roles }) => {
 	const [visible, setvisible] = useState(false);
 	const [activeCategoryForEdit, setactiveCategoryForEdit] = useState(false);
 	const [deleteTagState, handleDeleteTagFetch] = useHandleFetch({}, 'deleteTag');
@@ -172,39 +177,45 @@ const MyTable = ({ data, setTagList }) => {
 					className='classnameofthecolumn'
 				/>
 
-				<Column
+
+			{isAccess('postCatalogue',roles) && (
+						
+					<Column
 
 					className='classnameofthecolumn'
 					title=""
 					key="action"
 					align='right'
 					render={(text, record: any) => (
-						<Space size="middle">
-							<a href='##'>
-								<Tooltip placement="top" title='Quick Edit Tag'>
-									<span className='iconSize' onClick={() => {
-										setvisible(true)
-										setactiveCategoryForEdit(record);
-									}}>
-										<EditOutlined />
-									</span>
-								</Tooltip>
-							</a>
-
-
-
-							<Popconfirm
-								onConfirm={() => handleDeleteTag(record.id)}
-								title="Are you sure？" okText="Yes" cancelText="No">
-								<span
-									className='iconSize iconSize-danger'
-								>
-									<DeleteOutlined />
+					<Space size="middle">
+						<a href='##'>
+							<Tooltip placement="top" title='Quick Edit Tag'>
+								<span className='iconSize' onClick={() => {
+									setvisible(true)
+									setactiveCategoryForEdit(record);
+								}}>
+									<EditOutlined />
 								</span>
-							</Popconfirm>
-						</Space>
-					)}
-				/>
+							</Tooltip>
+						</a>
+
+
+
+						<Popconfirm
+							onConfirm={() => handleDeleteTag(record.id)}
+							title="Are you sure？" okText="Yes" cancelText="No">
+							<span
+								className='iconSize iconSize-danger'
+							>
+								<DeleteOutlined />
+							</span>
+						</Popconfirm>
+					</Space>
+				)}
+			/>
+                 )}
+
+
 			</Table>
 
 
@@ -225,9 +236,11 @@ const MyTable = ({ data, setTagList }) => {
 
 
 
-interface Props { }
+interface Props { 
+	roles?:any
+}
 
-const TagList = ({ }: Props) => {
+const TagList = ({roles }: Props) => {
 
 
 	const [tagList, setTagList] = useState([]);
@@ -302,7 +315,9 @@ const TagList = ({ }: Props) => {
 							onChange={e => handleSearch(e.target.value)}
 						/>
 					</div>
-					<Button
+
+					{isAccess('postCatalogue',roles) && (
+						<Button
 						// type="primary"
 						className='btnPrimaryClassNameoutline'
 						icon={<PlusOutlined />}
@@ -310,9 +325,13 @@ const TagList = ({ }: Props) => {
 					>
 						Add New
 					</Button>
+                 )}
+
+					
 				</div>
 				<div className='categoryListContainer__categoryList'>
 					{tagState.done && tagList.length > 0 && <MyTable
+					roles={roles}
 						setTagList={setTagList}
 						data={tagList} />}
 					{tagState.isLoading && <DataTableSkeleton />}
@@ -338,4 +357,17 @@ const TagList = ({ }: Props) => {
 	);
 };
 
-export default TagList;
+
+
+const mapStateToProps = state => ({
+    roles: state.globalState,
+  })
+  
+  // @ts-ignore
+  export default connect(mapStateToProps, null)(TagList);
+  
+  
+  
+
+
+

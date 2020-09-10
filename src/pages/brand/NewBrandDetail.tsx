@@ -27,15 +27,24 @@ import { DataTableSkeleton } from "../../components/Placeholders";
 import BrandEdit from "./BrandEdit";
 
 
+
+// import state
+import { isAccess } from "../../utils";
+import { connect } from "react-redux";
+
+
+
+
+
 const { Column, ColumnGroup } = Table;
 const { Search } = CoolInput;
 
 
 interface Props {
-    productRecord?: any;
+    roles?: any;
 }
 
-const NewBrandDetail = (props: Props) => {
+const NewBrandDetail = ({roles}: Props) => {
     const [brandDetailState, handleBrandDetailFetch] = useHandleFetch({}, 'brandDetail');
     const [brandProductsState, handleBrandProductsFetch] = useHandleFetch({}, 'brandProducts');
 
@@ -116,13 +125,18 @@ const NewBrandDetail = (props: Props) => {
                             brandDetailData={brandDetailData}
                             setBrandDetailData={setBrandDetailData}
                         />
-                        <Button
-                            onClick={() => setBrandEditVisible(true)}
-                            type='link'
-                            icon={<EditOutlined />}
-                        >
-                            Edit
-                      </Button>
+
+                {isAccess('postCatalogue',roles) && (
+                    <Button
+                    onClick={() => setBrandEditVisible(true)}
+                    type='link'
+                    icon={<EditOutlined />}
+                    >
+                        Edit
+                </Button>
+                    )}
+
+                 
                     </>
                 )}
 
@@ -304,4 +318,14 @@ const NewBrandDetail = (props: Props) => {
     )
 }
 
-export default NewBrandDetail
+
+
+const mapStateToProps = state => ({
+    roles: state.globalState,
+  })
+  
+  // @ts-ignore
+  export default connect(mapStateToProps, null)(NewBrandDetail);
+  
+  
+

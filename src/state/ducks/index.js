@@ -9,3 +9,5 @@ export { default as category } from './category';
 export { default as cache } from './cache';
 export { default as brand } from './brand';
 export { default as tag } from './tag';
+export { default as globalState } from './globalState';
+export { default as credentials } from './credentials';

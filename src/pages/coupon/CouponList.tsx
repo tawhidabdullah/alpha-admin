@@ -238,7 +238,7 @@ const MyTable = ({ data, setTagList }) => {
                                     fontSize: '13px'
                                 }}>
                                     
-                                    {text && moment(text).format('MMMM Do YYYY, h:mm:ss a')}
+                                    {text && moment(text).format('MMMM Do YYYY, h:mm a')}
                             </h4>
 
 
@@ -264,7 +264,7 @@ const MyTable = ({ data, setTagList }) => {
                                     color: '#555',
                                     cursor: 'pointer'
                                 }}>
-                                    {text && moment(text).format('MMMM Do YYYY, h:mm:ss a')}
+                                    {text && moment(text).format('MMMM Do YYYY, h:mm a')}
                                
                             </h4>
                         </>

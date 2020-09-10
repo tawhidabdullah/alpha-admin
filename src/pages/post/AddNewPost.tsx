@@ -169,18 +169,20 @@ const AddNewProduct = ({
     // @ts-ignore
     if (addProductRes && addProductRes.status === 'ok') {
       openSuccessNotification('Recipe Created');
-
+      
       setBundleList([
         {
           // @ts-ignore
           ...addProductRes,
           id: addProductRes['_id'] || '',
           key: addProductRes['_id'] || '',
-          name: addProductRes['name'] || '',
-          cover: addProductRes['cover'] || '',
+          // name: addProductRes['name'] || '',
+          // cover: addProductRes['cover'] || '',
         },
         ...bundleList,
       ]);
+
+
       // @ts-ignore
       setmyImages([]);
       setCoverImageId('');
@@ -950,7 +952,7 @@ const AddNewProduct = ({
                     <MetaTags
                       // @ts-ignore
                       setTags={setBnMetaTags}
-                      tags={metaTags}
+                      tags={bnMetaTags}
                     />
                   </div>
                 </div>

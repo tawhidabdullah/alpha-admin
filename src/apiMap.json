@@ -142,7 +142,11 @@
       "method": "post"
     },
     "postDetail": {
-      "url": "/admin/api/post/:id?category=categoryOne&tags=tagsOne",
+      "url": "/admin/api/post/:id?category=categoryOne&tags=tagsOne&image=imageValue",
+      "method": "get"
+    },
+    "postDetailEdit": {
+      "url": "/admin/api/post/:id?category=categoryOne&tags=tagsOne&image=imageValue",
       "method": "get"
     },
     "categoryList": {
@@ -379,7 +383,6 @@
       "url": "/admin/api/expense",
       "method": "get"
     },
-
     "regionList": {
       "url": "/admin/api/delivery?sort=sortItem&sortOrder=sortOrderValue",
       "method": "get"
@@ -401,7 +404,7 @@
       "method": "get"
     },
     "orderList": {
-      "url": "/admin/api/order?sort=sortItem&sortOrder=sortOrderValue&limit=limitNumber&status=statusValue&startDate=startDateValue&endDate=endDateValue",
+      "url": "/admin/api/order?sort=sortItem&sortOrder=sortOrderValue&limit=limitNumber&status=statusValue&startDate=startDateValue&endDate=endDateValue&deliveryRegionName=deliveryRegionNameValue",
       "method": "get"
     },
     "orderListForCustomer": {
@@ -537,8 +540,12 @@
       "method": "get"
     },
     "updateAdminCredential": {
-      "url": "/admin/api/credential/update",
+      "url": "/admin/api/adminRoles/update",
       "method": "post"
+    },
+    "deleteAdmin": {
+      "url": "/admin/api/adminRoles/delete/:id",
+      "method": "get"
     },
     "getAdminCredential": {
       "url": "/admin/api/credential",
@@ -568,12 +575,16 @@
       "url": "/admin/api/notification?limit=limitNumber&sort=sortItem&sortOrder=sortOrderValue",
       "method": "get"
     },
+    "getAllNotificationPage": {
+      "url": "/admin/api/notification?limit=limitNumber&sort=sortItem&sortOrder=sortOrderValue",
+      "method": "get"
+    },
     "markNotificationAsRead": {
-      "url": "/admin/notification/markread",
+      "url": "/admin/api/notification/markread",
       "method": "post"
     },
     "markAllNotificationAsRead": {
-      "url": "/admin/notification/markreadall",
+      "url": "/admin/api/notification/markreadall",
       "method": "post"
     },
     "getAnalyticsPageVisitCount": {
@@ -630,7 +641,7 @@
       "method": "get"
     },
     "getSetEmailList": {
-      "url": "/admin/api/email/inbox",
+      "url": "/admin/api/email/inbox?limit=limitCount",
       "method": "get"
     },
     "getEmailDetails": {

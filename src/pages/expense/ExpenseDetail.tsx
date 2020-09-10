@@ -58,20 +58,29 @@ const NewBrandDetail = (props: Props) => {
     'tagProducts'
   );
   const [tagEditVisible, setTagEditVisible] = useState(false);
+  const [tagDetailData,setTagDetailData] = useState({}); 
 
   const params = useParams();
-  const history = useHistory();
   const tagId = params['id'];
 
   useEffect(() => {
     const getBrandDetail = async () => {
-      await handleTagDetailFetch({
+      const res = await handleTagDetailFetch({
         urlOptions: {
           placeHolders: {
             id: tagId,
           },
         },
       });
+
+      // @ts-ignore
+      if(res){
+        // @ts-ignore
+        setTagDetailData(res); 
+      }; 
+
+
+
     };
 
     getBrandDetail();
@@ -101,13 +110,14 @@ const NewBrandDetail = (props: Props) => {
         <h3>Expense Detail</h3>
 
         {tagDetailState.done &&
-          tagDetailState.data &&
-          Object.keys(tagDetailState.data).length > 0 && (
+          tagDetailData &&
+          Object.keys(tagDetailData).length > 0 && (
             <>
               <ExpenseEdit
-                tagEditVisible={tagEditVisible}
-                setTagEditVisible={setTagEditVisible}
-                tagDetailData={tagDetailState.data}
+                addNewCategoryVisible={tagEditVisible}
+                setAddNewCategoryVisible={setTagEditVisible}
+                category={tagDetailData}
+                setTagDetailData={setTagDetailData}
               />
               <Button
                 onClick={() => setTagEditVisible(true)}
@@ -121,8 +131,8 @@ const NewBrandDetail = (props: Props) => {
       </div>
       <Skeleton paragraph={{ rows: 2 }} loading={tagDetailState.isLoading}>
         {tagDetailState.done &&
-          tagDetailState.data &&
-          !(Object.keys(tagDetailState.data).length > 0) && (
+          tagDetailData &&
+          !(Object.keys(tagDetailData).length > 0) && (
             <Empty
               description='No Expense found'
               image={Empty.PRESENTED_IMAGE_SIMPLE}
@@ -130,23 +140,23 @@ const NewBrandDetail = (props: Props) => {
           )}
 
         {tagDetailState.done &&
-          tagDetailState.data &&
-          Object.keys(tagDetailState.data).length > 0 && (
+          tagDetailData &&
+          Object.keys(tagDetailData).length > 0 && (
             <div className='brandDetailContainer__header'>
               <div className='brandDetailContainer__header-info'>
-                {tagDetailState.data['topic'] && (
+                {tagDetailData['topic'] && (
                   <h3>
                     TOPIC:
-                    <span>{tagDetailState.data['topic']}</span>
+                    <span>{tagDetailData['topic']}</span>
                   </h3>
                 )}
-                {tagDetailState.data['amount'] && (
+                {tagDetailData['amount'] && (
                   <h3>
                     AMOUNT:
-                    <span>{tagDetailState.data['amount']}</span>
+                    <span>{tagDetailData['amount']}</span>
                   </h3>
                 )}
-                {tagDetailState.data['date'] && (
+                {tagDetailData['date'] && (
                   <h3>
                     DATE:
                     <span>
@@ -157,10 +167,10 @@ const NewBrandDetail = (props: Props) => {
                     </span>
                   </h3>
                 )}
-                {tagDetailState.data[''] && (
+                {tagDetailData[''] && (
                   <h3>
                     ASSOCIATIVE STAFF:
-                    <span>{tagDetailState.data['date']}</span>
+                    <span>{tagDetailData['date']}</span>
                   </h3>
                 )}
               </div>

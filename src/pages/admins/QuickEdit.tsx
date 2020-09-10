@@ -10,6 +10,19 @@ import { useHandleFetch } from '../../hooks';
 import { CheckCircleOutlined, PlusOutlined, EditOutlined, DeleteOutlined, EditFilled } from '@ant-design/icons';
 import AccessCheckbox from "./AccessCheckbox";
 
+
+
+
+// import state
+import { glboalOperations } from "../../state/ducks/globalState";
+import { credentialsOperations } from "../../state/ducks/credentials";
+import { connect } from "react-redux";
+import { isAccess } from "../../utils";
+import { credentials } from '../../state/ducks';
+
+
+
+
 const validationSchema = Yup.object().shape({
 // 	name: Yup.string().label('Name').required('Name is required').min(3, 'Name must have at least 3 characters'),
 //     phone: Yup.string()
@@ -25,6 +38,7 @@ const validationSchema = Yup.object().shape({
 //     .min(6, 'Confirm password must have at least 6 characters')
 //     .oneOf([Yup.ref('password'), null], 'Passwords must match'),
 });
+
 
 
 
@@ -47,13 +61,14 @@ const openErrorNotification = (message?: any) => {
 
 
 const plainOptions = [
-    'getCatalogue', 'postCatalogue', 
+	'getCatalogue', 'postCatalogue', 
     'getDelivery', 'postDelivery', 
     'getOrder', 'postOrder',
     'getBlog', 'postBlog', 
     'getPage', 'postPage',
     'analytics',
-    'accounts'
+    'accounts',
+    'getDealer', 'postDealer', 
 ];
 
 
@@ -63,16 +78,28 @@ interface Props {
 	visible: any;
 	tagList: any;
 	setTagList: any;
+	saveRoles?:any; 
+	roles, 
+	credentials,
+	saveCredentials
 
 }
 
-const QuickEdit = ({ category, setvisible, visible, tagList, setTagList }: Props) => {
+const QuickEdit = ({ category, setvisible, visible, tagList, setTagList, saveRoles, roles, saveCredentials }: Props) => {
 	const [updateTagState, handleUpdateCategoryFetch] = useHandleFetch({}, 'updateAdminRole');
 	const [accesscheckedList,setAccessCheckedList] = useState(category.role && category.role.length ? [...category.role]: [] );
 
 
 	const handleSubmit = async (values: any, actions: any) => {
 		console.log('adminValues',values);
+
+
+		let roles = [...accesscheckedList]; 
+        if(accesscheckedList.length === 14){
+            roles.unshift('superAdmin')
+		}
+		
+
 		const updateTagRes = await handleUpdateCategoryFetch({
 			urlOptions: {
 				placeHolders: {
@@ -81,7 +108,7 @@ const QuickEdit = ({ category, setvisible, visible, tagList, setTagList }: Props
 			},
 			body: {
 				name: values.name,
-				access: accesscheckedList,
+				access: roles,
                 phone: values.phone,
                 password: values.password,
                 password2: values.passwordConfirmation,
@@ -94,15 +121,28 @@ const QuickEdit = ({ category, setvisible, visible, tagList, setTagList }: Props
 			setvisible(false)
 
 			const positionInTag = () => {
-				return tagList.map(item => item.id).indexOf(category.id);
+				return tagList.map(item => item.id).indexOf(category._id);
 			}
+
+			console.log('updateTagRes',updateTagRes); 
+
+
+			// if(updateTagRes['role']){
+			// 	if(updateTagRes['_id'] === credentials['_id']){
+			// 		saveRoles(updateTagRes['role'])
+			// 	}
+			// }
+
 
 			const index = positionInTag();
 
 			// @ts-ignore
-			const updatedItem = Object.assign({}, tagList[index], { ...updateTagRes });
+			const updatedItem = Object.assign({}, tagList[index], { ...updateTagRes});
 			const updateTagList = [...tagList.slice(0, index), updatedItem, ...tagList.slice(index + 1)];
+			console.log('updateTagList',updateTagList)
 			setTagList(updateTagList);
+
+			actions.resetForm();
 
 		}
 		else {
@@ -321,4 +361,22 @@ const QuickEdit = ({ category, setvisible, visible, tagList, setTagList }: Props
 };
 
 
-export default QuickEdit;
+
+const mapDispathToProps = {
+    saveRoles: glboalOperations.saveRoles,
+    saveCredentials: credentialsOperations.saveCredentials,
+  };
+  
+  const mapStateToProps = state => ({
+    roles: state.globalState,
+    credentials: state.credentials,
+  }); 
+
+
+  // @ts-ignore
+  export default connect(mapStateToProps, mapDispathToProps)(QuickEdit);
+  
+  
+
+
+

@@ -267,7 +267,7 @@ const AddNewBrand = ({
               onChange={handleTimeChange}
             />
 
-            <div
+            {/* <div
               style={{
                 marginTop: '15px',
               }}
@@ -278,7 +278,7 @@ const AddNewBrand = ({
               customerListState={customerListState}
               setSelectedCustomerData={setSelectedCustomerData}
               setCustomerId={setCustomerId}
-            />
+            /> */}
           </Modal>
 
           <MediaLibrary

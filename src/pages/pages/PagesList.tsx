@@ -23,6 +23,14 @@ import { useHandleFetch } from '../../hooks';
 // import components
 import { DataTableSkeleton } from '../../components/Placeholders';
 
+
+// import state
+import { isAccess } from "../../utils";
+import { connect } from "react-redux";
+
+
+
+
 const { Column } = Table;
 const { Search } = Input;
 
@@ -45,9 +53,10 @@ const openErrorNotification = (message?: any) => {
 interface myTableProps {
   data: any;
   setBrandList: any;
+  roles: any; 
 }
 
-const MyTable = ({ data, setBrandList }: myTableProps) => {
+const MyTable = ({ data, setBrandList, roles }: myTableProps) => {
   const [activeCategoryForEdit, setactiveCategoryForEdit] = useState(false);
   const [deletePageState, handleDeletePageFetch] = useHandleFetch(
     {},
@@ -95,7 +104,7 @@ const MyTable = ({ data, setBrandList }: myTableProps) => {
             <>
               <img
                 onClick={() => {
-                  history.push(`/admin/page/edit/${record.id}`);
+                  history.push(`/admin/page/${record.id}`);
                   // history.push(`/admin/page/${record.id}`);
                 }}
                 src={cover}
@@ -121,7 +130,7 @@ const MyTable = ({ data, setBrandList }: myTableProps) => {
               <h4
                 onClick={() => {
                   // setactiveCategoryForEdit(record);
-                  history.push(`/admin/page/edit/${record.id}`);
+                  history.push(`/admin/page/${record.id}`);
                 }}
                 style={{
                   fontWeight: 400,
@@ -167,18 +176,21 @@ const MyTable = ({ data, setBrandList }: myTableProps) => {
             </>
           )}
         /> */}
-        <Column
-          className='classnameofthecolumn'
-          title=''
-          key='action'
-          align='right'
-          render={(text, record: any) => (
-            <Space size='middle'>
-              <a href='##'>
-                <Tooltip placement='top' title='Quick Edit Page'>
-                  <span
-                    className='iconSize'
-                    onClick={() => {
+
+        {isAccess('postPage',roles) && (
+            <Column
+            className='classnameofthecolumn'
+            title=''
+            key='action'
+            align='right'
+            render={(text, record: any) => (
+              <Space size='middle'>
+                <a href='##'>
+                  <Tooltip placement='top' title='Edit Page'>
+                    <span
+                      className='iconSize'
+                      onClick={() => {
+                      history.push(`/admin/page/edit/${record.id}`);
                       setactiveCategoryForEdit(record);
                     }}
                   >
@@ -200,14 +212,22 @@ const MyTable = ({ data, setBrandList }: myTableProps) => {
             </Space>
           )}
         />
+          )}
+
+
+
+  
       </Table>
     </>
   );
 };
 
-interface Props {}
+interface Props {
+  roles: any; 
+}
 
-const PageList = ({}: Props) => {
+
+const PageList = ({roles}: Props) => {
   const [pageList, setPageList] = useState([]);
   const [pageState, handlePagsListFetch] = useHandleFetch({}, 'pageList');
 
@@ -245,14 +265,21 @@ const PageList = ({}: Props) => {
               onSearch={(value) => handleSearch(value)}
             />
           </div>
-          <Button
-            // type="primary"
-            className='btnPrimaryClassNameoutline'
-            icon={<PlusOutlined />}
-            onClick={() => history.push('/admin/page/new')}
-          >
-            Add New
-          </Button>
+
+          
+          {isAccess('postPage',roles) && (
+         <Button
+         // type="primary"
+         className='btnPrimaryClassNameoutline'
+         icon={<PlusOutlined />}
+         onClick={() => history.push('/admin/page/new')}
+       >
+         Add New
+       </Button>
+          )}
+
+
+       
         </div>
 
         <div className='categoryListContainer__afterHeader'>
@@ -266,7 +293,7 @@ const PageList = ({}: Props) => {
 
         <div className='categoryListContainer__categoryList'>
           {pageState.done && pageList.length > 0 && (
-            <MyTable setBrandList={setPageList} data={pageList} />
+            <MyTable roles={roles} setBrandList={setPageList} data={pageList} />
           )}
           {pageState.isLoading && <DataTableSkeleton />}
           {pageState.done && !(pageList.length > 0) && (
@@ -287,4 +314,12 @@ const PageList = ({}: Props) => {
   );
 };
 
-export default PageList;
+
+
+const mapStateToProps = state => ({
+  roles: state.globalState,
+})
+
+// @ts-ignore
+export default connect(mapStateToProps, null)(PageList);
+

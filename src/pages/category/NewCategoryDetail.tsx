@@ -10,7 +10,13 @@ import {
     EditOutlined,
 } from '@ant-design/icons';
 
-import { Skeleton, Empty, Button, notification, Table, Space, Input as CoolInput, Tooltip, Modal } from 'antd';
+import { Skeleton, Empty, Button, Table, Space, Input as CoolInput, Tooltip, Modal } from 'antd';
+
+
+// import state
+import { isAccess } from "../../utils";
+import { connect } from "react-redux";
+
 
 
 
@@ -25,10 +31,10 @@ const { Search } = CoolInput;
 
 
 interface Props {
-    productRecord?: any;
+    roles?: any;
 }
 
-const NewBrandDetail = (props: Props) => {
+const NewBrandDetail = ({roles}: Props) => {
     const [categoryDetailState, handleCategoryDetailFetch] = useHandleFetch({}, 'categoryDetail');
     const [categoryProductsState, handleCategoryProductsFetch] = useHandleFetch({}, 'categoryProducts');
 
@@ -55,14 +61,16 @@ const NewBrandDetail = (props: Props) => {
             if(categoryDetailDataRes){
                   // @ts-ignore
                 setcategoryDetail(categoryDetailDataRes)
-
             }
-
         };
 
         getCategoryDetail();
 
     }, [categoryId]);
+
+
+
+
 
     useEffect(() => {
 
@@ -137,13 +145,18 @@ const NewBrandDetail = (props: Props) => {
                             setcategoryDetailData={setcategoryDetail}
                         />
 
-                        <Button
+
+                {isAccess('postCatalogue',roles) && (
+                            <Button
                             onClick={() => setCategoryEditVisible(true)}
                             type='link'
                             icon={<EditOutlined />}
                         >
                             Edit
-                      </Button>
+                    </Button>
+                 )}
+
+                        
                     </>
                 )}
 
@@ -430,4 +443,13 @@ const NewBrandDetail = (props: Props) => {
     )
 }
 
-export default NewBrandDetail
+
+const mapStateToProps = state => ({
+    roles: state.globalState,
+  })
+  
+  // @ts-ignore
+  export default connect(mapStateToProps, null)(NewBrandDetail);
+  
+  
+  

@@ -4,6 +4,7 @@ import * as Yup from 'yup';
 
 
 import { useHandleFetch } from '../../../hooks';
+import config from '../../../config.json';
 // import third party ui lib
 import { Switch, Select, notification, Modal, Tooltip, Upload, message, } from 'antd';
 
@@ -123,7 +124,7 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, categ
 		formData.append("image", JSON.stringify(imagesIds));
 		formData.append("cover", coverImageId || imagesIds[0] ? imagesIds[0] : '');
 		formData.append("parent", selectedParentId);
-		formData.append('icon', imageFile)
+		// formData.append('icon', imageFile)
 		formData.append('metaTitle', values.metaTitle)
 		formData.append('displayOrder', values.displayOrder)
 		formData.append('metaDescription', values.metaDescription)
@@ -154,19 +155,24 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, categ
 		});
 
 
+		console.log('adddPostCategoryREs',addCategoryRes)
 		// @ts-ignore
-		if (addCategoryRes && addCategoryRes.status === 'ok') {
+		if (addCategoryRes && addCategoryRes[0] && addCategoryRes[0].name) {
 			openSuccessNotification('Recipe Category Created!');
 			setAddNewCategoryVisible(false)
 
 			setcategoryList([{
-				id: addCategoryRes['_id'] || '',
-				key: addCategoryRes['_id'] || '',
-				name: addCategoryRes['name'] || '',
-				description: addCategoryRes['description'] || '',
-				cover: addCategoryRes['cover'] || '',
 				// @ts-ignore
-				...addCategoryRes
+				...addCategoryRes[0],
+				id: addCategoryRes[0]['_id'] || '',
+				key: addCategoryRes[0]['_id'] || '',
+				name: addCategoryRes[0]['name'] || '',
+				description: addCategoryRes[0]['description'] || '',
+				cover: addCategoryRes[0].cover
+				? `${config['baseURL']}${
+					addCategoryRes[0].cover ? addCategoryRes[0].cover.thumbnail : ''
+				  }`
+				: '',
 			},...categoryList])
 
 			actions.resetForm();
@@ -436,7 +442,7 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, categ
 							/>
 
 
-							<div className='addproductSection-left-header' >
+							{/* <div className='addproductSection-left-header' >
 								<h3 className='inputFieldLabel'>Icon </h3>
 								<Tooltip
 									placement="left" title={'Add Icon image for this category'}>
@@ -458,7 +464,7 @@ const AddNewCategory = ({ addNewCategoryVisible, setAddNewCategoryVisible, categ
 								multiple={false}
 							>
 								{imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
-							</Upload>
+							</Upload> */}
 
 
 							<div

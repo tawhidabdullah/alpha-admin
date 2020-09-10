@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useHandleFetch } from '../../hooks';
 import { Select, Skeleton } from 'antd';
+import Empty from "../../components/Empty";
 
 
 interface Props {
@@ -40,6 +41,19 @@ const Tags = ({
 
         setTags();
     }, []);
+
+
+
+    useEffect(() => {
+        if(productIds && productIds.length > 0){
+            console.log('shippingRunning')
+            const selecttedOptions = productIds.map(item => item.name); 
+            setselectedOptions(selecttedOptions)
+        }
+    },[productIds]); 
+
+    console.log('OrderProudctItemsProductIds',productIds); 
+
 
 
 
@@ -88,6 +102,14 @@ const Tags = ({
                         </Select.Option>
                     ))}
                 </Select>}
+                {tagState.done && tagState.data && !(tagState.data.length > 0) && (
+                    <div style={{
+                        marginLeft: '32px'
+                    }}>
+                        <Empty title='No Product Found' height={150} />
+                    </div>
+                )}
+
             </Skeleton>
 
 

@@ -82,7 +82,7 @@ const NewBrandDetail = (props: Props) => {
 
 
 
-    console.log('postcategoryDetailState', categoryDetailState);
+    console.log('postcategoryDetail', categoryDetail);
 
     console.log('brandParams', params);
 
@@ -293,86 +293,86 @@ const NewBrandDetail = (props: Props) => {
                                 };
                             }}
                         >
-                            <Column
-                                title=""
-                                dataIndex="cover"
-                                key="id"
-                                width={'80px'}
+                            
+                <Column
+                    title=""
+                    dataIndex="cover"
+                    key="id"
+                    width={'80px'}
 
-                                className='classnameofthecolumn'
+                    className='classnameofthecolumn'
 
-                                render={(cover, record: any) => (
-                                    <>
-                                        <img
-                                            onClick={() => {
-                                                history.push(`/admin/posts/${record.id}`)
-                                                // go to product detail
-                                            }}
-                                            src={cover} alt='cover img' style={{
-                                                height: '40px',
-                                                width: '40px',
-                                                objectFit: "contain",
-                                                borderRadius: '3px',
-                                                cursor: 'pointer'
-                                            }} />
-                                    </>
-                                )}
-                            />
+                    render={(cover, record: any) => (
+                        <>
+                            <img
+                                onClick={() => {
+                                    history.push(`/admin/posts/${record.id}`)
+                                }}
+                                src={cover} alt='cover img' style={{
+                                    height: '40px',
+                                    width: '40px',
+                                    objectFit: "contain",
+                                    borderRadius: '3px',
+                                    cursor: 'pointer'
+                                }} />
+                        </>
+                    )}
+                />
 
-                            <Column
-                                title="Name"
-                                dataIndex="name"
-                                key="id"
-                                className='classnameofthecolumn'
-                                render={(text, record: any) => (
-                                    <>
-                                        <h4
-                                            onClick={() => {
-                                                history.push(`/admin/posts/${record.id}`)
-                                            }}
-                                            style={{
-                                                fontWeight: 400,
-                                                color: '#555',
-                                                cursor: 'pointer'
+                <Column
+                    title="Name"
+                    dataIndex="name"
+                    key="id"
+                    className='classnameofthecolumn'
+                    render={(text, record: any) => (
+                        <>
 
-                                            }}>
-                                            {text}
-                                        </h4>
-                                    </>
-                                )}
-                            />
-
-                            <Column
-                                title="Offer Price"
-                                dataIndex="offerPrice"
-                                key="id"
-                                className='classnameofthecolumn'
-                            />
+                            <h4
+                                onClick={() => {
+                                    history.push(`/admin/posts/${record.id}`)
+                                    // setBrandDetailVisible(true);
+                                }}
+                                style={{
+                                    fontWeight: 400,
+                                    color: '#555',
+                                    cursor: 'pointer'
+                                }}>
+                                {text}
+                            </h4>
 
 
-                            <Column
-                                title="Price"
-                                dataIndex="price"
-                                key="id"
-                                className='classnameofthecolumn'
-
-                            />
-
-                            <Column
-                                title="Available"
-                                dataIndex="available"
-                                key="id"
-                                className='classnameofthecolumn'
-                            />
-
-                            <Column
-                                title="Minimum"
-                                dataIndex="minimum"
-                                key="id"
-                                className='classnameofthecolumn'
-                            />
+                        </>
+                    )}
+                />
 
 
+
+                <Column
+                    title="Preparation Time"
+                    dataIndex="preparationTime"
+                    key="id"
+                    className='classnameofthecolumn'
+
+                />
+
+
+                <Column
+                    title="Cooking Time"
+                    dataIndex="cookingTime"
+                    key="id"
+                    className='classnameofthecolumn'
+                />
+
+                
+                <Column
+                    title="People"
+                    dataIndex="servingSize"
+                    key="id"
+                    className='classnameofthecolumn'
+                />
+
+
+            
                         </Table>
                     </>
                 )}

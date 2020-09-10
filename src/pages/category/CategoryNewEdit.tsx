@@ -265,17 +265,27 @@ const AddNewCategory = ({
 
   useEffect(() => {
     if (categoryDetailData && Object.keys(categoryDetailData).length > 0) {
+    
       const images = categoryDetailData.image;
-      if (images && images.length > 0) {
-        setmyImages(images);
-        setMyGoddamnImages(images);
-      }
+			let mahImages = []; 
 
-      if (categoryDetailData.cover && categoryDetailData.cover['id']) {
-        // @ts-ignore
-        setmyImages([categoryDetailData.cover, ...images]);
-        setCoverImageId(categoryDetailData.cover['id']);
-      }
+			if (images && images.length > 0) {
+				mahImages = images;
+			}
+	
+			if (categoryDetailData.cover && categoryDetailData.cover['id']) {
+				const ixists = images.find(item => item.id === categoryDetailData.cover['id']);
+				if(!ixists){
+					mahImages = [categoryDetailData.cover, ...mahImages]
+				}
+
+				setCoverImageId(categoryDetailData.cover['id']);
+			}
+	
+				// @ts-ignore
+          setmyImages(mahImages);
+          
+
     }
   }, [categoryDetailData]);
 
@@ -453,14 +463,16 @@ const AddNewCategory = ({
         categoryDetailData.bn &&
         categoryDetailData.bn['metaTags'] &&
         categoryDetailData.bn['metaTags'].split(',');
-      setTags(metaTags);
-      setBnTags(bnMetaTags);
+
+
+      setTags(metaTags || []);
+      setBnTags(bnMetaTags || []);
     }
   }, []);
 
-  console.log('addnewCategoryTags', tags);
-  console.log('categoryDetailData', categoryDetailData);
-  console.log('myImages', myImages);
+  // console.log('addnewCategoryTags777', tags);
+  // console.log('categoryDetailData', categoryDetailData);
+  // console.log('shitThere', myImages);
 
   return (
     <Formik

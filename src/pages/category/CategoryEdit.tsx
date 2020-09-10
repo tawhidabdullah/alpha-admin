@@ -248,8 +248,6 @@ const AddNewBrand = ({ categoryEditVisible,
 				// @ts-ignore
 				...updateTagRes
 			})
-			console.log('updateTagRes',updateTagRes);
-			console.log('categoryDetailData',categoryDetailData);
 			// setcategoryDetailData()
 			openSuccessNotification();
 			setCategoryEditVisible(false);

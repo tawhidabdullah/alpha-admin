@@ -64,11 +64,12 @@ interface Props {
     customer: any;
     setvisible: any;
     visible: any;
+    setCustomerDetailData:any; 
 
 
 }
 
-const QuickEdit = ({ customer, setvisible, visible }: Props) => {
+const QuickEdit = ({ customer, setvisible, visible, setCustomerDetailData }: Props) => {
     const [updateCustomerState, handleUpdateCustomerFetch] = useHandleFetch({}, 'updateCustomer');
 
 
@@ -85,8 +86,6 @@ const QuickEdit = ({ customer, setvisible, visible }: Props) => {
 
     const [cityListState, handleCityListFetch] = useHandleFetch([], 'cityList');
 
-    const [countryList, setCountryList] = useState([]);
-    const [cityList, setCityList] = useState([]);
 
 
 
@@ -106,8 +105,8 @@ const QuickEdit = ({ customer, setvisible, visible }: Props) => {
                 address2: values.address2,
                 firstName: values.firstName,
                 lastName: values.lastName,
-                country: selectedCountryValue,
-                city: selectedCityValue,
+                country: selectedCountryValue || customer.country,
+                city: selectedCityValue || customer.city,
             },
         });
 
@@ -116,15 +115,14 @@ const QuickEdit = ({ customer, setvisible, visible }: Props) => {
         if (updateCustomerRes && updateCustomerRes.status === 'ok') {
             openSuccessNotification();
 
-            // const positionInTag = () => {
-            //     return customerList.map(item => item.id).indexOf(customer.id);
-            // }
 
-            // const index = positionInTag();
-
-            // const updatedItem = Object.assign({}, tagList[index], { ...updateCustomerRes });
-            // const updateTagList = [...customerList.slice(0, index), updatedItem, ...customerList.slice(index + 1)];
-            // setCustomerList(updateTagList);
+            setCustomerDetailData({
+                // @ts-ignore
+                ...updateCustomerRes, 
+                name: updateCustomerRes.firstName + ' ' + updateCustomerRes.lastName,
+            })
+   
+            setvisible(false)
 
         }
         else {
@@ -132,7 +130,6 @@ const QuickEdit = ({ customer, setvisible, visible }: Props) => {
         }
 
         actions.setSubmitting(false);
-        setvisible(false)
     };
 
 

@@ -20,6 +20,8 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { useHistory } from 'react-router';
 import moment from 'moment';
+import { CSVLink } from "react-csv";
+
 import {
   FileOutlined,
   InboxOutlined,
@@ -31,6 +33,7 @@ import {
   DeleteOutlined,
   EditOutlined,
   CheckCircleOutlined,
+  DownloadOutlined
 } from '@ant-design/icons';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -175,7 +178,7 @@ const MyTable = ({ data, setTagList }) => {
           render={(text, record: any) => (
             <Space size='middle'>
               <a href='##'>
-                <Tooltip placement='top' title='Quick Edit Tag'>
+                <Tooltip placement='top' title='Edit Expense'>
                   <span
                     className='iconSize'
                     onClick={() => {
@@ -207,8 +210,8 @@ const MyTable = ({ data, setTagList }) => {
         <QuickEdit
           tagList={data}
           setTagList={setTagList}
-          setvisible={setvisible}
-          visible={visible}
+          setAddNewCategoryVisible={setvisible}
+          addNewCategoryVisible={visible}
           category={activeCategoryForEdit}
         />
       )}
@@ -290,6 +293,36 @@ const TagList = ({}: Props) => {
     }
   };
 
+
+  
+  const headers = [
+    { label: "Topic", key: "topic" },
+    { label: "Amount", key: "amount" },
+    { label: "Date", key: "date" },
+  ];
+   
+
+  const getData = () => {
+    if(tagList && tagList.length > 0){
+      const csvData = tagList.map(item => {
+        return {
+          topic: item.topic,
+          amount: item.amount,
+          date : item.date ? moment(item.date).format('MMMM Do YYYY, h:mm a') : ''
+        }
+      })
+
+      return csvData; 
+    }
+    else return []; 
+  }; 
+
+
+  const data = getData();
+
+
+
+
   return (
     <>
       <div className='categoryListContainer'>
@@ -304,6 +337,34 @@ const TagList = ({}: Props) => {
               onSearch={(value) => handleSearch(value)}
             />
           </div>
+
+          
+        <div style={{
+          display:'flex',
+          alignItems:'center'
+        }}>
+        
+        {tagList && tagList.length > 0 && (
+          <>
+          <div style={{
+          display:'flex',
+          alignItems:'center',
+          marginRight: '25px'
+        }}>
+        <CSVLink
+         filename={"Expenses.csv"}
+         data={data} headers={headers}>
+          Export as csv 
+        </CSVLink>
+        <span style={{
+          color:'#1890ff',
+          marginLeft: '10px'
+        }}>
+        <DownloadOutlined />
+        </span>
+        </div>
+          </>
+        )}
           <Button
             // type="primary"
             className='btnPrimaryClassNameoutline'
@@ -312,6 +373,10 @@ const TagList = ({}: Props) => {
           >
             Add New
           </Button>
+        </div>
+
+
+        
         </div>
         <div className='categoryListContainer__categoryList'>
           {tagState.done && tagList.length > 0 && (

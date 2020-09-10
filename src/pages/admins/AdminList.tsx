@@ -36,6 +36,9 @@ import { DataTableSkeleton } from "../../components/Placeholders";
 import QuickEdit from "./QuickEdit"
 import AddNewAdmin from "./AddNewAdmin"
 
+import { connect } from "react-redux";
+import { isAccess } from "../../utils";
+
 
 
 const openSuccessNotification = (message?: any) => {
@@ -73,10 +76,61 @@ const { Search } = CoolInput;
 
 
 
-const MyTable = ({ data, setTagList }) => {
+const MyTable = ({ data, setTagList, roles }) => {
 	const [visible, setvisible] = useState(false);
 	const [activeCategoryForEdit, setactiveCategoryForEdit] = useState(false);
-	const [deleteTagState, handleDeleteTagFetch] = useHandleFetch({}, 'deleteTag');
+	const [deleteTagState, handleDeleteTagFetch] = useHandleFetch({}, 'deleteAdmin');
+
+
+
+	useEffect(() => {
+		if (!deleteTagState['isLoading']) {
+		  const error = deleteTagState['error'];
+		  if (error['isError'] && Object.keys(error['error']).length > 0) {
+			if (error['error']['registerError']) {
+			  // setServerErrors(error['error']['registerError']);
+			} else if (error['error']['checkoutError']) {
+			  // setServerErrors(error['error']['checkoutError']);
+			} else {
+			  // setServerErrors(error['error']);
+			}
+	
+			const errors =
+			  Object.values(error['error']).length > 0
+				? Object.values(error['error'])
+				: [];
+			errors.forEach((err, i) => {
+			  if (typeof err === 'string') {
+				openErrorNotification(err);
+			  } else if (typeof err === 'object') {
+				if (err && Object.keys(err).length > 0) {
+				  const errs = Object.values(err);
+				  errs.forEach((err) => {
+					openErrorNotification(err);
+				  });
+				}
+			  }
+			});
+		  }
+		}
+	
+		if (
+		  !deleteTagState['isLoading'] &&
+		  Object.keys(deleteTagState.data).length > 0
+		) {
+		  if (deleteTagState['data']['status'] === 'ok') {
+			openSuccessNotification('Admin Deleted!');
+			// history.push({
+			//   pathname: '/orderDetails',
+			//   state: checkoutState['data']
+			// })
+	
+			// clearCart();
+			// setIsModalShown(true);
+		  }
+		}
+	  }, [deleteTagState]);
+
 
 	const history = useHistory();
 
@@ -91,15 +145,12 @@ const MyTable = ({ data, setTagList }) => {
 		});
 
 
-
 		// @ts-ignore
 		if (deleteTagRes && deleteTagRes.status === 'ok') {
-			openSuccessNotification('Deleted Admin');
-			const newtagList = data.filter(item => item.id !== id);
+			// openSuccessNotification('Deleted Admin');
+			const newtagList = data.filter(item => item._id !== id);
 			setTagList(newtagList);
 		}
-
-
 	}
 
 
@@ -173,61 +224,68 @@ const MyTable = ({ data, setTagList }) => {
 
 
 				<Column
+					width={250}
 					title="Roles"
 					dataIndex="role"
 					key="role"
 					className='classnameofthecolumn'
 					render={tags => (
 						<>
-						{tags && tags.length > 0 && tags.slice(0,3).map((tag) => (
+						{tags && tags.length > 0 && tags.map((tag) => (
 							<Tag 
 							style={{
-								borderRadius:"5px"
+								borderRadius:"5px",
+								marginBottom: '5px'
 							}}
 							color="blue" key={tag}>
 							{tag}
 							</Tag>
 						))}
 
-						{tags && tags.length === 3 && '.......'}
+						{/* {tags && tags.length === 3 && '.......'} */}
 						</>
 					)}
 					/>
 
 
-				<Column
 
-					className='classnameofthecolumn'
-					title=""
-					key="action"
-					align='right'
-					render={(text, record: any) => (
-						<Space size="middle">
-							<a href='##'>
-								<Tooltip placement="top" title='Edit Admin'>
-									<span className='iconSize' onClick={() => {
-										setvisible(true)
-										setactiveCategoryForEdit(record);
-									}}>
-										<EditOutlined />
-									</span>
-								</Tooltip>
-							</a>
+{isAccess('superAdmin',roles) && (
+								
+								<Column
 
-
-
-							<Popconfirm
-								onConfirm={() => handleDeleteTag(record.id)}
-								title="Are you sure？" okText="Yes" cancelText="No">
-								<span
-									className='iconSize iconSize-danger'
-								>
-									<DeleteOutlined />
-								</span>
-							</Popconfirm>
-						</Space>
-					)}
-				/>
+								className='classnameofthecolumn'
+								title=""
+								key="action"
+								align='right'
+								render={(text, record: any) => (
+									<Space size="middle">
+										<a href='##'>
+											<Tooltip placement="top" title='Edit Admin'>
+												<span className='iconSize' onClick={() => {
+													setvisible(true)
+													setactiveCategoryForEdit(record);
+												}}>
+													<EditOutlined />
+												</span>
+											</Tooltip>
+										</a>
+			
+			
+			
+										<Popconfirm
+											onConfirm={() => handleDeleteTag(record._id)}
+											title="Are you sure？" okText="Yes" cancelText="No">
+											<span
+												className='iconSize iconSize-danger'
+											>
+												<DeleteOutlined />
+											</span>
+										</Popconfirm>
+									</Space>
+								)}
+							/>
+					) }
+	
 			</Table>
 
 
@@ -248,9 +306,11 @@ const MyTable = ({ data, setTagList }) => {
 
 
 
-interface Props { }
+interface Props { 
+	roles?:any; 
+}
 
-const TagList = ({ }: Props) => {
+const TagList = ({ roles }: Props) => {
 
 
 	const [tagList, setTagList] = useState([]);
@@ -348,17 +408,23 @@ const TagList = ({ }: Props) => {
 							onSearch={value => handleSearch(value)}
 						/>
 					</div>
+
+					{isAccess('superAdmin',roles) && (
 					<Button
-						// type="primary"
-						className='btnPrimaryClassNameoutline'
-						icon={<PlusOutlined />}
-						onClick={() => setAddNewCategoryVisible(true)}
-					>
-						Add New
-					</Button>
+					// type="primary"
+					className='btnPrimaryClassNameoutline'
+					icon={<PlusOutlined />}
+					onClick={() => setAddNewCategoryVisible(true)}
+				>
+					Add New
+				</Button>
+					) }
+					
+				
 				</div>
 				<div className='categoryListContainer__categoryList'>
 					{tagState.done && tagList.length > 0 && <MyTable
+					roles={roles}
 						setTagList={setTagList}
 						data={tagList} />}
 					{tagState.isLoading && <DataTableSkeleton />}
@@ -366,7 +432,7 @@ const TagList = ({ }: Props) => {
 
 					{tagState.done && !(tagList.length > 0) && (
 						<div style={{
-							marginTop: '50px'
+							marginTop: '150px'
 						}}>
 							<Empty description='No Admin found' image={Empty.PRESENTED_IMAGE_SIMPLE} />
 						</div>
@@ -384,4 +450,17 @@ const TagList = ({ }: Props) => {
 	);
 };
 
-export default TagList;
+
+
+  
+  const mapStateToProps = state => ({
+    roles: state.globalState,
+  }); 
+
+
+  // @ts-ignore
+  export default connect(mapStateToProps, null)(TagList);
+  
+  
+  
+

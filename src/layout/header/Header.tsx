@@ -1,4 +1,6 @@
-import React, { useEffect } from 'react';
+// @ts-nocheck
+
+import React, { useEffect, useState } from 'react';
 
 
 // import hooks 
@@ -15,15 +17,26 @@ import { LogoutOutlined,
      OrderedListOutlined,
     TwitterSquareFilled,
     ShoppingCartOutlined,
+    CheckCircleOutlined,
     UserOutlined,
      } from '@ant-design/icons';
 import Moment from 'react-moment';
-import { Layout, Badge, Dropdown, Menu, Spin } from 'antd';
+import { Layout, Badge, Dropdown, Menu, Spin,notification } from 'antd';
 import moment from "moment";
 const { Header } = Layout;
 
 
 // import styles
+
+
+const openSuccessNotification = (msg?: any) => {
+    notification.success({
+      message: msg || 'Product Deleted',
+      description: '',
+      icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
+    });
+  };
+
 
 
 interface Props {
@@ -34,8 +47,12 @@ const HeaderComponent = (props: Props) => {
     const history = useHistory();
 
     const [getAllNotificationState, handleGetAllNOticationFetch] = useHandleFetch({}, 'getAllNotification');
+    const [getMarkNotificationAsReadState, handleMarkNotificationAsReadFetch] = useHandleFetch({}, 'markNotificationAsRead');
+    const [getMarkAllNotificationAsReadState, handleMarkAllNotificationAsReadFetch] = useHandleFetch({}, 'markAllNotificationAsRead');
 
 
+    const [notificationList,setnotificationList] = useState({}); 
+    
     const handleMenuClick = (e) => {
         if (e.key === '3') {
         }
@@ -44,7 +61,7 @@ const HeaderComponent = (props: Props) => {
 
     useEffect(() => {
         const getAllNotification = async () => {
-            await handleGetAllNOticationFetch({
+            const res = await handleGetAllNOticationFetch({
                urlOptions: {
                    params: {
                     sortItem: 'added',
@@ -53,11 +70,39 @@ const HeaderComponent = (props: Props) => {
                    }
                }
             });
+
+            // @ts-ignore
+            if(res){
+                // @ts-ignore
+                setnotificationList(res)
+            }
         }
 
         getAllNotification();
     }, [])
 
+
+
+
+    const handleNotificationAsRead = async (id) => {
+        await handleMarkNotificationAsReadFetch({
+            body: {
+                "id" : [id]
+            }
+        })
+    }; 
+    
+
+    
+    const handleAllNotificationAsRead = async () => {
+        const res = await handleMarkAllNotificationAsReadFetch({})
+        // @ts-ignore
+        if(res && res.status === 'ok'){
+            openSuccessNotification('Notification cleared!')
+            setnotificationList([]); 
+        }
+    }; 
+    
 
 
 
@@ -84,7 +129,7 @@ const HeaderComponent = (props: Props) => {
             </div>
         );
 
-        if (getAllNotificationState.done && getAllNotificationState.data && !getAllNotificationState.data[0]) {
+        if (getAllNotificationState.done && notificationList && !notificationList[0]) {
             return (
                 <div 
                 className='notificationListItemContainer'
@@ -108,7 +153,7 @@ const HeaderComponent = (props: Props) => {
             className='notificationListItemContainer'>
                                  
                                  {getAllNotificationState.done
-                 && getAllNotificationState.data[0]
+                 && notificationList[0]
                  && (
                     <div style={{
                       
@@ -119,6 +164,7 @@ const HeaderComponent = (props: Props) => {
                         justifyContent:"space-around",
                     }}>
                     <a
+                    onClick={() => handleAllNotificationAsRead()}
                      style={{
                           textAlign:'center',
                           backgroundColor:'#f7f7f7' ,
@@ -148,11 +194,15 @@ const HeaderComponent = (props: Props) => {
                }
 
             {getAllNotificationState.done
-            && getAllNotificationState.data[0]
-            && getAllNotificationState.data.map((item,index) => {
+            && notificationList[0]
+            && notificationList.map((item,index) => {
+                console.log('notificationItem',item)
             return (
             <div
-              onClick={() => history.push(`/admin/${item.type}/${item.id}`)}
+              onClick={() => {
+                  handleNotificationAsRead(item.id); 
+                history.push(`/admin/${item.type}/${item.id}`)
+              }}
               className={!item.read ? 'notificationListItemContainer__item notificationListItemContainer__item-active' : 'notificationListItemContainer__item'}>
                 <span className='notificationListItemContainer__item-icon'>
                   {typeIcon[item['type']]}
@@ -177,6 +227,9 @@ const HeaderComponent = (props: Props) => {
         )
     }
 
+
+
+    console.log('notificationList',notificationList)
     
 
     return (
@@ -227,7 +280,7 @@ const HeaderComponent = (props: Props) => {
                             overflowCount={100}
                             // @ts-ignore
                             showZero={TwitterSquareFilled}
-                            count={getAllNotificationState.done && !getAllNotificationState.data ? 0 : getAllNotificationState.data.length ? getAllNotificationState.data.length : 0}
+                            count={getAllNotificationState.done && !notificationList ? 0 : notificationList && notificationList.length ? notificationList.length : 0}
                         >
                             <span style={{
                                 marginLeft: '10px',

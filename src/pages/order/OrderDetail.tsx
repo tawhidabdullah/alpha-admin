@@ -44,6 +44,15 @@ import OrderNoteEdit from './OrderNoteEdit';
 import OrderInvoice from './OrderInvoice';
 import { OrderDetail } from '.';
 
+
+// import state
+import { isAccess } from "../../utils";
+import { connect } from "react-redux";
+
+
+
+
+
 const { Column, ColumnGroup } = Table;
 const { Search } = CoolInput;
 
@@ -64,10 +73,14 @@ const openErrorNotification = (message?: any) => {
 };
 
 interface Props {
-  productRecord?: any;
+  roles?: any;
 }
 
-const NewBrandDetail = (props: Props) => {
+
+
+const NewBrandDetail = ({
+  roles
+}: Props) => {
   const [tagDetailState, handleTagDetailFetch] = useHandleFetch(
     {},
     'orderDetail'
@@ -203,13 +216,19 @@ const NewBrandDetail = (props: Props) => {
                 >
                   Generate Invoice
                 </Button>
-                <Button
+
+                {isAccess('postOrder','roles') && (
+                  <>
+                   <Button
                   onClick={() => setTagEditVisible(true)}
                   type='link'
                   icon={<PlusOutlined />}
                 >
                   Add note
                 </Button>
+                  </>
+                )}
+               
               </div>
             </>
           )}
@@ -429,7 +448,8 @@ const NewBrandDetail = (props: Props) => {
           )}
       </Skeleton>
 
-      {tagDetailState.done && (
+
+      {tagDetailState.done && tagDetailState.data && Object.keys(tagDetailState.data).length > 0 && (
         <>
           <div className='brandDetailContainer__heading'>
             <h3>Products</h3>
@@ -577,4 +597,13 @@ const NewBrandDetail = (props: Props) => {
   );
 };
 
-export default NewBrandDetail;
+
+
+const mapStateToProps = state => ({
+  roles: state.globalState,
+})
+
+// @ts-ignore
+export default connect(mapStateToProps, null)(NewBrandDetail);
+
+

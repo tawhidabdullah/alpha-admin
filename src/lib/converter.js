@@ -1,6 +1,6 @@
 import config from '../config.json';
 import dataMap from '../dataMap.json';
-import { product } from '../state/ducks';
+import moment from 'moment'; 
 
 class Converter {
   /**
@@ -109,14 +109,32 @@ class Converter {
 
     if (Object.keys(data).length > 0) {
       return {
+        ...data,
         id: data._id || '',
-        key: data._id || '',
         name: data.name && data.name,
-        description: data.description && data.description,
-        cover: data.cover
-          ? `${config['baseURL']}${data.cover.thumbnail}`
-          : null,
-        icon: data.icon ? `${config['baseURL']}${data.icon}` : null,
+        cover: {
+          cover: `${config['baseURL']}${
+            data.cover ? data.cover.original && data.cover.original : ''
+          }`,
+          id: data.cover ? data.cover._id : '',
+        },
+        url: data.url,
+        image:
+        (data.image &&
+          data.image.length > 0 &&
+          data.image.map((img) => {
+            return {
+              id: img._id || '',
+              name: img.name && img.name,
+              cover: `${config['baseURL']}${img.original}`,
+              added: img.added,
+              title: img.title,
+              labels: img.labels,
+              alt: img.alt,
+              caption: img.caption,
+            };
+          })) ||
+        [],
       };
     }
   }
@@ -130,6 +148,28 @@ class Converter {
   async getAllNotification(resData) {
     const data = resData.data || [];
 
+    let notiData = []; 
+    if( data && data.length > 0) {
+      data.forEach(not => {
+        if(!not.read){
+          notiData.push(not) 
+        }
+      })
+    }
+
+    return notiData
+  }
+
+
+  
+  /**
+   * @public
+   * @method getAllNotificationPage convert api data from API to general format based on config server
+   * @param {Object} data response objectc from alpha
+   * @returns {Object}  converted data
+   */
+  async getAllNotificationPage(resData) {
+    const data = resData.data || [];
     const formatedData =
       data.length > 0 &&
       data.map((noti) => {
@@ -143,10 +183,13 @@ class Converter {
           added: noti.added || '',
           read: noti.read,
         };
+    
       });
 
-    return formatedData;
+      return formatedData
   }
+
+
 
   /**
    * @public
@@ -771,6 +814,8 @@ class Converter {
     const data = resData;
     // const isNext = resData.page.next;
 
+    console.log('upconvertedpostDetail',resData); 
+
     if (Object.keys(data).length > 0) {
       return {
         ...data,
@@ -784,8 +829,43 @@ class Converter {
           (data.cover && data.cover['medium']) || ''
         }`,
         url: data.url,
-        products: data.requiredProducts,
-        category:
+        requiredProducts: data.requiredProducts && data.requiredProducts.length > 0 ? data.requiredProducts.map(item => {
+          return {
+            ...item,
+            id: item.id,
+            ...(item.detail && Object.keys(item.detail).length > 0 && {
+              ...item.detail,
+              cover: {
+                cover: `${config['baseURL']}${
+                  item.detail.cover ? item.detail.cover.original && item.detail.cover.original : ''
+                }`,
+                id: item.detail.cover ? item.detail.cover._id : '',
+              },
+              price:
+              parseInt(item.detail.price['offer']) >
+              parseInt(item.detail.price['regular'])
+                ? item.detail.price['offer']
+                : item.detail.price['regular'],
+                image:
+                (item.detail.image &&
+                  item.detail.image.length > 0 &&
+                  item.detail.image.map((img) => {
+                    return {
+                      id: img._id || '',
+                      name: img.name && img.name,
+                      cover: `${config['baseURL']}${img.original}`,
+                      added: img.added,
+                      title: img.title,
+                      labels: img.labels,
+                      alt: img.alt,
+                      caption: img.caption,
+                    };
+                  })) ||
+                [],
+            }),
+          }
+        }) :  [],
+        category2:
           (data.category &&
             data.category.length > 0 &&
             data.category.map((cat) => {
@@ -795,10 +875,119 @@ class Converter {
               };
             })) ||
           data.category,
+          category:
+          (data.category &&
+            data.category.length > 0 &&
+            data.category.map((cat) => {
+              return cat._id;
+            })) ||
+          data.category,
         tags: data.tags && data.tags.length > 0 ? data.tags : [],
+        image:
+        (data.image &&
+          data.image.length > 0 &&
+          data.image.map((img) => {
+            return {
+              id: img._id || '',
+              name: img.name && img.name,
+              cover: `${config['baseURL']}${img.original}`,
+              added: img.added,
+              title: img.title,
+              labels: img.labels,
+              alt: img.alt,
+              caption: img.caption,
+            };
+          })) ||
+        [],
       };
     } else return {};
   }
+
+
+  /**
+   * @public
+   * @method postDetailEdit convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+  async postDetailEdit(resData) {
+    const data = resData;
+    // const isNext = resData.page.next;
+
+    console.log('upconvertedpostDetail',resData); 
+
+    if (Object.keys(data).length > 0) {
+      return {
+        ...data,
+        id: data._id || '',
+        name: data.name && data.name,
+        body: data.body && data.body,
+        preparationTime: data.preparationTime && data.preparationTime,
+        servingSize: data.servingSize && data.servingSize,
+        cookingTime: data.cookingTime && data.cookingTime,
+        cover: `${config['baseURL']}${
+          (data.cover && data.cover['medium']) || ''
+        }`,
+        url: data.url,
+        requiredProducts: data.requiredProducts && data.requiredProducts.length > 0 ? data.requiredProducts.map(item => {
+          return {
+            ...item,
+            id: item.id,
+            ...(item.detail && Object.keys(item.detail).length > 0 && {
+              ...item.detail,
+              cover: {
+                cover: `${config['baseURL']}${
+                  item.detail.cover ? item.detail.cover.original && item.detail.cover.original : ''
+                }`,
+                id: item.detail.cover ? item.detail.cover._id : '',
+              },
+              price:
+              parseInt(item.detail.price['offer']) >
+              parseInt(item.detail.price['regular'])
+                ? item.detail.price['offer']
+                : item.detail.price['regular'],
+                image:
+                (item.detail.image &&
+                  item.detail.image.length > 0 &&
+                  item.detail.image.map((img) => {
+                    return {
+                      id: img._id || '',
+                      name: img.name && img.name,
+                      cover: `${config['baseURL']}${img.original}`,
+                      added: img.added,
+                      title: img.title,
+                      labels: img.labels,
+                      alt: img.alt,
+                      caption: img.caption,
+                    };
+                  })) ||
+                [],
+            }),
+          }
+        }) :  [],
+        category: data.category,
+        tags: data.tags && data.tags.length > 0 ? data.tags : [],
+        image:
+        (data.image &&
+          data.image.length > 0 &&
+          data.image.map((img) => {
+            return {
+              id: img._id || '',
+              name: img.name && img.name,
+              cover: `${config['baseURL']}${img.original}`,
+              added: img.added,
+              title: img.title,
+              labels: img.labels,
+              alt: img.alt,
+              caption: img.caption,
+            };
+          })) ||
+        [],
+      };
+    } else return {};
+  }
+
+
 
   /**
    * @public
@@ -1232,6 +1421,42 @@ class Converter {
     }
     return {};
   }
+
+
+    /**
+   * @public
+   * @method deleteAdmin convert api data from API to general format based on config server
+   * @param {Object} data response objectc from alpha
+   * @returns {Object}  converted data
+   */
+  async deleteAdmin(resData) {
+    if (resData.success) {
+      return {
+        status: 'ok',
+      };
+    }
+    return {};
+  }
+
+
+
+    /**
+   * @public
+   * @method markAllNotificationAsRead convert api data from API to general format based on config server
+   * @param {Object} data response objectc from alpha
+   * @returns {Object}  converted data
+   */
+  async markAllNotificationAsRead(resData) {
+    if (resData.success) {
+      return {
+        status: 'ok',
+      };
+    }
+    return {};
+  }
+
+
+  success
 
   /**
    * @public
@@ -1874,14 +2099,14 @@ class Converter {
             })) ||
           [],
         available:
-          product.pricing && product.pricing.length > 0
-            ? product.pricing[0]['stock'] &&
-              product.pricing[0]['stock']['available']
+          data.pricing && data.pricing.length > 0
+            ? data.pricing[0]['stock'] &&
+              data.pricing[0]['stock']['available']
             : 0,
         minimum:
-          product.pricing && product.pricing.length > 0
-            ? product.pricing[0]['stock'] &&
-              product.pricing[0]['stock']['minimum']
+          data.pricing && data.pricing.length > 0
+            ? data.pricing[0]['stock'] &&
+              data.pricing[0]['stock']['minimum']
             : 0,
       }) ||
       {};
@@ -1902,10 +2127,37 @@ class Converter {
         ...data,
         id: data._id || '',
         name: data.name && data.name,
+        cover: {
+          cover: `${config['baseURL']}${
+            data.cover ? data.cover.original && data.cover.original : ''
+          }`,
+          id: data.cover ? data.cover._id : '',
+        },
         code: data.code,
         minimumOrder: data.minimumOrder,
         maximumOrder: data.maximumOrder,
         freeProducts: data.freeProducts || [],
+        orderedProducts: data.orderedProducts && data.orderedProducts.length > 0 ? data.orderedProducts.map(item => {
+          console.log('fuckingOrderProduct',item)
+          return {
+            ...item,
+            id: item.id,
+            ...(item.detail && Object.keys(item.detail).length > 0 && {
+              ...item.detail,
+              cover: {
+                cover: `${config['baseURL']}${
+                  item.detail.cover ? item.detail.cover.original && item.detail.cover.original : ''
+                }`,
+                id: item.detail.cover ? item.detail.cover._id : '',
+              },
+              price:
+              parseInt(item.detail.price['offer']) >
+              parseInt(item.detail.price['regular'])
+                ? item.detail.price['offer']
+                : item.detail.price['regular'],
+            }),
+          }
+        }) :  [],
         freeProductsCount: data.freeProducts && data.orderedProducts.length,
         amountType: data.amountType,
         amount: data.amount,
@@ -1924,6 +2176,9 @@ class Converter {
         tags: data.tags,
       }) ||
       {};
+
+      console.log('fuckingOrderProduct',convertedData)
+
 
     return convertedData;
   }
@@ -2438,6 +2693,27 @@ class Converter {
     return convertedData;
   }
 
+
+   /**
+   * @public
+   * @method deleteExpense convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+  async deleteExpense(data) {
+    const convertedData = data;
+    if (data && data.success) {
+      return {
+        status: 'ok',
+      };
+    }
+
+    return convertedData;
+  }
+
+
+  
+
   /**
    * @public
    * @method postCategoryDelete convert api data from API to general format based on config server
@@ -2517,6 +2793,7 @@ class Converter {
     if (convertedData && Object.keys(convertedData).length > 0) {
       return {
         ...convertedData,
+        id: convertedData._id,
         cover: {
           cover: `${config['baseURL']}${
             convertedData.cover
@@ -2547,6 +2824,52 @@ class Converter {
 
     return convertedData;
   }
+
+
+    /**
+   * @public
+   * @method postUpdateTag convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+  async postUpdateTag(data) {
+    const convertedData = data;
+    if (data && data.updated) {
+      return {
+        ...data.updated,
+      
+        name: data.updated.name && data.updated.name,
+        description: data.updated.description && data.updated.description,
+        status: 'ok',
+      };
+    }
+
+    return convertedData;
+  }
+
+
+  
+
+   /**
+   * @public
+   * @method updateExpense convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+  async updateExpense(data) {
+    const convertedData = data;
+    if (data && Object.keys(convertedData).length > 0) {
+      return {
+        ...data,
+        status: 'ok',
+      };
+    }
+
+    return convertedData;
+  }
+
+
+  
 
   /**
    * @public
@@ -2711,12 +3034,19 @@ class Converter {
     if (data && data[0]) {
       return {
         ...data[0],
+        cover: data[0].cover
+          ? `${config['baseURL']}${
+              data[0].cover ? data[0].cover.thumbnail : ''
+            }`
+          : '',
         status: 'ok',
       };
     }
 
     return convertedData;
   }
+
+
 
   /**
    * @public
@@ -2726,9 +3056,14 @@ class Converter {
    */
   async postCategoryUpdate(data) {
     const convertedData = data;
-    if (data && data[0]) {
+    if (data && data.updated) {
       return {
-        ...data[0],
+        ...data['updated'],
+        cover:data['updated'].cover
+          ? `${config['baseURL']}${
+             data['updated'].cover ?data['updated'].cover.thumbnail : ''
+            }`
+          : '',
         status: 'ok',
       };
     }
@@ -2768,6 +3103,7 @@ class Converter {
   async expenseList(resData) {
     const data = resData.data || [];
 
+    console.log('expenseList',data);
     const convertedData =
       data.length > 0 &&
       data.map((tag) => {
@@ -2777,12 +3113,13 @@ class Converter {
           key: tag._id || '',
           topic: tag.topic && tag.topic,
           amount: tag.amount && tag.amount,
+
         };
       });
 
     return convertedData;
   }
-
+  tag
   /**
    * @public
    * @method addDealer convert api data from API to general format based on config server
@@ -2925,6 +3262,28 @@ class Converter {
     }
     return convertedData;
   }
+
+   /**
+   * @public
+   * @method updateAdminRole convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+
+  async updateAdminRole(data) {
+    const convertedData = data;
+    if (data && data.updated) {
+      return {
+        ...data.updated,
+        status: 'ok',
+      };
+    }
+    return convertedData;
+  }
+
+
+  
+
 
   /**
    * @public
@@ -3580,9 +3939,10 @@ class Converter {
    * @param {Object} data response objectc from wc
    * @returns {Object}  converted data
    */
+
+
   async adminList(resData) {
     //map props
-
     return resData;
   }
 

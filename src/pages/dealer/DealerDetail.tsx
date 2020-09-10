@@ -30,15 +30,22 @@ import { DataTableSkeleton } from "../../components/Placeholders";
 import CustomerEdit from "./DealerEdit";
 
 
+// import state
+import { isAccess } from "../../utils";
+import { connect } from "react-redux";
+
+
+
+
 const { Column, ColumnGroup } = Table;
 const { Search } = CoolInput;
 
 
 interface Props {
-    productRecord?: any;
+    roles?: any;
 }
 
-const NewBrandDetail = (props: Props) => {
+const NewBrandDetail = ({roles}: Props) => {
     const [customerDetailState, handleCustomerDetailFetch] = useHandleFetch({}, 'dealerDetail');
     const [orderListState, handleOrderListFetch] = useHandleFetch({}, 'dealerOrderList');
     const [registeredCustomerListState, handleRegisteredCustomerListFetch] = useHandleFetch({}, 'dealerRegisteredCustomerList');
@@ -126,13 +133,19 @@ const NewBrandDetail = (props: Props) => {
                             customer={customerDetailData}
                             setCustomerDetailData={setCustomerDetailData}
                         />
-                        <Button
-                            onClick={() => setTagEditVisible(true)}
-                            type='link'
-                            icon={<EditOutlined />}
-                        >
-                            Edit
-                      </Button>
+
+                {isAccess('postDealer',roles) && (
+                                    <Button
+                                    onClick={() => setTagEditVisible(true)}
+                                    type='link'
+                                    icon={<EditOutlined />}
+                                >
+                                    Edit
+                            </Button>
+                                )}
+
+
+                    
                     </>
                 )}
             </div>
@@ -514,4 +527,19 @@ const NewBrandDetail = (props: Props) => {
     )
 }
 
-export default NewBrandDetail
+
+
+
+const mapStateToProps = state => ({
+    roles: state.globalState,
+  })
+  
+  // @ts-ignore
+  export default connect(mapStateToProps, null)(NewBrandDetail);
+  
+  
+  
+  
+
+
+

@@ -5,6 +5,15 @@ import { useParams, useHistory } from 'react-router';
 import { useHandleFetch } from '../../hooks';
 import ReactHtmlParser from 'react-html-parser';
 
+
+
+// import state
+import { isAccess } from "../../utils";
+import { connect } from "react-redux";
+
+
+
+
 // import lib
 // import lib
 import {
@@ -45,10 +54,10 @@ const { Column, ColumnGroup } = Table;
 const { Search } = CoolInput;
 
 interface Props {
-  productRecord?: any;
+  roles?: any;
 }
 
-const NewBrandDetail = (props: Props) => {
+const NewBrandDetail = ({roles}: Props) => {
   const [tagProductsState, handleTagProductsFetch] = useHandleFetch(
     {},
     'tagProducts'
@@ -118,15 +127,20 @@ const NewBrandDetail = (props: Props) => {
                             tagDetailData={tagDetailData}
                             setTagDetailData={setTagDetailData}
                         /> */}
-              <Button
-                onClick={() => {
-                  history.push(`/admin/page/edit/${tagDetailData['_id']}`);
-                }}
-                type='link'
-                icon={<EditOutlined />}
-              >
-                Edit
-              </Button>
+
+                        
+          
+          {isAccess('postPage',roles) && (
+            <Button
+            onClick={() => {
+              history.push(`/admin/page/edit/${tagDetailData['_id']}`);
+            }}
+            type='link'
+            icon={<EditOutlined />}
+          >
+            Edit
+          </Button>
+          )}
             </>
           )}
       </div>
@@ -178,4 +192,14 @@ const NewBrandDetail = (props: Props) => {
   );
 };
 
-export default NewBrandDetail;
+
+
+const mapStateToProps = state => ({
+  roles: state.globalState,
+})
+
+// @ts-ignore
+export default connect(mapStateToProps, null)(NewBrandDetail);
+
+
+

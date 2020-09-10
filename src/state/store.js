@@ -9,7 +9,7 @@ const rootReducer = combineReducers(reducers);
 const persistConfig = {
   key: 'shop',
   storage: storage,
-  whitelist: ['session'], // which reducer want to store
+  // whitelist: ['session'], // which reducer want to store
 };
 
 const pReducer = persistReducer(persistConfig, rootReducer);

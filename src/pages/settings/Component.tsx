@@ -283,6 +283,8 @@ const Component = (props) => {
             localComponentItem,
             ...component.items.slice(itemIndex + 1)
 		  ];
+
+		  console.log('updatedItemsTheDamnItems',updatedItems)
 		  
 		  const manupulatedUpdatedItems = [
             ...component.items.slice(0, itemIndex),

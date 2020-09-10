@@ -20,7 +20,13 @@ const Inbox = (props: Props) => {
 
     useEffect(() => {
       const getEmailConfiguration = async () => {
-          const res = await handleGetEmailListFetch({});
+          const res = await handleGetEmailListFetch({
+              urlOptions: {
+                  params: {
+                    limitCount: 50000
+                  }
+              }
+          });
           // @ts-ignore
       
       }; 

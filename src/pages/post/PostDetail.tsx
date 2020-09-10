@@ -33,7 +33,7 @@ interface Props {
 
 const NewBrandDetail = (props: Props) => {
     const [productDetailState, handleProductDetailFetch] = useHandleFetch({}, 'postDetail');
-
+    const [postDetailData,setPostDetailData] = useState({}); 
     const params = useParams();
     const history = useHistory();
     const productId = params['id'];
@@ -43,18 +43,24 @@ const NewBrandDetail = (props: Props) => {
 
     useEffect(() => {
         const getProductDetail = async () => {
-            console.log('fuckit')
-            await handleProductDetailFetch({
+            const res = await handleProductDetailFetch({
                 urlOptions: {
                     params: {
-                        categoryOne: 1,
-                        tagsOne: 1
+                        categoryOne: '1',
+                        tagsOne: '1',
+                        imageValue: '1'
                     },
                     placeHolders: {
                         id: productId,
                     }
                 }
-            })
+            }); 
+
+            // @ts-ignore
+            if(res) {
+                // @ts-ignore
+            setPostDetailData(res)
+            }
         };
 
         getProductDetail();
@@ -99,10 +105,10 @@ const NewBrandDetail = (props: Props) => {
     }
 
 
-    const row = productDetailState.done && productDetailState.data && productDetailState.data['image'] ? getImagesInCollumn(productDetailState.data['image']) : [];
+    const row = productDetailState.done && postDetailData && postDetailData['image'] ? getImagesInCollumn(postDetailData['image']) : [];
 
 
-    console.log('bundleDetail', productDetailState);
+    console.log('postDetailState', productDetailState);
     return (
         <div className='brandDetailContainer'>
 
@@ -111,20 +117,22 @@ const NewBrandDetail = (props: Props) => {
                     Recipe Detail
                 </h3>
 
-                {productDetailState.done && productDetailState.data && (Object.keys(productDetailState.data).length > 0) && (
+                {productDetailState.done && postDetailData && (Object.keys(postDetailData).length > 0) && (
                     <>
-                        {/* <ProductBundleEdit
-                            productEditVisible={productEditVisible}
-                            setProductEditVisible={setProductEditVisible}
-                            productDetailData={productDetailState.data}
-                        /> */}
-                        {/* <Button
+                         <ProductBundleEdit
+
+                            productDetailData={postDetailData}
+                            addNewCategoryVisible={productEditVisible}
+                            setAddNewCategoryVisible={setProductEditVisible}
+                            setPostDetailData={setPostDetailData}
+                        /> 
+                         <Button
                             onClick={() => setProductEditVisible(true)}
                             type='link'
                             icon={<EditOutlined />}
                         >
                             Edit
-                      </Button> */}
+                      </Button> 
                     </>
                 )}
 
@@ -132,42 +140,42 @@ const NewBrandDetail = (props: Props) => {
             <Skeleton
                 avatar paragraph={{ rows: 3 }}
                 loading={productDetailState.isLoading}>
-                {productDetailState.done && productDetailState.data && !(Object.keys(productDetailState.data).length > 0) && (
+                {productDetailState.done && postDetailData && !(Object.keys(postDetailData).length > 0) && (
                     <Empty description='No Recipe found' image={Empty.PRESENTED_IMAGE_SIMPLE} />
                 )}
 
-                {productDetailState.done && productDetailState.data && (Object.keys(productDetailState.data).length > 0) && (
+                {productDetailState.done && postDetailData && (Object.keys(postDetailData).length > 0) && (
                     <>
                         <div className='brandDetailContainer__header'>
                             <div className='brandDetailContainer__header-coverContainer brandDetailContainer__header-coverContainer-product'>
-                                <img src={productDetailState.data['cover'] && productDetailState.data['cover']} alt="" />
+                                <img src={postDetailData['cover'] && postDetailData['cover']} alt="" />
                             </div>
                             <div className='brandDetailContainer__header-info'>
                                 <h2>
-                                    {productDetailState.data['name']}
+                                    {postDetailData['name']}
                                 </h2>
                                 <h4>
-                                    {productDetailState.data['price']}
+                                    {postDetailData['price']}
                                 </h4>
                                 <h3>
-                                    {productDetailState.data['description']}
+                                    {postDetailData['description']}
                                 </h3>
 
-                                {productDetailState.data['startDate'] && (
+                                {postDetailData['startDate'] && (
                                     <h3>
                                         START DATE:
                                         <span>
-                                            {productDetailState.data['url']}
+                                            {postDetailData['url']}
                                         </span>
 
                                     </h3>
                                 )}
 
-                                {productDetailState.data['endDate'] && (
+                                {postDetailData['endDate'] && (
                                     <h3>
                                         END DATE:
                                         <span>
-                                            {productDetailState.data['url']}
+                                            {postDetailData['url']}
                                         </span>
 
                                     </h3>
@@ -175,21 +183,21 @@ const NewBrandDetail = (props: Props) => {
 
 
 
-                                {productDetailState.data['url'] && (
+                                {postDetailData['url'] && (
                                     <h3>
                                         URL:
                                         <span>
-                                            {productDetailState.data['url']}
+                                            {postDetailData['url']}
                                         </span>
 
                                     </h3>
                                 )}
                                 {/* 
-                                {productDetailState.data['tags'] && productDetailState.data['tags'].length > 0 &&
+                                {postDetailData['tags'] && postDetailData['tags'].length > 0 &&
                                     (<>
                                         <h3>
                                             TAGS:
-                                        {productDetailState.data['tags'].map(tag => {
+                                        {postDetailData['tags'].map(tag => {
                                             return (
                                                 <span>
                                                     {tag.name}
@@ -201,15 +209,14 @@ const NewBrandDetail = (props: Props) => {
                                     </>)
                                 } */}
 
-                                {productDetailState.data['category'] && productDetailState.data['category'].length > 0 &&
+                                {postDetailData['category2'] && postDetailData['category2'].length > 0 &&
                                     (<>
                                         <h3>
                                             CATEGORIES:
-                                        {productDetailState.data['category'].map(cat => {
+                                        {postDetailData['category2'].map(cat => {
                                             return (
                                                 <span
                                                     onClick={() => history.push(`/admin/posts/category/${cat.id}`)}
-
                                                 >
                                                     {cat.name}
                                                 </span>
@@ -222,30 +229,10 @@ const NewBrandDetail = (props: Props) => {
                         </div>
 
 
-                        {productDetailState.data['icon'] && (
-                            <>
-                                <div className='brandDetailContainer__heading'>
-                                    <h3>
-                                        Icon
-                            </h3>
-                                </div>
-
-                                <div className='brandDetailContainer__inlineBox'>
-                                    <div className='brandDetailContainer__header-coverContainer brandDetailContainer__header-coverContainer-icon'>
-                                        <img src={productDetailState.data['icon'] && productDetailState.data['icon']} alt="" />
-                                    </div>
-
-                                </div>
-
-                                <div style={{
-                                    marginBottom: "25px"
-                                }}></div>
-                            </>
-                        )}
-
-
-
-                        {productDetailState.done && productDetailState.data && Object.keys(productDetailState.data).length > 0 && productDetailState.data['products'] && (
+                        {productDetailState.done
+                         && postDetailData && Object.keys(postDetailData).length > 0 
+                        && postDetailData['products']
+                         && postDetailData['products'].length > 0 && (
                             <div className='brandDetailContainer__heading'>
                                 <h3>
                                     Products
@@ -256,7 +243,7 @@ const NewBrandDetail = (props: Props) => {
 
 
                         <div className='brandDetailContainer__body'>
-                            {productDetailState.done && productDetailState.data && productDetailState.data['products'] && !(productDetailState.data['products'].length > 0) && (
+                            {productDetailState.done && postDetailData && postDetailData['products'] && !(postDetailData['products'].length > 0) && (
                                 <div style={{
                                     marginTop: '100px'
                                 }}>
@@ -264,10 +251,10 @@ const NewBrandDetail = (props: Props) => {
                                 </div>
                             )}
 
-                            {productDetailState.done && productDetailState.data && Object.keys(productDetailState.data).length > 0 && (
+                            {productDetailState.done && postDetailData && Object.keys(postDetailData).length > 0 && (
                                 <>
-                                    {productDetailState.data['products'] && productDetailState.data['products'].length > 0 &&
-                                        productDetailState.data['products'].map(product => {
+                                    {postDetailData['products'] && postDetailData['products'].length > 0 &&
+                                        postDetailData['products'].map(product => {
                                             return (
                                                 <CouponProducts
                                                     quantity={product.quantity}
@@ -278,7 +265,7 @@ const NewBrandDetail = (props: Props) => {
                             )}
                         </div>
 
-                        {productDetailState.data['image'] && productDetailState.data['image'].length > 0 && (
+                        {postDetailData['image'] && postDetailData['image'].length > 0 && (
                             <>
                                 <div className='brandDetailContainer__heading'>
                                     <h3>
@@ -315,67 +302,7 @@ const NewBrandDetail = (props: Props) => {
                             </>
                         )}
 
-                        {productDetailState.data['brand'] && Object.keys(productDetailState.data['brand']).length > 0 && (
-                            <>
-                                <div className='brandDetailContainer__heading'>
-                                    <h3>
-                                        Brand
-                                   </h3>
-                                </div>
 
-                                <div
-                                    onClick={() => history.push(`/admin/brand/${productDetailState.data['brand']['id']}`)}
-
-                                    className='brandDetailContainer__brand'>
-                                    <div className='brandDetailContainer__brand-coverbox'>
-                                        <img src={productDetailState.data['brand']['cover'] && productDetailState.data['brand']['cover']} alt="" />
-                                    </div>
-                                    <div className='brandDetailContainer__brand-info'>
-                                        <h2>
-                                            {productDetailState.data['brand']['name']}
-                                        </h2>
-                                        <h3>
-                                            {productDetailState.data['brand']['description']}
-                                        </h3>
-                                    </div>
-                                </div>
-
-                                <div style={{
-                                    marginBottom: "25px"
-                                }}></div>
-                            </>
-                        )}
-
-
-                        {productDetailState.data['primaryCategory'] && Object.keys(productDetailState.data['primaryCategory']).length > 0 && (
-                            <>
-                                <div className='brandDetailContainer__heading'>
-                                    <h3>
-                                        Primary Category
-                                   </h3>
-                                </div>
-
-                                <div
-                                    onClick={() => history.push(`/admin/category/${productDetailState.data['primaryCategory']['id']}`)}
-                                    className='brandDetailContainer__brand'>
-                                    <div className='brandDetailContainer__brand-coverbox'>
-                                        <img src={productDetailState.data['primaryCategory']['cover'] && productDetailState.data['primaryCategory']['cover']} alt="" />
-                                    </div>
-                                    <div className='brandDetailContainer__brand-info'>
-                                        <h2>
-                                            {productDetailState.data['primaryCategory']['name']}
-                                        </h2>
-                                        <h3>
-                                            {productDetailState.data['primaryCategory']['description']}
-                                        </h3>
-                                    </div>
-                                </div>
-
-                                <div style={{
-                                    marginBottom: "25px"
-                                }}></div>
-                            </>
-                        )}
 
                     </>
                 )}

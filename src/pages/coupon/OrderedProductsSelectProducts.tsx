@@ -44,6 +44,19 @@ const Tags = ({
 
 
 
+    useEffect(() => {
+        if(productIds && productIds.length > 0){
+            console.log('shippingRunning')
+            const selecttedOptions = productIds.map(item => item.name); 
+            setselectedOptions(selecttedOptions)
+        }
+    },[productIds]); 
+
+    console.log('OrderProudctItemsProductIds',productIds); 
+
+
+
+
     const handleChange = (selectItems) => {
         setselectedOptions(selectItems);
 

@@ -41,7 +41,7 @@ const NewBrandDetail = (props: Props) => {
     const [tagDetailState, handleTagDetailFetch] = useHandleFetch({}, 'couponDetail');
     const [tagProductsState, handleTagProductsFetch] = useHandleFetch({}, 'tagProducts');
     const [tagEditVisible, setTagEditVisible] = useState(false);
-
+    const [tagDetailData,setTagDetailData] = useState({}); 
 
     const params = useParams();
     const history = useHistory();
@@ -50,13 +50,19 @@ const NewBrandDetail = (props: Props) => {
     useEffect(() => {
 
         const getBrandDetail = async () => {
-            await handleTagDetailFetch({
+            const res = await handleTagDetailFetch({
                 urlOptions: {
                     placeHolders: {
                         id: tagId
                     }
                 }
-            })
+            });
+
+            // @ts-ignore
+            if(res){
+                // @ts-ignore
+                setTagDetailData(res)
+            }
         };
 
         getBrandDetail();
@@ -68,7 +74,7 @@ const NewBrandDetail = (props: Props) => {
 
 
 
-    console.log('tagDetailState', tagDetailState);
+    console.log('coupondetail', tagDetailState);
 
     console.log('brandParams', params);
 
@@ -80,12 +86,13 @@ const NewBrandDetail = (props: Props) => {
                     Coupon Detail
                 </h3>
 
-                {tagDetailState.done && tagDetailState.data && (Object.keys(tagDetailState.data).length > 0) && (
+                {tagDetailState.done && tagDetailData && (Object.keys(tagDetailData).length > 0) && (
                     <>
                         <CouponEdit
-                            tagEditVisible={tagEditVisible}
-                            setTagEditVisible={setTagEditVisible}
-                            tagDetailData={tagDetailState.data}
+                            addNewCategoryVisible={tagEditVisible}
+                            setAddNewCategoryVisible={setTagEditVisible}
+                            category={tagDetailData}
+                            setTagDetailData={setTagDetailData}
                         />
                         <Button
                             onClick={() => setTagEditVisible(true)}
@@ -100,47 +107,49 @@ const NewBrandDetail = (props: Props) => {
             <Skeleton
                 paragraph={{ rows: 2 }}
                 loading={tagDetailState.isLoading}>
-                {tagDetailState.done && tagDetailState.data && !(Object.keys(tagDetailState.data).length > 0) && (
+                {tagDetailState.done && tagDetailData && !(Object.keys(tagDetailData).length > 0) && (
                     <Empty description='No Coupon found' image={Empty.PRESENTED_IMAGE_SIMPLE} />
                 )}
 
-                {tagDetailState.done && tagDetailState.data && (Object.keys(tagDetailState.data).length > 0) && (
+                {tagDetailState.done && tagDetailData && (Object.keys(tagDetailData).length > 0) && (
                     <div className='brandDetailContainer__header'>
-
+                        <div className='brandDetailContainer__header-coverContainer'>
+                            <img src={tagDetailData['cover'] && tagDetailData['cover']['cover']} alt="" />
+                        </div>
                         <div className='brandDetailContainer__header-info'>
                             <h2>
-                                {tagDetailState.data['name']}
+                                {tagDetailData['name']}
                             </h2>
                             <h3>
-                                {tagDetailState.data['description']}
+                                {tagDetailData['description']}
                             </h3>
-                            {tagDetailState.data['code'] && (
+                            {tagDetailData['code'] && (
                                 <h3>
                                     CODE:
                                     <span>
-                                        {tagDetailState.data['code']}
+                                        {tagDetailData['code']}
                                     </span>
 
                                 </h3>
                             )}
                           
 
-                            {tagDetailState.data['amount'] && (
+                            {tagDetailData['amount'] && (
                                 <h3>
                                     AMOUT:
                                     <span>
-                                        {tagDetailState.data['amount']}
+                                        {tagDetailData['amount']}
                                     </span>
 
                                 </h3>
                             )}
 
 
-                            {tagDetailState.data['startDate'] && (
+                            {tagDetailData['startDate'] && (
                                 <h3>
                                     START DATE:
                                     <span>
-                                    {moment(tagDetailState.data['startDate']).format('MMMM Do YYYY, h:mm:ss a')}
+                                    {moment(tagDetailData['startDate']).format('MMMM Do YYYY, h:mm:ss a')}
                                     </span>
 
                                 </h3>
@@ -148,11 +157,11 @@ const NewBrandDetail = (props: Props) => {
 
 
 
-                            {tagDetailState.data['endDate'] && (
+                            {tagDetailData['endDate'] && (
                                 <h3>
                                     END DATE:
                                     <span>
-                                    {moment(tagDetailState.data['endDate']).format('MMMM Do YYYY, h:mm:ss a')}
+                                    {moment(tagDetailData['endDate']).format('MMMM Do YYYY, h:mm:ss a')}
                                     </span>
 
                                 </h3>
@@ -170,7 +179,7 @@ const NewBrandDetail = (props: Props) => {
             </div>
             <div className='brandDetailContainer__body'>
                 {tagProductsState.isLoading && <DataTableSkeleton />}
-                {tagDetailState.done && tagDetailState.data && tagDetailState.data['orderedProducts'] && !(tagDetailState.data['orderedProducts'].length > 0) && (
+                {tagDetailState.done && tagDetailData && tagDetailData['orderedProducts'] && !(tagDetailData['orderedProducts'].length > 0) && (
                     <div style={{
                         marginTop: '100px'
                     }}>
@@ -179,20 +188,19 @@ const NewBrandDetail = (props: Props) => {
 
                 )}
 
-                {tagDetailState.done && tagDetailState.data && Object.keys(tagDetailState.data).length > 0 && (
+                {tagDetailState.done && tagDetailData && Object.keys(tagDetailData).length > 0 && (
                     <>
-                        {tagDetailState.data['orderedProducts'] && tagDetailState.data['orderedProducts'].length > 0 &&
-                            tagDetailState.data['orderedProducts'].map(product => {
+                        {tagDetailData['orderedProducts'] && tagDetailData['orderedProducts'].length > 0 &&
+                            tagDetailData['orderedProducts'].map(product => {
                                 return (
                                     <CouponProducts productId={product['_id']} />
                                 )
                             })}
                     </>
                 )}
-
-
             </div>
-            {/* {tagDetailState.done && tagDetailState.data && Object.keys(tagDetailState.data).length > 0 && tagDetailState.data['freeProducts'] && (
+
+            {/* {tagDetailState.done && tagDetailData && Object.keys(tagDetailData).length > 0 && tagDetailData['freeProducts'] && (
                 <div className='brandDetailContainer__heading'>
                     <h3>
                         Free Products
@@ -203,7 +211,7 @@ const NewBrandDetail = (props: Props) => {
 
             <div className='brandDetailContainer__body'>
                 {tagProductsState.isLoading && <DataTableSkeleton />}
-                {tagDetailState.done && tagDetailState.data && tagDetailState.data['freeProducts'] && !(tagDetailState.data['freeProducts'].length > 0) && (
+                {tagDetailState.done && tagDetailData && tagDetailData['freeProducts'] && !(tagDetailData['freeProducts'].length > 0) && (
                     <div style={{
                         marginTop: '100px'
                     }}>
@@ -211,10 +219,10 @@ const NewBrandDetail = (props: Props) => {
                     </div>
                 )}
 
-                {tagDetailState.done && tagDetailState.data && Object.keys(tagDetailState.data).length > 0 && (
+                {tagDetailState.done && tagDetailData && Object.keys(tagDetailData).length > 0 && (
                     <>
-                        {tagDetailState.data['freeProducts'] && tagDetailState.data['freeProducts'].length > 0 &&
-                            tagDetailState.data['freeProducts'].map(product => {
+                        {tagDetailData['freeProducts'] && tagDetailData['freeProducts'].length > 0 &&
+                            tagDetailData['freeProducts'].map(product => {
                                 return (
                                     <CouponProducts
                                         quantity={product.quantity}

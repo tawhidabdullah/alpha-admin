@@ -32,6 +32,12 @@ import AddNewProduct from './AddNewProduct';
 import ProductQuickEdit from './ProductQuickEdit';
 // import QuickEdit from './QuickEdit';
 
+// import state
+import { isAccess } from "../../utils";
+import { connect } from "react-redux";
+
+
+
 const { Column, ColumnGroup } = Table;
 const { Search } = Input;
 
@@ -46,9 +52,10 @@ const openSuccessNotification = (msg?: any) => {
 interface myTableProps {
   data: any;
   setProductList: any;
+  roles: any 
 }
 
-const MyTable = ({ data, setProductList }: myTableProps) => {
+const MyTable = ({ data, setProductList, roles }: myTableProps) => {
   const [visible, setvisible] = useState(false);
   const [activeCategoryForEdit, setactiveCategoryForEdit] = useState(false);
   const [deleteProductState, handleDeleteProductFetch] = useHandleFetch(
@@ -247,6 +254,8 @@ const MyTable = ({ data, setProductList }: myTableProps) => {
           className='classnameofthecolumn'
         />
 
+
+
         <Column
           align='right'
           title='Stock'
@@ -255,29 +264,52 @@ const MyTable = ({ data, setProductList }: myTableProps) => {
           className='classnameofthecolumn'
           render={(text, record: any) => (
             <>
-              <Dropdown
-                overlay={() => StatusItemMenu(record, record.id)}
-                placement='bottomRight'
+
+            {isAccess('postCatalogue',roles) ? (
+                 <Dropdown
+                 overlay={() => StatusItemMenu(record, record.id)}
+                 placement='bottomRight'
+               >
+                 <a href='##'>
+                   <span
+                     // className={'product-attributeTag'}
+                     style={{
+                       fontSize: '12px',
+                     }}
+                   >
+                     {text ? 'In Stock' : 'Out of stock'}
+                     <span
+                       style={{
+                         marginLeft: '5px',
+                         fontSize: '10px',
+                       }}
+                     >
+                    <DownOutlined />
+                     </span>
+                   </span>
+                 </a>
+               </Dropdown>
+            ) : (
+              <a href='##'>
+              <span
+                // className={'product-attributeTag'}
+                style={{
+                  fontSize: '12px',
+                }}
               >
-                <a href='##'>
-                  <span
-                    // className={'product-attributeTag'}
-                    style={{
-                      fontSize: '12px',
-                    }}
-                  >
-                    {text ? 'In Stock' : 'Out of stock'}
-                    <span
-                      style={{
-                        marginLeft: '5px',
-                        fontSize: '10px',
-                      }}
-                    >
-                      <DownOutlined />
-                    </span>
-                  </span>
-                </a>
-              </Dropdown>
+                {text ? 'In Stock' : 'Out of stock'}
+                <span
+                  style={{
+                    marginLeft: '5px',
+                    fontSize: '10px',
+                  }}
+                >
+             
+                </span>
+              </span>
+            </a>
+            )}
+           
             </>
           )}
         />
@@ -315,40 +347,44 @@ const MyTable = ({ data, setProductList }: myTableProps) => {
             </>
           )}
         /> */}
-        <Column
-          className='classnameofthecolumn'
-          title=''
-          key='action'
-          align='right'
-          render={(text, record: any) => (
-            <Space size='middle'>
-              <a href='##'>
-                <Tooltip placement='top' title='Edit Product'>
-                  <span
-                    className='iconSize'
-                    onClick={() => {
-                      setvisible(true);
-                      setactiveCategoryForEdit(record);
-                    }}
-                  >
-                    <EditOutlined />
-                  </span>
-                </Tooltip>
-              </a>
 
-              <Popconfirm
-                onConfirm={() => handleDeleteProduct(record.id)}
-                title='Are you sure？'
-                okText='Yes'
-                cancelText='No'
-              >
-                <span className='iconSize iconSize-danger'>
-                  <DeleteOutlined />
-                </span>
-              </Popconfirm>
-            </Space>
-          )}
-        />
+        {isAccess('postCatalogue','roles') && (
+        <Column
+        className='classnameofthecolumn'
+        title=''
+        key='action'
+        align='right'
+        render={(text, record: any) => (
+          <Space size='middle'>
+            <a href='##'>
+              <Tooltip placement='top' title='Edit Product'>
+                <span
+                  className='iconSize'
+                  onClick={() => {
+                    setvisible(true);
+                    setactiveCategoryForEdit(record);
+                  }}
+                >
+               <EditOutlined />
+             </span>
+           </Tooltip>
+         </a>
+
+         <Popconfirm
+           onConfirm={() => handleDeleteProduct(record.id)}
+           title='Are you sure？'
+           okText='Yes'
+           cancelText='No'
+         >
+           <span className='iconSize iconSize-danger'>
+             <DeleteOutlined />
+           </span>
+         </Popconfirm>
+       </Space>
+     )}
+   />
+        )}
+   
       </Table>
 
       {activeCategoryForEdit && (
@@ -365,10 +401,10 @@ const MyTable = ({ data, setProductList }: myTableProps) => {
 };
 
 interface Props {
-  history: any;
+  roles?:any;
 }
 
-const ProductList = ({ history }: Props) => {
+const ProductList = ({ roles  }: Props) => {
   const [productList, setProductList] = useState([]);
 
   const [productState, handleProductListFetch] = useHandleFetch(
@@ -408,6 +444,9 @@ const ProductList = ({ history }: Props) => {
     }
   };
 
+
+
+
   return (
     <>
       {/* <h2 className='containerPageTitle'>
@@ -427,7 +466,9 @@ const ProductList = ({ history }: Props) => {
             />
           </div>
 
-          <Button
+
+          {isAccess('postCatalogue',roles) && (
+            <Button
             // type="primary"
             className='btnPrimaryClassNameoutline'
             icon={<PlusOutlined />}
@@ -435,6 +476,9 @@ const ProductList = ({ history }: Props) => {
           >
             Add New
           </Button>
+          )}
+
+          
         </div>
 
         <div className='categoryListContainer__afterHeader'>
@@ -448,7 +492,9 @@ const ProductList = ({ history }: Props) => {
 
         <div className='categoryListContainer__categoryList'>
           {productState.done && productList.length > 0 && (
-            <MyTable setProductList={setProductList} data={productList} />
+            <MyTable 
+            roles={roles}
+            setProductList={setProductList} data={productList} />
           )}
           {productState.isLoading && <DataTableSkeleton />}
           {productState.done && !(productList.length > 0) && (
@@ -478,4 +524,13 @@ const ProductList = ({ history }: Props) => {
   );
 };
 
-export default withRouter(ProductList);
+
+const mapStateToProps = state => ({
+  roles: state.globalState,
+})
+
+// @ts-ignore
+export default connect(mapStateToProps, null)(ProductList);
+
+
+

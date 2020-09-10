@@ -5,7 +5,7 @@ import * as Yup from 'yup';
 
 import { useHandleFetch } from '../../../hooks';
 // import third party ui lib
-import { Switch, Select, notification, Modal, Tooltip, Upload, message } from 'antd';
+import { Select, notification, Modal, Tooltip, Upload, message, Spin } from 'antd';
 
 import {
 	DeleteOutlined,
@@ -20,8 +20,10 @@ import {
 } from '@ant-design/icons';
 
 
+
 // import ReactQuill from 'react-quill';
 // import 'react-quill/dist/quill.snow.css';
+
 
 // import components
 import Input from '../../../components/Field/Input';
@@ -33,7 +35,7 @@ import MetaTags from "./MetaTags";
 
 
 const validationSchema = Yup.object().shape({
-	name: Yup.string().label('Name').required('Name is required').min(3, 'Name must have at least 3 characters'),
+	// name: Yup.string().label('Name').required('Name is required').min(3, 'Name must have at least 3 characters'),
 });
 
 const openSuccessNotification = (message?: any) => {
@@ -71,7 +73,7 @@ const initialValues = {
 	image: [],
 	url: '',
 	cover: '',
-	displayOrder: null
+	displayOrder: '',
 }
 
 const { Option } = Select;
@@ -79,29 +81,25 @@ const { Option } = Select;
 interface Props {
 	addNewCategoryVisible: any;
 	setAddNewCategoryVisible: any;
-	categoryList?: any;
-    setcategoryList?: any;
     categoryDetailData?:any; 
+	setcategoryList?:any; 
+	categoryList?:any; 
 }
 
 const AddNewCategory = ({ 
     addNewCategoryVisible, 
     setAddNewCategoryVisible, 
-    categoryList, setcategoryList,
-    categoryDetailData }: Props) => {
+    categoryDetailData, setcategoryList, categoryList }: Props) => {
 
 	const [addCategoryState, handleAddCategoryFetch] = useHandleFetch({}, 'postCategoryUpdate');
-	const [updateCategoryIconState, handleUpdateCategoryIconFetch] = useHandleFetch({}, 'categoryUpdateIcon', 'form');
+	const [updateCategoryIconState, handleUpdateCategoryIconFetch] = useHandleFetch({}, 'categoryUpdateIcon');
 	const [attachImageToItemMultipleState, handleAttachImageToItemMultipleFetch] = useHandleFetch({}, 'attachImageToItemMultiple');
     const [attachImageToItemSingleState, handleAttachImageToItemSingleFetch] = useHandleFetch({}, 'attachImageToItemSingle');
     const [detachImageFromItemMultipleState, handleDetachImageFromItemMultipleFetch] = useHandleFetch({}, 'detachImageFromItemMultiple');
     const [detachImageFromItemSingleState, handleDetachImageFromItemSingleFetch] = useHandleFetch({}, 'detachImageFromItemSingle');
     const [setImageAsThumbnailToItemState, handleSetImageAsThumbnailToItemFetch] = useHandleFetch({}, 'setImageAsThumbnailToItem');
 
-
-	
 	const [visible, setvisible] = useState(false);
-	const [myImages, setmyImages] = useState(false);
 	const [myThumbnailImage, setmyThumbnailImage] = useState(false);
 	const [isparentCategoryChecked, setisparentcategoryChecked] = useState(true);
 	const [isModalOpenForThumbnail, setisModalOpenForThumbnail] = useState(false);
@@ -112,9 +110,74 @@ const AddNewCategory = ({
 	const [imageFile, setImagefile] = useState('');
 	const [tags,setTags] = useState([]);
 	const [bnTags,setBnTags] = useState([]);
-	const [visibleMedia, setvisibleMedia] = useState(false);
+	const [myImages, setmyImages] = useState(false);
     const [coverImageId, setCoverImageId] = useState('');
-    const [myGoddamnImages, setMyGoddamnImages] = useState([]);
+	const [myGoddamnImages, setMyGoddamnImages] = useState([]);
+	
+    const [categoryDetailState, handleCategoryDetailFetch] = useHandleFetch({}, 'postCategoryDetail');
+
+
+	useEffect(() => {
+
+        const getCategoryDetail = async () => {
+            const categoryDetailDataRes =  await handleCategoryDetailFetch({
+                urlOptions: {
+                    placeHolders: {
+                        id: categoryDetailData.id
+                    }
+                }
+            }); 
+        };
+
+        getCategoryDetail();
+
+    }, [categoryDetailData]);
+
+
+	console.log('MahPostCategory',categoryDetailState)
+	console.log('MahPostCategorymyImages',myImages)
+
+	useEffect(() => {
+		if (categoryDetailState.done && categoryDetailState.data && Object.keys(categoryDetailState.data).length > 0) {
+	
+			const images = categoryDetailState.data.image;
+			let mahImages = []; 
+
+			if (images && images.length > 0) {
+				mahImages = images;
+			}
+	
+			if (categoryDetailState.data.cover && categoryDetailState.data.cover['id']) {
+				const ixists = images.find(item => item.id === categoryDetailState.data.cover['id']);
+				if(!ixists){
+					mahImages = [categoryDetailState.data.cover, ...mahImages]
+				}
+
+				setCoverImageId(categoryDetailState.data.cover['id']);
+			}
+	
+				// @ts-ignore
+				setmyImages(mahImages);
+				
+		}
+	}, [categoryDetailState.data]); 
+	
+	
+	useEffect(() => {
+		// @ts-ignore
+		if (myImages && myImages[0] && myImages.length < 2) {
+	
+			if (coverImageId !== myImages[0].id) {
+				setCoverImageId(myImages[0].id);
+				handleSetImageAsThumnail(myImages[0]);
+			}
+	
+		}
+	
+	}, [myImages])
+	
+
+
 
 
 	const handleSubmit = async (values: any, actions: any) => {
@@ -130,17 +193,19 @@ const AddNewCategory = ({
 		formData.append("image", JSON.stringify(imagesIds));
 		formData.append("cover", coverImageId || imagesIds[0] ? imagesIds[0] : '');
 		formData.append("parent", selectedParentId);
-		formData.append('icon', imageFile)
+		formData.append('displayOrder', values.displayOrder)
 
 
 		console.log('categoryDetailData',categoryDetailData); 
+		console.log('imagesIds',imagesIds); 
+		
 		
 		if (categoryDetailData && Object.keys(categoryDetailData).length > 0) {
 			const aboutToUpdatedImageIds = []; 
 
 			if(imagesIds && imagesIds.length > 0){
 				imagesIds.forEach(imageId => {
-					if(categoryDetailData && categoryDetailData['image']){
+					if(categoryDetailData && categoryDetailData['postCategory']){
 						if(!categoryDetailData['image'].includes(imageId)){
 							aboutToUpdatedImageIds.push(imageId)
 						}
@@ -153,7 +218,7 @@ const AddNewCategory = ({
                 await handleAttachImageToItemMultipleFetch({
                     urlOptions: {
                         placeHolders: {
-                            collection: 'category',
+                            collection: 'postCategory',
                             itemId: categoryDetailData.id
                         }
                     },
@@ -161,20 +226,20 @@ const AddNewCategory = ({
                         image: aboutToUpdatedImageIds
                     }
                 });
-			}
-			
+            }
             else if (aboutToUpdatedImageIds[0] && aboutToUpdatedImageIds.length < 1) {
                 await handleAttachImageToItemSingleFetch({
                     urlOptions: {
                         placeHolders: {
                             imageId: aboutToUpdatedImageIds[0].id,
-                            collection: 'category',
+                            collection: 'postCategory',
                             itemId: categoryDetailData.id
                         }
                     }
                 });
             }
 		}
+		
 
 
 		const addCategoryRes = await handleAddCategoryFetch({
@@ -184,21 +249,21 @@ const AddNewCategory = ({
                 },
             },
             body: {
-                name: values.name.trim(),
+                name: values.name && values.name.trim(),
                 description: values.description,
-                displayOrder: values.displayOrder,
                 image: imagesIds,
                 cover: coverImageId || imagesIds[0] ? imagesIds[0] : '',
                 parent: selectedParentId,
                 icon: imageFile,
                 metaTitle: values.metaTitle,
-                metaDescription: values.metaDescription,
+				metaDescription: values.metaDescription,
+				displayOrder: values.displayOrder,
                 metaTags:  tags && tags.length > 0 ?  tags.join(',') : '',
                 bn: {
                     metaTitle: values.bnMetaTitle,
-					metaDescription: values.bnMetaDescription,
+                    metaDescription: values.bnMetaDescription,
 					metaTags:  bnTags && bnTags.length > 0 ?  bnTags.join(',') : '',
-                    name: values.bnName.trim(),
+                    name: values.bnName && values.bnName.trim(),
                     description: values.bnDescription,
                 }
             },
@@ -209,74 +274,38 @@ const AddNewCategory = ({
 			openSuccessNotification('Category Updated!');
 			setAddNewCategoryVisible(false)
 
-			setcategoryList([{
-				id: addCategoryRes['_id'] || '',
-				key: addCategoryRes['_id'] || '',
-				name: addCategoryRes['name'] || '',
-				description: addCategoryRes['description'] || '',
-				cover: addCategoryRes['cover'] || '',
-				// @ts-ignore
-				...addCategoryRes
-			},...categoryList])
+			// setcategoryList([{
+			// 	id: addCategoryRes['_id'] || '',
+			// 	key: addCategoryRes['_id'] || '',
+			// 	name: addCategoryRes['name'] || '',
+			// 	description: addCategoryRes['description'] || '',
+			// 	cover: addCategoryRes['cover'] || '',
+			// 	// @ts-ignore
+			// 	...addCategoryRes
+			// },...categoryList]); 
 
-    
-            
-            
+			
 
+            // setcategoryDetailData({
+			// 	...categoryDetailData,
+			// 	...addCategoryRes
+            // }); 
+
+        
 			actions.resetForm();
 			// @ts-ignore
 			setmyImages([]);
 			setCoverImageId('')
 			setselectedParentId('')
-			setisparentcategoryChecked(true);
 			setImageUrl('');
 		}
 		else {
 			openErrorNotification();
 		}
 
-
-
-
 		actions.setSubmitting(false);
 	};
 
-
-	
-	
-
-
-    useEffect(() => {
-        if (categoryDetailData && Object.keys(categoryDetailData).length > 0) {
-
-            const images = categoryDetailData.image;
-            if (images && images.length > 0) {
-                setmyImages(images);
-                setMyGoddamnImages(images);
-            }
-
-            if (categoryDetailData.cover && categoryDetailData.cover['id']) {
-                // @ts-ignore
-                setmyImages([categoryDetailData.cover, ...images]);
-                setCoverImageId(categoryDetailData.cover['id']);
-            }
-
-        }
-    }, [categoryDetailData]); 
-
-
-    useEffect(() => {
-        // @ts-ignore
-        if (myImages && myImages[0] && myImages.length < 2) {
-
-            if (coverImageId !== myImages[0].id) {
-                setCoverImageId(myImages[0].id);
-                handleSetImageAsThumnail(myImages[0]);
-            }
-
-        }
-
-    }, [myImages])
 
 
     const handleDetachSingleImage = async id => {
@@ -284,7 +313,7 @@ const AddNewCategory = ({
             urlOptions: {
                 placeHolders: {
                     imageId: id,
-                    collection: 'category',
+                    collection: 'postCategory',
                     itemId: categoryDetailData.id
                 }
             }
@@ -299,7 +328,7 @@ const AddNewCategory = ({
             urlOptions: {
                 placeHolders: {
                     imageId: image.id,
-                    collection: 'category',
+                    collection: 'postCategory',
                     itemId: categoryDetailData.id
                 }
             }
@@ -343,44 +372,12 @@ const AddNewCategory = ({
 
 
 
-
-
-	const onSwitchChange = (checked: any) => {
-		setisparentcategoryChecked(checked)
-	};
-
-
 	const handleCancel = (e: any) => {
 		setAddNewCategoryVisible(false);
 	};
 
 
-	const getisSubmitButtonDisabled = (values, isValid) => {
-		if (!values.name || !isValid) {
-			return true;
-		}
-		return false;
-	}
 
-
-
-	const handleThumbnailImageDelete = (id) => {
-		// @ts-ignore
-		const newImages = myThumbnailImage && myThumbnailImage.filter(image => {
-			return image.id !== id;
-		})
-
-		if (newImages.length > 0) {
-			setmyThumbnailImage(newImages);
-
-		}
-		else setmyThumbnailImage(false);
-	}
-
-
-	const onChangeSelect = (value) => {
-		setselectedParentId(value);
-	}
 
 
 
@@ -391,7 +388,7 @@ const AddNewCategory = ({
 	}
 
 
-	 function beforeUpload(file) {
+	function beforeUpload(file) {
 		const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
 		if (!isJpgOrPng) {
 			message.error('You can only upload JPG/PNG file!');
@@ -429,7 +426,7 @@ const AddNewCategory = ({
 					openErrorNotification("Couldn't update category icon, Something went wrong")
 				}
 
-
+				
 			}; 
 			
 			setNewIcon();
@@ -439,17 +436,6 @@ const AddNewCategory = ({
 		return false;
 	}
 
-
-	
-	useEffect(()=>{
-
-        if(categoryDetailData && Object.keys(categoryDetailData).length > 0){
-            const iconUrl = categoryDetailData.icon && categoryDetailData.icon; 
-
-			setImageUrl(iconUrl); 
-        }
-
-    },[])
 
 
 	const uploadButton = (
@@ -461,6 +447,15 @@ const AddNewCategory = ({
 
 
 
+	useEffect(()=>{
+
+        if(categoryDetailData && Object.keys(categoryDetailData).length > 0){
+            const iconUrl = categoryDetailData.icon && categoryDetailData.icon; 
+
+			setImageUrl(iconUrl); 
+        }
+
+    },[])
     
     useEffect(()=>{
 
@@ -470,13 +465,16 @@ const AddNewCategory = ({
             console.log('localMetaTags',metaTags);
            
             const bnMetaTags = categoryDetailData.bn && categoryDetailData.bn['metaTags'] && categoryDetailData.bn['metaTags'].split(','); 
-            setTags(metaTags)
-            setBnTags(bnMetaTags)
+            setTags(metaTags || [])
+            setBnTags(bnMetaTags || [])
         }
 
     },[])
 
 
+	console.log('addnewCategoryTags',tags);
+	console.log('categoryDetailData',categoryDetailData);
+	console.log('myImages',myImages);
 
 	return (
 		<Formik
@@ -589,7 +587,9 @@ const AddNewCategory = ({
 									setFieldTouched('bnDescription');
 								}}
 							/>
-../
+
+
+						
 							<div
 								style={{
 									marginTop: '20px'
@@ -597,119 +597,106 @@ const AddNewCategory = ({
 							/>
 
 
-							<div className='addproductSection-left-header' >
-								<h3 className='inputFieldLabel'>Icon </h3>
-								<Tooltip
-									placement="left" title={'Add Icon image for this category'}>
-									<a href='###'>
-										<InfoCircleOutlined />
-									</a>
-								</Tooltip>
-							</div>
-
-							<Upload
-								style={{
-									borderRadius: "8px"
-								}}
-								name="avatar"
-								listType="picture-card"
-								className="avatar-uploader"
-								showUploadList={false}
-								beforeUpload={beforeUpload}
-								multiple={false}
-							>
-								{imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
-							</Upload>
-
-								<div style={{
-									marginTop:'20px'
-								}}></div>
-
-							<div className='addproductSection-left-header'
-
-style={{
-	marginBottom: '-5px'
-}}
->
-<h3 className='inputFieldLabel'>Images</h3>
-{/* <div  >
-<FileOutlined />
-<span>Media Center</span>
-</div> */}
-</div>
+					
 
 
-<div className='aboutToUploadImagesContainer'>
+					<div className='addproductSection-left-header'
 
-{categoryDetailData && Object.keys(categoryDetailData).length > 0 && (
-	<>
-		{myImages &&
-			// @ts-ignore
-			myImages.length > 0 && myImages.map((image, index) => {
-				return (
-					<div className='aboutToUploadImagesContainer__item'>
-						<div
-							className='aboutToUploadImagesContainer__item-imgContainer'
-							onClick={() => {
-								setCoverImageId(image.id);
-								handleSetImageAsThumnail(image);
-							}}
-						>
-							<img src={image.cover} alt={image.alt} />
-						</div>
-
-						<span
-							onClick={() => {
-								handleImagesDelete(image.id)
-								handleDetachSingleImage(image.id)
-							}
-							}
-							className='aboutToUploadImagesContainer__item-remove'>
-							<CloseOutlined />
-						</span>
+                                style={{
+                                    marginBottom: '-5px'
+                                }}
+                            >
+                                <h3 className='inputFieldLabel'>Images</h3>
+											{/* <div  >
+										<FileOutlined />
+										<span>Media Center</span>
+										</div> */}
+                            </div>
 
 
-						{coverImageId === image.id ? (
-							<span className='aboutToUploadImagesContainer__item-cover'>
-								<CheckOutlined />
-							</span>
-						) : !coverImageId && index === 0 && (
-							<span className='aboutToUploadImagesContainer__item-cover'>
-								<CheckOutlined />
-							</span>
-						)}
+							<div
+                                            style={{
+                                                padding: "10px"
+                                            }}
+                                            className='aboutToUploadImagesContainer'>
+                                            {categoryDetailState.isLoading && (
+                                                <div style={{
+                                                    padding: '20px 0'
+                                                }}>
+                                                    <Spin />
+                                                </div>
+                                            )}
+                                            {categoryDetailState.done && (
+                                                <>
+                                                    {myImages &&
+                                                        // @ts-ignore
+                                                        myImages.length > 0 && myImages.map((image, index) => {
+                                                            return (
+                                                                <div className='aboutToUploadImagesContainer__item'>
+                                                                    <div
+                                                                        className='aboutToUploadImagesContainer__item-imgContainer'
+                                                                        onClick={() => {
+                                                                            setCoverImageId(image.id);
+                                                                            handleSetImageAsThumnail(image);
+                                                                        }}
+                                                                    >
+                                                                        <img src={image.cover} alt={image.alt} />
+                                                                    </div>
+
+                                                                    <span
+                                                                        onClick={() => {
+                                                                            handleImagesDelete(image.id)
+                                                                            handleDetachSingleImage(image.id)
+                                                                        }
+
+                                                                        }
+                                                                        className='aboutToUploadImagesContainer__item-remove'>
+                                                                        <CloseOutlined />
+                                                                    </span>
 
 
-					</div>
-				)
-			})}
+                                                                    {coverImageId === image.id ? (
+                                                                        <span className='aboutToUploadImagesContainer__item-cover'>
+                                                                            <CheckOutlined />
+                                                                        </span>
+                                                                    ) : !coverImageId && index === 0 && (
+                                                                        <span className='aboutToUploadImagesContainer__item-cover'>
+                                                                            <CheckOutlined />
+                                                                        </span>
+                                                                    )}
 
 
-		<Tooltip
-			title={'Attach images'}>
-
-			<div
-				onClick={() => {
-					setvisible(true);
-				}}
-				className='aboutToUploadImagesContainer__uploadItem'>
-				{/* <FileAddOutlined />
-					<FileImageTwoTone />
-					<FileImageOutlined /> */}
-				<FileImageFilled />
-				{/* <h5>
-					 Select From Library
-			<     /h5> */}
-				<span className='aboutToUploadImagesContainer__uploadItem-plus'>
-					<PlusOutlined />
-				</span>
-			</div>
-		</Tooltip>
-	</>
-)}
+                                                                </div>
+                                                            )
+                                                        })}
 
 
-</div>
+                                                    <Tooltip
+                                                        title={'Attach images'}>
+
+                                                        <div
+                                                            onClick={() => {
+                                                                setvisible(true);
+                                                                setisModalOpenForImages(true);
+                                                                setisModalOpenForThumbnail(false);
+                                                            }}
+                                                            className='aboutToUploadImagesContainer__uploadItem'>
+                                                            {/* <FileAddOutlined />
+													<FileImageTwoTone />
+													<FileImageOutlined /> */}
+                                                            <FileImageFilled />
+                                                            {/* <h5>
+												     Select From Library
+											<     /h5> */}
+                                                            <span className='aboutToUploadImagesContainer__uploadItem-plus'>
+                                                                <PlusOutlined />
+                                                            </span>
+                                                        </div>
+                                                    </Tooltip>
+                                                </>
+                                            )}
+
+                                        </div>
 
 							<Input
 								label='Meta title'
@@ -802,7 +789,6 @@ style={{
 						</Modal>
 
 						<MediaLibrary
-				
 							setvisible={setvisible}
 							visible={visible}
 							setmyImages={setmyImages}
@@ -815,9 +801,6 @@ style={{
 					</>
 				)}
 		</Formik>
-
-
-
 
 	);
 };

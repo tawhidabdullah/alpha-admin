@@ -92,11 +92,6 @@ const AddNewCategory = ({
 
 	const [addCategoryState, handleAddCategoryFetch] = useHandleFetch({}, 'updateCategory');
 	const [updateCategoryIconState, handleUpdateCategoryIconFetch] = useHandleFetch({}, 'categoryUpdateIcon', 'form');
-	const [attachImageToItemMultipleState, handleAttachImageToItemMultipleFetch] = useHandleFetch({}, 'attachImageToItemMultiple');
-    const [attachImageToItemSingleState, handleAttachImageToItemSingleFetch] = useHandleFetch({}, 'attachImageToItemSingle');
-    const [detachImageFromItemMultipleState, handleDetachImageFromItemMultipleFetch] = useHandleFetch({}, 'detachImageFromItemMultiple');
-    const [detachImageFromItemSingleState, handleDetachImageFromItemSingleFetch] = useHandleFetch({}, 'detachImageFromItemSingle');
-    const [setImageAsThumbnailToItemState, handleSetImageAsThumbnailToItemFetch] = useHandleFetch({}, 'setImageAsThumbnailToItem');
 
 	const [visible, setvisible] = useState(false);
 	const [myImages, setmyImages] = useState(false);
@@ -113,6 +108,105 @@ const AddNewCategory = ({
 	const [visibleMedia, setvisibleMedia] = useState(false);
     const [coverImageId, setCoverImageId] = useState('');
     const [myGoddamnImages, setMyGoddamnImages] = useState([]);
+
+	
+	const [attachImageToItemMultipleState, handleAttachImageToItemMultipleFetch] = useHandleFetch({}, 'attachImageToItemMultiple');
+    const [attachImageToItemSingleState, handleAttachImageToItemSingleFetch] = useHandleFetch({}, 'attachImageToItemSingle');
+    const [detachImageFromItemMultipleState, handleDetachImageFromItemMultipleFetch] = useHandleFetch({}, 'detachImageFromItemMultiple');
+    const [detachImageFromItemSingleState, handleDetachImageFromItemSingleFetch] = useHandleFetch({}, 'detachImageFromItemSingle');
+    const [setImageAsThumbnailToItemState, handleSetImageAsThumbnailToItemFetch] = useHandleFetch({}, 'setImageAsThumbnailToItem');
+
+
+    useEffect(() => {
+        if (categoryDetailData && Object.keys(categoryDetailData).length > 0) {
+
+			const images = categoryDetailData.image;
+			let mahImages = []; 
+
+			if (images && images.length > 0) {
+				mahImages = images;
+			}
+	
+			if (categoryDetailData.cover && categoryDetailData.cover['id']) {
+				const ixists = images.find(item => item.id === categoryDetailData.cover['id']);
+				if(!ixists){
+					mahImages = [categoryDetailData.cover, ...mahImages]
+				}
+
+				setCoverImageId(categoryDetailData.cover['id']);
+			}
+	
+				// @ts-ignore
+        	setmyImages(mahImages);
+        }
+    }, [categoryDetailData]); 
+
+
+    useEffect(() => {
+        // @ts-ignore
+        if (myImages && myImages[0] && myImages.length < 2) {
+
+            if (coverImageId !== myImages[0].id) {
+                setCoverImageId(myImages[0].id);
+                handleSetImageAsThumnail(myImages[0]);
+            }
+
+        }
+
+    }, [myImages])
+
+
+    const handleDetachSingleImage = async id => {
+        await handleDetachImageFromItemSingleFetch({
+            urlOptions: {
+                placeHolders: {
+                    imageId: id,
+                    collection: 'category',
+                    itemId: categoryDetailData.id
+                }
+            }
+        });
+    }
+
+
+
+    const handleSetImageAsThumnail = async image => {
+
+        const thumbnailRes = await handleSetImageAsThumbnailToItemFetch({
+            urlOptions: {
+                placeHolders: {
+                    imageId: image.id,
+                    collection: 'category',
+                    itemId: categoryDetailData.id
+                }
+            }
+        });
+
+
+        // @ts-ignore
+        if (thumbnailRes && thumbnailRes.status === 'ok') {
+            openSuccessNotification('Set as thumbnail!')
+        }
+        else {
+            openErrorNotification("Couldn't set as thumbnail, Something went wrong")
+        }
+
+    }
+
+
+
+    
+    const handleImagesDelete = (id) => {
+        // @ts-ignore
+        const newImages = myImages && myImages.filter(image => {
+            return image.id !== id;
+        })
+
+        setmyImages(newImages);
+    }
+
+
+
 
 
 	const handleSubmit = async (values: any, actions: any) => {
@@ -244,90 +338,6 @@ const AddNewCategory = ({
 	
 
 
-    useEffect(() => {
-        if (categoryDetailData && Object.keys(categoryDetailData).length > 0) {
-
-            const images = categoryDetailData.image;
-            if (images && images.length > 0) {
-                setmyImages(images);
-                setMyGoddamnImages(images);
-            }
-
-            if (categoryDetailData.cover && categoryDetailData.cover['id']) {
-                // @ts-ignore
-                setmyImages([categoryDetailData.cover, ...images]);
-                setCoverImageId(categoryDetailData.cover['id']);
-            }
-
-        }
-    }, [categoryDetailData]); 
-
-
-    useEffect(() => {
-        // @ts-ignore
-        if (myImages && myImages[0] && myImages.length < 2) {
-
-            if (coverImageId !== myImages[0].id) {
-                setCoverImageId(myImages[0].id);
-                handleSetImageAsThumnail(myImages[0]);
-            }
-
-        }
-
-    }, [myImages])
-
-
-    const handleDetachSingleImage = async id => {
-        await handleDetachImageFromItemSingleFetch({
-            urlOptions: {
-                placeHolders: {
-                    imageId: id,
-                    collection: 'category',
-                    itemId: categoryDetailData.id
-                }
-            }
-        });
-    }
-
-
-
-    const handleSetImageAsThumnail = async image => {
-
-        const thumbnailRes = await handleSetImageAsThumbnailToItemFetch({
-            urlOptions: {
-                placeHolders: {
-                    imageId: image.id,
-                    collection: 'category',
-                    itemId: categoryDetailData.id
-                }
-            }
-        });
-
-
-        // @ts-ignore
-        if (thumbnailRes && thumbnailRes.status === 'ok') {
-            openSuccessNotification('Set as thumbnail!')
-        }
-        else {
-            openErrorNotification("Couldn't set as thumbnail, Something went wrong")
-        }
-
-    }
-
-
-
-    
-    const handleImagesDelete = (id) => {
-        // @ts-ignore
-        const newImages = myImages && myImages.filter(image => {
-            return image.id !== id;
-        })
-
-        setmyImages(newImages);
-    }
-
-
-
 
 
 	const onSwitchChange = (checked: any) => {
@@ -336,31 +346,19 @@ const AddNewCategory = ({
 
 
 	const handleCancel = (e: any) => {
+		setTags([]); 
+		setBnTags([]); 
 		setAddNewCategoryVisible(false);
+		setImagefile(''); 
+		setCoverImageId(''); 
+		setselectedParentId('');
+		setmyImages(false); 
 	};
 
 
-	const getisSubmitButtonDisabled = (values, isValid) => {
-		if (!values.name || !isValid) {
-			return true;
-		}
-		return false;
-	}
 
 
 
-	const handleThumbnailImageDelete = (id) => {
-		// @ts-ignore
-		const newImages = myThumbnailImage && myThumbnailImage.filter(image => {
-			return image.id !== id;
-		})
-
-		if (newImages.length > 0) {
-			setmyThumbnailImage(newImages);
-
-		}
-		else setmyThumbnailImage(false);
-	}
 
 
 	const onChangeSelect = (value) => {
@@ -455,12 +453,14 @@ const AddNewCategory = ({
             console.log('localMetaTags',metaTags);
            
             const bnMetaTags = categoryDetailData.bn && categoryDetailData.bn['metaTags'] && categoryDetailData.bn['metaTags'].split(','); 
-            setTags(metaTags)
-            setBnTags(bnMetaTags)
+            setTags(metaTags || [])
+            setBnTags(bnMetaTags || [])
         }
 
-    },[])
+	},[])
+	
 
+	console.log('metaTagsCategoryEdit',tags)
 
 
 	return (
@@ -498,6 +498,7 @@ const AddNewCategory = ({
 			}) => (
 					<>
 						<Modal
+						destroyOnClose={true}
 							style={{
 								top: '40px'
 							}}

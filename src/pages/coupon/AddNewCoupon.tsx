@@ -111,13 +111,13 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, tagList,
         }) : [];
 
 
-        const freeProducts = freeProductList.length > 0 ? freeProductList.map(product => {
-            return {
-                _id: product._id,
-                variation: product.variation,
-                quantity: product.quantity,
-            }
-        }) : [];
+        // const freeProducts = freeProductList.length > 0 ? freeProductList.map(product => {
+        //     return {
+        //         _id: product._id,
+        //         variation: product.variation,
+        //         quantity: product.quantity,
+        //     }
+        // }) : [];
 
 
         const addTagRes = await handleAddCouponStateFetch({
@@ -145,6 +145,8 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, tagList,
             setAddNewCategoryVisible(false);
 
             setTagList([{
+                // @ts-ignore
+                ...addTagRes,
                 id: addTagRes['_id'] || '',
                 key: addTagRes['_id'] || '',
                 name: addTagRes['name'] || '',
