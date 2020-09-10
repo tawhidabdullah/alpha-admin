@@ -1,6 +1,6 @@
 import config from '../config.json';
 import dataMap from '../dataMap.json';
-import moment from 'moment'; 
+import moment from 'moment';
 
 class Converter {
   /**
@@ -120,21 +120,21 @@ class Converter {
         },
         url: data.url,
         image:
-        (data.image &&
-          data.image.length > 0 &&
-          data.image.map((img) => {
-            return {
-              id: img._id || '',
-              name: img.name && img.name,
-              cover: `${config['baseURL']}${img.original}`,
-              added: img.added,
-              title: img.title,
-              labels: img.labels,
-              alt: img.alt,
-              caption: img.caption,
-            };
-          })) ||
-        [],
+          (data.image &&
+            data.image.length > 0 &&
+            data.image.map((img) => {
+              return {
+                id: img._id || '',
+                name: img.name && img.name,
+                cover: `${config['baseURL']}${img.original}`,
+                added: img.added,
+                title: img.title,
+                labels: img.labels,
+                alt: img.alt,
+                caption: img.caption,
+              };
+            })) ||
+          [],
       };
     }
   }
@@ -148,20 +148,18 @@ class Converter {
   async getAllNotification(resData) {
     const data = resData.data || [];
 
-    let notiData = []; 
-    if( data && data.length > 0) {
-      data.forEach(not => {
-        if(!not.read){
-          notiData.push(not) 
+    let notiData = [];
+    if (data && data.length > 0) {
+      data.forEach((not) => {
+        if (!not.read) {
+          notiData.push(not);
         }
-      })
+      });
     }
 
-    return notiData
+    return notiData;
   }
 
-
-  
   /**
    * @public
    * @method getAllNotificationPage convert api data from API to general format based on config server
@@ -183,13 +181,10 @@ class Converter {
           added: noti.added || '',
           read: noti.read,
         };
-    
       });
 
-      return formatedData
+    return formatedData;
   }
-
-
 
   /**
    * @public
@@ -814,7 +809,7 @@ class Converter {
     const data = resData;
     // const isNext = resData.page.next;
 
-    console.log('upconvertedpostDetail',resData); 
+    console.log('upconvertedpostDetail', resData);
 
     if (Object.keys(data).length > 0) {
       return {
@@ -829,42 +824,49 @@ class Converter {
           (data.cover && data.cover['medium']) || ''
         }`,
         url: data.url,
-        requiredProducts: data.requiredProducts && data.requiredProducts.length > 0 ? data.requiredProducts.map(item => {
-          return {
-            ...item,
-            id: item.id,
-            ...(item.detail && Object.keys(item.detail).length > 0 && {
-              ...item.detail,
-              cover: {
-                cover: `${config['baseURL']}${
-                  item.detail.cover ? item.detail.cover.original && item.detail.cover.original : ''
-                }`,
-                id: item.detail.cover ? item.detail.cover._id : '',
-              },
-              price:
-              parseInt(item.detail.price['offer']) >
-              parseInt(item.detail.price['regular'])
-                ? item.detail.price['offer']
-                : item.detail.price['regular'],
-                image:
-                (item.detail.image &&
-                  item.detail.image.length > 0 &&
-                  item.detail.image.map((img) => {
-                    return {
-                      id: img._id || '',
-                      name: img.name && img.name,
-                      cover: `${config['baseURL']}${img.original}`,
-                      added: img.added,
-                      title: img.title,
-                      labels: img.labels,
-                      alt: img.alt,
-                      caption: img.caption,
-                    };
-                  })) ||
-                [],
-            }),
-          }
-        }) :  [],
+        requiredProducts:
+          data.requiredProducts && data.requiredProducts.length > 0
+            ? data.requiredProducts.map((item) => {
+                return {
+                  ...item,
+                  id: item.id,
+                  ...(item.detail &&
+                    Object.keys(item.detail).length > 0 && {
+                      ...item.detail,
+                      cover: {
+                        cover: `${config['baseURL']}${
+                          item.detail.cover
+                            ? item.detail.cover.original &&
+                              item.detail.cover.original
+                            : ''
+                        }`,
+                        id: item.detail.cover ? item.detail.cover._id : '',
+                      },
+                      price:
+                        parseInt(item.detail.price['offer']) >
+                        parseInt(item.detail.price['regular'])
+                          ? item.detail.price['offer']
+                          : item.detail.price['regular'],
+                      image:
+                        (item.detail.image &&
+                          item.detail.image.length > 0 &&
+                          item.detail.image.map((img) => {
+                            return {
+                              id: img._id || '',
+                              name: img.name && img.name,
+                              cover: `${config['baseURL']}${img.original}`,
+                              added: img.added,
+                              title: img.title,
+                              labels: img.labels,
+                              alt: img.alt,
+                              caption: img.caption,
+                            };
+                          })) ||
+                        [],
+                    }),
+                };
+              })
+            : [],
         category2:
           (data.category &&
             data.category.length > 0 &&
@@ -875,7 +877,7 @@ class Converter {
               };
             })) ||
           data.category,
-          category:
+        category:
           (data.category &&
             data.category.length > 0 &&
             data.category.map((cat) => {
@@ -884,25 +886,24 @@ class Converter {
           data.category,
         tags: data.tags && data.tags.length > 0 ? data.tags : [],
         image:
-        (data.image &&
-          data.image.length > 0 &&
-          data.image.map((img) => {
-            return {
-              id: img._id || '',
-              name: img.name && img.name,
-              cover: `${config['baseURL']}${img.original}`,
-              added: img.added,
-              title: img.title,
-              labels: img.labels,
-              alt: img.alt,
-              caption: img.caption,
-            };
-          })) ||
-        [],
+          (data.image &&
+            data.image.length > 0 &&
+            data.image.map((img) => {
+              return {
+                id: img._id || '',
+                name: img.name && img.name,
+                cover: `${config['baseURL']}${img.original}`,
+                added: img.added,
+                title: img.title,
+                labels: img.labels,
+                alt: img.alt,
+                caption: img.caption,
+              };
+            })) ||
+          [],
       };
     } else return {};
   }
-
 
   /**
    * @public
@@ -914,7 +915,7 @@ class Converter {
     const data = resData;
     // const isNext = resData.page.next;
 
-    console.log('upconvertedpostDetail',resData); 
+    console.log('upconvertedpostDetail', resData);
 
     if (Object.keys(data).length > 0) {
       return {
@@ -929,65 +930,70 @@ class Converter {
           (data.cover && data.cover['medium']) || ''
         }`,
         url: data.url,
-        requiredProducts: data.requiredProducts && data.requiredProducts.length > 0 ? data.requiredProducts.map(item => {
-          return {
-            ...item,
-            id: item.id,
-            ...(item.detail && Object.keys(item.detail).length > 0 && {
-              ...item.detail,
-              cover: {
-                cover: `${config['baseURL']}${
-                  item.detail.cover ? item.detail.cover.original && item.detail.cover.original : ''
-                }`,
-                id: item.detail.cover ? item.detail.cover._id : '',
-              },
-              price:
-              parseInt(item.detail.price['offer']) >
-              parseInt(item.detail.price['regular'])
-                ? item.detail.price['offer']
-                : item.detail.price['regular'],
-                image:
-                (item.detail.image &&
-                  item.detail.image.length > 0 &&
-                  item.detail.image.map((img) => {
-                    return {
-                      id: img._id || '',
-                      name: img.name && img.name,
-                      cover: `${config['baseURL']}${img.original}`,
-                      added: img.added,
-                      title: img.title,
-                      labels: img.labels,
-                      alt: img.alt,
-                      caption: img.caption,
-                    };
-                  })) ||
-                [],
-            }),
-          }
-        }) :  [],
+        requiredProducts:
+          data.requiredProducts && data.requiredProducts.length > 0
+            ? data.requiredProducts.map((item) => {
+                return {
+                  ...item,
+                  id: item.id,
+                  ...(item.detail &&
+                    Object.keys(item.detail).length > 0 && {
+                      ...item.detail,
+                      cover: {
+                        cover: `${config['baseURL']}${
+                          item.detail.cover
+                            ? item.detail.cover.original &&
+                              item.detail.cover.original
+                            : ''
+                        }`,
+                        id: item.detail.cover ? item.detail.cover._id : '',
+                      },
+                      price:
+                        parseInt(item.detail.price['offer']) >
+                        parseInt(item.detail.price['regular'])
+                          ? item.detail.price['offer']
+                          : item.detail.price['regular'],
+                      image:
+                        (item.detail.image &&
+                          item.detail.image.length > 0 &&
+                          item.detail.image.map((img) => {
+                            return {
+                              id: img._id || '',
+                              name: img.name && img.name,
+                              cover: `${config['baseURL']}${img.original}`,
+                              added: img.added,
+                              title: img.title,
+                              labels: img.labels,
+                              alt: img.alt,
+                              caption: img.caption,
+                            };
+                          })) ||
+                        [],
+                    }),
+                };
+              })
+            : [],
         category: data.category,
         tags: data.tags && data.tags.length > 0 ? data.tags : [],
         image:
-        (data.image &&
-          data.image.length > 0 &&
-          data.image.map((img) => {
-            return {
-              id: img._id || '',
-              name: img.name && img.name,
-              cover: `${config['baseURL']}${img.original}`,
-              added: img.added,
-              title: img.title,
-              labels: img.labels,
-              alt: img.alt,
-              caption: img.caption,
-            };
-          })) ||
-        [],
+          (data.image &&
+            data.image.length > 0 &&
+            data.image.map((img) => {
+              return {
+                id: img._id || '',
+                name: img.name && img.name,
+                cover: `${config['baseURL']}${img.original}`,
+                added: img.added,
+                title: img.title,
+                labels: img.labels,
+                alt: img.alt,
+                caption: img.caption,
+              };
+            })) ||
+          [],
       };
     } else return {};
   }
-
-
 
   /**
    * @public
@@ -1422,8 +1428,7 @@ class Converter {
     return {};
   }
 
-
-    /**
+  /**
    * @public
    * @method deleteAdmin convert api data from API to general format based on config server
    * @param {Object} data response objectc from alpha
@@ -1438,9 +1443,7 @@ class Converter {
     return {};
   }
 
-
-
-    /**
+  /**
    * @public
    * @method markAllNotificationAsRead convert api data from API to general format based on config server
    * @param {Object} data response objectc from alpha
@@ -1455,8 +1458,7 @@ class Converter {
     return {};
   }
 
-
-  success
+  success;
 
   /**
    * @public
@@ -2100,13 +2102,11 @@ class Converter {
           [],
         available:
           data.pricing && data.pricing.length > 0
-            ? data.pricing[0]['stock'] &&
-              data.pricing[0]['stock']['available']
+            ? data.pricing[0]['stock'] && data.pricing[0]['stock']['available']
             : 0,
         minimum:
           data.pricing && data.pricing.length > 0
-            ? data.pricing[0]['stock'] &&
-              data.pricing[0]['stock']['minimum']
+            ? data.pricing[0]['stock'] && data.pricing[0]['stock']['minimum']
             : 0,
       }) ||
       {};
@@ -2137,27 +2137,34 @@ class Converter {
         minimumOrder: data.minimumOrder,
         maximumOrder: data.maximumOrder,
         freeProducts: data.freeProducts || [],
-        orderedProducts: data.orderedProducts && data.orderedProducts.length > 0 ? data.orderedProducts.map(item => {
-          console.log('fuckingOrderProduct',item)
-          return {
-            ...item,
-            id: item.id,
-            ...(item.detail && Object.keys(item.detail).length > 0 && {
-              ...item.detail,
-              cover: {
-                cover: `${config['baseURL']}${
-                  item.detail.cover ? item.detail.cover.original && item.detail.cover.original : ''
-                }`,
-                id: item.detail.cover ? item.detail.cover._id : '',
-              },
-              price:
-              parseInt(item.detail.price['offer']) >
-              parseInt(item.detail.price['regular'])
-                ? item.detail.price['offer']
-                : item.detail.price['regular'],
-            }),
-          }
-        }) :  [],
+        orderedProducts:
+          data.orderedProducts && data.orderedProducts.length > 0
+            ? data.orderedProducts.map((item) => {
+                console.log('fuckingOrderProduct', item);
+                return {
+                  ...item,
+                  id: item.id,
+                  ...(item.detail &&
+                    Object.keys(item.detail).length > 0 && {
+                      ...item.detail,
+                      cover: {
+                        cover: `${config['baseURL']}${
+                          item.detail.cover
+                            ? item.detail.cover.original &&
+                              item.detail.cover.original
+                            : ''
+                        }`,
+                        id: item.detail.cover ? item.detail.cover._id : '',
+                      },
+                      price:
+                        parseInt(item.detail.price['offer']) >
+                        parseInt(item.detail.price['regular'])
+                          ? item.detail.price['offer']
+                          : item.detail.price['regular'],
+                    }),
+                };
+              })
+            : [],
         freeProductsCount: data.freeProducts && data.orderedProducts.length,
         amountType: data.amountType,
         amount: data.amount,
@@ -2177,8 +2184,7 @@ class Converter {
       }) ||
       {};
 
-      console.log('fuckingOrderProduct',convertedData)
-
+    console.log('fuckingOrderProduct', convertedData);
 
     return convertedData;
   }
@@ -2693,8 +2699,7 @@ class Converter {
     return convertedData;
   }
 
-
-   /**
+  /**
    * @public
    * @method deleteExpense convert api data from API to general format based on config server
    * @param {Object} data response objectc from wc
@@ -2710,9 +2715,6 @@ class Converter {
 
     return convertedData;
   }
-
-
-  
 
   /**
    * @public
@@ -2825,8 +2827,7 @@ class Converter {
     return convertedData;
   }
 
-
-    /**
+  /**
    * @public
    * @method postUpdateTag convert api data from API to general format based on config server
    * @param {Object} data response objectc from wc
@@ -2837,7 +2838,7 @@ class Converter {
     if (data && data.updated) {
       return {
         ...data.updated,
-      
+
         name: data.updated.name && data.updated.name,
         description: data.updated.description && data.updated.description,
         status: 'ok',
@@ -2847,10 +2848,7 @@ class Converter {
     return convertedData;
   }
 
-
-  
-
-   /**
+  /**
    * @public
    * @method updateExpense convert api data from API to general format based on config server
    * @param {Object} data response objectc from wc
@@ -2867,9 +2865,6 @@ class Converter {
 
     return convertedData;
   }
-
-
-  
 
   /**
    * @public
@@ -3046,8 +3041,6 @@ class Converter {
     return convertedData;
   }
 
-
-
   /**
    * @public
    * @method postCategoryUpdate convert api data from API to general format based on config server
@@ -3059,9 +3052,9 @@ class Converter {
     if (data && data.updated) {
       return {
         ...data['updated'],
-        cover:data['updated'].cover
+        cover: data['updated'].cover
           ? `${config['baseURL']}${
-             data['updated'].cover ?data['updated'].cover.thumbnail : ''
+              data['updated'].cover ? data['updated'].cover.thumbnail : ''
             }`
           : '',
         status: 'ok',
@@ -3103,7 +3096,7 @@ class Converter {
   async expenseList(resData) {
     const data = resData.data || [];
 
-    console.log('expenseList',data);
+    console.log('expenseList', data);
     const convertedData =
       data.length > 0 &&
       data.map((tag) => {
@@ -3113,13 +3106,12 @@ class Converter {
           key: tag._id || '',
           topic: tag.topic && tag.topic,
           amount: tag.amount && tag.amount,
-
         };
       });
 
     return convertedData;
   }
-  tag
+  tag;
   /**
    * @public
    * @method addDealer convert api data from API to general format based on config server
@@ -3263,7 +3255,7 @@ class Converter {
     return convertedData;
   }
 
-   /**
+  /**
    * @public
    * @method updateAdminRole convert api data from API to general format based on config server
    * @param {Object} data response objectc from wc
@@ -3280,10 +3272,6 @@ class Converter {
     }
     return convertedData;
   }
-
-
-  
-
 
   /**
    * @public
@@ -3939,7 +3927,6 @@ class Converter {
    * @param {Object} data response objectc from wc
    * @returns {Object}  converted data
    */
-
 
   async adminList(resData) {
     //map props

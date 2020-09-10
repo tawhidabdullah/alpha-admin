@@ -124,7 +124,7 @@ const AddNewPage = ({}: Props) => {
           metaDescription: values.bnMetaDescription,
           metaTags: bnTags.join(','),
           name: values.bnName.trim(),
-          content: values.setBnContent,
+          content: bnContent,
         },
       },
     });

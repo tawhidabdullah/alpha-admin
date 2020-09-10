@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { withRouter, useHistory } from 'react-router-dom';
+import { CSVLink } from 'react-csv';
+
 import {
   Table,
   Badge,
@@ -21,6 +23,7 @@ import {
   CheckOutlined,
   CheckCircleOutlined,
   DownOutlined,
+  DownloadOutlined,
 } from '@ant-design/icons';
 
 /// import hooks
@@ -32,13 +35,9 @@ import AddNewOrder from './AddNewOrder';
 import QuickEdit from './QuickEdit';
 import Empty from '../../components/Empty';
 
-
-
 // import state
-import { isAccess } from "../../utils";
-import { connect } from "react-redux";
-
-
+import { isAccess } from '../../utils';
+import { connect } from 'react-redux';
 
 // import lib
 import Moment from 'react-moment';
@@ -69,7 +68,7 @@ const { Option } = Select;
 interface myTableProps {
   data: any;
   setOrderList: any;
-  roles: any; 
+  roles: any;
 }
 
 const MyTable = ({ data, setOrderList, roles }: myTableProps) => {
@@ -161,16 +160,13 @@ const MyTable = ({ data, setOrderList, roles }: myTableProps) => {
           Processing
         </Menu.Item>
 
-
         <Menu.Item
           onClick={() => handleUpdateOrderStatus(record, id, 'sentForDelivery')}
           key='1'
           icon={<CheckOutlined />}
         >
-          Sent for delivery 
+          Sent for delivery
         </Menu.Item>
-
-
 
         <Menu.Item
           onClick={() => handleUpdateOrderStatus(record, id, 'complete')}
@@ -187,8 +183,6 @@ const MyTable = ({ data, setOrderList, roles }: myTableProps) => {
         >
           Cancel
         </Menu.Item>
-
-
 
         {/* <Menu.Item
                 onClick={() => handleUpdateOrderStatus(record,id,'deliver')}
@@ -303,49 +297,48 @@ const MyTable = ({ data, setOrderList, roles }: myTableProps) => {
           className='classnameofthecolumn'
           render={(text, record: any) => (
             <>
-                  {isAccess('postOrder',roles) ? (
-                    <Dropdown
-                    overlay={() => StatusItemMenu(record, record.id)}
-                    placement='bottomRight'
-                  >
-                    <a href='##'>
+              {isAccess('postOrder', roles) ? (
+                <Dropdown
+                  overlay={() => StatusItemMenu(record, record.id)}
+                  placement='bottomRight'
+                >
+                  <a href='##'>
+                    <span
+                      // className={'product-attributeTag'}
+                      style={{
+                        fontSize: '12px',
+                      }}
+                    >
+                      {text}
                       <span
-                        // className={'product-attributeTag'}
                         style={{
-                          fontSize: '12px',
+                          marginLeft: '5px',
+                          fontSize: '10px',
                         }}
                       >
-                        {text}
-                        <span
-                          style={{
-                            marginLeft: '5px',
-                            fontSize: '10px',
-                          }}
-                        >
-                          <DownOutlined />
-                        </span>
+                        <DownOutlined />
                       </span>
-                    </a>
-                  </Dropdown>
-          ) : (
-            <a href='##'>
-            <span
-              // className={'product-attributeTag'}
-              style={{
-                fontSize: '12px',
-              }}
-            >
-              {text}
-              <span
-                style={{
-                  marginLeft: '5px',
-                  fontSize: '10px',
-                }}
-              >
-              </span>
-            </span>
-          </a>
-          )}
+                    </span>
+                  </a>
+                </Dropdown>
+              ) : (
+                <a href='##'>
+                  <span
+                    // className={'product-attributeTag'}
+                    style={{
+                      fontSize: '12px',
+                    }}
+                  >
+                    {text}
+                    <span
+                      style={{
+                        marginLeft: '5px',
+                        fontSize: '10px',
+                      }}
+                    ></span>
+                  </span>
+                </a>
+              )}
             </>
           )}
         />
@@ -416,7 +409,7 @@ const MyTable = ({ data, setOrderList, roles }: myTableProps) => {
 
 interface Props {
   history?: any;
-  roles?: any; 
+  roles?: any;
 }
 
 const CustomerList = ({ history, roles }: Props) => {
@@ -453,7 +446,7 @@ const CustomerList = ({ history, roles }: Props) => {
             limitNumber: 500000,
             startDateValue: startDate,
             endDateValue: endDate,
-            deliveryRegionNameValue: deliveryRegionNameValue
+            deliveryRegionNameValue: deliveryRegionNameValue,
           },
         },
       });
@@ -463,43 +456,37 @@ const CustomerList = ({ history, roles }: Props) => {
     setOrders();
   }, [orderStatusFilterValue, startDate, endDate, deliveryRegionNameValue]);
 
-
-
-  const [regionList,setRegionList] = useState([]); 
+  const [regionList, setRegionList] = useState([]);
   const [regionState, handleRegionListFetch] = useHandleFetch({}, 'regionList');
-  
-  
-  useEffect(()=>{
-   const setRegions = async () => {
-     const regions = await handleRegionListFetch({
-      urlOptions: {
-        params: {
-          sortItem: 'added',
-          sortOrderValue: '-1',
+
+  useEffect(() => {
+    const setRegions = async () => {
+      const regions = await handleRegionListFetch({
+        urlOptions: {
+          params: {
+            sortItem: 'added',
+            sortOrderValue: '-1',
+          },
         },
-      },
-     }); 
+      });
 
-     // @ts-ignore
-     if(regions && regions.length > 0){
-       // @ts-ignore
-       const regionListOptions = regions.map(item => {
-         return {
-          name: item.name,
-          value: item.name,
-         }
-       })
-       // @ts-ignore
-     setRegionList(regionListOptions); 
-     }
-     
-   }
-   setRegions(); 
-  },[])
+      // @ts-ignore
+      if (regions && regions.length > 0) {
+        // @ts-ignore
+        const regionListOptions = regions.map((item) => {
+          return {
+            name: item.name,
+            value: item.name,
+          };
+        });
+        // @ts-ignore
+        setRegionList(regionListOptions);
+      }
+    };
+    setRegions();
+  }, []);
 
-
-  console.log('regionList33',regionList)
-
+  console.log('regionList33', regionList);
 
   // console.log('orderState',orderState)
 
@@ -516,11 +503,10 @@ const CustomerList = ({ history, roles }: Props) => {
     setorderStatusFilterValue(value);
   };
 
-
   const deliveryRegionFilterChange = (value) => {
-    setdeliveryRegionNameValue(value); 
-  }
-  
+    setdeliveryRegionNameValue(value);
+  };
+
   const orderFilteringOption = [
     {
       name: 'Pending',
@@ -534,7 +520,7 @@ const CustomerList = ({ history, roles }: Props) => {
       name: 'Sent for delivery',
       value: 'sentForDelivery',
     },
-    
+
     {
       name: 'Completed',
       value: 'complete',
@@ -544,6 +530,36 @@ const CustomerList = ({ history, roles }: Props) => {
       value: 'cancel',
     },
   ];
+
+  const headers = [
+    { label: 'Order Code', key: 'shortCode' },
+    { label: 'Name', key: 'name' },
+    { label: 'Delivery', key: 'deliveryName' },
+    { label: 'Created', key: 'date_created' },
+    { label: 'Total Price', key: 'total' },
+    { label: 'Status', key: 'status' },
+  ];
+
+  const getData = () => {
+    if (orderList && orderList.length > 0) {
+      const csvData = orderList.map((item) => {
+        return {
+          shortCode: item.shortCode,
+          name: item.name,
+          deliveryName: item.deliveryName,
+          date_created: item.date_created
+            ? moment(item.joiningDate).format('MMMM Do YYYY, h:mm a')
+            : '',
+          Status: item.status,
+          total: item.total,
+        };
+      });
+
+      return csvData;
+    } else return [];
+  };
+
+  const data = getData();
 
   return (
     <>
@@ -564,21 +580,50 @@ const CustomerList = ({ history, roles }: Props) => {
             />
           </div>
 
-          <div>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            {orderList && orderList.length > 0 && (
+              <>
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    marginRight: '25px',
+                  }}
+                >
+                  <CSVLink
+                    filename={'Orders.csv'}
+                    data={data}
+                    headers={headers}
+                  >
+                    Export as csv
+                  </CSVLink>
+                  <span
+                    style={{
+                      color: '#1890ff',
+                      marginLeft: '10px',
+                    }}
+                  >
+                    <DownloadOutlined />
+                  </span>
+                </div>
+              </>
+            )}
 
-             
-          {isAccess('postOrder',roles) && (
+            {isAccess('postOrder', roles) && (
               <Button
-              // type="primary"
-              className='btnPrimaryClassNameoutline'
-              icon={<PlusOutlined />}
-              onClick={() => history.push('/admin/order/new')}
-            >
-              Add New
-            </Button>
-          )}
-
-      
+                // type="primary"
+                className='btnPrimaryClassNameoutline'
+                icon={<PlusOutlined />}
+                onClick={() => history.push('/admin/order/new')}
+              >
+                Add New
+              </Button>
+            )}
           </div>
         </div>
 
@@ -601,29 +646,32 @@ const CustomerList = ({ history, roles }: Props) => {
               bordered={false}
             />
 
-              {regionList && regionList.length > 0 && (
-                <>
-                      <Select
-                      
-                      showSearch
-                      style={{ borderRadius: '15px', color: '#3fa6f9', width: '150px' }}
-                      placeholder='Delivery Region'
-                      optionFilterProp='children'
-                      onChange={deliveryRegionFilterChange}
-                      // defaultValue={'pending'}
-                      bordered={false}
-                      filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-
-            >
-              {regionList.map((option) => {
-                return <Option value={option.value}>{option.name}</Option>;
-              })}
-            </Select>
-
-
-                </>
-              )}
-      
+            {regionList && regionList.length > 0 && (
+              <>
+                <Select
+                  showSearch
+                  style={{
+                    borderRadius: '15px',
+                    color: '#3fa6f9',
+                    width: '150px',
+                  }}
+                  placeholder='Delivery Region'
+                  optionFilterProp='children'
+                  onChange={deliveryRegionFilterChange}
+                  // defaultValue={'pending'}
+                  bordered={false}
+                  filterOption={(input, option) =>
+                    option.children
+                      .toLowerCase()
+                      .indexOf(input.toLowerCase()) >= 0
+                  }
+                >
+                  {regionList.map((option) => {
+                    return <Option value={option.value}>{option.name}</Option>;
+                  })}
+                </Select>
+              </>
+            )}
 
             <Select
               style={{ borderRadius: '15px', color: '#3fa6f9' }}
@@ -651,7 +699,11 @@ const CustomerList = ({ history, roles }: Props) => {
 
         <div className='categoryListContainer__categoryList'>
           {orderState.done && orderList.length > 0 && (
-            <MyTable roles={roles} setOrderList={setOrderList} data={orderList} />
+            <MyTable
+              roles={roles}
+              setOrderList={setOrderList}
+              data={orderList}
+            />
           )}
           {orderState.isLoading && <DataTableSkeleton />}
 
@@ -672,13 +724,9 @@ const CustomerList = ({ history, roles }: Props) => {
   );
 };
 
-
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   roles: state.globalState,
-})
+});
 
 // @ts-ignore
 export default connect(mapStateToProps, null)(CustomerList);
-
-
-

@@ -23,13 +23,10 @@ import { useHandleFetch } from '../../hooks';
 // import components
 import { DataTableSkeleton } from '../../components/Placeholders';
 
-
 // import state
-import { isAccess } from "../../utils";
-import { connect } from "react-redux";
-
-
-
+import { isAccess } from '../../utils';
+import { connect } from 'react-redux';
+import moment from 'moment';
 
 const { Column } = Table;
 const { Search } = Input;
@@ -53,7 +50,7 @@ const openErrorNotification = (message?: any) => {
 interface myTableProps {
   data: any;
   setBrandList: any;
-  roles: any; 
+  roles: any;
 }
 
 const MyTable = ({ data, setBrandList, roles }: myTableProps) => {
@@ -145,11 +142,43 @@ const MyTable = ({ data, setBrandList, roles }: myTableProps) => {
         />
 
         <Column
-          title='Description'
-          dataIndex='description'
+          title='Last Modified'
+          dataIndex='lastModified'
           key='id'
           className='classnameofthecolumn'
+          render={(text, record: any) => (
+            <>
+              <h4
+                style={{
+                  fontWeight: 400,
+                  color: '#555',
+                }}
+              >
+                {text && moment(text).format('MMMM Do YYYY, h:mm a')}
+              </h4>
+            </>
+          )}
         />
+
+        <Column
+          title='Created'
+          dataIndex='added'
+          key='id'
+          className='classnameofthecolumn'
+          render={(text, record: any) => (
+            <>
+              <h4
+                style={{
+                  fontWeight: 400,
+                  color: '#555',
+                }}
+              >
+                {text && moment(text).format('MMMM Do YYYY, h:mm a')}
+              </h4>
+            </>
+          )}
+        />
+
         {/* <Column 
           
           className='classnameofthecolumn'
@@ -177,8 +206,8 @@ const MyTable = ({ data, setBrandList, roles }: myTableProps) => {
           )}
         /> */}
 
-        {isAccess('postPage',roles) && (
-            <Column
+        {isAccess('postPage', roles) && (
+          <Column
             className='classnameofthecolumn'
             title=''
             key='action'
@@ -190,52 +219,55 @@ const MyTable = ({ data, setBrandList, roles }: myTableProps) => {
                     <span
                       className='iconSize'
                       onClick={() => {
-                      history.push(`/admin/page/edit/${record.id}`);
-                      setactiveCategoryForEdit(record);
-                    }}
-                  >
-                    <EditOutlined />
+                        history.push(`/admin/page/edit/${record.id}`);
+                        setactiveCategoryForEdit(record);
+                      }}
+                    >
+                      <EditOutlined />
+                    </span>
+                  </Tooltip>
+                </a>
+
+                <Popconfirm
+                  onConfirm={() => handleDeletePage(record.id)}
+                  title='Are you sure？'
+                  okText='Yes'
+                  cancelText='No'
+                >
+                  <span className='iconSize iconSize-danger'>
+                    <DeleteOutlined />
                   </span>
-                </Tooltip>
-              </a>
-
-              <Popconfirm
-                onConfirm={() => handleDeletePage(record.id)}
-                title='Are you sure？'
-                okText='Yes'
-                cancelText='No'
-              >
-                <span className='iconSize iconSize-danger'>
-                  <DeleteOutlined />
-                </span>
-              </Popconfirm>
-            </Space>
-          )}
-        />
-          )}
-
-
-
-  
+                </Popconfirm>
+              </Space>
+            )}
+          />
+        )}
       </Table>
     </>
   );
 };
 
 interface Props {
-  roles: any; 
+  roles: any;
 }
 
-
-const PageList = ({roles}: Props) => {
+const PageList = ({ roles }: Props) => {
   const [pageList, setPageList] = useState([]);
   const [pageState, handlePagsListFetch] = useHandleFetch({}, 'pageList');
 
+  console.log('myPageList', pageList);
   const history = useHistory();
 
   useEffect(() => {
     const setPages = async () => {
-      const pages = await handlePagsListFetch({});
+      const pages = await handlePagsListFetch({
+        urlOptions: {
+          params: {
+            sortItem: 'added',
+            sortOrderValue: '-1',
+          },
+        },
+      });
       // @ts-ignore
       setPageList(pages);
     };
@@ -266,20 +298,16 @@ const PageList = ({roles}: Props) => {
             />
           </div>
 
-          
-          {isAccess('postPage',roles) && (
-         <Button
-         // type="primary"
-         className='btnPrimaryClassNameoutline'
-         icon={<PlusOutlined />}
-         onClick={() => history.push('/admin/page/new')}
-       >
-         Add New
-       </Button>
+          {isAccess('postPage', roles) && (
+            <Button
+              // type="primary"
+              className='btnPrimaryClassNameoutline'
+              icon={<PlusOutlined />}
+              onClick={() => history.push('/admin/page/new')}
+            >
+              Add New
+            </Button>
           )}
-
-
-       
         </div>
 
         <div className='categoryListContainer__afterHeader'>
@@ -314,12 +342,9 @@ const PageList = ({roles}: Props) => {
   );
 };
 
-
-
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   roles: state.globalState,
-})
+});
 
 // @ts-ignore
 export default connect(mapStateToProps, null)(PageList);
-

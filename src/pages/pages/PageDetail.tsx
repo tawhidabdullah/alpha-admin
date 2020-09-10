@@ -5,14 +5,10 @@ import { useParams, useHistory } from 'react-router';
 import { useHandleFetch } from '../../hooks';
 import ReactHtmlParser from 'react-html-parser';
 
-
-
 // import state
-import { isAccess } from "../../utils";
-import { connect } from "react-redux";
-
-
-
+import { isAccess } from '../../utils';
+import { connect } from 'react-redux';
+import moment from 'moment';
 
 // import lib
 // import lib
@@ -57,7 +53,7 @@ interface Props {
   roles?: any;
 }
 
-const NewBrandDetail = ({roles}: Props) => {
+const NewBrandDetail = ({ roles }: Props) => {
   const [tagProductsState, handleTagProductsFetch] = useHandleFetch(
     {},
     'tagProducts'
@@ -128,19 +124,17 @@ const NewBrandDetail = ({roles}: Props) => {
                             setTagDetailData={setTagDetailData}
                         /> */}
 
-                        
-          
-          {isAccess('postPage',roles) && (
-            <Button
-            onClick={() => {
-              history.push(`/admin/page/edit/${tagDetailData['_id']}`);
-            }}
-            type='link'
-            icon={<EditOutlined />}
-          >
-            Edit
-          </Button>
-          )}
+              {isAccess('postPage', roles) && (
+                <Button
+                  onClick={() => {
+                    history.push(`/admin/page/edit/${tagDetailData['_id']}`);
+                  }}
+                  type='link'
+                  icon={<EditOutlined />}
+                >
+                  Edit
+                </Button>
+              )}
             </>
           )}
       </div>
@@ -175,6 +169,30 @@ const NewBrandDetail = ({roles}: Props) => {
                       <span>{tagDetailData['url']}</span>
                     </h3>
                   )}
+
+                  {tagDetailData['lastModified'] && (
+                    <h3>
+                      LAST MODIFIED:
+                      <span>
+                        {tagDetailData['lastModified'] &&
+                          moment(tagDetailData['lastModified']).format(
+                            'MMMM Do YYYY, h:mm a'
+                          )}
+                      </span>
+                    </h3>
+                  )}
+
+                  {tagDetailData['added'] && (
+                    <h3>
+                      CREATED:
+                      <span>
+                        {tagDetailData['added'] &&
+                          moment(tagDetailData['added']).format(
+                            'MMMM Do YYYY, h:mm a'
+                          )}
+                      </span>
+                    </h3>
+                  )}
                 </div>
               </div>
 
@@ -182,7 +200,12 @@ const NewBrandDetail = ({roles}: Props) => {
                 <h3>Content</h3>
               </div>
 
-              <div className='brandDetailContainer__header'>
+              <div
+                className='brandDetailContainer__header'
+                style={{
+                  display: 'block',
+                }}
+              >
                 {ReactHtmlParser(tagDetailData['content'])}
               </div>
             </>
@@ -192,14 +215,9 @@ const NewBrandDetail = ({roles}: Props) => {
   );
 };
 
-
-
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   roles: state.globalState,
-})
+});
 
 // @ts-ignore
 export default connect(mapStateToProps, null)(NewBrandDetail);
-
-
-

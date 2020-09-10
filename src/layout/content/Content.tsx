@@ -190,8 +190,9 @@ const ContentComponent = (props: Props) => {
         <Route path='/admin/expense/:id' exact>
           <ExpenseDetail />
         </Route>
+
         <Route path='/admin/acccounting/overview' exact>
-          <OrderAnalytics /> 
+          <OrderList />
         </Route>
 
         <Route path='/admin/customer' exact>
