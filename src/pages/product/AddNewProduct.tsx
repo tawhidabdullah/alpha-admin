@@ -447,7 +447,6 @@ const AddNewProduct = ({ addNewCategoryVisible, setAddNewCategoryVisible, produc
 														placeholder='Select time'
 														label='Time'
 														onChange={handleTimeChange} />
-
 												</div>
 											</div> */}
 										

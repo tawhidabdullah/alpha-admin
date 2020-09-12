@@ -35,6 +35,10 @@ import { NotificationList } from '../../pages/notification';
 import { AdminList, AdminDetail } from '../../pages/admins';
 import { PostList, PostDetail } from '../../pages/post';
 import { StaffList, StaffDetail } from '../../pages/staff';
+import {
+  SalaryReportDetail,
+  SalaryReportList,
+} from '../../pages/staff/salaryReport';
 import { ExpenseList, ExpenseDetail } from '../../pages/expense';
 import { DealerList, DealerDetail } from '../../pages/dealer';
 import { AreaDetail, AreaList } from '../../pages/dealer/Area';
@@ -180,6 +184,12 @@ const ContentComponent = (props: Props) => {
         </Route>
         <Route path='/admin/staff' exact>
           <StaffList />
+        </Route>
+        <Route path='/admin/salaryReport' exact>
+          <SalaryReportList />
+        </Route>
+        <Route path='/admin/salaryReport/:id' exact>
+          <SalaryReportDetail />
         </Route>
         <Route path='/admin/staff/:id' exact>
           <StaffDetail />

@@ -44,14 +44,9 @@ import OrderNoteEdit from './OrderNoteEdit';
 import OrderInvoice from './OrderInvoice';
 import { OrderDetail } from '.';
 
-
 // import state
-import { isAccess } from "../../utils";
-import { connect } from "react-redux";
-
-
-
-
+import { isAccess } from '../../utils';
+import { connect } from 'react-redux';
 
 const { Column, ColumnGroup } = Table;
 const { Search } = CoolInput;
@@ -76,11 +71,7 @@ interface Props {
   roles?: any;
 }
 
-
-
-const NewBrandDetail = ({
-  roles
-}: Props) => {
+const NewBrandDetail = ({ roles }: Props) => {
   const [tagDetailState, handleTagDetailFetch] = useHandleFetch(
     {},
     'orderDetail'
@@ -217,18 +208,17 @@ const NewBrandDetail = ({
                   Generate Invoice
                 </Button>
 
-                {isAccess('postOrder','roles') && (
+                {isAccess('postOrder', roles) && (
                   <>
-                   <Button
-                  onClick={() => setTagEditVisible(true)}
-                  type='link'
-                  icon={<PlusOutlined />}
-                >
-                  Add note
-                </Button>
+                    <Button
+                      onClick={() => setTagEditVisible(true)}
+                      type='link'
+                      icon={<PlusOutlined />}
+                    >
+                      Add note
+                    </Button>
                   </>
                 )}
-               
               </div>
             </>
           )}
@@ -448,14 +438,15 @@ const NewBrandDetail = ({
           )}
       </Skeleton>
 
-
-      {tagDetailState.done && tagDetailState.data && Object.keys(tagDetailState.data).length > 0 && (
-        <>
-          <div className='brandDetailContainer__heading'>
-            <h3>Products</h3>
-          </div>
-        </>
-      )}
+      {tagDetailState.done &&
+        tagDetailState.data &&
+        Object.keys(tagDetailState.data).length > 0 && (
+          <>
+            <div className='brandDetailContainer__heading'>
+              <h3>Products</h3>
+            </div>
+          </>
+        )}
 
       <div className='brandDetailContainer__body'>
         {tagDetailState.done &&
@@ -597,13 +588,9 @@ const NewBrandDetail = ({
   );
 };
 
-
-
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   roles: state.globalState,
-})
+});
 
 // @ts-ignore
 export default connect(mapStateToProps, null)(NewBrandDetail);
-
-

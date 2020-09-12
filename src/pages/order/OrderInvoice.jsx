@@ -394,7 +394,6 @@ const QuickEdit = ({ id, setShowInvoice, showInvoice }) => {
                                         );
                                       }
                                     )}
-
                                     <tr>
                                       <td
                                         height={1}
@@ -923,5 +922,4 @@ const QuickEdit = ({ id, setShowInvoice, showInvoice }) => {
     </Modal>
   );
 };
-
 export default QuickEdit;

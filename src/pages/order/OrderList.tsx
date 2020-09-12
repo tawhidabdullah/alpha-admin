@@ -442,7 +442,8 @@ const CustomerList = ({ history, roles }: Props) => {
           params: {
             sortItem: 'added',
             sortOrderValue: '-1',
-            statusValue: orderStatusFilterValue,
+            statusValue:
+              orderStatusFilterValue === 'all' ? '' : orderStatusFilterValue,
             limitNumber: 500000,
             startDateValue: startDate,
             endDateValue: endDate,
@@ -508,6 +509,10 @@ const CustomerList = ({ history, roles }: Props) => {
   };
 
   const orderFilteringOption = [
+    {
+      name: 'All',
+      value: 'all',
+    },
     {
       name: 'Pending',
       value: 'pending',
@@ -654,6 +659,7 @@ const CustomerList = ({ history, roles }: Props) => {
                     borderRadius: '15px',
                     color: '#3fa6f9',
                     width: '150px',
+                    marginRight: '15px',
                   }}
                   placeholder='Delivery Region'
                   optionFilterProp='children'
@@ -674,11 +680,11 @@ const CustomerList = ({ history, roles }: Props) => {
             )}
 
             <Select
-              style={{ borderRadius: '15px', color: '#3fa6f9' }}
+              style={{ borderRadius: '15px', color: '#3fa6f9', width: '100px' }}
               placeholder='Select status'
               optionFilterProp='children'
               onChange={onOrderStatusFilterChange}
-              defaultValue={'pending'}
+              defaultValue={'all'}
               bordered={false}
             >
               {orderFilteringOption.map((option) => {

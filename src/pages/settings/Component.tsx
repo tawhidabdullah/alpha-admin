@@ -362,21 +362,6 @@ const Component = (props) => {
 
     const itemIndex = positionInItemsOfComponent();
 
-    const componentItems =
-      component.items.length > 0
-        ? component.items.map((componentItem) => {
-            return {
-              ...componentItem,
-              image:
-                componentItem.image && componentItem.image.length > 0
-                  ? componentItem.image.map((imgItem) => imgItem['id'] || '')
-                  : [],
-            };
-          })
-        : [];
-
-    console.log('componentItems22', componentItems);
-
     const updatedItems = [
       ...component.items.slice(0, itemIndex),
       ...component.items.slice(itemIndex + 1),

@@ -2956,6 +2956,80 @@ class Converter {
 
   /**
    * @public
+   * @method generateSalaryReport convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+  async generateSalaryReport(data) {
+    const convertedData = data;
+    if (data && data && data[0]) {
+      return {
+        ...data[0],
+        status: 'ok',
+      };
+    }
+
+    return convertedData;
+  }
+
+  /**
+   * @public
+   * @method getSalaryReport convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+  async getSalaryReport(resData) {
+    const data = resData.data || [];
+
+    const convertedData =
+      data.length > 0 &&
+      data.map((customer) => {
+        return {
+          ...customer,
+          id: customer._id || '',
+        };
+      });
+
+    return convertedData;
+  }
+
+  /**
+   * @public
+   * @method getSalaryReportDetail convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+  async getSalaryReportDetail(resData) {
+    const data = resData || [];
+
+    if (data && Object.keys(data).length > 0) {
+      return {
+        ...data,
+        id: data._id || '',
+        staff:
+          data.staff && data.staff.length > 0
+            ? data.staff.map((customer) => {
+                return {
+                  ...customer,
+                  id: customer._id || '',
+                  key: customer._id || '',
+                  firstName: customer.firstName || '',
+                  lastName: customer.lastName || '',
+                  name: customer.firstName + ' ' + customer.lastName,
+                  country: customer.country || '',
+                  city: customer.city || '',
+                  email: customer.email || '',
+                  phone: customer.phone || '',
+                  address: customer.address || '',
+                };
+              })
+            : [],
+      };
+    } else return {};
+  }
+
+  /**
+   * @public
    * @method staffDetail convert api data from API to general format based on config server
    * @param {Object} data response objectc from wc
    * @returns {Object}  converted data
@@ -3346,6 +3420,23 @@ class Converter {
    * @returns {Object}  converted data
    */
   async postDeleteTag(data) {
+    const convertedData = data;
+    if (data && data.success) {
+      return {
+        status: 'ok',
+      };
+    }
+
+    return convertedData;
+  }
+
+  /**
+   * @public
+   * @method deleteSalaryReport convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+  async deleteSalaryReport(data) {
     const convertedData = data;
     if (data && data.success) {
       return {

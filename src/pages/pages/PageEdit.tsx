@@ -244,7 +244,7 @@ const AddNewPage = ({}: Props) => {
 
     // @ts-ignore
     if (thumbnailRes && thumbnailRes.status === 'ok') {
-      openSuccessNotification('Seted as thumbnail!');
+      openSuccessNotification('Set as thumbnail!');
       // const positionInBrand = () => {
       //     return brandList.map(item => item.id).indexOf(brandDetailData.id);
       // }

@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { withRouter, useHistory } from 'react-router-dom';
-import { CSVLink } from "react-csv";
- 
-
+import { CSVLink } from 'react-csv';
 
 import {
   Table,
@@ -24,7 +22,7 @@ import {
   DeleteOutlined,
   EditFilled,
   CheckCircleOutlined,
-  DownloadOutlined
+  DownloadOutlined,
 } from '@ant-design/icons';
 import Moment from 'react-moment';
 
@@ -267,34 +265,32 @@ const CustomerList = ({ history }: Props) => {
   // console.log('customerState',customerState)
 
   const headers = [
-    { label: "Name", key: "name" },
-    { label: "Phone", key: "phone" },
-    { label: "Designation", key: "designation" },
-    { label: "Salary", key: "salary" },
-    { label: "joined", key: "joiningDate" },
+    { label: 'Name', key: 'name' },
+    { label: 'Phone', key: 'phone' },
+    { label: 'Designation', key: 'designation' },
+    { label: 'Salary', key: 'salary' },
+    { label: 'joined', key: 'joiningDate' },
   ];
-   
 
   const getData = () => {
-    if(customerList && customerList.length > 0){
-      const csvData = customerList.map(item => {
+    if (customerList && customerList.length > 0) {
+      const csvData = customerList.map((item) => {
         return {
           name: item.name,
           phone: item.phone,
           designation: item.designation,
           salary: item.salary,
-          joiningDate : item.joiningDate ? moment(item.joiningDate).format('MMMM Do YYYY, h:mm a') : ''
-        }
-      })
+          joiningDate: item.joiningDate
+            ? moment(item.joiningDate).format('MMMM Do YYYY, h:mm a')
+            : '',
+        };
+      });
 
-      return csvData; 
-    }
-    else return []; 
-  }; 
-
+      return csvData;
+    } else return [];
+  };
 
   const data = getData();
-
 
   return (
     <>
@@ -315,43 +311,48 @@ const CustomerList = ({ history }: Props) => {
             />
           </div>
 
-        <div style={{
-          display:'flex',
-          alignItems:'center'
-        }}>
-        
-        {customerList && customerList.length > 0 && (
-          <>
-          <div style={{
-          display:'flex',
-          alignItems:'center',
-          marginRight: '25px'
-        }}>
-        <CSVLink
-         filename={"staff-list.csv"}
-         data={data} headers={headers}>
-          Export as csv 
-        </CSVLink>
-        <span style={{
-          color:'#1890ff',
-          marginLeft: '10px'
-        }}>
-        <DownloadOutlined />
-        </span>
-        </div>
-          </>
-        )}
-          <Button
-            // type="primary"
-            className='btnPrimaryClassNameoutline'
-            icon={<PlusOutlined />}
-            onClick={() => setAddNewCategoryVisible(true)}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+            }}
           >
-            Add New
-          </Button>
-        </div>
-
-        
+            {customerList && customerList.length > 0 && (
+              <>
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    marginRight: '25px',
+                  }}
+                >
+                  <CSVLink
+                    filename={'staff-list.csv'}
+                    data={data}
+                    headers={headers}
+                  >
+                    Export as csv
+                  </CSVLink>
+                  <span
+                    style={{
+                      color: '#1890ff',
+                      marginLeft: '10px',
+                    }}
+                  >
+                    <DownloadOutlined />
+                  </span>
+                </div>
+              </>
+            )}
+            <Button
+              // type="primary"
+              className='btnPrimaryClassNameoutline'
+              icon={<PlusOutlined />}
+              onClick={() => setAddNewCategoryVisible(true)}
+            >
+              Add New
+            </Button>
+          </div>
         </div>
 
         <div className='categoryListContainer__afterHeader'>

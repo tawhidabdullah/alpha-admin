@@ -33,10 +33,8 @@ import ProductQuickEdit from './ProductQuickEdit';
 // import QuickEdit from './QuickEdit';
 
 // import state
-import { isAccess } from "../../utils";
-import { connect } from "react-redux";
-
-
+import { isAccess } from '../../utils';
+import { connect } from 'react-redux';
 
 const { Column, ColumnGroup } = Table;
 const { Search } = Input;
@@ -52,7 +50,7 @@ const openSuccessNotification = (msg?: any) => {
 interface myTableProps {
   data: any;
   setProductList: any;
-  roles: any 
+  roles: any;
 }
 
 const MyTable = ({ data, setProductList, roles }: myTableProps) => {
@@ -91,10 +89,10 @@ const MyTable = ({ data, setProductList, roles }: myTableProps) => {
 
   const handleUpdateOrderStatus = async (record, id, newStatus) => {
     const updateOrderStatusRes = await handleUpdateOrderStatusFetch({
+      body: {
+        inStock: newStatus,
+      },
       urlOptions: {
-        params: {
-          inStock: newStatus,
-        },
         placeHolders: {
           id,
         },
@@ -254,8 +252,6 @@ const MyTable = ({ data, setProductList, roles }: myTableProps) => {
           className='classnameofthecolumn'
         />
 
-
-
         <Column
           align='right'
           title='Stock'
@@ -264,52 +260,48 @@ const MyTable = ({ data, setProductList, roles }: myTableProps) => {
           className='classnameofthecolumn'
           render={(text, record: any) => (
             <>
-
-            {isAccess('postCatalogue',roles) ? (
-                 <Dropdown
-                 overlay={() => StatusItemMenu(record, record.id)}
-                 placement='bottomRight'
-               >
-                 <a href='##'>
-                   <span
-                     // className={'product-attributeTag'}
-                     style={{
-                       fontSize: '12px',
-                     }}
-                   >
-                     {text ? 'In Stock' : 'Out of stock'}
-                     <span
-                       style={{
-                         marginLeft: '5px',
-                         fontSize: '10px',
-                       }}
-                     >
-                    <DownOutlined />
-                     </span>
-                   </span>
-                 </a>
-               </Dropdown>
-            ) : (
-              <a href='##'>
-              <span
-                // className={'product-attributeTag'}
-                style={{
-                  fontSize: '12px',
-                }}
-              >
-                {text ? 'In Stock' : 'Out of stock'}
-                <span
-                  style={{
-                    marginLeft: '5px',
-                    fontSize: '10px',
-                  }}
+              {isAccess('postCatalogue', roles) ? (
+                <Dropdown
+                  overlay={() => StatusItemMenu(record, record.id)}
+                  placement='bottomRight'
                 >
-             
-                </span>
-              </span>
-            </a>
-            )}
-           
+                  <a href='##'>
+                    <span
+                      // className={'product-attributeTag'}
+                      style={{
+                        fontSize: '12px',
+                      }}
+                    >
+                      {text ? 'In Stock' : 'Out of stock'}
+                      <span
+                        style={{
+                          marginLeft: '5px',
+                          fontSize: '10px',
+                        }}
+                      >
+                        <DownOutlined />
+                      </span>
+                    </span>
+                  </a>
+                </Dropdown>
+              ) : (
+                <a href='##'>
+                  <span
+                    // className={'product-attributeTag'}
+                    style={{
+                      fontSize: '12px',
+                    }}
+                  >
+                    {text ? 'In Stock' : 'Out of stock'}
+                    <span
+                      style={{
+                        marginLeft: '5px',
+                        fontSize: '10px',
+                      }}
+                    ></span>
+                  </span>
+                </a>
+              )}
             </>
           )}
         />
@@ -348,43 +340,42 @@ const MyTable = ({ data, setProductList, roles }: myTableProps) => {
           )}
         /> */}
 
-        {isAccess('postCatalogue','roles') && (
-        <Column
-        className='classnameofthecolumn'
-        title=''
-        key='action'
-        align='right'
-        render={(text, record: any) => (
-          <Space size='middle'>
-            <a href='##'>
-              <Tooltip placement='top' title='Edit Product'>
-                <span
-                  className='iconSize'
-                  onClick={() => {
-                    setvisible(true);
-                    setactiveCategoryForEdit(record);
-                  }}
-                >
-               <EditOutlined />
-             </span>
-           </Tooltip>
-         </a>
+        {isAccess('postCatalogue', roles) && (
+          <Column
+            className='classnameofthecolumn'
+            title=''
+            key='action'
+            align='right'
+            render={(text, record: any) => (
+              <Space size='middle'>
+                <a href='##'>
+                  <Tooltip placement='top' title='Edit Product'>
+                    <span
+                      className='iconSize'
+                      onClick={() => {
+                        setvisible(true);
+                        setactiveCategoryForEdit(record);
+                      }}
+                    >
+                      <EditOutlined />
+                    </span>
+                  </Tooltip>
+                </a>
 
-         <Popconfirm
-           onConfirm={() => handleDeleteProduct(record.id)}
-           title='Are you sure？'
-           okText='Yes'
-           cancelText='No'
-         >
-           <span className='iconSize iconSize-danger'>
-             <DeleteOutlined />
-           </span>
-         </Popconfirm>
-       </Space>
-     )}
-   />
+                <Popconfirm
+                  onConfirm={() => handleDeleteProduct(record.id)}
+                  title='Are you sure？'
+                  okText='Yes'
+                  cancelText='No'
+                >
+                  <span className='iconSize iconSize-danger'>
+                    <DeleteOutlined />
+                  </span>
+                </Popconfirm>
+              </Space>
+            )}
+          />
         )}
-   
       </Table>
 
       {activeCategoryForEdit && (
@@ -401,10 +392,10 @@ const MyTable = ({ data, setProductList, roles }: myTableProps) => {
 };
 
 interface Props {
-  roles?:any;
+  roles?: any;
 }
 
-const ProductList = ({ roles  }: Props) => {
+const ProductList = ({ roles }: Props) => {
   const [productList, setProductList] = useState([]);
 
   const [productState, handleProductListFetch] = useHandleFetch(
@@ -444,9 +435,6 @@ const ProductList = ({ roles  }: Props) => {
     }
   };
 
-
-
-
   return (
     <>
       {/* <h2 className='containerPageTitle'>
@@ -466,19 +454,16 @@ const ProductList = ({ roles  }: Props) => {
             />
           </div>
 
-
-          {isAccess('postCatalogue',roles) && (
+          {isAccess('postCatalogue', roles) && (
             <Button
-            // type="primary"
-            className='btnPrimaryClassNameoutline'
-            icon={<PlusOutlined />}
-            onClick={() => setAddNewCategoryVisible(true)}
-          >
-            Add New
-          </Button>
+              // type="primary"
+              className='btnPrimaryClassNameoutline'
+              icon={<PlusOutlined />}
+              onClick={() => setAddNewCategoryVisible(true)}
+            >
+              Add New
+            </Button>
           )}
-
-          
         </div>
 
         <div className='categoryListContainer__afterHeader'>
@@ -492,9 +477,11 @@ const ProductList = ({ roles  }: Props) => {
 
         <div className='categoryListContainer__categoryList'>
           {productState.done && productList.length > 0 && (
-            <MyTable 
-            roles={roles}
-            setProductList={setProductList} data={productList} />
+            <MyTable
+              roles={roles}
+              setProductList={setProductList}
+              data={productList}
+            />
           )}
           {productState.isLoading && <DataTableSkeleton />}
           {productState.done && !(productList.length > 0) && (
@@ -524,13 +511,9 @@ const ProductList = ({ roles  }: Props) => {
   );
 };
 
-
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   roles: state.globalState,
-})
+});
 
 // @ts-ignore
 export default connect(mapStateToProps, null)(ProductList);
-
-
-

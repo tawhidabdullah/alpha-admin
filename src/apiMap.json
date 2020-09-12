@@ -342,6 +342,22 @@
       "url": "/admin/api/customer/update/delete/:id",
       "method": "post"
     },
+    "generateSalaryReport": {
+      "url": "/admin/api/staff/salaryReport/generate",
+      "method": "post"
+    },
+    "getSalaryReport": {
+      "url": "/admin/api/staff/salaryReport",
+      "method": "get"
+    },
+    "getSalaryReportDetail": {
+      "url": "/admin/api/staff/salaryReport/:id",
+      "method": "get"
+    },
+    "deleteSalaryReport": {
+      "url": "/admin/api/staff/salaryReport/delete/:id",
+      "method": "post"
+    },
     "addStaff": {
       "url": "/admin/api/staff/add",
       "method": "post"

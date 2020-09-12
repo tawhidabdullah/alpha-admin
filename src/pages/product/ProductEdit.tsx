@@ -139,7 +139,7 @@ const AddNewProduct = ({
   const [metaTags, setMetaTags] = useState([]);
   const [bnMetaTags, setBnMetaTags] = useState([]);
   const [editpricingItem, setEditPricingItem] = useState({});
-  const [pricingTagActiveKey, setpricingTagActiveKey] = useState('1');
+  const [pricingTagActiveKey, setpricingTagActiveKey] = useState('2');
   const [isPricingEditActive, seTisPricingEditActive] = useState(false);
 
   useEffect(() => {
@@ -224,27 +224,29 @@ const AddNewProduct = ({
 
   useEffect(() => {
     if (productDetailState.done && Object.keys(productDetailState).length > 0) {
-   
       const images = productDetailState.data.image;
-			let mahImages = []; 
+      let mahImages = [];
 
-			if (images && images.length > 0) {
-				mahImages = images;
-			}
-	
-			if (productDetailState.data.cover && productDetailState.data.cover['id']) {
-				const ixists = images.find(item => item.id === productDetailState.data.cover['id']);
-				if(!ixists){
-					mahImages = [productDetailState.data.cover, ...mahImages]
-				}
+      if (images && images.length > 0) {
+        mahImages = images;
+      }
 
-				setCoverImageId(productDetailState.data.cover['id']);
-			}
-	
-				// @ts-ignore
-        setmyImages(mahImages);
+      if (
+        productDetailState.data.cover &&
+        productDetailState.data.cover['id']
+      ) {
+        const ixists = images.find(
+          (item) => item.id === productDetailState.data.cover['id']
+        );
+        if (!ixists) {
+          mahImages = [productDetailState.data.cover, ...mahImages];
+        }
 
+        setCoverImageId(productDetailState.data.cover['id']);
+      }
 
+      // @ts-ignore
+      setmyImages(mahImages);
     }
   }, [productDetailState]);
 

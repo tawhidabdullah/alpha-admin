@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 
 // import pages
 import Login from './pages/auth/login';
@@ -10,36 +10,34 @@ import Content from './layout/content';
 // import Footer from './layout/footer';
 
 // import state
-import { glboalOperations } from "./state/ducks/globalState";
-import { credentialsOperations } from "./state/ducks/credentials";
-import { connect } from "react-redux";
-
+import { glboalOperations } from './state/ducks/globalState';
+import { credentialsOperations } from './state/ducks/credentials';
+import { connect } from 'react-redux';
 
 // import libraries
 import { Layout } from 'antd';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
 // import hooks
-import { useHandleFetch } from "./hooks";
+import { useHandleFetch } from './hooks';
 
-const App = ({saveRoles,saveCredentials}) => {
-
-  const [getAdminCredentialState, handleAdminCredentCialsFetch] = useHandleFetch({}, 'getAdminCredential');
-
-
+const App = ({ saveRoles, saveCredentials }) => {
+  const [
+    getAdminCredentialState,
+    handleAdminCredentCialsFetch,
+  ] = useHandleFetch({}, 'getAdminCredential');
 
   useEffect(() => {
-      const getCredenCials = async () => {
-          const res = await handleAdminCredentCialsFetch({});
-          // saveCredentials(res); 
-        // @ts-ignore
-        if(res && res['role']) {
-          saveRoles(res['role'] || [])
-        }
+    const getCredenCials = async () => {
+      const res = await handleAdminCredentCialsFetch({});
+      // saveCredentials(res);
+      // @ts-ignore
+      if (res && res['role']) {
+        saveRoles(res['role'] || []);
       }
-      getCredenCials();
+    };
+    getCredenCials();
   }, []);
-
 
   return (
     <Router>
@@ -63,21 +61,17 @@ const App = ({saveRoles,saveCredentials}) => {
   );
 };
 
-
 const mapDispathToProps = {
   saveRoles: glboalOperations.saveRoles,
   saveCredentials: credentialsOperations.saveCredentials,
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   globalState: state.globalState,
-})
+});
 
 // @ts-ignore
 export default connect(mapStateToProps, mapDispathToProps)(App);
-
-
-
 
 /* 
 
@@ -152,7 +146,6 @@ make components images to update at once.
 
 */
 
-
 /* 
 
 Off work left to do: 
@@ -164,4 +157,15 @@ admin roles
 give resolved images when create a component
 check if productlist returns cover
 make admin list section work properly
+*/
+
+/* 
+
+Things that still left to do in mangshobazar: 
+
+add delete button in add new component
+complete salary report 
+fix the order invoice 
+
+
 */
