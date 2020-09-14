@@ -381,17 +381,17 @@ const AddNewProduct = ({
         image: imagesIds,
         cover: coverImageId || imagesIds[0] ? imagesIds[0] : '',
         pricing: pricing,
-        metaTitle: values.metaTitle,
-        metaDescription: values.metaDescription,
-        metaTags: metaTags.join(','),
-        bn: {
-          metaTitle: values.bnMetaTitle,
-          metaDescription: values.bnMetaDescription,
-          metaTags: bnMetaTags.join(','),
-          name: values.bnName.trim(),
-          unit: values.metaUnit,
-          description: bnDescription,
-        },
+        // metaTitle: values.metaTitle,
+        // metaDescription: values.metaDescription,
+        // metaTags: metaTags.join(','),
+        // bn: {
+        //   metaTitle: values.bnMetaTitle,
+        //   metaDescription: values.bnMetaDescription,
+        //   metaTags: bnMetaTags.join(','),
+        //   name: values.bnName.trim(),
+        //   unit: values.metaUnit,
+        //   description: bnDescription,
+        // },
       },
     });
 
@@ -600,16 +600,16 @@ const AddNewProduct = ({
         ...initialValues,
         ...{
           ...productDetailData,
-          ...(productDetailState['data'] &&
-            Object.keys(productDetailState['data']).length > 0 &&
-            productDetailState['data']['bn'] && {
-              bnMetaTitle: productDetailState['data']['bn'].metaTitle,
-              bnMetaDescription:
-                productDetailState['data']['bn'].metaDescription,
-              bnName: productDetailState['data']['bn'].name,
-              metaUnit: productDetailState['data']['bn'].unit,
-              bnDescription: productDetailState['data']['bn'].description,
-            }),
+          //   ...(productDetailState['data'] &&
+          //     Object.keys(productDetailState['data']).length > 0 &&
+          //     productDetailState['data']['bn'] && {
+          //       bnMetaTitle: productDetailState['data']['bn'].metaTitle,
+          //       bnMetaDescription:
+          //         productDetailState['data']['bn'].metaDescription,
+          //       bnName: productDetailState['data']['bn'].name,
+          //       metaUnit: productDetailState['data']['bn'].unit,
+          //       bnDescription: productDetailState['data']['bn'].description,
+          //     }),
         },
       }}
     >
@@ -665,7 +665,7 @@ const AddNewProduct = ({
                     <Input
                       label='Name'
                       value={values.name}
-                      placeHolder={'Rafty ox'}
+                      // placeHolder={'Rafty ox'}
                       name='name'
                       isError={
                         (touched.name && errors.name) ||
@@ -682,7 +682,7 @@ const AddNewProduct = ({
                         setFieldTouched('name');
                       }}
                     />
-
+                    {/* 
                     <Input
                       label='BN Name'
                       value={values.bnName}
@@ -702,7 +702,7 @@ const AddNewProduct = ({
                         handleChange(e);
                         setFieldTouched('bnName');
                       }}
-                    />
+                    /> */}
 
                     {/* <div style={{
 												display: 'flex',
@@ -786,7 +786,7 @@ const AddNewProduct = ({
                       }}
                     />
 
-                    <Input
+                    {/* <Input
                       label='BN Unit'
                       value={values.bnUnit}
                       placeHolder={'কেজি,গ্রাম'}
@@ -805,7 +805,7 @@ const AddNewProduct = ({
                         handleChange(e);
                         setFieldTouched('bnUnit');
                       }}
-                    />
+                    /> */}
 
                     <Input
                       label='Model Number'
@@ -861,7 +861,7 @@ const AddNewProduct = ({
                       }}
                     ></div>
 
-                    <h3 className='inputFieldLabel'>BN Description</h3>
+                    {/* <h3 className='inputFieldLabel'>BN Description</h3>
 
                     <div
                       style={{
@@ -887,15 +887,15 @@ const AddNewProduct = ({
                           console.log('Focus.', editor);
                         }}
                       />
-                    </div>
+                    </div> */}
 
-                    <div
+                    {/* <div
                       style={{
                         marginTop: '15px',
                       }}
                     >
                       {' '}
-                    </div>
+                    </div> */}
                   </div>
                 </div>
 
@@ -1164,7 +1164,7 @@ const AddNewProduct = ({
                   </div>
                 </div>
 
-                <div className='addProductGridContainer__image'>
+                {/* <div className='addProductGridContainer__image'>
                   <div className='addProductGridContainer__item-header'>
                     <h3>Meta Data</h3>
 
@@ -1296,7 +1296,7 @@ const AddNewProduct = ({
                       tags={bnMetaTags}
                     />
                   </div>
-                </div>
+                </div> */}
               </div>
               <div className='addProductGridContainer__right'>
                 <div className='addProductGridContainer__category'>

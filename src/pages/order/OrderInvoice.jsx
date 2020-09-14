@@ -1,7 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { Modal, Select, notification, Empty, Spin } from 'antd';
+import React, { useState, useEffect, useRef } from 'react';
+import { Modal, Select, notification, Empty, Spin, Button } from 'antd';
+import ReactToPdf from 'react-to-pdf';
+
 import * as Yup from 'yup';
-import { CheckCircleOutlined, InfoCircleOutlined } from '@ant-design/icons';
+import {
+  CheckCircleOutlined,
+  InfoCircleOutlined,
+  PrinterOutlined,
+  FilePdfOutlined,
+} from '@ant-design/icons';
+import ReactToPrint from 'react-to-print';
+
+// import components
+import config from '../../config.json';
 
 // import components
 import { useHandleFetch } from '../../hooks';
@@ -10,11 +21,679 @@ import moment from 'moment';
 
 const { Option } = Select;
 
-const QuickEdit = ({ id, setShowInvoice, showInvoice }) => {
+class ComponentToPrint extends React.Component {
+  render() {
+    const { orderDetailState, invoiceSettingsState, anotherRef } = this.props;
+
+    return (
+      <>
+        <div ref={anotherRef} className='invoiceContainer'>
+          <table
+            width='100%'
+            border={0}
+            cellPadding={0}
+            cellSpacing={0}
+            align='center'
+            className='fullTable'
+            bgcolor='#fff'
+          >
+            <tbody>
+              <tr>
+                <td height={20} />
+              </tr>
+              <tr>
+                <td>
+                  <table
+                    width={600}
+                    border={0}
+                    cellPadding={0}
+                    cellSpacing={0}
+                    align='center'
+                    className='fullTable'
+                    bgcolor='#ffffff'
+                    style={{ borderRadius: '10px 10px 0 0' }}
+                  >
+                    <tbody>
+                      <tr>
+                        <td>
+                          <table
+                            width={570}
+                            border={0}
+                            cellPadding={0}
+                            cellSpacing={0}
+                            align='center'
+                            className='fullPadding'
+                          >
+                            <tbody>
+                              <tr>
+                                <td>
+                                  <table
+                                    width={'100%'}
+                                    border={0}
+                                    cellPadding={0}
+                                    cellSpacing={0}
+                                    align='left'
+                                    className='col'
+                                    style={{
+                                      borderBottom: '1px solid #eee',
+                                      paddingBottom: '40px',
+                                      marginBottom: '40px',
+                                    }}
+                                  >
+                                    <tbody
+                                      style={{
+                                        marginBottom: '50px',
+                                      }}
+                                    >
+                                      <tr>
+                                        <td
+                                          style={{
+                                            fontSize: 12,
+                                            color: '#5b5b5b',
+
+                                            lineHeight: 1.6,
+                                            verticalAlign: 'top',
+                                            textAlign: 'left',
+                                          }}
+                                        >
+                                          <span
+                                            style={{
+                                              display: 'inline-block',
+                                              fontSize: '14px',
+                                              fontWeight: '600',
+                                              color: '#000',
+                                            }}
+                                          >
+                                            Bill From:
+                                          </span>
+                                          <span
+                                            style={{
+                                              display: 'block',
+                                              marginTop: '10px',
+                                              fontSize: '12px',
+                                              fontWeight: '500',
+                                              color: '#000',
+                                            }}
+                                          >
+                                            {orderDetailState.data['name']}
+                                          </span>
+                                          <span
+                                            style={{
+                                              display: 'block',
+                                              marginTop: '10px',
+                                              fontSize: '12px',
+                                              fontWeight: '500',
+                                              color: '#000',
+                                            }}
+                                          >
+                                            {orderDetailState.data['address']}
+                                          </span>
+                                          <span
+                                            style={{
+                                              display: 'block',
+                                              marginTop: '10px',
+                                              fontSize: '12px',
+                                              fontWeight: '500',
+                                              color: '#000',
+                                            }}
+                                          >
+                                            {orderDetailState.data['phone']}
+                                          </span>
+                                          <span
+                                            style={{
+                                              display: 'block',
+                                              marginTop: '10px',
+                                              fontSize: '12px',
+                                              fontWeight: '500',
+                                              color: '#000',
+                                              marginBottom: '50px',
+                                            }}
+                                          >
+                                            {orderDetailState.data['email']}
+                                          </span>
+                                        </td>
+
+                                        <td
+                                          style={{
+                                            verticalAlign: 'top',
+                                          }}
+                                          align='right'
+                                        >
+                                          {' '}
+                                          <img
+                                            src={`${config.baseURL}/images/logo.png`}
+                                            width={100}
+                                            height={100}
+                                            alt='logo'
+                                            border={0}
+                                          />
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                  <table
+                                    width={'100%'}
+                                    border={0}
+                                    cellPadding={0}
+                                    cellSpacing={0}
+                                    align='left'
+                                    className='col'
+                                  >
+                                    <tbody>
+                                      <tr className='visibleMobile'>
+                                        <td height={20} />
+                                      </tr>
+                                      <tr>
+                                        <td height={5} />
+                                      </tr>
+                                      <tr></tr>
+                                      <tr></tr>
+                                      <tr>
+                                        <td
+                                          style={{
+                                            fontSize: 12,
+                                            color: '#5b5b5b',
+
+                                            lineHeight: 1.6,
+                                            verticalAlign: 'top',
+                                            textAlign: 'left',
+                                          }}
+                                        >
+                                          <span
+                                            style={{
+                                              display: 'inline-block',
+                                              fontSize: '14px',
+                                              fontWeight: '600',
+                                              color: '#000',
+                                            }}
+                                          >
+                                            Bill To:
+                                          </span>
+                                          <span
+                                            style={{
+                                              display: 'block',
+                                              marginTop: '10px',
+                                              fontSize: '12px',
+                                              fontWeight: '500',
+                                              color: '#000',
+                                            }}
+                                          >
+                                            {invoiceSettingsState.done &&
+                                              invoiceSettingsState.data &&
+                                              Object.keys(
+                                                invoiceSettingsState.data
+                                              ).length > 0 &&
+                                              invoiceSettingsState.data[
+                                                'invoiceTitle'
+                                              ]}
+                                          </span>
+                                          <span
+                                            style={{
+                                              display: 'block',
+                                              marginTop: '10px',
+                                              fontSize: '12px',
+                                              fontWeight: '500',
+                                              color: '#000',
+                                            }}
+                                          >
+                                            {invoiceSettingsState.done &&
+                                              invoiceSettingsState.data &&
+                                              Object.keys(
+                                                invoiceSettingsState.data
+                                              ).length > 0 &&
+                                              invoiceSettingsState.data[
+                                                'address'
+                                              ]}
+                                          </span>
+                                          <span
+                                            style={{
+                                              display: 'block',
+                                              marginTop: '10px',
+                                              fontSize: '12px',
+                                              fontWeight: '500',
+                                              color: '#000',
+                                            }}
+                                          >
+                                            {invoiceSettingsState.done &&
+                                              invoiceSettingsState.data &&
+                                              Object.keys(
+                                                invoiceSettingsState.data
+                                              ).length > 0 &&
+                                              invoiceSettingsState.data[
+                                                'phone'
+                                              ]}
+                                          </span>
+                                          <span
+                                            style={{
+                                              display: 'block',
+                                              marginTop: '10px',
+                                              fontSize: '12px',
+                                              fontWeight: '500',
+                                              color: '#000',
+                                            }}
+                                          >
+                                            {invoiceSettingsState.done &&
+                                              invoiceSettingsState.data &&
+                                              Object.keys(
+                                                invoiceSettingsState.data
+                                              ).length > 0 &&
+                                              invoiceSettingsState.data[
+                                                'email'
+                                              ]}
+                                          </span>
+                                        </td>
+
+                                        <td
+                                          style={{
+                                            fontSize: 13,
+                                            color: '#5b5b5b',
+
+                                            lineHeight: 1.6,
+                                            verticalAlign: 'top',
+                                            textAlign: 'right',
+                                          }}
+                                        >
+                                          <small>ORDER</small> #
+                                          {orderDetailState.data['shortCode']}
+                                          <br />
+                                          <span>
+                                            {orderDetailState.data[
+                                              'date_created'
+                                            ] &&
+                                              moment(
+                                                orderDetailState.data[
+                                                  'date_created'
+                                                ]
+                                              ).format('MMMM Do YYYY, h:mm a')}
+                                          </span>
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          {orderDetailState.data &&
+            orderDetailState.data['products'] &&
+            orderDetailState.data['products'].length > 0 && (
+              <table
+                width='100%'
+                border={0}
+                cellPadding={0}
+                cellSpacing={0}
+                align='center'
+                className='fullTable'
+                bgcolor='#fff'
+              >
+                <tbody>
+                  <tr>
+                    <td>
+                      <table
+                        width={600}
+                        border={0}
+                        cellPadding={0}
+                        cellSpacing={0}
+                        align='center'
+                        className='fullTable'
+                        bgcolor='#ffffff'
+                      >
+                        <tbody>
+                          <tr></tr>
+                          <tr className='hiddenMobile'>
+                            <td height={60} />
+                          </tr>
+                          <tr className='visibleMobile'>
+                            <td height={40} />
+                          </tr>
+                          <tr>
+                            <td>
+                              <table
+                                width={570}
+                                border={0}
+                                cellPadding={0}
+                                cellSpacing={0}
+                                align='center'
+                                className='fullPadding'
+                              >
+                                <tbody>
+                                  <tr
+                                    style={{
+                                      backgroundColor: '#eee',
+                                    }}
+                                  >
+                                    <th
+                                      style={{
+                                        fontSize: 12,
+                                        color: '#5b5b5b',
+                                        fontWeight: 'normal',
+                                        lineHeight: 1.6,
+                                        verticalAlign: 'top',
+                                        padding: '5px 10px 7px 5px',
+                                      }}
+                                      width='30%'
+                                      align='left'
+                                    >
+                                      Name
+                                    </th>
+                                    <th
+                                      style={{
+                                        fontSize: 12,
+                                        color: '#5b5b5b',
+                                        fontWeight: 'normal',
+                                        lineHeight: 1.6,
+                                        verticalAlign: 'center',
+                                      }}
+                                      align='left'
+                                    >
+                                      Quantity
+                                    </th>
+                                    <th
+                                      style={{
+                                        fontSize: 12,
+                                        color: '#1e2b33',
+                                        fontWeight: 'normal',
+                                        lineHeight: 1.6,
+                                        verticalAlign: 'center',
+                                      }}
+                                      align='left'
+                                    >
+                                      Unit Price
+                                    </th>
+                                    <th
+                                      style={{
+                                        fontSize: 12,
+                                        color: '#1e2b33',
+                                        fontWeight: 'normal',
+                                        lineHeight: 1.6,
+                                        verticalAlign: 'center',
+                                      }}
+                                      align='left'
+                                    >
+                                      {/* Unit Price */}
+                                    </th>
+                                  </tr>
+
+                                  {orderDetailState.data['products'].map(
+                                    (item) => {
+                                      return (
+                                        <>
+                                          <tr>
+                                            <td
+                                              height={1}
+                                              style={{
+                                                background: '#bebebe',
+                                              }}
+                                              colSpan={4}
+                                            />
+                                          </tr>
+                                          <tr>
+                                            <td height={10} colSpan={4} />
+                                          </tr>
+                                          <tr>
+                                            <td
+                                              width='30%'
+                                              style={{
+                                                fontSize: 12,
+                                                color: '#ff0000',
+                                                lineHeight: 1.6,
+                                                verticalAlign: 'top',
+                                                padding: '10px 0',
+                                              }}
+                                              className='article'
+                                            >
+                                              {item.name}
+                                            </td>
+
+                                            <td
+                                              style={{
+                                                fontSize: 12,
+                                                color: '#646a6e',
+                                                lineHeight: 1.6,
+                                                verticalAlign: 'top',
+                                                padding: '10px 0',
+                                              }}
+                                              align='left'
+                                            >
+                                              {item.quantity}
+                                            </td>
+                                            <td
+                                              style={{
+                                                fontSize: 12,
+                                                color: '#1e2b33',
+                                                lineHeight: 1.6,
+                                                verticalAlign: 'top',
+                                                padding: '10px 0',
+                                              }}
+                                              align='left'
+                                            >
+                                              {item.unitPrice}
+                                            </td>
+
+                                            <td
+                                              style={{
+                                                fontSize: 12,
+
+                                                color: '#1e2b33',
+                                                lineHeight: 1.6,
+                                                verticalAlign: 'top',
+                                                padding: '10px 0',
+                                              }}
+                                              align='left'
+                                            >
+                                              {item.quantity * item.unitPrice}
+                                            </td>
+                                          </tr>
+                                        </>
+                                      );
+                                    }
+                                  )}
+                                  <tr>
+                                    <td
+                                      height={1}
+                                      colSpan={4}
+                                      style={{
+                                        borderBottom: '1px solid #eee',
+                                      }}
+                                    />
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td height={20} />
+                          </tr>
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            )}
+          <table
+            width='100%'
+            border={0}
+            cellPadding={0}
+            cellSpacing={0}
+            align='center'
+            className='fullTable'
+            bgcolor='#fff'
+          >
+            <tbody>
+              <tr>
+                <td>
+                  <table
+                    width={600}
+                    border={0}
+                    cellPadding={0}
+                    cellSpacing={0}
+                    align='center'
+                    className='fullTable'
+                    bgcolor='#ffffff'
+                  >
+                    <tbody
+                      style={{
+                        marginBottom: '20px',
+                      }}
+                    >
+                      <tr>
+                        <td>
+                          {/* Table Total */}
+                          <table
+                            style={{
+                              marginBottom: '50px',
+                              marginTop: '30px',
+                            }}
+                            width={570}
+                            border={0}
+                            cellPadding={0}
+                            cellSpacing={0}
+                            align='center'
+                            className='fullPadding'
+                          >
+                            <tbody>
+                              <tr>
+                                <td
+                                  style={{
+                                    fontSize: 12,
+                                    color: '#646a6e',
+                                    lineHeight: 1.6,
+                                    verticalAlign: 'top',
+                                    textAlign: 'right',
+                                  }}
+                                >
+                                  Total Price
+                                </td>
+                                <td
+                                  style={{
+                                    fontSize: 13,
+                                    color: '#646a6e',
+                                    lineHeight: 1.6,
+                                    verticalAlign: 'top',
+                                    textAlign: 'right',
+                                    whiteSpace: 'nowrap',
+                                    fontWeight: '600',
+                                    marginBottom: '5px',
+                                  }}
+                                  width={80}
+                                >
+                                  {orderDetailState.data['total']}
+                                </td>
+                              </tr>
+                              <tr>
+                                <td
+                                  style={{
+                                    fontSize: 12,
+                                    color: '#646a6e',
+                                    lineHeight: 1.6,
+                                    verticalAlign: 'top',
+                                    textAlign: 'right',
+                                  }}
+                                >
+                                  Shipping &amp; Delivery
+                                </td>
+                                <td
+                                  style={{
+                                    fontSize: 12,
+                                    color: '#646a6e',
+                                    lineHeight: 1.6,
+                                    verticalAlign: 'top',
+                                    textAlign: 'right',
+                                  }}
+                                >
+                                  {orderDetailState.data &&
+                                  orderDetailState.data['total'] > 5000
+                                    ? 'Free'
+                                    : orderDetailState.data &&
+                                      orderDetailState.data[
+                                        'deliveryCharge'
+                                      ] === 0
+                                    ? 'Free'
+                                    : `-${
+                                        orderDetailState.data &&
+                                        orderDetailState.data['deliveryCharge']
+                                      }`}
+                                </td>
+                              </tr>
+                              <tr>
+                                <td
+                                  style={{
+                                    fontSize: 12,
+                                    color: '#000',
+                                    lineHeight: 1.6,
+                                    verticalAlign: 'top',
+                                    textAlign: 'right',
+                                  }}
+                                >
+                                  <strong>Grand Total (Incl.Delivery)</strong>
+                                </td>
+                                <td
+                                  style={{
+                                    fontSize: 12,
+                                    color: '#000',
+                                    lineHeight: 1.6,
+                                    verticalAlign: 'top',
+                                    textAlign: 'right',
+                                  }}
+                                >
+                                  <strong>
+                                    {orderDetailState.data['total'] -
+                                      orderDetailState.data['deliveryCharge'] ||
+                                      0}
+                                  </strong>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </>
+    );
+  }
+}
+
+const OrderInvoice = ({ id, setShowInvoice, showInvoice }) => {
   const [orderDetailState, handleOrderDetailFetch] = useHandleFetch(
     {},
     'orderDetail'
   );
+  const componentRef = useRef();
+
+  const ref = React.createRef();
+  const options = {
+    orientation: 'a4',
+    unit: 'in',
+    format: [4, 2],
+  };
+
+  const [invoiceSettingsState, handlSiteInvoiceSettingsFetch] = useHandleFetch(
+    {},
+    'invoiceSettingsDetail'
+  );
+
+  useEffect(() => {
+    const getSiteSettings = async () => {
+      const invoiceSettingsRes = await handlSiteInvoiceSettingsFetch({});
+      // console.log('siteSettingsRes', siteSettingsRes);
+    };
+    getSiteSettings();
+  }, []);
 
   useEffect(() => {
     const getOrderDetail = async () => {
@@ -44,882 +723,72 @@ const QuickEdit = ({ id, setShowInvoice, showInvoice }) => {
         margin: '0',
         padding: '10px',
       }}
+      style={{
+        top: '40px',
+      }}
       onCancel={() => setShowInvoice(false)}
-      width={'60vw'}
+      width={'48vw'}
       okText='Print'
       onOk={() => handleOk()}
+      footer={false}
     >
       {orderDetailState.isLoading && <Spin />}
       {orderDetailState.data && Object.keys(orderDetailState.data).length > 0 && (
         <>
-          <div className='invoiceContainer'>
-            <table
-              width='100%'
-              border={0}
-              cellPadding={0}
-              cellSpacing={0}
-              align='center'
-              className='fullTable'
-              bgcolor='#e1e1e1'
+          <div
+            style={{
+              display: 'flex',
+              width: '100%',
+              justifyContent: 'flex-end',
+              padding: '20px 20px 20px 20px',
+            }}
+          >
+            <ReactToPdf
+              targetRef={ref}
+              y={15}
+              x={25}
+              filename={`order-${orderDetailState.data['shortCode']}-invoice`}
+              options={{
+                orientation: 'a4',
+              }}
             >
-              <tbody>
-                <tr>
-                  <td height={20} />
-                </tr>
-                <tr>
-                  <td>
-                    <table
-                      width={600}
-                      border={0}
-                      cellPadding={0}
-                      cellSpacing={0}
-                      align='center'
-                      className='fullTable'
-                      bgcolor='#ffffff'
-                      style={{ borderRadius: '10px 10px 0 0' }}
-                    >
-                      <tbody>
-                        <tr className='hiddenMobile'>
-                          <td height={40} />
-                        </tr>
-                        <tr className='visibleMobile'>
-                          <td height={30} />
-                        </tr>
-                        <tr>
-                          <td>
-                            <table
-                              width={480}
-                              border={0}
-                              cellPadding={0}
-                              cellSpacing={0}
-                              align='center'
-                              className='fullPadding'
-                            >
-                              <tbody>
-                                <tr>
-                                  <td>
-                                    <table
-                                      width={220}
-                                      border={0}
-                                      cellPadding={0}
-                                      cellSpacing={0}
-                                      align='left'
-                                      className='col'
-                                    >
-                                      <tbody>
-                                        {/* <tr>
-                                                                                    <td align="left">
-                                                                                        {" "}
-                                                                                        // <img
-                                                                                        //     src="http://www.supah.it/dribbble/017/logo.png"
-                                                                                        //     width={32}
-                                                                                        //     height={32}
-                                                                                        //     alt="logo"
-                                                                                        //     border={0}
-                                                                                        // />
-                                                                                    </td>
-                                                                                </tr> */}
-                                        <tr className='hiddenMobile'>
-                                          <td height={40} />
-                                        </tr>
-                                        <tr className='visibleMobile'>
-                                          <td height={20} />
-                                        </tr>
-                                        <tr>
-                                          <td
-                                            style={{
-                                              fontSize: 12,
-                                              color: '#5b5b5b',
-                                              fontFamily:
-                                                '"Open Sans", sans-serif',
-                                              lineHeight: 1.6,
-                                              verticalAlign: 'top',
-                                              textAlign: 'left',
-                                            }}
-                                          >
-                                            Hello,{' '}
-                                            {orderDetailState.data['name']}
-                                            <br /> Thank you for your order.
-                                          </td>
-                                        </tr>
-                                      </tbody>
-                                    </table>
-                                    <table
-                                      width={220}
-                                      border={0}
-                                      cellPadding={0}
-                                      cellSpacing={0}
-                                      align='right'
-                                      className='col'
-                                    >
-                                      <tbody>
-                                        <tr className='visibleMobile'>
-                                          <td height={20} />
-                                        </tr>
-                                        <tr>
-                                          <td height={5} />
-                                        </tr>
-                                        <tr>
-                                          <td
-                                            style={{
-                                              fontSize: 21,
-                                              color: '#ff0000',
-                                              letterSpacing: '-1px',
-                                              fontFamily:
-                                                '"Open Sans", sans-serif',
-                                              lineHeight: 1.6,
-                                              verticalAlign: 'top',
-                                              textAlign: 'right',
-                                            }}
-                                          >
-                                            Invoice
-                                          </td>
-                                        </tr>
-                                        <tr></tr>
-                                        <tr className='hiddenMobile'>
-                                          <td height={50} />
-                                        </tr>
-                                        <tr className='visibleMobile'>
-                                          <td height={20} />
-                                        </tr>
-                                        <tr>
-                                          <td
-                                            style={{
-                                              fontSize: 12,
-                                              color: '#5b5b5b',
-                                              fontFamily:
-                                                '"Open Sans", sans-serif',
-                                              lineHeight: 1.6,
-                                              verticalAlign: 'top',
-                                              textAlign: 'right',
-                                            }}
-                                          >
-                                            <small>ORDER</small> #
-                                            {orderDetailState.data['shortCode']}
-                                            <br />
-                                            <small>
-                                              {orderDetailState.data[
-                                                'date_created'
-                                              ] &&
-                                                moment(
-                                                  orderDetailState.data[
-                                                    'date_created'
-                                                  ]
-                                                ).format(
-                                                  'MMMM Do YYYY, h:mm a'
-                                                )}
-                                            </small>
-                                          </td>
-                                        </tr>
-                                      </tbody>
-                                    </table>
-                                  </td>
-                                </tr>
-                              </tbody>
-                            </table>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            {/* /Header */}
-            {/* Order Details */}
-            {orderDetailState.data &&
-              orderDetailState.data['products'] &&
-              orderDetailState.data['products'].length > 0 && (
-                <table
-                  width='100%'
-                  border={0}
-                  cellPadding={0}
-                  cellSpacing={0}
-                  align='center'
-                  className='fullTable'
-                  bgcolor='#e1e1e1'
+              {({ toPdf }) => (
+                <Button
+                  style={{
+                    marginRight: '15px',
+                  }}
+                  onClick={toPdf}
+                  // type="primary"
+                  className='btnPrimaryClassNameoutline'
+                  icon={<FilePdfOutlined />}
                 >
-                  <tbody>
-                    <tr>
-                      <td>
-                        <table
-                          width={600}
-                          border={0}
-                          cellPadding={0}
-                          cellSpacing={0}
-                          align='center'
-                          className='fullTable'
-                          bgcolor='#ffffff'
-                        >
-                          <tbody>
-                            <tr></tr>
-                            <tr className='hiddenMobile'>
-                              <td height={60} />
-                            </tr>
-                            <tr className='visibleMobile'>
-                              <td height={40} />
-                            </tr>
-                            <tr>
-                              <td>
-                                <table
-                                  width={480}
-                                  border={0}
-                                  cellPadding={0}
-                                  cellSpacing={0}
-                                  align='center'
-                                  className='fullPadding'
-                                >
-                                  <tbody>
-                                    <tr>
-                                      <th
-                                        style={{
-                                          fontSize: 12,
-                                          fontFamily: '"Open Sans", sans-serif',
-                                          color: '#5b5b5b',
-                                          fontWeight: 'normal',
-                                          lineHeight: 1.6,
-                                          verticalAlign: 'top',
-                                          padding: '0 10px 7px 0',
-                                        }}
-                                        width='52%'
-                                        align='left'
-                                      >
-                                        Name
-                                      </th>
-
-                                      <th
-                                        style={{
-                                          fontSize: 12,
-                                          fontFamily: '"Open Sans", sans-serif',
-                                          color: '#5b5b5b',
-                                          fontWeight: 'normal',
-                                          lineHeight: 1.6,
-                                          verticalAlign: 'top',
-                                          padding: '0 0 7px',
-                                        }}
-                                        align='center'
-                                      ></th>
-                                      <th
-                                        style={{
-                                          fontSize: 12,
-                                          fontFamily: '"Open Sans", sans-serif',
-                                          color: '#5b5b5b',
-                                          fontWeight: 'normal',
-                                          lineHeight: 1.6,
-                                          verticalAlign: 'top',
-                                          padding: '0 0 7px',
-                                        }}
-                                        align='center'
-                                      >
-                                        Quantity
-                                      </th>
-                                      <th
-                                        style={{
-                                          fontSize: 12,
-                                          fontFamily: '"Open Sans", sans-serif',
-                                          color: '#1e2b33',
-                                          fontWeight: 'normal',
-                                          lineHeight: 1.6,
-                                          verticalAlign: 'top',
-                                          padding: '0 0 7px',
-                                        }}
-                                        align='right'
-                                      >
-                                        Unit Price
-                                      </th>
-                                    </tr>
-
-                                    {orderDetailState.data['products'].map(
-                                      (item) => {
-                                        return (
-                                          <>
-                                            <tr>
-                                              <td
-                                                height={1}
-                                                style={{
-                                                  background: '#bebebe',
-                                                }}
-                                                colSpan={4}
-                                              />
-                                            </tr>
-                                            <tr>
-                                              <td height={10} colSpan={4} />
-                                            </tr>
-                                            <tr>
-                                              <td
-                                                style={{
-                                                  fontSize: 12,
-                                                  fontFamily:
-                                                    '"Open Sans", sans-serif',
-                                                  color: '#ff0000',
-                                                  lineHeight: 1.6,
-                                                  verticalAlign: 'top',
-                                                  padding: '10px 0',
-                                                }}
-                                                className='article'
-                                              >
-                                                {item.name}
-                                              </td>
-
-                                              <td
-                                                style={{
-                                                  fontSize: 12,
-                                                  fontFamily:
-                                                    '"Open Sans", sans-serif',
-                                                  color: '#646a6e',
-                                                  lineHeight: 1.6,
-                                                  verticalAlign: 'top',
-                                                  padding: '10px 0',
-                                                }}
-                                                align='center'
-                                              >
-                                                {item.quantity}
-                                              </td>
-                                              <td
-                                                style={{
-                                                  fontSize: 12,
-                                                  fontFamily:
-                                                    '"Open Sans", sans-serif',
-                                                  color: '#1e2b33',
-                                                  lineHeight: 1.6,
-                                                  verticalAlign: 'top',
-                                                  padding: '10px 0',
-                                                }}
-                                                align='right'
-                                              >
-                                                {item.quantity * item.unitPrice}
-                                              </td>
-                                            </tr>
-                                          </>
-                                        );
-                                      }
-                                    )}
-                                    <tr>
-                                      <td
-                                        height={1}
-                                        colSpan={4}
-                                        style={{
-                                          borderBottom: '1px solid #e4e4e4',
-                                        }}
-                                      />
-                                    </tr>
-                                  </tbody>
-                                </table>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td height={20} />
-                            </tr>
-                          </tbody>
-                        </table>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+                  Download as pdf
+                </Button>
               )}
-            {/* /Order Details */}
-            {/* Total */}
-            <table
-              width='100%'
-              border={0}
-              cellPadding={0}
-              cellSpacing={0}
-              align='center'
-              className='fullTable'
-              bgcolor='#e1e1e1'
-            >
-              <tbody>
-                <tr>
-                  <td>
-                    <table
-                      width={600}
-                      border={0}
-                      cellPadding={0}
-                      cellSpacing={0}
-                      align='center'
-                      className='fullTable'
-                      bgcolor='#ffffff'
-                    >
-                      <tbody>
-                        <tr>
-                          <td>
-                            {/* Table Total */}
-                            <table
-                              width={480}
-                              border={0}
-                              cellPadding={0}
-                              cellSpacing={0}
-                              align='center'
-                              className='fullPadding'
-                            >
-                              <tbody>
-                                <tr>
-                                  <td
-                                    style={{
-                                      fontSize: 12,
-                                      fontFamily: '"Open Sans", sans-serif',
-                                      color: '#646a6e',
-                                      lineHeight: 1.6,
-                                      verticalAlign: 'top',
-                                      textAlign: 'right',
-                                    }}
-                                  >
-                                    Total
-                                  </td>
-                                  <td
-                                    style={{
-                                      fontSize: 12,
-                                      fontFamily: '"Open Sans", sans-serif',
-                                      color: '#646a6e',
-                                      lineHeight: 1.6,
-                                      verticalAlign: 'top',
-                                      textAlign: 'right',
-                                      whiteSpace: 'nowrap',
-                                    }}
-                                    width={80}
-                                  >
-                                    {orderDetailState.data['total']}
-                                  </td>
-                                </tr>
-                                {/* <tr>
-                                                                    <td
-                                                                        style={{
-                                                                            fontSize: 12,
-                                                                            fontFamily: '"Open Sans", sans-serif',
-                                                                            color: "#646a6e",
-                                                                            lineHeight: 1.6,
-                                                                            verticalAlign: "top",
-                                                                            textAlign: "right"
-                                                                        }}
-                                                                    >
-                                                                        Shipping &amp; Handling
-                        </td>
-                                                                    <td
-                                                                        style={{
-                                                                            fontSize: 12,
-                                                                            fontFamily: '"Open Sans", sans-serif',
-                                                                            color: "#646a6e",
-                                                                            lineHeight: 1.6,
-                                                                            verticalAlign: "top",
-                                                                            textAlign: "right"
-                                                                        }}
-                                                                    >
-                                                                        $15.00
-                        </td>
-                                                                </tr> */}
-                                {/* <tr>
-                                                                    <td
-                                                                        style={{
-                                                                            fontSize: 12,
-                                                                            fontFamily: '"Open Sans", sans-serif',
-                                                                            color: "#000",
-                                                                            lineHeight: 1.6,
-                                                                            verticalAlign: "top",
-                                                                            textAlign: "right"
-                                                                        }}
-                                                                    >
-                                                                        <strong>Grand Total (Incl.Tax)</strong>
-                                                                    </td>
-                                                                    <td
-                                                                        style={{
-                                                                            fontSize: 12,
-                                                                            fontFamily: '"Open Sans", sans-serif',
-                                                                            color: "#000",
-                                                                            lineHeight: 1.6,
-                                                                            verticalAlign: "top",
-                                                                            textAlign: "right"
-                                                                        }}
-                                                                    >
-                                                                        <strong>$344.90</strong>
-                                                                    </td>
-                                                                </tr> */}
-                                {/* <tr>
-                                                                    <td
-                                                                        style={{
-                                                                            fontSize: 12,
-                                                                            fontFamily: '"Open Sans", sans-serif',
-                                                                            color: "#b0b0b0",
-                                                                            lineHeight: 1.6,
-                                                                            verticalAlign: "top",
-                                                                            textAlign: "right"
-                                                                        }}
-                                                                    >
-                                                                        <small>TAX</small>
-                                                                    </td>
-                                                                    <td
-                                                                        style={{
-                                                                            fontSize: 12,
-                                                                            fontFamily: '"Open Sans", sans-serif',
-                                                                            color: "#b0b0b0",
-                                                                            lineHeight: 1.6,
-                                                                            verticalAlign: "top",
-                                                                            textAlign: "right"
-                                                                        }}
-                                                                    >
-                                                                        <small>$72.40</small>
-                                                                    </td>
-                                                                </tr> */}
-                              </tbody>
-                            </table>
-                            {/* /Table Total */}
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            {/* /Total */}
-            {/* Information */}
-            <table
-              width='100%'
-              border={0}
-              cellPadding={0}
-              cellSpacing={0}
-              align='center'
-              className='fullTable'
-              bgcolor='#e1e1e1'
-            >
-              <tbody>
-                <tr>
-                  <td>
-                    <table
-                      width={600}
-                      border={0}
-                      cellPadding={0}
-                      cellSpacing={0}
-                      align='center'
-                      className='fullTable'
-                      bgcolor='#ffffff'
-                    >
-                      <tbody>
-                        <tr></tr>
-                        <tr className='hiddenMobile'>
-                          <td height={60} />
-                        </tr>
-                        <tr className='visibleMobile'>
-                          <td height={40} />
-                        </tr>
-                        <tr>
-                          <td>
-                            <table
-                              width={480}
-                              border={0}
-                              cellPadding={0}
-                              cellSpacing={0}
-                              align='center'
-                              className='fullPadding'
-                            >
-                              <tbody>
-                                <tr>
-                                  <td>
-                                    <table
-                                      width={220}
-                                      border={0}
-                                      cellPadding={0}
-                                      cellSpacing={0}
-                                      align='left'
-                                      className='col'
-                                    >
-                                      <tbody>
-                                        <tr>
-                                          <td
-                                            style={{
-                                              fontSize: 11,
-                                              fontFamily:
-                                                '"Open Sans", sans-serif',
-                                              color: '#5b5b5b',
-                                              lineHeight: 1.6,
-                                              verticalAlign: 'top',
-                                            }}
-                                          >
-                                            <strong>BILLING INFORMATION</strong>
-                                          </td>
-                                        </tr>
-                                        <tr>
-                                          <td width='100%' height={10} />
-                                        </tr>
-                                        <tr>
-                                          <td
-                                            style={{
-                                              fontSize: 12,
-                                              fontFamily:
-                                                '"Open Sans", sans-serif',
-                                              color: '#5b5b5b',
-                                              lineHeight: 1.6,
-                                              verticalAlign: 'top',
-                                            }}
-                                          >
-                                            {orderDetailState.data['name']}
-                                            <br />{' '}
-                                            {orderDetailState.data['country']}
-                                            <br />{' '}
-                                            {orderDetailState.data['city']}
-                                            <br />
-                                            {orderDetailState.data['address']}
-                                            <br />{' '}
-                                            {orderDetailState.data['phone']}
-                                            <br />{' '}
-                                            {orderDetailState.data['email']}
-                                          </td>
-                                        </tr>
-                                      </tbody>
-                                    </table>
-                                    <table
-                                      width={220}
-                                      border={0}
-                                      cellPadding={0}
-                                      cellSpacing={0}
-                                      align='right'
-                                      className='col'
-                                    >
-                                      <tbody>
-                                        <tr className='visibleMobile'>
-                                          <td height={20} />
-                                        </tr>
-                                        <tr>
-                                          <td
-                                            style={{
-                                              fontSize: 11,
-                                              fontFamily:
-                                                '"Open Sans", sans-serif',
-                                              color: '#5b5b5b',
-                                              lineHeight: 1.6,
-                                              verticalAlign: 'top',
-                                            }}
-                                          >
-                                            <strong>Status</strong>
-                                          </td>
-                                        </tr>
-                                        <tr>
-                                          <td width='100%' height={10} />
-                                        </tr>
-                                        <tr>
-                                          <td
-                                            style={{
-                                              fontSize: 12,
-                                              fontFamily:
-                                                '"Open Sans", sans-serif',
-                                              color: '#5b5b5b',
-                                              lineHeight: 1.6,
-                                              verticalAlign: 'top',
-                                            }}
-                                          >
-                                            {
-                                              orderDetailState.data[
-                                                'paymentStatus'
-                                              ]
-                                            }
-                                          </td>
-                                        </tr>
-                                      </tbody>
-                                    </table>
-                                  </td>
-                                </tr>
-                              </tbody>
-                            </table>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <table
-                              width={480}
-                              border={0}
-                              cellPadding={0}
-                              cellSpacing={0}
-                              align='center'
-                              className='fullPadding'
-                            >
-                              <tbody>
-                                <tr>
-                                  <td>
-                                    <table
-                                      width={220}
-                                      border={0}
-                                      cellPadding={0}
-                                      cellSpacing={0}
-                                      align='left'
-                                      className='col'
-                                    >
-                                      <tbody>
-                                        <tr className='hiddenMobile'>
-                                          <td height={35} />
-                                        </tr>
-                                        <tr className='visibleMobile'>
-                                          <td height={20} />
-                                        </tr>
-                                        <tr>
-                                          {/* <td
-                                                                                        style={{
-                                                                                            fontSize: 11,
-                                                                                            fontFamily: '"Open Sans", sans-serif',
-                                                                                            color: "#5b5b5b",
-                                                                                            lineHeight: 1.6,
-                                                                                            verticalAlign: "top"
-                                                                                        }}
-                                                                                    >
-                                                                                        <strong>SHIPPING INFORMATION</strong>
-                                                                                    </td> */}
-                                        </tr>
-                                        <tr>
-                                          <td width='100%' height={10} />
-                                        </tr>
-                                        <tr>
-                                          {/* <td
-                                                                                        style={{
-                                                                                            fontSize: 12,
-                                                                                            fontFamily: '"Open Sans", sans-serif',
-                                                                                            color: "#5b5b5b",
-                                                                                            lineHeight: 1.6,
-                                                                                            verticalAlign: "top"
-                                                                                        }}
-                                                                                    >
-                                                                                        Sup Inc
-                                  <br /> Another Place, Somewhere
-                                  <br /> New York NY
-                                  <br /> 4468, United States
-                                  <br /> T: 202-555-0171
-                                </td> */}
-                                        </tr>
-                                      </tbody>
-                                    </table>
-                                    <table
-                                      width={220}
-                                      border={0}
-                                      cellPadding={0}
-                                      cellSpacing={0}
-                                      align='right'
-                                      className='col'
-                                    >
-                                      <tbody>
-                                        <tr className='hiddenMobile'>
-                                          <td height={35} />
-                                        </tr>
-                                        <tr className='visibleMobile'>
-                                          <td height={20} />
-                                        </tr>
-                                        <tr>
-                                          <td
-                                            style={{
-                                              fontSize: 11,
-                                              fontFamily:
-                                                '"Open Sans", sans-serif',
-                                              color: '#5b5b5b',
-                                              lineHeight: 1.6,
-                                              verticalAlign: 'top',
-                                            }}
-                                          >
-                                            {/* <strong>SHIPPING METHOD</strong> */}
-                                          </td>
-                                        </tr>
-                                        <tr>
-                                          <td width='100%' height={10} />
-                                        </tr>
-                                        <tr>
-                                          <td
-                                            style={{
-                                              fontSize: 12,
-                                              fontFamily:
-                                                '"Open Sans", sans-serif',
-                                              color: '#5b5b5b',
-                                              lineHeight: 1.6,
-                                              verticalAlign: 'top',
-                                            }}
-                                          >
-                                            {/* UPS: U.S. Shipping Services */}
-                                          </td>
-                                        </tr>
-                                      </tbody>
-                                    </table>
-                                  </td>
-                                </tr>
-                              </tbody>
-                            </table>
-                          </td>
-                        </tr>
-                        <tr className='hiddenMobile'>
-                          <td height={60} />
-                        </tr>
-                        <tr className='visibleMobile'>
-                          <td height={30} />
-                        </tr>
-                      </tbody>
-                    </table>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            {/* /Information */}
-            <table
-              width='100%'
-              border={0}
-              cellPadding={0}
-              cellSpacing={0}
-              align='center'
-              className='fullTable'
-              bgcolor='#e1e1e1'
-            >
-              <tbody>
-                <tr>
-                  <td>
-                    <table
-                      width={600}
-                      border={0}
-                      cellPadding={0}
-                      cellSpacing={0}
-                      align='center'
-                      className='fullTable'
-                      bgcolor='#ffffff'
-                      style={{ borderRadius: '0 0 10px 10px' }}
-                    >
-                      <tbody>
-                        <tr>
-                          <td>
-                            <table
-                              width={480}
-                              border={0}
-                              cellPadding={0}
-                              cellSpacing={0}
-                              align='center'
-                              className='fullPadding'
-                            >
-                              <tbody>
-                                <tr>
-                                  <td
-                                    style={{
-                                      fontSize: 12,
-                                      color: '#5b5b5b',
-                                      fontFamily: '"Open Sans", sans-serif',
-                                      lineHeight: 1.6,
-                                      verticalAlign: 'top',
-                                      textAlign: 'left',
-                                    }}
-                                  >
-                                    Have a nice day.
-                                  </td>
-                                </tr>
-                              </tbody>
-                            </table>
-                          </td>
-                        </tr>
-                        <tr className='spacer'>
-                          <td height={50} />
-                        </tr>
-                      </tbody>
-                    </table>
-                  </td>
-                </tr>
-                <tr>
-                  <td height={20} />
-                </tr>
-              </tbody>
-            </table>
+            </ReactToPdf>
+            <ReactToPrint
+              documentTitle='Order Invoice'
+              trigger={() => (
+                <Button
+                  // type="primary"
+                  className='btnPrimaryClassNameoutline'
+                  icon={<PrinterOutlined />}
+                >
+                  Print
+                </Button>
+              )}
+              content={() => componentRef.current}
+            />
           </div>
-          ;
+          <ComponentToPrint
+            ref={componentRef}
+            anotherRef={ref}
+            invoiceSettingsState={invoiceSettingsState}
+            orderDetailState={orderDetailState}
+          />
         </>
       )}
     </Modal>
   );
 };
-export default QuickEdit;
+export default OrderInvoice;

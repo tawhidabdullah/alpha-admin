@@ -575,14 +575,6 @@
       "url": "/admin/api/settings/invoice",
       "method": "get"
     },
-    "configureSMS": {
-      "url": "/admin/api/sms/configuration",
-      "method": "get"
-    },
-    "getSMSConfiguration": {
-      "url": "/admin/api/sms/configure",
-      "method": "post"
-    },
     "sendSMS": {
       "url": "/admin/api/sms/inbox/send",
       "method": "post"
@@ -657,7 +649,7 @@
       "method": "get"
     },
     "getSetEmailList": {
-      "url": "/admin/api/email/inbox?limit=limitCount",
+      "url": "/admin/api/email/inbox?limit=limitCount&sort=sortItemValue&sortOrder=sortOrderValue",
       "method": "get"
     },
     "getEmailDetails": {
@@ -668,6 +660,44 @@
       "url": "/admin/api/email/inbox/send",
       "method": "post"
     },
+
+    "getSMSConfiguration": {
+      "url": "/admin/api/sms/configuration",
+      "method": "get"
+    },
+    "configureSMS": {
+      "url": "/admin/api/sms/configure",
+      "method": "post"
+    },
+    "getAutoSMSConfiguration": {
+      "url": "/admin/api/sms/autoevents",
+      "method": "get"
+    },
+    "configureAutoSMS": {
+      "url": "/admin/api/sms/configure/autoevents",
+      "method": "post"
+    },
+    "configureAutoSMSTemplate": {
+      "url": "/admin/api/sms/configure/template",
+      "method": "post"
+    },
+    "getConfigureAutoSMSTemplate": {
+      "url": "/admin/api/sms/autoevents/templates/:eventName",
+      "method": "get"
+    },
+    "getSentSMSList": {
+      "url": "/admin/api/sms/inbox?limit=limitCount&sort=sortItemValue&sortOrder=sortOrderValue",
+      "method": "get"
+    },
+    "getSMSDetails": {
+      "url": "/admin/api/sms/inbox/:id",
+      "method": "get"
+    },
+    "sendCustomSMS": {
+      "url": "/admin/api/sms/inbox/send",
+      "method": "post"
+    },
+
     "login": {
       "url": "/admin/auth/login",
       "method": "post"

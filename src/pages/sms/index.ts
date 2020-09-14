@@ -1,2 +1,2 @@
-import Sms from "./Sms";
-export default Sms; 
+import SMS from './SMS';
+export default SMS;

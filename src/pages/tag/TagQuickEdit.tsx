@@ -1,4 +1,5 @@
-import React, { useState,useEffect } from 'react';
+// @ts-nocheck
+import React, { useState, useEffect } from 'react';
 import { Modal, notification } from 'antd';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
@@ -7,227 +8,236 @@ import * as Yup from 'yup';
 import Input from '../../components/Field/Input';
 import TextArea from '../../components/Field/TextArea';
 import { useHandleFetch } from '../../hooks';
-import { CheckCircleOutlined, PlusOutlined, EditOutlined, DeleteOutlined, EditFilled } from '@ant-design/icons';
-import MetaTags from "../../pages/category/MetaTags";
-
+import { CheckCircleOutlined } from '@ant-design/icons';
+import MetaTags from '../../pages/category/MetaTags';
 
 const validationSchema = Yup.object().shape({
-    name: Yup.string().label('Name').required('Name is required').min(3, 'Name must have at least 3 characters'),
+  name: Yup.string()
+    .label('Name')
+    .required('Name is required')
+    .min(3, 'Name must have at least 3 characters'),
 });
 
-
-
 const openSuccessNotification = (message?: any) => {
-    notification.success({
-        message: message || 'Tag Updated',
-        description: '',
-        icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
-    });
+  notification.success({
+    message: message || 'Tag Updated',
+    description: '',
+    icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
+  });
 };
-
 
 const openErrorNotification = (message?: any) => {
-    notification.success({
-        message: message || 'Something Went Wrong',
-        description: '',
-        icon: <CheckCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
-    });
+  notification.success({
+    message: message || 'Something Went Wrong',
+    description: '',
+    icon: <CheckCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
+  });
 };
 
-
 const initialValues = {
-    name: '',
-	bnName: '',
-	description: '',
-	bnDescription: '',
-	metaTitle: '',
-	bnMetaTitle: '',
-	metaDescription: '',
-	bnMetaDescription: '',
-	metaTags: '',
-	bnMetaTags: '',
-}
-
-
-
-
+  name: '',
+  bnName: '',
+  description: '',
+  bnDescription: '',
+  metaTitle: '',
+  bnMetaTitle: '',
+  metaDescription: '',
+  bnMetaDescription: '',
+  metaTags: '',
+  bnMetaTags: '',
+};
 
 interface Props {
-    tagEditVisible?: any;
-    setTagEditVisible?: any;
-    tagDetailData?: any;
-    setTagList?:any; 
-    tagList?:any; 
+  tagEditVisible?: any;
+  setTagEditVisible?: any;
+  tagDetailData?: any;
+  setTagList?: any;
+  tagList?: any;
 }
 
-const QuickEdit = ({ tagEditVisible, setTagEditVisible, tagDetailData,setTagList,tagList }: Props) => {
-    const [updateTagState, handleUpdateCategoryFetch] = useHandleFetch({}, 'updateTag');
-    const [tags,setTags] = useState([]);
-    const [bnTags,setBnTags] = useState([]);
-    
+const QuickEdit = ({
+  tagEditVisible,
+  setTagEditVisible,
+  tagDetailData,
+  setTagList,
+  tagList,
+}: Props) => {
+  const [updateTagState, handleUpdateCategoryFetch] = useHandleFetch(
+    {},
+    'updateTag'
+  );
+  const [tags, setTags] = useState([]);
+  const [bnTags, setBnTags] = useState([]);
 
-    const handleSubmit = async (values: any, actions: any) => {
-        const updateTagRes = await handleUpdateCategoryFetch({
-            urlOptions: {
-                placeHolders: {
-                    id: values.id,
-                }
-            },
-            body: {
-                name: values.name,
-                description: values.description,
-                metaTitle: values.metaTitle,
-                metaDescription: values.metaDescription,
-                metaTags: tags.join(','),
+  const handleSubmit = async (values: any, actions: any) => {
+    const updateTagRes = await handleUpdateCategoryFetch({
+      urlOptions: {
+        placeHolders: {
+          id: values.id,
+        },
+      },
+      body: {
+        name: values.name,
+        description: values.description,
+        metaTitle: values.metaTitle,
+        metaDescription: values.metaDescription,
+        metaTags: tags.join(','),
 
-                bn: {
-					metaTitle: values.bnMetaTitle,
-					metaDescription: values.bnMetaDescription,
-					metaTags: bnTags.join(','),
-					name: values.bnName.trim(),
-					description: values.bnDescription,
-                }
-                
-            },
-        });
+        // bn: {
+        // 	metaTitle: values.bnMetaTitle,
+        // 	metaDescription: values.bnMetaDescription,
+        // 	metaTags: bnTags.join(','),
+        // 	name: values.bnName.trim(),
+        // 	description: values.bnDescription,
+        // }
+      },
+    });
 
-        // @ts-ignore
-        if (updateTagRes && updateTagRes.status === 'ok') {
-     
+    // @ts-ignore
+    if (updateTagRes && updateTagRes.status === 'ok') {
+      const positionInTag = () => {
+        return tagList.map((item) => item.id).indexOf(values.id);
+      };
 
-			const positionInTag = () => {
-				return tagList.map(item => item.id).indexOf(values.id);
-			}
+      const index = positionInTag();
 
-			const index = positionInTag();
+      // @ts-ignore
+      const updatedItem = Object.assign({}, tagList[index], {
+        // @ts-check
+        ...updateTagRes,
+      });
+      const updateTagList = [
+        ...tagList.slice(0, index),
+        updatedItem,
+        ...tagList.slice(index + 1),
+      ];
+      setTagList(updateTagList);
 
-			// @ts-ignore
-			const updatedItem = Object.assign({}, tagList[index], { ...updateTagRes });
-			const updateTagList = [...tagList.slice(0, index), updatedItem, ...tagList.slice(index + 1)];
-			setTagList(updateTagList);
+      console.log('categoryupdateTagRes', updateTagRes);
+      openSuccessNotification();
+      setTagEditVisible(false);
 
+      // const positionInTag = () => {
+      //     return tagList.map(item => item.id).indexOf(category.id);
+      // }
 
-            console.log('categoryupdateTagRes',updateTagRes);
-            openSuccessNotification();
-			setTagEditVisible(false)
+      // const index = positionInTag();
 
-            // const positionInTag = () => {
-            //     return tagList.map(item => item.id).indexOf(category.id);
-            // }
+      // const updatedItem = Object.assign({}, tagList[index], { ...updateTagRes });
+      // const updateTagList = [...tagList.slice(0, index), updatedItem, ...tagList.slice(index + 1)];
+      // setTagList(updateTagList);
+    } else {
+      openErrorNotification();
+    }
 
-            // const index = positionInTag();
+    actions.setSubmitting(false);
+  };
 
-            // const updatedItem = Object.assign({}, tagList[index], { ...updateTagRes });
-            // const updateTagList = [...tagList.slice(0, index), updatedItem, ...tagList.slice(index + 1)];
-            // setTagList(updateTagList);
+  const handleCancel = (e: any) => {
+    setTagEditVisible(false);
+  };
 
-        }
-        else {
-            openErrorNotification();
-        }
+  const getisSubmitButtonDisabled = (values, isValid) => {
+    if (!values.name || !isValid) {
+      return true;
+    }
+    return false;
+  };
 
-        actions.setSubmitting(false);
-    };
+  // useEffect(()=>{
 
+  //     if(tagDetailData && Object.keys(tagDetailData).length > 0){
+  //         const metaTags = tagDetailData.metaTags.split(',');
 
-    const handleCancel = (e: any) => {
-        setTagEditVisible(false);
-    };
+  //         console.log('localMetaTags',metaTags);
 
+  //         const bnMetaTags = tagDetailData.bn['metaTags'].split(',');
 
-    const getisSubmitButtonDisabled = (values, isValid) => {
-        if (!values.name || !isValid) {
-            return true;
-        }
-        return false;
-    }; 
+  //         setTags(metaTags)
+  //         setBnTags(bnMetaTags)
+  //     }
 
+  // },[]);
 
-    // useEffect(()=>{
+  console.log('tagDetailData', tagDetailData);
 
-    //     if(tagDetailData && Object.keys(tagDetailData).length > 0){
-    //         const metaTags = tagDetailData.metaTags.split(','); 
-
-    //         console.log('localMetaTags',metaTags);
-           
-    //         const bnMetaTags = tagDetailData.bn['metaTags'].split(','); 
-
-    //         setTags(metaTags)
-    //         setBnTags(bnMetaTags)
-    //     }
-
-    // },[]); 
-
-
-    console.log('tagDetailData',tagDetailData);
-
-
- 
-
-    return (
-        <Formik
-            onSubmit={(values, actions) => handleSubmit(values, actions)}
-            validationSchema={validationSchema}
-            validateOnBlur={false}
-            enableReinitialize={true}
-            initialValues={{
-                ...initialValues, 
-                ...tagDetailData,
-                ...( tagDetailData && Object.keys(tagDetailData).length > 0 && {
-                    bnMetaTitle: tagDetailData['bn']
-                    && tagDetailData['bn'].metaTitle
-                    && tagDetailData['bn'].metaTitle,
-                    bnMetaDescription: tagDetailData['bn'] &&  tagDetailData['bn'].metaDescription && tagDetailData['bn'].metaDescription,
-                    bnName: tagDetailData['bn'] && tagDetailData['bn'].name && tagDetailData['bn'].name,
-                    bnDescription: tagDetailData['bn'] && tagDetailData['bn'].description && tagDetailData['bn'].description,
-                  })
+  return (
+    <Formik
+      onSubmit={(values, actions) => handleSubmit(values, actions)}
+      validationSchema={validationSchema}
+      validateOnBlur={false}
+      enableReinitialize={true}
+      initialValues={{
+        ...initialValues,
+        ...tagDetailData,
+        ...(tagDetailData &&
+          Object.keys(tagDetailData).length > 0 && {
+            bnMetaTitle:
+              tagDetailData['bn'] &&
+              tagDetailData['bn'].metaTitle &&
+              tagDetailData['bn'].metaTitle,
+            bnMetaDescription:
+              tagDetailData['bn'] &&
+              tagDetailData['bn'].metaDescription &&
+              tagDetailData['bn'].metaDescription,
+            bnName:
+              tagDetailData['bn'] &&
+              tagDetailData['bn'].name &&
+              tagDetailData['bn'].name,
+            bnDescription:
+              tagDetailData['bn'] &&
+              tagDetailData['bn'].description &&
+              tagDetailData['bn'].description,
+          }),
+      }}
+    >
+      {({
+        handleChange,
+        values,
+        handleSubmit,
+        errors,
+        isValid,
+        isSubmitting,
+        touched,
+        handleBlur,
+        setFieldTouched,
+        handleReset,
+      }) => (
+        <>
+          <Modal
+            style={{
+              top: '40px',
             }}
-        >
-            {({
-                handleChange,
-                values,
-                handleSubmit,
-                errors,
-                isValid,
-                isSubmitting,
-                touched,
-                handleBlur,
-                setFieldTouched,
-                handleReset,
-            }) => (
-                    <>
-                        <Modal
-                        	style={{
-								top: '40px',
+            title='Tag Edit'
+            visible={tagEditVisible}
+            onOk={(e: any) => handleSubmit(e)}
+            onCancel={handleCancel}
+            okText='Update'
+            okButtonProps={{
+              loading: isSubmitting,
+              htmlType: 'submit',
+            }}
+          >
+            <Input
+              label='Name'
+              value={values.name}
+              name='name'
+              placeHolder={'new,fresh'}
+              isError={
+                (touched.name && errors.name) ||
+                (!isSubmitting && updateTagState.error['error']['name'])
+              }
+              errorString={
+                (touched.name && errors.name) ||
+                (!isSubmitting && updateTagState.error['error']['name'])
+              }
+              onChange={(e: any) => {
+                handleChange(e);
+                setFieldTouched('name');
+              }}
+            />
 
-							}}
-                            title="Tag Edit"
-                            visible={tagEditVisible}
-                            onOk={(e: any) => handleSubmit(e)}
-                            onCancel={handleCancel}
-                            okText='Update'
-							okButtonProps={{
-								loading: isSubmitting,
-								htmlType: "submit",
-							}}
-                        >
-                                 			<Input
-								label='Name'
-								value={values.name}
-								name='name'
-								placeHolder={'new,fresh'}
-								isError={(touched.name && errors.name) ||
-									(!isSubmitting && updateTagState.error['error']['name'])}
-
-								errorString={(touched.name && errors.name) ||
-									(!isSubmitting && updateTagState.error['error']['name'])}
-								onChange={(e: any) => {
-									handleChange(e);
-									setFieldTouched('name');
-								}}
-							/>
-
-							<Input
+            {/* <Input
 								label='BN Name'
 								value={values.bnName}
 								placeHolder={'নতুন,ফ্রেশ'}
@@ -241,26 +251,28 @@ const QuickEdit = ({ tagEditVisible, setTagEditVisible, tagDetailData,setTagList
 									handleChange(e);
 									setFieldTouched('bnName');
 								}}
-							/>
+							/> */}
 
+            <TextArea
+              label='Description'
+              value={values.description}
+              name='description'
+              placeholder={'This tag...'}
+              isError={
+                (touched.description && errors.description) ||
+                (!isSubmitting && updateTagState.error['error']['description'])
+              }
+              errorString={
+                (touched.description && errors.description) ||
+                (!isSubmitting && updateTagState.error['error']['description'])
+              }
+              onChange={(e: any) => {
+                handleChange(e);
+                setFieldTouched('description');
+              }}
+            />
 
-							<TextArea
-								label='Description'
-								value={values.description}
-                                name='description'
-                                placeholder={'This tag...'}
-								isError={(touched.description && errors.description) ||
-									(!isSubmitting && updateTagState.error['error']['description'])}
-
-								errorString={(touched.description && errors.description) ||
-									(!isSubmitting && updateTagState.error['error']['description'])}
-								onChange={(e: any) => {
-									handleChange(e);
-									setFieldTouched('description');
-								}}
-							/>
-
-							<TextArea
+            {/* <TextArea
 								label='BN Description'
 								value={values.bnDescription}
 								placeholder={'এই ট্যাগ...'}
@@ -277,7 +289,7 @@ const QuickEdit = ({ tagEditVisible, setTagEditVisible, tagDetailData,setTagList
 							/>
 
                                 
-<Input
+							<Input
 								label='Meta title'
 								value={values.metaTitle}
 								placeHolder={'category...'}
@@ -363,16 +375,12 @@ const QuickEdit = ({ tagEditVisible, setTagEditVisible, tagDetailData,setTagList
 							// @ts-ignore
 							setTags={setBnTags}
 							tags={bnTags}
-							 />
-
-
-                        </Modal>
-
-                    </>
-                )}
-        </Formik>
-    );
+							 /> */}
+          </Modal>
+        </>
+      )}
+    </Formik>
+  );
 };
-
 
 export default QuickEdit;

@@ -204,8 +204,6 @@ const AddNewBrand = ({
   };
 
   const handleSubmit = async (values: any, actions: any) => {
-    console.log('myReadyToGoImages', myImages);
-
     if (brandDetailData && Object.keys(brandDetailData).length > 0) {
       // @ts-ignore
       const images =
@@ -389,7 +387,7 @@ const AddNewBrand = ({
                 setFieldTouched('name');
               }}
             />
-
+            {/* 
             <Input
               label='BN Name'
               value={values.bnName}
@@ -407,7 +405,7 @@ const AddNewBrand = ({
                 handleChange(e);
                 setFieldTouched('bnName');
               }}
-            />
+            /> */}
 
             <TextArea
               label='Description'
@@ -430,7 +428,7 @@ const AddNewBrand = ({
               }}
             />
 
-            <TextArea
+            {/* <TextArea
               label='BN Description'
               value={values.bnDescription}
               placeholder={'এই ব্র্যান্ড...'}
@@ -449,7 +447,7 @@ const AddNewBrand = ({
                 handleChange(e);
                 setFieldTouched('bnDescription');
               }}
-            />
+            /> */}
 
             <div
               style={{
@@ -540,7 +538,7 @@ const AddNewBrand = ({
               )}
             </div>
 
-            <Input
+            {/* <Input
               label='Meta title'
               value={values.metaTitle}
               placeHolder={'category...'}
@@ -642,7 +640,7 @@ const AddNewBrand = ({
               // @ts-ignore
               setTags={setBnTags}
               tags={bnTags}
-            />
+            /> */}
           </Modal>
 
           <MediaLibrary

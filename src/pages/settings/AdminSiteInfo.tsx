@@ -2,254 +2,257 @@ import React, { useState, useEffect } from 'react';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
-
 import { useHandleFetch } from '../../hooks';
 // import third party ui lib
 import { notification, Button } from 'antd';
 
-import {
-    CheckCircleOutlined
-} from '@ant-design/icons';
-
+import { CheckCircleOutlined } from '@ant-design/icons';
 
 import 'react-quill/dist/quill.snow.css';
 
 // import components
 import Input from '../../components/Field/Input';
 import TextArea from '../../components/Field/TextArea';
-import MediaLibrary from "../../components/MediaLibrary";
-
-
+import MediaLibrary from '../../components/MediaLibrary';
 
 const validationSchema = Yup.object().shape({
-    title: Yup.string()
-        .label('Title')
-        .required('Site title can not be empty'),
-    adminEmail: Yup.string()
-        .label('Admin Email')
-        .required('Admin Email can not be empty'),
-
+  title: Yup.string().label('Title').required('Site title can not be empty'),
+  adminEmail: Yup.string()
+    .label('Admin Email')
+    .required('Admin Email can not be empty'),
 });
 
-
-
 const openSuccessNotification = (message?: any) => {
-    notification.success({
-        message: message || 'Site Info Updated',
-        description: '',
-        icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
-    });
+  notification.success({
+    message: message || 'Site Info Updated',
+    description: '',
+    icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
+  });
 };
-
 
 const openErrorNotification = (message?: any) => {
-    notification.success({
-        message: message || 'Something Went Wrong',
-        description: '',
-        icon: <CheckCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
-    });
+  notification.success({
+    message: message || 'Something Went Wrong',
+    description: '',
+    icon: <CheckCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
+  });
 };
 
-
 const initialValues = {
-    title: '',
-    adminName: '',
-    adminEmail: '',
-}
+  title: '',
+  adminName: '',
+  adminEmail: '',
+  adminPhone: '',
+};
 
+interface Props {}
 
+const UpdateSiteinfo = ({}: Props) => {
+  const [
+    UpdateSiteSettingsState,
+    handleUpdateSiteSettingsFetch,
+  ] = useHandleFetch({}, 'updateSiteSettings');
+  const [siteSettingsState, handlSiteSettingsFetch] = useHandleFetch(
+    {},
+    'siteSettings'
+  );
 
-interface Props {
+  useEffect(() => {
+    const getSiteSettings = async () => {
+      const siteSettingsRes = await handlSiteSettingsFetch({});
 
-
-}
-
-const UpdateSiteinfo = ({ }: Props) => {
-
-    const [UpdateSiteSettingsState, handleUpdateSiteSettingsFetch] = useHandleFetch({}, 'updateSiteSettings');
-    const [siteSettingsState, handlSiteSettingsFetch] = useHandleFetch({}, 'siteSettings');
-
-
-
-    useEffect(() => {
-        const getSiteSettings = async () => {
-            const siteSettingsRes = await handlSiteSettingsFetch({});
-
-            // console.log('siteSettingsRes', siteSettingsRes)
-        }
-        getSiteSettings();
-    }, [UpdateSiteSettingsState])
-
-
-    // console.log('siteSettingsState', siteSettingsState);
-
-    const handleSubmit = async (values: any, actions: any) => {
-
-
-        const addSiteInfoRes = await handleUpdateSiteSettingsFetch({
-
-            body: {
-                title: values.title,
-                adminName: values.adminName,
-                adminEmail: values.adminEmail,
-            },
-        });
-
-        // @ts-ignore
-        if (addSiteInfoRes && addSiteInfoRes.status === 'ok') {
-            openSuccessNotification();
-
-
-            // setBrandList([...brandList, {
-            //     id: addBrandRes['id'] || '',
-            //     key: addBrandRes['id'] || '',
-            //     name: addBrandRes['name'] || '',
-            //     description: addBrandRes['description'] || '',
-            //     // @ts-ignore
-            //     ...addBrandRes
-            // }]);
-
-            actions.resetForm();
-        }
-        else {
-            openErrorNotification();
-        }
-
-
-
-
-        actions.setSubmitting(false);
-
+      // console.log('siteSettingsRes', siteSettingsRes)
     };
+    getSiteSettings();
+  }, [UpdateSiteSettingsState]);
 
+  // console.log('siteSettingsState', siteSettingsState);
 
+  const handleSubmit = async (values: any, actions: any) => {
+    const addSiteInfoRes = await handleUpdateSiteSettingsFetch({
+      body: {
+        title: values.title,
+        adminName: values.adminName,
+        adminEmail: values.adminEmail,
+        adminPhone: values.adminPhone,
+      },
+    });
 
+    // @ts-ignore
+    if (addSiteInfoRes && addSiteInfoRes.status === 'ok') {
+      openSuccessNotification();
 
+      // setBrandList([...brandList, {
+      //     id: addBrandRes['id'] || '',
+      //     key: addBrandRes['id'] || '',
+      //     name: addBrandRes['name'] || '',
+      //     description: addBrandRes['description'] || '',
+      //     // @ts-ignore
+      //     ...addBrandRes
+      // }]);
 
-    const getisSubmitButtonDisabled = (values, isValid) => {
-        if (!values.title || !values.adminEmail || !isValid) {
-            return true;
-        }
-        return false;
+      actions.resetForm();
+    } else {
+      openErrorNotification();
     }
 
+    actions.setSubmitting(false);
+  };
 
-
-
-
-    const getInitialValues = () => {
-        if (siteSettingsState.data && Object.keys(siteSettingsState.data).length > 0) {
-            return { ...siteSettingsState.data }
-        }
-        else {
-            return initialValues
-        }
+  const getisSubmitButtonDisabled = (values, isValid) => {
+    if (!values.title || !values.adminEmail || !isValid) {
+      return true;
     }
+    return false;
+  };
 
+  const getInitialValues = () => {
+    if (
+      siteSettingsState.data &&
+      Object.keys(siteSettingsState.data).length > 0
+    ) {
+      return { ...siteSettingsState.data };
+    } else {
+      return initialValues;
+    }
+  };
 
+  return (
+    <Formik
+      onSubmit={(values, actions) => handleSubmit(values, actions)}
+      enableReinitialize={true}
+      initialValues={getInitialValues()}
+    >
+      {({
+        handleChange,
+        values,
+        handleSubmit,
+        errors,
+        isValid,
+        isSubmitting,
+        touched,
+        handleBlur,
+        setFieldTouched,
+        handleReset,
+      }) => (
+        <>
+          <div className='siteInfoContainer__item'>
+            <div className='siteInfoContainer__item-item'>
+              <Input
+                label='Site Title'
+                value={values.title}
+                name='title'
+                isError={
+                  (touched.title && errors.title) ||
+                  (!isSubmitting &&
+                    UpdateSiteSettingsState.error['error']['title'])
+                }
+                errorString={
+                  (touched.title && errors.title) ||
+                  (!isSubmitting &&
+                    UpdateSiteSettingsState.error['error']['title'])
+                }
+                onChange={(e: any) => {
+                  handleChange(e);
+                  setFieldTouched('title');
+                }}
+              />
+            </div>
+            <div className='siteInfoContainer__item-item'>
+              <Input
+                label='Admin Name'
+                value={values.adminName}
+                name='adminName'
+                isError={
+                  (touched.adminName && errors.adminName) ||
+                  (!isSubmitting &&
+                    UpdateSiteSettingsState.error['error']['adminName'])
+                }
+                errorString={
+                  (touched.adminName && errors.adminName) ||
+                  (!isSubmitting &&
+                    UpdateSiteSettingsState.error['error']['adminName'])
+                }
+                onChange={(e: any) => {
+                  handleChange(e);
+                  setFieldTouched('adminName');
+                }}
+              />
+            </div>
+            <div className='siteInfoContainer__item-item-left'>
+              <Input
+                label='Admin phone'
+                value={values.adminPhone}
+                name='adminPhone'
+                isError={
+                  (touched.adminPhone && errors.adminPhone) ||
+                  (!isSubmitting &&
+                    UpdateSiteSettingsState.error['error']['adminPhone'])
+                }
+                errorString={
+                  (touched.adminPhone && errors.adminPhone) ||
+                  (!isSubmitting &&
+                    UpdateSiteSettingsState.error['error']['adminPhone'])
+                }
+                onChange={(e: any) => {
+                  handleChange(e);
+                  setFieldTouched('adminPhone');
+                }}
+              />
+            </div>
 
+            <div
+              className='siteInfoContainer__item-item'
+              style={{
+                marginLeft: '15px',
+              }}
+            >
+              <Input
+                label='Admin Email'
+                value={values.adminEmail}
+                name='adminEmail'
+                isError={
+                  (touched.adminEmail && errors.adminEmail) ||
+                  (!isSubmitting &&
+                    UpdateSiteSettingsState.error['error']['adminEmail'])
+                }
+                errorString={
+                  (touched.adminEmail && errors.adminEmail) ||
+                  (!isSubmitting &&
+                    UpdateSiteSettingsState.error['error']['adminEmail'])
+                }
+                onChange={(e: any) => {
+                  handleChange(e);
+                  setFieldTouched('adminEmail');
+                }}
+              />
+            </div>
+          </div>
 
-    return (
-        <Formik
-            onSubmit={(values, actions) => handleSubmit(values, actions)}
-            enableReinitialize={true}
-            initialValues={
-                getInitialValues()
-            }
-        >
-            {({
-                handleChange,
-                values,
-                handleSubmit,
-                errors,
-                isValid,
-                isSubmitting,
-                touched,
-                handleBlur,
-                setFieldTouched,
-                handleReset,
-            }) => (
-                    <>
-                        <div className='siteInfoContainer__item'>
-                            <div className='siteInfoContainer__item-item'>
-                                <Input
-                                    label='Site Title'
-                                    value={values.title}
-                                    name='title'
-                                    isError={(touched.title && errors.title) ||
-                                        (!isSubmitting && UpdateSiteSettingsState.error['error']['title'])}
+          <div
+            style={{
+              marginTop: '10px',
+            }}
+          ></div>
 
-                                    errorString={(touched.title && errors.title) ||
-                                        (!isSubmitting && UpdateSiteSettingsState.error['error']['title'])}
-                                    onChange={(e: any) => {
-                                        handleChange(e);
-                                        setFieldTouched('title');
-                                    }}
-                                />
-                            </div>
-                            <div className='siteInfoContainer__item-item'>
-                                <Input
-                                    label='Admin Name'
-                                    value={values.adminName}
-                                    name='adminName'
-                                    isError={(touched.adminName && errors.adminName) ||
-                                        (!isSubmitting && UpdateSiteSettingsState.error['error']['adminName'])}
+          <Button
+            onClick={(e: any) => handleSubmit(e)}
+            loading={isSubmitting}
+            disabled={getisSubmitButtonDisabled(values, isValid)}
+            className='btnPrimaryClassNameoutline'
+          >
+            Update Admin Info
+          </Button>
 
-                                    errorString={(touched.adminName && errors.adminName) ||
-                                        (!isSubmitting && UpdateSiteSettingsState.error['error']['adminName'])}
-                                    onChange={(e: any) => {
-                                        handleChange(e);
-                                        setFieldTouched('adminName');
-                                    }}
-                                />
-                            </div>
-                            <div className='siteInfoContainer__item-item-left'>
-                                <Input
-                                    label='Admin Email'
-                                    value={values.adminEmail}
-                                    name='adminEmail'
-                                    isError={(touched.adminEmail && errors.adminEmail) ||
-                                        (!isSubmitting && UpdateSiteSettingsState.error['error']['adminEmail'])}
-
-                                    errorString={(touched.adminEmail && errors.adminEmail) ||
-                                        (!isSubmitting && UpdateSiteSettingsState.error['error']['adminEmail'])}
-                                    onChange={(e: any) => {
-                                        handleChange(e);
-                                        setFieldTouched('adminEmail');
-                                    }}
-                                />
-
-                            </div>
-
-                        </div>
-
-
-                        <div style={{
-                            marginTop: '10px'
-                        }}></div>
-
-                        <Button
-
-                            onClick={(e: any) => handleSubmit(e)}
-                            loading={isSubmitting}
-                            disabled={getisSubmitButtonDisabled(values, isValid)}
-                            className='btnPrimaryClassNameoutline'
-                        >
-                            Update Admin Info
-                            </Button>
-
-                        <div style={{
-                            marginBottom: '10px'
-                        }}></div>
-
-                    </>
-                )}
-        </Formik >
-
-
-
-
-    );
+          <div
+            style={{
+              marginBottom: '10px',
+            }}
+          ></div>
+        </>
+      )}
+    </Formik>
+  );
 };
 
 export default UpdateSiteinfo;

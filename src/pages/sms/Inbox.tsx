@@ -13,7 +13,7 @@ interface Props {}
 const Inbox = (props: Props) => {
   const [getEmailListState, handleGetEmailListFetch] = useHandleFetch(
     {},
-    'getSetEmailList'
+    'getSentSMSList'
   );
   const [selectedEmailId, setSelectedEmailId] = useState('');
 
@@ -72,13 +72,12 @@ const Inbox = (props: Props) => {
                             >
                               <div className='sentEmailListContainer__item-info'>
                                 <h3>To: {` ${item.recipient}`}</h3>
-                                <span>{`${item.subject}`}</span>
+                                <span>{`${item.event}`}</span>
                               </div>
 
                               <h4>
-                                {ReactHtmlParser(
-                                  item.html.substring(0, 125) + '.....'
-                                )}
+                                {item.text &&
+                                  item.text.substring(0, 125) + '.....'}
                               </h4>
                               <h3>
                                 {item.time &&

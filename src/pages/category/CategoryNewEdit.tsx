@@ -218,13 +218,13 @@ const AddNewCategory = ({
         metaDescription: values.metaDescription,
         displayOrder: values.displayOrder,
         metaTags: tags && tags.length > 0 ? tags.join(',') : '',
-        bn: {
-          metaTitle: values.bnMetaTitle,
-          metaDescription: values.bnMetaDescription,
-          metaTags: bnTags && bnTags.length > 0 ? bnTags.join(',') : '',
-          name: values.bnName.trim(),
-          description: values.bnDescription,
-        },
+        // bn: {
+        //   metaTitle: values.bnMetaTitle,
+        //   metaDescription: values.bnMetaDescription,
+        //   metaTags: bnTags && bnTags.length > 0 ? bnTags.join(',') : '',
+        //   name: values.bnName.trim(),
+        //   description: values.bnDescription,
+        // },
       },
     });
 
@@ -265,27 +265,26 @@ const AddNewCategory = ({
 
   useEffect(() => {
     if (categoryDetailData && Object.keys(categoryDetailData).length > 0) {
-    
       const images = categoryDetailData.image;
-			let mahImages = []; 
+      let mahImages = [];
 
-			if (images && images.length > 0) {
-				mahImages = images;
-			}
-	
-			if (categoryDetailData.cover && categoryDetailData.cover['id']) {
-				const ixists = images.find(item => item.id === categoryDetailData.cover['id']);
-				if(!ixists){
-					mahImages = [categoryDetailData.cover, ...mahImages]
-				}
+      if (images && images.length > 0) {
+        mahImages = images;
+      }
 
-				setCoverImageId(categoryDetailData.cover['id']);
-			}
-	
-				// @ts-ignore
-          setmyImages(mahImages);
-          
+      if (categoryDetailData.cover && categoryDetailData.cover['id']) {
+        const ixists = images.find(
+          (item) => item.id === categoryDetailData.cover['id']
+        );
+        if (!ixists) {
+          mahImages = [categoryDetailData.cover, ...mahImages];
+        }
 
+        setCoverImageId(categoryDetailData.cover['id']);
+      }
+
+      // @ts-ignore
+      setmyImages(mahImages);
     }
   }, [categoryDetailData]);
 
@@ -464,7 +463,6 @@ const AddNewCategory = ({
         categoryDetailData.bn['metaTags'] &&
         categoryDetailData.bn['metaTags'].split(',');
 
-
       setTags(metaTags || []);
       setBnTags(bnMetaTags || []);
     }
@@ -534,7 +532,7 @@ const AddNewCategory = ({
             <Input
               label='Name'
               value={values.name}
-              placeHolder={'grocery,fashion'}
+              // placeHolder={'g'}
               name='name'
               isError={
                 (touched.name && errors.name) ||
@@ -550,7 +548,7 @@ const AddNewCategory = ({
               }}
             />
 
-            <Input
+            {/* <Input
               label='BN Name'
               value={values.bnName}
               placeHolder={'মুদিখানা,ফ্যাশন'}
@@ -567,7 +565,7 @@ const AddNewCategory = ({
                 handleChange(e);
                 setFieldTouched('bnName');
               }}
-            />
+            /> */}
 
             <TextArea
               label='Description'
@@ -590,7 +588,7 @@ const AddNewCategory = ({
               }}
             />
 
-            <TextArea
+            {/* <TextArea
               label='BN Description'
               value={values.bnDescription}
               placeholder={'এই ক্যাটাগড়ি...'}
@@ -609,7 +607,7 @@ const AddNewCategory = ({
                 handleChange(e);
                 setFieldTouched('bnDescription');
               }}
-            />
+            /> */}
 
             <Input
               label='Display Order'
@@ -806,7 +804,7 @@ const AddNewCategory = ({
                 )}
             </div>
 
-            <Input
+            {/* <Input
               label='Meta title'
               value={values.metaTitle}
               placeHolder={'category...'}
@@ -908,7 +906,7 @@ const AddNewCategory = ({
               // @ts-ignore
               setTags={setBnTags}
               tags={bnTags}
-            />
+            /> */}
           </Modal>
 
           <MediaLibrary

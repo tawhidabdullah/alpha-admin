@@ -166,6 +166,6 @@ Things that still left to do in mangshobazar:
 add delete button in add new component
 complete salary report 
 fix the order invoice 
-
+// couldn't add images 
 
 */

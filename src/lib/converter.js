@@ -1326,6 +1326,32 @@ class Converter {
 
   /**
    * @public
+   * @method getSentSMSList convert api data from API to general format based on config server
+   * @param {Object} data response objectc from alpha
+   * @returns {Object}  converted data
+   */
+  async getSentSMSList(resData) {
+    const data = resData.data || [];
+
+    const convertedData =
+      data.length > 0 &&
+      data.map((sms) => {
+        return {
+          ...sms,
+          id: sms._id || '',
+          key: sms._id || '',
+          recipient: sms.recipient,
+          text: sms.text,
+          time: sms.time,
+          event: sms.event,
+        };
+      });
+
+    return convertedData;
+  }
+
+  /**
+   * @public
    * @method postTagList convert api data from API to general format based on config server
    * @param {Object} data response objectc from alpha
    * @returns {Object}  converted data
@@ -1458,8 +1484,6 @@ class Converter {
     return {};
   }
 
-  success;
-
   /**
    * @public
    * @method configureEmailSTMP convert api data from API to general format based on config server
@@ -1477,12 +1501,42 @@ class Converter {
 
   /**
    * @public
+   * @method configureSMS convert api data from API to general format based on config server
+   * @param {Object} data response objectc from alpha
+   * @returns {Object}  converted data
+   */
+  async configureSMS(resData) {
+    if (resData.success) {
+      return {
+        status: 'ok',
+      };
+    }
+    return {};
+  }
+
+  /**
+   * @public
    * @method getEmailConfiguration convert api data from API to general format based on config server
    * @param {Object} data response objectc from alpha
    * @returns {Object}  converted data
    */
   async getEmailConfiguration(resData) {
-    console.log('resGetEmail', resData);
+    if (resData && Object.keys(resData).length > 0) {
+      return {
+        ...resData,
+        status: 'ok',
+      };
+    }
+    return {};
+  }
+
+  /**
+   * @public
+   * @method getSMSConfiguration convert api data from API to general format based on config server
+   * @param {Object} data response objectc from alpha
+   * @returns {Object}  converted data
+   */
+  async getSMSConfiguration(resData) {
     if (resData && Object.keys(resData).length > 0) {
       return {
         ...resData,
@@ -1500,6 +1554,21 @@ class Converter {
    */
   async sendCustomEmail(resData) {
     if (resData && resData.msg) {
+      return {
+        status: 'ok',
+      };
+    }
+    return {};
+  }
+
+  /**
+   * @public
+   * @method sendCustomSMS convert api data from API to general format based on config server
+   * @param {Object} data response objectc from alpha
+   * @returns {Object}  converted data
+   */
+  async sendCustomSMS(resData) {
+    if (resData && resData.success) {
       return {
         status: 'ok',
       };
@@ -4206,11 +4275,39 @@ class Converter {
 
   /**
    * @public
+   * @method getAutoSMSConfiguration convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+  async getAutoSMSConfiguration(data) {
+    const formatedData = {
+      ...data,
+    };
+
+    return formatedData;
+  }
+
+  /**
+   * @public
    * @method getEmailDetails convert api data from API to general format based on config server
    * @param {Object} data response objectc from wc
    * @returns {Object}  converted data
    */
   async getEmailDetails(data) {
+    const formatedData = {
+      ...data,
+    };
+
+    return formatedData;
+  }
+
+  /**
+   * @public
+   * @method getSMSDetails convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+  async getSMSDetails(data) {
     const formatedData = {
       ...data,
     };
@@ -4275,6 +4372,21 @@ class Converter {
    * @returns {Object}  converted data
    */
   async configureAutoEmail(data) {
+    if (data['success']) {
+      return {
+        status: 'ok',
+      };
+    }
+    return data;
+  }
+
+  /**
+   * @public
+   * @method configureAutoSMS convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+  async configureAutoSMS(data) {
     if (data['success']) {
       return {
         status: 'ok',

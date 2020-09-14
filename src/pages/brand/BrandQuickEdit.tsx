@@ -429,7 +429,7 @@ const AddNewBrand = ({
               }}
             />
 
-            <Input
+            {/* <Input
               label='BN Name'
               value={values.bnName}
               placeHolder={'প্রান,নোকিয়া'}
@@ -446,7 +446,7 @@ const AddNewBrand = ({
                 handleChange(e);
                 setFieldTouched('bnName');
               }}
-            />
+            /> */}
 
             <TextArea
               label='Description'
@@ -469,7 +469,7 @@ const AddNewBrand = ({
               }}
             />
 
-            <TextArea
+            {/* <TextArea
               label='BN Description'
               value={values.bnDescription}
               placeholder={'এই ব্র্যান্ড...'}
@@ -488,7 +488,7 @@ const AddNewBrand = ({
                 handleChange(e);
                 setFieldTouched('bnDescription');
               }}
-            />
+            /> */}
 
             <div
               style={{
@@ -579,7 +579,7 @@ const AddNewBrand = ({
               )}
             </div>
 
-            <Input
+            {/* <Input
               label='Meta title'
               value={values.metaTitle}
               placeHolder={'category...'}
@@ -681,7 +681,7 @@ const AddNewBrand = ({
               // @ts-ignore
               setTags={setBnTags}
               tags={bnTags}
-            />
+            /> */}
           </Modal>
 
           <MediaLibrary

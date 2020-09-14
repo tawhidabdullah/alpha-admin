@@ -1108,7 +1108,7 @@
     }
 
     table[class='fullPadding'] {
-      width: 85% !important;
+      width: 95% !important;
       clear: both;
     }
 
@@ -2055,4 +2055,33 @@
 }
 .mono {
   font-family: monospace;
+}
+
+// print shit
+@media all {
+  .page-break {
+    display: none;
+  }
+}
+
+@media print {
+  html,
+  body {
+    height: initial !important;
+    overflow: initial !important;
+    -webkit-print-color-adjust: exact;
+  }
+}
+
+@media print {
+  .page-break {
+    margin-top: 1rem;
+    display: block;
+    page-break-before: auto;
+  }
+}
+
+@page {
+  size: a4;
+  margin: 20mm;
 }

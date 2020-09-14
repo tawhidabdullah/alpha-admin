@@ -1,235 +1,231 @@
+// @ts-nocheck
 import React, { useState } from 'react';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
-
 import { useHandleFetch } from '../../hooks';
+
 // import third party ui lib
-import { Upload, message, Switch, Select, Button, notification, Modal, Tooltip } from 'antd';
+import { notification, Modal, Tooltip } from 'antd';
 
 import {
-	FileOutlined,
-	InboxOutlined,
-	FileAddOutlined,
-	DeleteOutlined,
-	CheckCircleOutlined,
-	CloseOutlined,
-	CheckOutlined,
-	InfoCircleOutlined,
-	PlusOutlined,
-	FileImageFilled
+  FileOutlined,
+  InboxOutlined,
+  FileAddOutlined,
+  DeleteOutlined,
+  CheckCircleOutlined,
+  CloseOutlined,
+  CheckOutlined,
+  InfoCircleOutlined,
+  PlusOutlined,
+  FileImageFilled,
 } from '@ant-design/icons';
-
-
-
 
 // import components
 import Input from '../../components/Field/Input';
 import TextArea from '../../components/Field/TextArea';
-import MediaLibrary from "../../components/MediaLibrary";
+import MediaLibrary from '../../components/MediaLibrary';
 
-import MetaTags from "../../pages/category/MetaTags";
+import MetaTags from '../../pages/category/MetaTags';
 const validationSchema = Yup.object().shape({
-	name: Yup.string().label('Name').required('Name is required').min(3, 'Name must have at least 3 characters'),
+  name: Yup.string()
+    .label('Name')
+    .required('Name is required')
+    .min(3, 'Name must have at least 3 characters'),
 });
 
-
-
 const openSuccessNotification = (message?: any) => {
-	notification.success({
-		message: message || 'Brand Created',
-		description: '',
-		icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
-	});
+  notification.success({
+    message: message || 'Brand Created',
+    description: '',
+    icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
+  });
 };
-
 
 const openErrorNotification = (message?: any) => {
-	notification.error({
-		message: message || 'Something Went Wrong',
-		description: '',
-		icon: <CheckCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
-	});
+  notification.error({
+    message: message || 'Something Went Wrong',
+    description: '',
+    icon: <CheckCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
+  });
 };
 
-
 const initialValues = {
-	name: '',
-	bnName: '',
-	description: '',
-	bnDescription: '',
-	metaTitle: '',
-	bnMetaTitle: '',
-	metaDescription: '',
-	bnMetaDescription: '',
-	metaTags: '',
-	bnMetaTags: '',
-	image: [],
-	url: '',
-	cover: ''
-}
-
-
+  name: '',
+  bnName: '',
+  description: '',
+  bnDescription: '',
+  metaTitle: '',
+  bnMetaTitle: '',
+  metaDescription: '',
+  bnMetaDescription: '',
+  metaTags: '',
+  bnMetaTags: '',
+  image: [],
+  url: '',
+  cover: '',
+};
 
 interface Props {
-	addNewCategoryVisible?: any;
-	setAddNewCategoryVisible?: any;
-	brandList?: any;
-	setBrandList?: any;
-
+  addNewCategoryVisible?: any;
+  setAddNewCategoryVisible?: any;
+  brandList?: any;
+  setBrandList?: any;
 }
 
-const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, brandList, setBrandList }: Props) => {
+const AddNewBrand = ({
+  addNewCategoryVisible,
+  setAddNewCategoryVisible,
+  brandList,
+  setBrandList,
+}: Props) => {
+  const [updateBrandState, handleUpdateBrandFetch] = useHandleFetch(
+    {},
+    'addBrand'
+  );
+  const [myImages, setmyImages] = useState(false);
+  const [visibleMedia, setvisibleMedia] = useState(false);
+  const [coverImageId, setCoverImageId] = useState('');
+  const [tags, setTags] = useState([]);
+  const [bnTags, setBnTags] = useState([]);
 
-	const [updateBrandState, handleUpdateBrandFetch] = useHandleFetch({}, 'addBrand');
-	const [myImages, setmyImages] = useState(false);
-	const [visibleMedia, setvisibleMedia] = useState(false);
-	const [coverImageId, setCoverImageId] = useState('');
-	const [tags,setTags] = useState([]);
-	const [bnTags,setBnTags] = useState([]);
+  console.log('brandImages', myImages);
+  const handleSubmit = async (values: any, actions: any) => {
+    // @ts-ignore
+    const imagesIds = myImages
+      ? myImages.map((image) => {
+          return image.id;
+        })
+      : [];
 
+    const addBrandRes = await handleUpdateBrandFetch({
+      body: {
+        name: values.name.trim(),
+        description: values.description,
+        type: values.type,
+        image: imagesIds,
+        cover: coverImageId || imagesIds[0] ? imagesIds[0] : '',
+        metaTitle: values.metaTitle,
+        metaDescription: values.metaDescription,
+        metaTags: tags.join(','),
 
+        // bn: {
+        // 	metaTitle: values.bnMetaTitle,
+        // 	metaDescription: values.bnMetaDescription,
+        // 	metaTags: bnTags.join(','),
+        // 	name: values.bnName.trim(),
+        // 	description: values.bnDescription,
+        // }
+      },
+    });
 
-	console.log('brandImages',myImages);
-	const handleSubmit = async (values: any, actions: any) => {
+    // @ts-ignore
+    if (addBrandRes && addBrandRes.status === 'ok') {
+      openSuccessNotification();
 
-		// @ts-ignore
-		const imagesIds = myImages ? myImages.map(image => {
-			return image.id;
-		}) : [];
+      setBrandList([
+        {
+          id: addBrandRes['_id'] || '',
+          key: addBrandRes['_id'] || '',
+          name: addBrandRes['name'] || '',
+          description: addBrandRes['description'] || '',
+          cover: addBrandRes['cover'] || '',
+          // @ts-ignore
+          ...addBrandRes,
+        },
+        ...brandList,
+      ]);
 
+      actions.resetForm();
+      setAddNewCategoryVisible(false);
+    } else {
+      openErrorNotification();
+    }
 
-		const addBrandRes = await handleUpdateBrandFetch({
+    actions.setSubmitting(false);
+  };
 
-			body: {
-				name: values.name.trim(),
-				description: values.description,
-				type: values.type,
-				image: imagesIds,
-				cover: coverImageId || imagesIds[0] ? imagesIds[0] : '',
-				metaTitle: values.metaTitle,
-                metaDescription: values.metaDescription,
-				metaTags: tags.join(','),
-				
-				
-				bn: {
-					metaTitle: values.bnMetaTitle,
-					metaDescription: values.bnMetaDescription,
-					metaTags: bnTags.join(','),
-					name: values.bnName.trim(),
-					description: values.bnDescription,
-				}
-			},
-		});
+  const onSwitchChange = (checked: any) => {
+    // console.log(checked);
+  };
 
-		// @ts-ignore
-		if (addBrandRes && addBrandRes.status === 'ok') {
-			openSuccessNotification();
+  const handleCancel = (e: any) => {
+    setAddNewCategoryVisible(false);
+  };
 
-			setBrandList([{
-				id: addBrandRes['_id'] || '',
-				key: addBrandRes['_id'] || '',
-				name: addBrandRes['name'] || '',
-				description: addBrandRes['description'] || '',
-				cover: addBrandRes['cover'] || '',
-				// @ts-ignore
-				...addBrandRes
-			},...brandList]); 
-			
-			actions.resetForm();
-			setAddNewCategoryVisible(false);
-		}
-		else {
-			openErrorNotification();
-		}
+  const getisSubmitButtonDisabled = (values, isValid) => {
+    if (!values.name || !isValid) {
+      return true;
+    }
+    return false;
+  };
 
-		actions.setSubmitting(false);
+  const handleImagesDelete = (id) => {
+    // @ts-ignore
+    const newImages =
+      myImages &&
+      myImages.filter((image) => {
+        return image.id !== id;
+      });
 
-	};
+    setmyImages(newImages);
+  };
 
+  return (
+    <Formik
+      onSubmit={(values, actions) => handleSubmit(values, actions)}
+      validationSchema={validationSchema}
+      validateOnBlur={false}
+      enableReinitialize={true}
+      initialValues={{ ...initialValues }}
+    >
+      {({
+        handleChange,
+        values,
+        handleSubmit,
+        errors,
+        isValid,
+        isSubmitting,
+        touched,
+        handleBlur,
+        setFieldTouched,
+        handleReset,
+      }) => (
+        <>
+          <Modal
+            style={{
+              top: '40px',
+            }}
+            title='Add New Brand'
+            visible={addNewCategoryVisible}
+            onOk={(e: any) => handleSubmit(e)}
+            onCancel={handleCancel}
+            okText='Create'
+            okButtonProps={{
+              loading: isSubmitting,
+              htmlType: 'submit',
+            }}
+          >
+            <Input
+              label='Name'
+              value={values.name}
+              name='name'
+              placeHolder={'microsoft,apple'}
+              isError={
+                (touched.name && errors.name) ||
+                (!isSubmitting && updateBrandState.error['error']['name'])
+              }
+              errorString={
+                (touched.name && errors.name) ||
+                (!isSubmitting && updateBrandState.error['error']['name'])
+              }
+              onChange={(e: any) => {
+                handleChange(e);
+                setFieldTouched('name');
+              }}
+            />
 
-	const onSwitchChange = (checked: any) => {
-		// console.log(checked);
-	};
-
-
-	const handleCancel = (e: any) => {
-		setAddNewCategoryVisible(false);
-	};
-
-
-	const getisSubmitButtonDisabled = (values, isValid) => {
-		if (!values.name || !isValid) {
-			return true;
-		}
-		return false;
-	}
-
-	const handleImagesDelete = (id) => {
-		// @ts-ignore
-		const newImages = myImages && myImages.filter(image => {
-			return image.id !== id;
-		})
-
-		setmyImages(newImages);
-	}
-
-
-
-	return (
-		<Formik
-			onSubmit={(values, actions) => handleSubmit(values, actions)}
-			validationSchema={validationSchema}
-			validateOnBlur={false}
-			enableReinitialize={true}
-			initialValues={
-				{ ...initialValues }
-			}
-		>
-			{({
-				handleChange,
-				values,
-				handleSubmit,
-				errors,
-				isValid,
-				isSubmitting,
-				touched,
-				handleBlur,
-				setFieldTouched,
-				handleReset,
-			}) => (
-					<>
-						<Modal
-							style={{
-								top: '40px'
-							}}
-							title="Add New Brand"
-							visible={addNewCategoryVisible}
-							onOk={(e: any) => handleSubmit(e)}
-							onCancel={handleCancel}
-							okText='Create'
-							okButtonProps={{
-								loading: isSubmitting,
-								htmlType: "submit",
-							}}
-						>
-							<Input
-								label='Name'
-								value={values.name}
-								name='name'
-								placeHolder={'microsoft,apple'}
-								isError={(touched.name && errors.name) ||
-									(!isSubmitting && updateBrandState.error['error']['name'])}
-
-								errorString={(touched.name && errors.name) ||
-									(!isSubmitting && updateBrandState.error['error']['name'])}
-								onChange={(e: any) => {
-									handleChange(e);
-									setFieldTouched('name');
-								}}
-							/>
-
-							<Input
+            {/* <Input
 								label='BN Name'
 								value={values.bnName}
 								placeHolder={'প্রান,নোকিয়া'}
@@ -243,25 +239,29 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, brandLis
 									handleChange(e);
 									setFieldTouched('bnName');
 								}}
-							/>
+							/> */}
 
-
-							<TextArea
-								label='Description'
-								value={values.description}
-								name='description'
-								placeholder={'This brand...'}
-								isError={(touched.description && errors.description) ||
-									(!isSubmitting && updateBrandState.error['error']['description'])}
-
-								errorString={(touched.description && errors.description) ||
-									(!isSubmitting && updateBrandState.error['error']['description'])}
-								onChange={(e: any) => {
-									handleChange(e);
-									setFieldTouched('description');
-								}}
-							/>
-
+            <TextArea
+              label='Description'
+              value={values.description}
+              name='description'
+              placeholder={'This brand...'}
+              isError={
+                (touched.description && errors.description) ||
+                (!isSubmitting &&
+                  updateBrandState.error['error']['description'])
+              }
+              errorString={
+                (touched.description && errors.description) ||
+                (!isSubmitting &&
+                  updateBrandState.error['error']['description'])
+              }
+              onChange={(e: any) => {
+                handleChange(e);
+                setFieldTouched('description');
+              }}
+            />
+            {/* 
 							<TextArea
 								label='BN Description'
 								value={values.bnDescription}
@@ -276,90 +276,84 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, brandLis
 									handleChange(e);
 									setFieldTouched('bnDescription');
 								}}
-							/>
+							/> */}
 
-							<div
-								style={{
-									marginTop: '20px'
-								}}
-							/>
+            <div
+              style={{
+                marginTop: '20px',
+              }}
+            />
 
+            <div
+              className='addproductSection-left-header'
+              style={{
+                marginBottom: '-5px',
+              }}
+            >
+              <h3 className='inputFieldLabel'>Images</h3>
+            </div>
 
-							<div className='addproductSection-left-header'
+            <div className='aboutToUploadImagesContainer'>
+              {myImages &&
+                // @ts-ignore
+                myImages.length > 0 &&
+                myImages.map((image, index) => {
+                  return (
+                    <div className='aboutToUploadImagesContainer__item'>
+                      <div
+                        className='aboutToUploadImagesContainer__item-imgContainer'
+                        onClick={() => setCoverImageId(image.id)}
+                      >
+                        <img src={image.cover} alt={image.alt} />
+                      </div>
 
-								style={{
-									marginBottom: '-5px'
-								}}
-							>
-								<h3 className='inputFieldLabel'>Images</h3>
-							</div>
+                      <span
+                        onClick={() => handleImagesDelete(image.id)}
+                        className='aboutToUploadImagesContainer__item-remove'
+                      >
+                        <CloseOutlined />
+                      </span>
 
-							<div className='aboutToUploadImagesContainer'>
-								{myImages &&
-									// @ts-ignore
-									myImages.length > 0 && myImages.map((image, index) => {
-										return (
-											<div className='aboutToUploadImagesContainer__item'>
-												<div
-													className='aboutToUploadImagesContainer__item-imgContainer'
-													onClick={() => setCoverImageId(image.id)}
-												>
-													<img src={image.cover} alt={image.alt} />
-												</div>
+                      {coverImageId === image.id ? (
+                        <span className='aboutToUploadImagesContainer__item-cover'>
+                          <CheckOutlined />
+                        </span>
+                      ) : (
+                        !coverImageId &&
+                        index === 0 && (
+                          <span className='aboutToUploadImagesContainer__item-cover'>
+                            <CheckOutlined />
+                          </span>
+                        )
+                      )}
+                    </div>
+                  );
+                })}
 
-												<span
-													onClick={() => handleImagesDelete(image.id)}
-													className='aboutToUploadImagesContainer__item-remove'>
-													<CloseOutlined />
-												</span>
+              {!myImages ||
+              // @ts-ignore
+              (myImages && !(myImages && myImages.length > 0)) ? (
+                <>
+                  <Tooltip title={'Attach images'}>
+                    <div
+                      onClick={() => {
+                        setvisibleMedia(true);
+                      }}
+                      className='aboutToUploadImagesContainer__uploadItem'
+                    >
+                      <FileImageFilled />
+                      <span className='aboutToUploadImagesContainer__uploadItem-plus'>
+                        <PlusOutlined />
+                      </span>
+                    </div>
+                  </Tooltip>
+                </>
+              ) : (
+                ''
+              )}
+            </div>
 
-
-												{coverImageId === image.id ? (
-													<span className='aboutToUploadImagesContainer__item-cover'>
-														<CheckOutlined />
-													</span>
-												) : !coverImageId && index === 0 && (
-													<span className='aboutToUploadImagesContainer__item-cover'>
-														<CheckOutlined />
-													</span>
-												)}
-
-
-											</div>
-										)
-									})}
-
-
-									{ 
-									!myImages || 
-									// @ts-ignore
-									(myImages && !(myImages && myImages.length > 0)) ? (
-										<>
-										<Tooltip
-									title={'Attach images'}>
-
-									<div
-										onClick={() => {
-											setvisibleMedia(true);
-										}}
-										className='aboutToUploadImagesContainer__uploadItem'>
-										<FileImageFilled />
-										<span className='aboutToUploadImagesContainer__uploadItem-plus'>
-											<PlusOutlined />
-										</span>
-									</div>
-								</Tooltip>
-										</>
-									) : ""}
-
-							</div>
-
-
-
-
-
-
-							<Input
+            {/* <Input
 								label='Meta title'
 								value={values.metaTitle}
 								placeHolder={'category...'}
@@ -445,27 +439,20 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, brandLis
 							// @ts-ignore
 							setTags={setBnTags}
 							tags={bnTags}
-							 />
+							 /> */}
+          </Modal>
 
-
-						</Modal>
-
-						<MediaLibrary
-							setvisible={setvisibleMedia}
-							visible={visibleMedia}
-							setmyImages={setmyImages}
-							myImages={myImages}
-							isModalOpenForImages={false}
-
-						/>
-					</>
-				)}
-		</Formik>
-
-
-
-
-	);
+          <MediaLibrary
+            setvisible={setvisibleMedia}
+            visible={visibleMedia}
+            setmyImages={setmyImages}
+            myImages={myImages}
+            isModalOpenForImages={false}
+          />
+        </>
+      )}
+    </Formik>
+  );
 };
 
 export default AddNewBrand;
