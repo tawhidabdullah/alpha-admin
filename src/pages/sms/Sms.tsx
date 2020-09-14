@@ -1,16 +1,7 @@
 import React from 'react';
 
 // import lib
-import {
-  Upload,
-  message,
-  Switch,
-  Select,
-  Button,
-  notification,
-  Modal,
-  Tabs,
-} from 'antd';
+import { Tabs } from 'antd';
 
 // import components
 import ConfigureSTMP from './ConfigureSMS';
