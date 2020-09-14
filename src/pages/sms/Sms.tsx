@@ -1,42 +1,99 @@
 import React from 'react';
 
-
 // import lib
-import { Upload, message, Switch, Select, Button, notification, Modal, Tabs } from 'antd';
+import {
+  Upload,
+  message,
+  Switch,
+  Select,
+  Button,
+  notification,
+  Modal,
+  Tabs,
+} from 'antd';
 
-// import components 
-import SendCustomSMS from "./SendCustomSMS";
-import SMSConfiguaration from "./SMSConfiguaration";
+// import components
+import ConfigureSTMP from './ConfigureSMS';
+import ConfigureAutoEmail from './ConfigureAutoSMS';
+import ComposeCustomEmail from './ComposeCustomSMS';
+import Inbox from './Inbox';
 
+import {
+  DeleteOutlined,
+  FileAddOutlined,
+  CheckCircleOutlined,
+  FileImageFilled,
+  FileImageOutlined,
+  FileImageTwoTone,
+  PlusOutlined,
+  PlusCircleOutlined,
+  CloseOutlined,
+  CheckOutlined,
+  InfoCircleOutlined,
+  InboxOutlined,
+  SettingOutlined,
+} from '@ant-design/icons';
 
 const { TabPane } = Tabs;
 
-
-
-interface Props {
-
-}
+interface Props {}
 
 const Sms = (props: Props) => {
-    return (
-        <>
-            <div className='siteInfoContainer'>
+  return (
+    <>
+      <div className='siteInfoContainer'>
+        <Tabs defaultActiveKey='1'>
+          <TabPane
+            tab={
+              <span>
+                <InboxOutlined />
+                Inbox
+              </span>
+            }
+            key='1'
+          >
+            <Inbox />
+          </TabPane>
 
-                <Tabs defaultActiveKey="1" >
-                    <TabPane tab="Send custom SMS" key="1">
-                        <SendCustomSMS />
-                    </TabPane>
+          <TabPane
+            tab={
+              <span>
+                <PlusCircleOutlined />
+                Compose SMS
+              </span>
+            }
+            key='2'
+          >
+            <ComposeCustomEmail />
+          </TabPane>
 
-                    <TabPane tab="SMS configuaration" key="2">
-                        <SMSConfiguaration />
-                    </TabPane>
+          <TabPane
+            tab={
+              <span>
+                <SettingOutlined />
+                Configure SMS
+              </span>
+            }
+            key='3'
+          >
+            <ConfigureSTMP />
+          </TabPane>
 
-                </Tabs>
+          <TabPane
+            tab={
+              <span>
+                <SettingOutlined />
+                Configure Auto SMS
+              </span>
+            }
+            key='4'
+          >
+            <ConfigureAutoEmail />
+          </TabPane>
+        </Tabs>
+      </div>
+    </>
+  );
+};
 
-            </div>
-
-        </>
-    )
-}
-
-export default Sms
+export default Sms;
