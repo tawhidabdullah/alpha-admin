@@ -104,7 +104,7 @@ const SiderComponent = ({ roles }: any) => {
           </SubMenu>
         )}
 
-        {/* <SubMenu
+        <SubMenu
           key='sub333'
           icon={<GoldOutlined />}
           title='Recipes'
@@ -121,7 +121,8 @@ const SiderComponent = ({ roles }: any) => {
           <Menu.Item key='955' icon={<TagsOutlined />}>
             <Link to='/admin/posts/tag'>Recipe Tags</Link>
           </Menu.Item>
-        </SubMenu> */}
+        </SubMenu>
+
         {/* <Menu.Item key='9' icon={<TagsOutlined />}>
 					<Link to='/tag'>Tags</Link>
 				</Menu.Item> */}
@@ -130,6 +131,7 @@ const SiderComponent = ({ roles }: any) => {
                         Recipies
                     </Link>
                 </Menu.Item> */}
+
         <Menu.Item key='1011' icon={<FireOutlined />}>
           <Link to='/admin/coupon'>Coupon</Link>
         </Menu.Item>
@@ -140,7 +142,7 @@ const SiderComponent = ({ roles }: any) => {
           </Menu.Item>
         )}
 
-        {/* {isAccess('accounts', roles) && (
+        {isAccess('accounts', roles) && (
           <SubMenu key='sub33' icon={<CalculatorOutlined />} title='Accounting'>
             <SubMenu key='sub3355' icon={<CalculatorOutlined />} title='Staff'>
               <Menu.Item icon={<UsergroupAddOutlined />} key='66'>
@@ -159,7 +161,7 @@ const SiderComponent = ({ roles }: any) => {
               <Link to='/admin/acccounting/overview'>Order report</Link>
             </Menu.Item>
           </SubMenu>
-        )} */}
+        )}
 
         {isAccess('getOrder', roles) && (
           <SubMenu key='sub4' icon={<ShoppingCartOutlined />} title='Orders'>
@@ -180,7 +182,7 @@ const SiderComponent = ({ roles }: any) => {
           </SubMenu>
         )}
 
-        {/* {isAccess('getDealer', roles) && (
+        {isAccess('getDealer', roles) && (
           <SubMenu
             key='sub5553'
             icon={<TeamOutlined />}
@@ -195,7 +197,7 @@ const SiderComponent = ({ roles }: any) => {
               <Link to='/admin/dealer/area'>Dealer Areas</Link>
             </Menu.Item>
           </SubMenu>
-        )} */}
+        )}
 
         <Menu.Item key='13' icon={<UserOutlined />}>
           <Link to='/admin/customer'>Customer</Link>
