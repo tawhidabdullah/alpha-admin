@@ -259,3 +259,8 @@ const mapStateToProps = (state) => ({
 
 // @ts-ignore
 export default connect(mapStateToProps, mapDispathToProps)(SiderComponent);
+
+/* 
+git checkout commit3 && git checkout -b newBranch && git cherry-pick 20ead887
+af2f73c541465d9067c3c6c70c398ac2
+*/
