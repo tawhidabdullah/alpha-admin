@@ -373,7 +373,7 @@ const AddNewBrand = ({
               label='Name'
               value={values.name}
               name='name'
-              placeHolder={'microsoft,apple'}
+              // placeHolder={'microsoft,apple'}
               isError={
                 (touched.name && errors.name) ||
                 (!isSubmitting && updateBrandState.error['error']['name'])
@@ -538,7 +538,7 @@ const AddNewBrand = ({
               )}
             </div>
 
-            {/* <Input
+            <Input
               label='Meta title'
               value={values.metaTitle}
               placeHolder={'category...'}
@@ -557,7 +557,7 @@ const AddNewBrand = ({
               }}
             />
 
-            <Input
+            {/* <Input
               label='BN Meta title'
               value={values.bnMetaTitle}
               placeHolder={'ক্যাটাগড়ি...'}
@@ -576,7 +576,7 @@ const AddNewBrand = ({
                 handleChange(e);
                 setFieldTouched('bnMetaTitle');
               }}
-            />
+            /> */}
 
             <TextArea
               label='Meta description'
@@ -599,7 +599,7 @@ const AddNewBrand = ({
               }}
             />
 
-            <TextArea
+            {/* <TextArea
               label='BN Meta Description'
               value={values.bnMetaDescription}
               placeholder={'এইয় মেট...'}
@@ -618,9 +618,9 @@ const AddNewBrand = ({
                 handleChange(e);
                 setFieldTouched('bnMetaDescription');
               }}
-            />
+            /> */}
 
-            <h3 className='inputFieldLabel'>Meta Tags (grocery,fashion)</h3>
+            <h3 className='inputFieldLabel'>Meta Tags</h3>
 
             <MetaTags
               // @ts-ignore
@@ -628,7 +628,7 @@ const AddNewBrand = ({
               tags={tags}
             />
 
-            <div
+            {/* <div
               style={{
                 marginTop: '15px',
               }}

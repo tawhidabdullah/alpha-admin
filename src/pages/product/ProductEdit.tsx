@@ -769,7 +769,7 @@ const AddNewProduct = ({
                       label='Unit'
                       value={values.unit}
                       name='unit'
-                      placeHolder={'KG,POUND,GM'}
+                      // placeHolder={'KG,POUND,GM'}
                       isError={
                         (touched.unit && errors.unit) ||
                         (!isSubmitting &&
@@ -1164,7 +1164,7 @@ const AddNewProduct = ({
                   </div>
                 </div>
 
-                {/* <div className='addProductGridContainer__image'>
+                <div className='addProductGridContainer__image'>
                   <div className='addProductGridContainer__item-header'>
                     <h3>Meta Data</h3>
 
@@ -1201,10 +1201,10 @@ const AddNewProduct = ({
                       }}
                     />
 
-                    <Input
+                    {/* <Input
                       label='BN Meta title'
                       value={values.bnMetaTitle}
-                      placeHolder={'ক্যাটাগড়ি...'}
+                      placeHolder={'...'}
                       name='bnMetaTitle'
                       isError={
                         (touched.bnMetaTitle && errors.bnMetaTitle) ||
@@ -1220,7 +1220,7 @@ const AddNewProduct = ({
                         handleChange(e);
                         setFieldTouched('bnMetaTitle');
                       }}
-                    />
+                    /> */}
 
                     <TextArea
                       label='Meta description'
@@ -1243,7 +1243,7 @@ const AddNewProduct = ({
                       }}
                     />
 
-                    <TextArea
+                    {/* <TextArea
                       label='BN Meta Description'
                       value={values.bnMetaDescription}
                       placeholder={'এইয় মেট...'}
@@ -1268,11 +1268,9 @@ const AddNewProduct = ({
                         handleChange(e);
                         setFieldTouched('bnMetaDescription');
                       }}
-                    />
+                    /> */}
 
-                    <h3 className='inputFieldLabel'>
-                      Meta Tags (grocery,fashion)
-                    </h3>
+                    <h3 className='inputFieldLabel'>Meta Tags</h3>
 
                     <MetaTags
                       // @ts-ignore
@@ -1280,7 +1278,7 @@ const AddNewProduct = ({
                       tags={metaTags}
                     />
 
-                    <div
+                    {/* <div
                       style={{
                         marginTop: '15px',
                       }}
@@ -1294,9 +1292,9 @@ const AddNewProduct = ({
                       // @ts-ignore
                       setTags={setBnMetaTags}
                       tags={bnMetaTags}
-                    />
+                    /> */}
                   </div>
-                </div> */}
+                </div>
               </div>
               <div className='addProductGridContainer__right'>
                 <div className='addProductGridContainer__category'>

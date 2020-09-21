@@ -320,7 +320,7 @@ const AddNewCategory = ({
             <Input
               label='Name'
               value={values.name}
-              placeHolder={'grocery,fashion'}
+              // placeHolder={'grocery,fashion'}
               name='name'
               isError={
                 (touched.name && errors.name) ||
@@ -579,26 +579,29 @@ const AddNewCategory = ({
               </Tooltip>
             </div>
 
-            {/* <Input
-								label='Meta title'
-								value={values.metaTitle}
-								placeHolder={'category...'}
-								name='metaTitle'
-								isError={(touched.metaTitle && errors.metaTitle) ||
-									(!isSubmitting && addCategoryState.error['error']['metaTitle'])}
-
-								errorString={(touched.metaTitle && errors.metaTitle) ||
-									(!isSubmitting && addCategoryState.error['error']['metaTitle'])}
-								onChange={(e: any) => {
-									handleChange(e);
-									setFieldTouched('metaTitle')
-								}}
-							/>
-
+            <Input
+              label='Meta title'
+              value={values.metaTitle}
+              placeHolder={'...'}
+              name='metaTitle'
+              isError={
+                (touched.metaTitle && errors.metaTitle) ||
+                (!isSubmitting && addCategoryState.error['error']['metaTitle'])
+              }
+              errorString={
+                (touched.metaTitle && errors.metaTitle) ||
+                (!isSubmitting && addCategoryState.error['error']['metaTitle'])
+              }
+              onChange={(e: any) => {
+                handleChange(e);
+                setFieldTouched('metaTitle');
+              }}
+            />
+            {/* 
 							<Input
 								label='BN Meta title'
 								value={values.bnMetaTitle}
-								placeHolder={'ক্যাটাগড়ি...'}
+								placeHolder={'...'}
 								name='bnMetaTitle'
 								isError={(touched.bnMetaTitle && errors.bnMetaTitle) ||
 									(!isSubmitting && addCategoryState.error['error']['bnMetaTitle'])}
@@ -609,25 +612,30 @@ const AddNewCategory = ({
 									handleChange(e);
 									setFieldTouched('bnMetaTitle');
 								}}
-							/>
+							/> */}
 
-							<TextArea
-								label='Meta description'
-								value={values.metaDescription}
-								placeholder={'meta...'}
-								name='metaDescription'
-								isError={(touched.metaDescription && errors.metaDescription) ||
-									(!isSubmitting && addCategoryState.error['error']['metaDescription'])}
+            <TextArea
+              label='Meta description'
+              value={values.metaDescription}
+              placeholder={'meta...'}
+              name='metaDescription'
+              isError={
+                (touched.metaDescription && errors.metaDescription) ||
+                (!isSubmitting &&
+                  addCategoryState.error['error']['metaDescription'])
+              }
+              errorString={
+                (touched.metaDescription && errors.metaDescription) ||
+                (!isSubmitting &&
+                  addCategoryState.error['error']['metaDescription'])
+              }
+              onChange={(e: any) => {
+                handleChange(e);
+                setFieldTouched('metaDescription');
+              }}
+            />
 
-								errorString={(touched.metaDescription && errors.metaDescription) ||
-									(!isSubmitting && addCategoryState.error['error']['metaDescription'])}
-								onChange={(e: any) => {
-									handleChange(e);
-									setFieldTouched('metaDescription');
-								}}
-							/>
-
-							<TextArea
+            {/* <TextArea
 								label='BN Meta Description'
 								value={values.bnMetaDescription}
 								placeholder={'এইয় মেট...'}
@@ -641,18 +649,16 @@ const AddNewCategory = ({
 									handleChange(e);
 									setFieldTouched('bnMetaDescription');
 								}}
-							/>
+							/> */}
 
-							<h3 className='inputFieldLabel'>
-							Meta Tags (grocery,fashion)
-							</h3>
+            <h3 className='inputFieldLabel'>Meta Tags </h3>
 
-							<MetaTags
-							// @ts-ignore
-							setTags={setTags}
-							tags={tags}
-							 />
-
+            <MetaTags
+              // @ts-ignore
+              setTags={setTags}
+              tags={tags}
+            />
+            {/* 
 							<div style={{
 								marginTop:'15px'
 							}}></div>
@@ -665,8 +671,7 @@ const AddNewCategory = ({
 							// @ts-ignore
 							setTags={setBnTags}
 							tags={bnTags}
-							 />
-							 */}
+							 /> */}
           </Modal>
 
           <MediaLibrary

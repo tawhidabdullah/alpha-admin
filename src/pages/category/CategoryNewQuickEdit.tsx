@@ -499,7 +499,7 @@ const AddNewCategory = ({
             <Input
               label='Name'
               value={values.name}
-              placeHolder={'grocery,fashion'}
+              // placeHolder={'grocery,fashion'}
               name='name'
               isError={
                 (touched.name && errors.name) ||
@@ -515,7 +515,7 @@ const AddNewCategory = ({
               }}
             />
 
-            <Input
+            {/* <Input
               label='BN Name'
               value={values.bnName}
               placeHolder={'মুদিখানা,ফ্যাশন'}
@@ -532,12 +532,12 @@ const AddNewCategory = ({
                 handleChange(e);
                 setFieldTouched('bnName');
               }}
-            />
+            /> */}
 
             <TextArea
               label='Description'
               value={values.description}
-              placeholder={'This category...'}
+              // placeholder={'This category...'}
               name='description'
               isError={
                 (touched.description && errors.description) ||
@@ -555,7 +555,7 @@ const AddNewCategory = ({
               }}
             />
 
-            <TextArea
+            {/* <TextArea
               label='BN Description'
               value={values.bnDescription}
               placeholder={'এই ক্যাটাগড়ি...'}
@@ -574,7 +574,7 @@ const AddNewCategory = ({
                 handleChange(e);
                 setFieldTouched('bnDescription');
               }}
-            />
+            /> */}
 
             <Input
               label='Display Order'
@@ -770,10 +770,10 @@ const AddNewCategory = ({
                 )}
             </div>
 
-            {/* <Input
+            <Input
               label='Meta title'
               value={values.metaTitle}
-              placeHolder={'category...'}
+              // placeHolder={'...'}
               name='metaTitle'
               isError={
                 (touched.metaTitle && errors.metaTitle) ||
@@ -792,7 +792,7 @@ const AddNewCategory = ({
             <Input
               label='BN Meta title'
               value={values.bnMetaTitle}
-              placeHolder={'ক্যাটাগড়ি...'}
+              // placeHolder={'ক্যাটাগড়ি...'}
               name='bnMetaTitle'
               isError={
                 (touched.bnMetaTitle && errors.bnMetaTitle) ||
@@ -831,7 +831,7 @@ const AddNewCategory = ({
               }}
             />
 
-            <TextArea
+            {/* <TextArea
               label='BN Meta Description'
               value={values.bnMetaDescription}
               placeholder={'এইয় মেট...'}
@@ -850,29 +850,29 @@ const AddNewCategory = ({
                 handleChange(e);
                 setFieldTouched('bnMetaDescription');
               }}
-            />
+            /> */}
 
-            <h3 className='inputFieldLabel'>Meta Tags (grocery,fashion)</h3>
+            <h3 className='inputFieldLabel'>Meta Tags </h3>
 
             <MetaTags
               // @ts-ignore
               setTags={setTags}
               tags={tags}
-            /> */}
+            />
 
-            <div
+            {/* <div
               style={{
                 marginTop: '15px',
               }}
             ></div>
 
-            <h3 className='inputFieldLabel'>BN Meta Tags (মুদিখানা,ফ্যাশন)</h3>
+            <h3 className='inputFieldLabel'>BN Meta Tags </h3>
 
             <MetaTags
               // @ts-ignore
               setTags={setBnTags}
               tags={bnTags}
-            />
+            /> */}
           </Modal>
 
           <MediaLibrary

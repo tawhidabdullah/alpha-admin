@@ -798,7 +798,7 @@ const AddNewProduct = ({
                       label='Unit'
                       value={values.unit}
                       name='unit'
-                      placeHolder={'KG,POUND,GM'}
+                      // placeHolder={'KG,POUND,GM'}
                       isError={
                         (touched.unit && errors.unit) ||
                         (!isSubmitting &&
@@ -1186,114 +1186,137 @@ const AddNewProduct = ({
                   </div>
                 </div>
 
-                {/* 
+                <div className='addProductGridContainer__image'>
+                  <div className='addProductGridContainer__item-header'>
+                    <h3>Meta Data</h3>
 
-									<div className='addProductGridContainer__image'>
+                    <Tooltip
+                      placement='left'
+                      title={
+                        "Meta data will be used to make the user's easy and for search engine optimization."
+                      }
+                    >
+                      <a href='###'>
+                        <InfoCircleOutlined />
+                      </a>
+                    </Tooltip>
+                  </div>
+                  <div className='addProductGridContainer__item-body'>
+                    <Input
+                      label='Meta title'
+                      value={values.metaTitle}
+                      // placeHolder={''}
+                      name='metaTitle'
+                      isError={
+                        (touched.metaTitle && errors.metaTitle) ||
+                        (!isSubmitting &&
+                          updateProductState.error['error']['metaTitle'])
+                      }
+                      errorString={
+                        (touched.metaTitle && errors.metaTitle) ||
+                        (!isSubmitting &&
+                          updateProductState.error['error']['metaTitle'])
+                      }
+                      onChange={(e: any) => {
+                        handleChange(e);
+                        setFieldTouched('metaTitle');
+                      }}
+                    />
 
-                                        <div className='addProductGridContainer__item-header'>
-                                            <h3>
-                                            Meta Data
-                                        </h3>
+                    {/* <Input
+                      label='BN Meta title'
+                      value={values.bnMetaTitle}
+                      // placeHolder={'ক্যাটাগড়ি...'}
+                      name='bnMetaTitle'
+                      isError={
+                        (touched.bnMetaTitle && errors.bnMetaTitle) ||
+                        (!isSubmitting &&
+                          updateProductState.error['error']['bnMetaTitle'])
+                      }
+                      errorString={
+                        (touched.bnMetaTitle && errors.bnMetaTitle) ||
+                        (!isSubmitting &&
+                          updateProductState.error['error']['bnMetaTitle'])
+                      }
+                      onChange={(e: any) => {
+                        handleChange(e);
+                        setFieldTouched('bnMetaTitle');
+                      }}
+                    /> */}
 
-                                            <Tooltip
-                                                placement="left" title={"Meta data will be used to make the user's easy and for search engine optimization."}>
-                                                <a href='###'>
-                                                    <InfoCircleOutlined />
-                                                </a>
-                                            </Tooltip>
-                                        </div>
-                                        <div className='addProductGridContainer__item-body'>
+                    <TextArea
+                      label='Meta description'
+                      value={values.metaDescription}
+                      placeholder={'meta...'}
+                      name='metaDescription'
+                      isError={
+                        (touched.metaDescription && errors.metaDescription) ||
+                        (!isSubmitting &&
+                          updateProductState.error['error']['metaDescription'])
+                      }
+                      errorString={
+                        (touched.metaDescription && errors.metaDescription) ||
+                        (!isSubmitting &&
+                          updateProductState.error['error']['metaDescription'])
+                      }
+                      onChange={(e: any) => {
+                        handleChange(e);
+                        setFieldTouched('metaDescription');
+                      }}
+                    />
 
-                                                        
-                                        <Input
-                                        label='Meta title'
-                                        value={values.metaTitle}
-                                        placeHolder={'category...'}
-                                        name='metaTitle'
-                                        isError={(touched.metaTitle && errors.metaTitle) ||
-                                        (!isSubmitting && updateProductState.error['error']['metaTitle'])}
+                    {/* <TextArea
+                      label='BN Meta Description'
+                      value={values.bnMetaDescription}
+                      placeholder={'এইয় মেট...'}
+                      name='bnMetaDescription'
+                      isError={
+                        (touched.bnMetaDescription &&
+                          errors.bnMetaDescription) ||
+                        (!isSubmitting &&
+                          updateProductState.error['error'][
+                            'bnMetaDescription'
+                          ])
+                      }
+                      errorString={
+                        (touched.bnMetaDescription &&
+                          errors.bnMetaDescription) ||
+                        (!isSubmitting &&
+                          updateProductState.error['error'][
+                            'bnMetaDescription'
+                          ])
+                      }
+                      onChange={(e: any) => {
+                        handleChange(e);
+                        setFieldTouched('bnMetaDescription');
+                      }}
+                    /> */}
 
-                                        errorString={(touched.metaTitle && errors.metaTitle) ||
-                                        (!isSubmitting && updateProductState.error['error']['metaTitle'])}
-                                        onChange={(e: any) => {
-                                        handleChange(e);
-                                        setFieldTouched('metaTitle')
-                                        }}
-                                        />
+                    <h3 className='inputFieldLabel'>Meta Tags</h3>
 
-                                        <Input
-                                        label='BN Meta title'
-                                        value={values.bnMetaTitle}
-                                        placeHolder={'ক্যাটাগড়ি...'}
-                                        name='bnMetaTitle'
-                                        isError={(touched.bnMetaTitle && errors.bnMetaTitle) ||
-                                        (!isSubmitting && updateProductState.error['error']['bnMetaTitle'])}
+                    <MetaTags
+                      // @ts-ignore
+                      setTags={setMetaTags}
+                      tags={metaTags}
+                    />
+                    {/* 
+                    <div
+                      style={{
+                        marginTop: '15px',
+                      }}
+                    ></div>
 
-                                        errorString={(touched.bnMetaTitle && errors.bnMetaTitle) ||
-                                        (!isSubmitting && updateProductState.error['error']['bnMetaTitle'])}
-                                        onChange={(e: any) => {
-                                        handleChange(e);
-                                        setFieldTouched('bnMetaTitle');
-                                        }}
-                                        />
+                    <h3 className='inputFieldLabel'>
+                      BN Meta Tags (মুদিখানা,ফ্যাশন)
+                    </h3>
 
-                                        <TextArea
-                                        label='Meta description'
-                                        value={values.metaDescription}
-                                        placeholder={'meta...'}
-                                        name='metaDescription'
-                                        isError={(touched.metaDescription && errors.metaDescription) ||
-                                        (!isSubmitting && updateProductState.error['error']['metaDescription'])}
-
-                                        errorString={(touched.metaDescription && errors.metaDescription) ||
-                                        (!isSubmitting && updateProductState.error['error']['metaDescription'])}
-                                        onChange={(e: any) => {
-                                        handleChange(e);
-                                        setFieldTouched('metaDescription');
-                                        }}
-                                        />
-
-                                        <TextArea
-                                        label='BN Meta Description'
-                                        value={values.bnMetaDescription}
-                                        placeholder={'এইয় মেট...'}
-                                        name='bnMetaDescription'
-                                        isError={(touched.bnMetaDescription && errors.bnMetaDescription) ||
-                                        (!isSubmitting && updateProductState.error['error']['bnMetaDescription'])}
-
-                                        errorString={(touched.bnMetaDescription && errors.bnMetaDescription) ||
-                                        (!isSubmitting && updateProductState.error['error']['bnMetaDescription'])}
-                                        onChange={(e: any) => {
-                                        handleChange(e);
-                                        setFieldTouched('bnMetaDescription');
-                                        }}
-                                        />
-
-                                        <h3 className='inputFieldLabel'>
-                                        Meta Tags (grocery,fashion)
-                                        </h3>
-
-                                        <MetaTags
-                                        // @ts-ignore
-                                        setTags={setMetaTags}
-                                        tags={metaTags}
-                                        />
-
-                                        <div style={{
-                                        marginTop:'15px'
-                                        }}></div>
-
-                                        <h3 className='inputFieldLabel'>
-                                        BN Meta Tags (মুদিখানা,ফ্যাশন)
-                                        </h3>
-
-                                        <MetaTags
-                                        // @ts-ignore
-                                        setTags={setBnMetaTags}
-                                        tags={bnMetaTags}
-                                        />
-                                        </div>
-                                        </div> */}
+                    <MetaTags
+                      // @ts-ignore
+                      setTags={setBnMetaTags}
+                      tags={bnMetaTags}
+                    /> */}
+                  </div>
+                </div>
               </div>
               <div className='addProductGridContainer__right'>
                 <div className='addProductGridContainer__category'>

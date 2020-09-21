@@ -210,7 +210,7 @@ const AddNewBrand = ({
               label='Name'
               value={values.name}
               name='name'
-              placeHolder={'microsoft,apple'}
+              // placeHolder={'microsoft,apple'}
               isError={
                 (touched.name && errors.name) ||
                 (!isSubmitting && updateBrandState.error['error']['name'])
@@ -245,7 +245,7 @@ const AddNewBrand = ({
               label='Description'
               value={values.description}
               name='description'
-              placeholder={'This brand...'}
+              placeholder={'...'}
               isError={
                 (touched.description && errors.description) ||
                 (!isSubmitting &&
@@ -353,81 +353,97 @@ const AddNewBrand = ({
               )}
             </div>
 
+            <Input
+              label='Meta title'
+              value={values.metaTitle}
+              placeHolder={'...'}
+              name='metaTitle'
+              isError={
+                (touched.metaTitle && errors.metaTitle) ||
+                (!isSubmitting && updateBrandState.error['error']['metaTitle'])
+              }
+              errorString={
+                (touched.metaTitle && errors.metaTitle) ||
+                (!isSubmitting && updateBrandState.error['error']['metaTitle'])
+              }
+              onChange={(e: any) => {
+                handleChange(e);
+                setFieldTouched('metaTitle');
+              }}
+            />
+
             {/* <Input
-								label='Meta title'
-								value={values.metaTitle}
-								placeHolder={'category...'}
-								name='metaTitle'
-								isError={(touched.metaTitle && errors.metaTitle) ||
-									(!isSubmitting && updateBrandState.error['error']['metaTitle'])}
+              label='BN Meta title'
+              value={values.bnMetaTitle}
+              placeHolder={'ক্যাটাগড়ি...'}
+              name='bnMetaTitle'
+              isError={
+                (touched.bnMetaTitle && errors.bnMetaTitle) ||
+                (!isSubmitting &&
+                  updateBrandState.error['error']['bnMetaTitle'])
+              }
+              errorString={
+                (touched.bnMetaTitle && errors.bnMetaTitle) ||
+                (!isSubmitting &&
+                  updateBrandState.error['error']['bnMetaTitle'])
+              }
+              onChange={(e: any) => {
+                handleChange(e);
+                setFieldTouched('bnMetaTitle');
+              }}
+            /> */}
 
-								errorString={(touched.metaTitle && errors.metaTitle) ||
-									(!isSubmitting && updateBrandState.error['error']['metaTitle'])}
-								onChange={(e: any) => {
-									handleChange(e);
-									setFieldTouched('metaTitle')
-								}}
-							/>
+            <TextArea
+              label='Meta description'
+              value={values.metaDescription}
+              placeholder={'meta...'}
+              name='metaDescription'
+              isError={
+                (touched.metaDescription && errors.metaDescription) ||
+                (!isSubmitting &&
+                  updateBrandState.error['error']['metaDescription'])
+              }
+              errorString={
+                (touched.metaDescription && errors.metaDescription) ||
+                (!isSubmitting &&
+                  updateBrandState.error['error']['metaDescription'])
+              }
+              onChange={(e: any) => {
+                handleChange(e);
+                setFieldTouched('metaDescription');
+              }}
+            />
 
-							<Input
-								label='BN Meta title'
-								value={values.bnMetaTitle}
-								placeHolder={'ক্যাটাগড়ি...'}
-								name='bnMetaTitle'
-								isError={(touched.bnMetaTitle && errors.bnMetaTitle) ||
-									(!isSubmitting && updateBrandState.error['error']['bnMetaTitle'])}
+            {/* <TextArea
+              label='BN Meta Description'
+              value={values.bnMetaDescription}
+              placeholder={'এইয় মেট...'}
+              name='bnMetaDescription'
+              isError={
+                (touched.bnMetaDescription && errors.bnMetaDescription) ||
+                (!isSubmitting &&
+                  updateBrandState.error['error']['bnMetaDescription'])
+              }
+              errorString={
+                (touched.bnMetaDescription && errors.bnMetaDescription) ||
+                (!isSubmitting &&
+                  updateBrandState.error['error']['bnMetaDescription'])
+              }
+              onChange={(e: any) => {
+                handleChange(e);
+                setFieldTouched('bnMetaDescription');
+              }}
+            /> */}
 
-								errorString={(touched.bnMetaTitle && errors.bnMetaTitle) ||
-									(!isSubmitting && updateBrandState.error['error']['bnMetaTitle'])}
-								onChange={(e: any) => {
-									handleChange(e);
-									setFieldTouched('bnMetaTitle');
-								}}
-							/>
+            <h3 className='inputFieldLabel'>Meta Tags</h3>
 
-							<TextArea
-								label='Meta description'
-								value={values.metaDescription}
-								placeholder={'meta...'}
-								name='metaDescription'
-								isError={(touched.metaDescription && errors.metaDescription) ||
-									(!isSubmitting && updateBrandState.error['error']['metaDescription'])}
+            <MetaTags
+              // @ts-ignore
+              setTags={setTags}
+              tags={tags}
+            />
 
-								errorString={(touched.metaDescription && errors.metaDescription) ||
-									(!isSubmitting && updateBrandState.error['error']['metaDescription'])}
-								onChange={(e: any) => {
-									handleChange(e);
-									setFieldTouched('metaDescription');
-								}}
-							/>
-
-							<TextArea
-								label='BN Meta Description'
-								value={values.bnMetaDescription}
-								placeholder={'এইয় মেট...'}
-								name='bnMetaDescription'
-								isError={(touched.bnMetaDescription && errors.bnMetaDescription) ||
-									(!isSubmitting && updateBrandState.error['error']['bnMetaDescription'])}
-
-								errorString={(touched.bnMetaDescription && errors.bnMetaDescription) ||
-									(!isSubmitting && updateBrandState.error['error']['bnMetaDescription'])}
-								onChange={(e: any) => {
-									handleChange(e);
-									setFieldTouched('bnMetaDescription');
-								}}
-							/>
-
-							<h3 className='inputFieldLabel'>
-							Meta Tags (grocery,fashion)
-							</h3>
-
-							<MetaTags
-							// @ts-ignore
-							setTags={setTags}
-							tags={tags}
-							 />
-
-							<div style={{
+            {/* <div style={{
 								marginTop:'15px'
 							}}></div>
 
@@ -439,7 +455,7 @@ const AddNewBrand = ({
 							// @ts-ignore
 							setTags={setBnTags}
 							tags={bnTags}
-							 /> */}
+							 />  */}
           </Modal>
 
           <MediaLibrary
