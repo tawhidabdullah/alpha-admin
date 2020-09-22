@@ -663,7 +663,7 @@ const AddNewProduct = ({
                   </div>
                   <div className='addProductGridContainer__item-body'>
                     <Input
-                      label='Name'
+                      label='Name *'
                       value={values.name}
                       placeHolder={'Rafty ox'}
                       name='name'

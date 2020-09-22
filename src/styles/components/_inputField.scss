@@ -2056,3 +2056,24 @@
 .mono {
   font-family: monospace;
 }
+
+.listCoverImage {
+  width: 45px;
+  height: 45px;
+  background-color: #eee;
+  cursor: pointer;
+  display: inline-block;
+  border-radius: 3px;
+  overflow: hidden;
+
+  @media screen and (max-width: 430px) {
+    width: 35px;
+    height: 35px;
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}

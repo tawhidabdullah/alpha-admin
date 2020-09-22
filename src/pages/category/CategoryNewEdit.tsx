@@ -37,10 +37,10 @@ import MediaLibrary from '../../components/MediaLibrary';
 import MetaTags from './MetaTags';
 
 const validationSchema = Yup.object().shape({
-  name: Yup.string()
-    .label('Name')
-    .required('Name is required')
-    .min(3, 'Name must have at least 3 characters'),
+  // name: Yup.string()
+  //   .label('Name')
+  //   .required('Name is required')
+  //   .min(3, 'Name must have at least 3 characters'),
 });
 
 const openSuccessNotification = (message?: any) => {
@@ -102,7 +102,7 @@ const AddNewCategory = ({
   const [
     updateCategoryIconState,
     handleUpdateCategoryIconFetch,
-  ] = useHandleFetch({}, 'categoryUpdateIcon');
+  ] = useHandleFetch({}, 'categoryUpdateIcon', 'form');
   const [
     attachImageToItemMultipleState,
     handleAttachImageToItemMultipleFetch,
@@ -264,28 +264,51 @@ const AddNewCategory = ({
   };
 
   useEffect(() => {
+    if (!addCategoryState['isLoading']) {
+      const error = addCategoryState['error'];
+      if (error['isError'] && Object.keys(error['error']).length > 0) {
+        const errors =
+          Object.values(error['error']).length > 0
+            ? Object.values(error['error'])
+            : [];
+        errors.forEach((err, i) => {
+          if (typeof err === 'string') {
+            openErrorNotification(err);
+          } else if (typeof err === 'object') {
+            if (err && Object.keys(err).length > 0) {
+              const errs = Object.values(err);
+              errs.forEach((err) => {
+                openErrorNotification(err);
+              });
+            }
+          }
+        });
+      }
+    }
+  }, [addCategoryState]);
+
+  useEffect(() => {
     if (categoryDetailData && Object.keys(categoryDetailData).length > 0) {
-    
       const images = categoryDetailData.image;
-			let mahImages = []; 
+      let mahImages = [];
 
-			if (images && images.length > 0) {
-				mahImages = images;
-			}
-	
-			if (categoryDetailData.cover && categoryDetailData.cover['id']) {
-				const ixists = images.find(item => item.id === categoryDetailData.cover['id']);
-				if(!ixists){
-					mahImages = [categoryDetailData.cover, ...mahImages]
-				}
+      if (images && images.length > 0) {
+        mahImages = images;
+      }
 
-				setCoverImageId(categoryDetailData.cover['id']);
-			}
-	
-				// @ts-ignore
-          setmyImages(mahImages);
-          
+      if (categoryDetailData.cover && categoryDetailData.cover['id']) {
+        const ixists = images.find(
+          (item) => item.id === categoryDetailData.cover['id']
+        );
+        if (!ixists) {
+          mahImages = [categoryDetailData.cover, ...mahImages];
+        }
 
+        setCoverImageId(categoryDetailData.cover['id']);
+      }
+
+      // @ts-ignore
+      setmyImages(mahImages);
     }
   }, [categoryDetailData]);
 
@@ -406,6 +429,7 @@ const AddNewCategory = ({
       setImageUrl(imageUrl);
       setImagefile(file);
       const setNewIcon = async () => {
+        console.log('mahFile', file);
         const formData = new FormData();
         formData.append('icon', file);
         // const addCategoryRes = await handleAddCategoryFetch({
@@ -437,13 +461,6 @@ const AddNewCategory = ({
     return false;
   }
 
-  const uploadButton = (
-    <div>
-      {loadingThumnail ? <LoadingOutlined /> : <PlusOutlined />}
-      <div className='ant-upload-text'>Upload</div>
-    </div>
-  );
-
   useEffect(() => {
     if (categoryDetailData && Object.keys(categoryDetailData).length > 0) {
       const iconUrl = categoryDetailData.icon && categoryDetailData.icon;
@@ -451,6 +468,13 @@ const AddNewCategory = ({
       setImageUrl(iconUrl);
     }
   }, []);
+
+  const uploadButton = (
+    <div>
+      {loadingThumnail ? <LoadingOutlined /> : <PlusOutlined />}
+      <div className='ant-upload-text'>Upload</div>
+    </div>
+  );
 
   useEffect(() => {
     if (categoryDetailData && Object.keys(categoryDetailData).length > 0) {
@@ -463,7 +487,6 @@ const AddNewCategory = ({
         categoryDetailData.bn &&
         categoryDetailData.bn['metaTags'] &&
         categoryDetailData.bn['metaTags'].split(',');
-
 
       setTags(metaTags || []);
       setBnTags(bnMetaTags || []);
@@ -532,7 +555,7 @@ const AddNewCategory = ({
             }}
           >
             <Input
-              label='Name'
+              label='Name *'
               value={values.name}
               placeHolder={'grocery,fashion'}
               name='name'
@@ -809,7 +832,7 @@ const AddNewCategory = ({
             <Input
               label='Meta title'
               value={values.metaTitle}
-              placeHolder={'category...'}
+              placeHolder={'...'}
               name='metaTitle'
               isError={
                 (touched.metaTitle && errors.metaTitle) ||
@@ -828,7 +851,7 @@ const AddNewCategory = ({
             <Input
               label='BN Meta title'
               value={values.bnMetaTitle}
-              placeHolder={'ক্যাটাগড়ি...'}
+              placeHolder={'...'}
               name='bnMetaTitle'
               isError={
                 (touched.bnMetaTitle && errors.bnMetaTitle) ||
@@ -888,7 +911,7 @@ const AddNewCategory = ({
               }}
             />
 
-            <h3 className='inputFieldLabel'>Meta Tags (grocery,fashion)</h3>
+            <h3 className='inputFieldLabel'>Meta Tags </h3>
 
             <MetaTags
               // @ts-ignore
@@ -902,7 +925,7 @@ const AddNewCategory = ({
               }}
             ></div>
 
-            <h3 className='inputFieldLabel'>BN Meta Tags (মুদিখানা,ফ্যাশন)</h3>
+            <h3 className='inputFieldLabel'>BN Meta Tags </h3>
 
             <MetaTags
               // @ts-ignore

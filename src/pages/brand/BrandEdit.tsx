@@ -39,10 +39,10 @@ import MediaLibrary from '../../components/MediaLibrary';
 import MetaTags from '../../pages/category/MetaTags';
 
 const validationSchema = Yup.object().shape({
-  name: Yup.string()
-    .label('Name')
-    .required('Name is required')
-    .min(3, 'Name must have at least 3 characters'),
+  // name: Yup.string()
+  //   .label('Name')
+  //   .required('Name is required')
+  //   .min(3, 'Name must have at least 3 characters'),
 });
 
 const openSuccessNotification = (message?: any) => {
@@ -279,6 +279,30 @@ const AddNewBrand = ({
     actions.setSubmitting(false);
   };
 
+  useEffect(() => {
+    if (!updateBrandState['isLoading']) {
+      const error = updateBrandState['error'];
+      if (error['isError'] && Object.keys(error['error']).length > 0) {
+        const errors =
+          Object.values(error['error']).length > 0
+            ? Object.values(error['error'])
+            : [];
+        errors.forEach((err, i) => {
+          if (typeof err === 'string') {
+            openErrorNotification(err);
+          } else if (typeof err === 'object') {
+            if (err && Object.keys(err).length > 0) {
+              const errs = Object.values(err);
+              errs.forEach((err) => {
+                openErrorNotification(err);
+              });
+            }
+          }
+        });
+      }
+    }
+  }, [updateBrandState]);
+
   const onSwitchChange = (checked: any) => {
     // console.log(checked);
   };
@@ -372,7 +396,7 @@ const AddNewBrand = ({
             }}
           >
             <Input
-              label='Name'
+              label='Name *'
               value={values.name}
               name='name'
               placeHolder={'microsoft,apple'}
