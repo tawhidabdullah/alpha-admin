@@ -118,17 +118,7 @@ const MyTable = ({ data, setcategoryList, history, roles }: myTableProps) => {
                   setactiveCategoryForEdit(record);
                 }}
               >
-                <img
-                  src={getCover(record)}
-                  alt=''
-                  // style={{
-                  //   height: '40px',
-                  //   width: '40px',
-                  //   objectFit: 'contain',
-                  //   borderRadius: '3px',
-                  //   cursor: 'pointer',
-                  // }}
-                />
+                <img src={getCover(record)} alt='' />
               </div>
             </>
           )}
