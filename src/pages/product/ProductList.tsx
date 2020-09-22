@@ -411,6 +411,7 @@ const ProductList = ({ roles }: Props) => {
             sortItem: 'added',
             sortOrderValue: '-1',
             productType: 'product',
+            limitNumber: 5000000,
           },
         },
       });

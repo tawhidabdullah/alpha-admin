@@ -49,7 +49,7 @@
       "method": "post"
     },
     "productList": {
-      "url": "/api/product?sort=sortItem&sortOrder=sortOrderValue&type=productType",
+      "url": "/api/product?sort=sortItem&sortOrder=sortOrderValue&type=productType&limit=limitNumber",
       "method": "get"
     },
     "updateStock": {
@@ -150,7 +150,7 @@
       "method": "get"
     },
     "categoryList": {
-      "url": "/api/category?subCategory=isSubCategory&productCount=productCountValue",
+      "url": "/api/category?subCategory=isSubCategory&productCount=productCountValue&limit=limitNumber",
       "method": "get"
     },
     "categoryDetail": {
@@ -251,7 +251,7 @@
       "method": "post"
     },
     "dealerList": {
-      "url": "/admin/api/dealer?sort=sortItem&sortOrder=sortOrderValue",
+      "url": "/admin/api/dealer?sort=sortItem&sortOrder=sortOrderValue&limit=limitNumber",
       "method": "get"
     },
     "dealerDetail": {

@@ -191,7 +191,7 @@ const MyTable = ({ data, setTagList, roles }) => {
                 style={{
                   fontWeight: 400,
                   color: '#555',
-                  cursor: 'pointer',
+                  //   cursor: 'pointer',
                 }}
               >
                 {text}

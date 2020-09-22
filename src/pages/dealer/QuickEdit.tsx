@@ -3,7 +3,7 @@ import { Modal, Select,notification , Form, Empty } from 'antd';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
-import { PlusOutlined, EditOutlined, DeleteOutlined,EditFilled, CheckCircleOutlined } from '@ant-design/icons';
+import { PlusOutlined, EditOutlined, DeleteOutlined,EditFilled, CheckCircleOutlined, InfoCircleOutlined } from '@ant-design/icons';
 
 
 
@@ -51,7 +51,7 @@ const openSuccessNotification = (message?: any) => {
 	notification.success({
 	  message: message || 'Something Went Wrong',
 	  description: '',
-	  icon: <CheckCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
+	  icon: <InfoCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
 	});
   };
 

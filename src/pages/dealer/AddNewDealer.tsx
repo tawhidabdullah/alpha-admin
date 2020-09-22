@@ -16,7 +16,8 @@ import {
 	RadiusBottomrightOutlined,
 	DeleteOutlined,
 	FileAddOutlined,
-	CheckCircleOutlined
+	CheckCircleOutlined,
+	InfoCircleOutlined
 } from '@ant-design/icons';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -78,10 +79,10 @@ const openSuccessNotification = (message?: any) => {
 
 const openErrorNotification = (message?: any) => {
 	notification.error({
-		message: message || 'Something Went Wrong',
-		description: '',
-		icon: <CheckCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
-	});
+    message: message || 'Something Went Wrong',
+    description: '',
+    icon: <InfoCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
+  });
 };
 
 
