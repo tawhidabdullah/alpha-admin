@@ -260,6 +260,7 @@ const CategoryList = ({ history, roles }: Props) => {
             productCountValue: true,
             sortItem: 'added',
             sortOrderValue: '-1',
+            limitNumber: 5000000,
           },
         },
       });

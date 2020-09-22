@@ -139,7 +139,7 @@ const UpdateSiteinfo = ({}: Props) => {
           <div className='siteInfoContainer__item'>
             <div className='siteInfoContainer__item-item'>
               <Input
-                label='Site Title'
+                label='Admin Title'
                 value={values.title}
                 name='title'
                 isError={
