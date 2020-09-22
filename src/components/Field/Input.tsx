@@ -47,8 +47,10 @@ const Demo = ({
       >
         <Input
           onKeyDown={(event) => {
-            if (event.key === 'e' || event.key === '-') {
-              event.preventDefault();
+            if (type === 'number') {
+              if (event.key === 'e' || event.key === '-') {
+                event.preventDefault();
+              }
             }
           }}
           min={min}

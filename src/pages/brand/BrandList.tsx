@@ -196,7 +196,7 @@ const MyTable = ({ data, setBrandList, roles }: myTableProps) => {
             render={(text, record: any) => (
               <Space size='middle'>
                 <a href='##'>
-                  <Tooltip placement='top' title='Quick Edit Brand'>
+                  <Tooltip placement='top' title='Edit Brand'>
                     <span
                       className='iconSize'
                       onClick={() => {

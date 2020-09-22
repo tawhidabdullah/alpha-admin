@@ -134,7 +134,7 @@ const AddNewCategory = ({
     formData.append('metaTitle', values.metaTitle);
     formData.append('displayOrder', values.displayOrder);
     formData.append('metaDescription', values.metaDescription);
-    formData.append('metaTags', values.metaTags);
+    formData.append('metaTags', tags);
 
     const bnData = JSON.stringify(bn);
     const bnFormData = new FormData();

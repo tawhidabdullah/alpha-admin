@@ -408,12 +408,12 @@ const MyTable = ({ data, setOrderList, roles }: myTableProps) => {
 };
 
 interface Props {
-  history?: any;
   roles?: any;
 }
 
-const CustomerList = ({ history, roles }: Props) => {
+const CustomerList = ({ roles }: Props) => {
   const [orderList, setOrderList] = useState([]);
+  const history = useHistory();
 
   const [orderState, handleOrderListFetch] = useHandleFetch({}, 'orderList');
   const [orderStatusFilterValue, setorderStatusFilterValue] = useState('');
@@ -442,9 +442,9 @@ const CustomerList = ({ history, roles }: Props) => {
           params: {
             sortItem: 'added',
             sortOrderValue: '-1',
+            limitNumber: 500000,
             statusValue:
               orderStatusFilterValue === 'all' ? '' : orderStatusFilterValue,
-            limitNumber: 500000,
             startDateValue: startDate,
             endDateValue: endDate,
             deliveryRegionNameValue: deliveryRegionNameValue,

@@ -8,12 +8,13 @@ import { useHandleFetch } from '../../../hooks';
 import { Select, notification, Modal, Tooltip, Upload, message, Spin } from 'antd';
 
 import {
-	FileImageFilled,
-	PlusOutlined,
-	CheckCircleOutlined,
-	CloseOutlined,
-	CheckOutlined,
-	LoadingOutlined
+  FileImageFilled,
+  PlusOutlined,
+  CheckCircleOutlined,
+  CloseOutlined,
+  CheckOutlined,
+  LoadingOutlined,
+  InfoCircleOutlined,
 } from '@ant-design/icons';
 
 
@@ -46,10 +47,10 @@ const openSuccessNotification = (message?: any) => {
 
 const openErrorNotification = (message?: any) => {
 	notification.error({
-		message: message || 'Something Went Wrong',
-		description: '',
-		icon: <CheckCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
-	});
+    message: message || 'Something Went Wrong',
+    description: '',
+    icon: <InfoCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
+  });
 };
 
 

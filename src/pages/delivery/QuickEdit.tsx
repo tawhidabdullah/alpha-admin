@@ -1,14 +1,18 @@
-//@ts-nocheck
 import React, { useState, useEffect } from 'react';
-import { Modal, Select, notification, Button } from 'antd';
+import { Modal, Select, notification, Button, Form } from 'antd';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import { CheckCircleOutlined, PlusOutlined } from '@ant-design/icons';
+import {
+  CheckCircleOutlined,
+  PlusOutlined,
+  InfoCircleOutlined,
+} from '@ant-design/icons';
 
 // import components
 import Input from '../../components/Field/Input';
 import { useHandleFetch } from '../../hooks';
 import DeliveryCharge from './DeliveryCharge';
+import { category } from '../../state/ducks';
 
 const { Option } = Select;
 
@@ -39,7 +43,7 @@ const openErrorNotification = (message?: any) => {
   notification.success({
     message: message || 'Something Went Wrong',
     description: '',
-    icon: <CheckCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
+    icon: <InfoCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
   });
 };
 
@@ -98,7 +102,7 @@ const QuickEdit = ({
     }
   }, [customer]);
 
-  console.log('deliveryCharge333', customer.charge);
+  console.log('deliveryCharge333', customer);
 
   const handleSubmit = async (values: any, actions: any) => {
     // console.log('selectedCityValue',selectedCityValue)
@@ -139,7 +143,7 @@ const QuickEdit = ({
 
       // @ts-ignore
       const updatedItem = Object.assign({}, regionList[index], {
-        // @ts-check
+        // @ts-ignore
         ...addRegionRes,
       });
       const updateRegionList = [
@@ -149,6 +153,12 @@ const QuickEdit = ({
       ];
       setRegionList(updateRegionList);
       setvisible(false);
+
+      setdeliveryChargeList([]);
+      setselectedCityValue('');
+      setselectedCountryValue('');
+      setcountryOptions([]);
+      setcityOptions([]);
     } else {
       openErrorNotification();
     }
@@ -229,14 +239,14 @@ const QuickEdit = ({
     };
 
     setCountries();
-  }, []);
+  }, [customer]);
 
   useEffect(() => {
     const setCities = async () => {
       const cityListRes = await handleCityListFetch({
         urlOptions: {
           placeHolders: {
-            country: selectedCountryValue,
+            country: selectedCountryValue || customer.countryName,
           },
         },
       });
@@ -255,10 +265,16 @@ const QuickEdit = ({
     };
 
     setCities();
-  }, [selectedCountryValue]);
+  }, [customer.countryName, selectedCountryValue]);
 
   const handleCancel = (e: any) => {
     setvisible(false);
+
+    setdeliveryChargeList([]);
+    setselectedCityValue('');
+    setselectedCountryValue('');
+    setcountryOptions([]);
+    setcityOptions([]);
   };
 
   const getisSubmitButtonDisabled = (values, isValid) => {
@@ -306,6 +322,7 @@ const QuickEdit = ({
             onOk={(e: any) => handleSubmit(e)}
             onCancel={handleCancel}
             okText='Update'
+            destroyOnClose={true}
             okButtonProps={{
               loading: isSubmitting,
               htmlType: 'submit',
@@ -386,51 +403,66 @@ const QuickEdit = ({
             <div className='dubbleRowInputs'>
               <div className='dubbleRowInputs__item'>
                 <h3 className='inputFieldLabel'>Country</h3>
-                <Select
-                  showSearch
-                  style={{ width: '100%' }}
-                  placeholder='Select a Country'
-                  optionFilterProp='children'
-                  defaultValue={customer && customer.country}
-                  onChange={onChangeCountry}
-                  filterOption={(input, option) =>
-                    option.children
-                      .toLowerCase()
-                      .indexOf(input.toLowerCase()) >= 0
+                <Form.Item
+                  validateStatus={
+                    updateRegionState.error['error']['country'] ? 'error' : ''
                   }
+                  help={updateRegionState.error['error']['country']}
                 >
-                  {countryListState.done &&
-                    countryListState.data.length > 0 &&
-                    countryOptions.map((option) => {
-                      return (
-                        <Option value={option.value}>{option.name}</Option>
-                      );
-                    })}
-                </Select>
+                  <Select
+                    showSearch
+                    style={{ width: '100%' }}
+                    placeholder='Select a Country'
+                    optionFilterProp='children'
+                    defaultValue={customer && customer.countryName}
+                    onChange={onChangeCountry}
+                    filterOption={(input, option) =>
+                      option.children
+                        .toLowerCase()
+                        .indexOf(input.toLowerCase()) >= 0
+                    }
+                  >
+                    {countryListState.done &&
+                      countryListState.data.length > 0 &&
+                      countryOptions.map((option) => {
+                        return (
+                          <Option value={option.value}>{option.name}</Option>
+                        );
+                      })}
+                  </Select>
+                </Form.Item>
               </div>
               <div className='dubbleRowInputs__item'>
                 <h3 className='inputFieldLabel'>City</h3>
-                <Select
-                  showSearch
-                  style={{ width: '100%' }}
-                  placeholder='Select a city'
-                  optionFilterProp='children'
-                  defaultValue={customer && customer.city}
-                  onChange={onChangeCity}
-                  filterOption={(input, option) =>
-                    option.children
-                      .toLowerCase()
-                      .indexOf(input.toLowerCase()) >= 0
+                <Form.Item
+                  validateStatus={
+                    updateRegionState.error['error']['country'] ? 'error' : ''
                   }
+                  help={updateRegionState.error['error']['country']}
                 >
-                  {cityListState.done &&
-                    cityListState.data.length > 0 &&
-                    cityOptions.map((option) => {
-                      return (
-                        <Option value={option.value}>{option.name}</Option>
-                      );
-                    })}
-                </Select>
+                  <Select
+                    mode='multiple'
+                    showSearch
+                    style={{ width: '100%' }}
+                    placeholder='Select a city'
+                    optionFilterProp='children'
+                    defaultValue={customer && customer.city}
+                    onChange={onChangeCity}
+                    filterOption={(input, option) =>
+                      option.children
+                        .toLowerCase()
+                        .indexOf(input.toLowerCase()) >= 0
+                    }
+                  >
+                    {cityListState.done &&
+                      cityListState.data.length > 0 &&
+                      cityOptions.map((option) => {
+                        return (
+                          <Option value={option.value}>{option.name}</Option>
+                        );
+                      })}
+                  </Select>
+                </Form.Item>
               </div>
             </div>
 
@@ -441,16 +473,23 @@ const QuickEdit = ({
             ></div>
             <h3 className='inputFieldLabel'>Delivery Charges</h3>
 
-            {deliveryChargeList.map((deliveryChargeItem) => {
-              console.log('deliveryChargeItem-region', deliveryChargeItem);
-              return (
-                <DeliveryCharge
-                  deliveryChargeItem={deliveryChargeItem}
-                  deliveryChargeList={deliveryChargeList}
-                  setdeliveryChargeList={setdeliveryChargeList}
-                />
-              );
-            })}
+            <Form.Item
+              validateStatus={
+                updateRegionState.error['error']['country'] ? 'error' : ''
+              }
+              help={updateRegionState.error['error']['country']}
+            >
+              {deliveryChargeList.map((deliveryChargeItem) => {
+                console.log('deliveryChargeItem-region', deliveryChargeItem);
+                return (
+                  <DeliveryCharge
+                    deliveryChargeItem={deliveryChargeItem}
+                    deliveryChargeList={deliveryChargeList}
+                    setdeliveryChargeList={setdeliveryChargeList}
+                  />
+                );
+              })}
+            </Form.Item>
 
             <div
               style={{

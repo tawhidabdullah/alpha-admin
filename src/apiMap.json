@@ -400,7 +400,7 @@
       "method": "get"
     },
     "regionList": {
-      "url": "/admin/api/delivery?sort=sortItem&sortOrder=sortOrderValue",
+      "url": "/admin/api/delivery?sort=sortItem&sortOrder=sortOrderValue&limit=limitNumber",
       "method": "get"
     },
     "addRegion": {

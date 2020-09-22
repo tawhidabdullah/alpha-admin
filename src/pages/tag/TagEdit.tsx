@@ -13,6 +13,7 @@ import {
   EditOutlined,
   DeleteOutlined,
   EditFilled,
+  InfoCircleOutlined,
 } from '@ant-design/icons';
 import MetaTags from '../../pages/category/MetaTags';
 
@@ -35,7 +36,7 @@ const openErrorNotification = (message?: any) => {
   notification.success({
     message: message || 'Something Went Wrong',
     description: '',
-    icon: <CheckCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
+    icon: <InfoCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
   });
 };
 

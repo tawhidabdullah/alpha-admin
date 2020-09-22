@@ -153,13 +153,15 @@ const AddNewProduct = ({
         cookingTime: values.cookingTime,
         metaTitle: values.metaTitle,
         metaDescription: values.metaDescription,
+        metaTags: metaTags && metaTags.length > 0 ? metaTags.join(',') : '',
         bn: {
           metaTitle: values.bnMetaTitle,
           metaDescription: values.bnMetaDescription,
-          metaTags: bnMetaTags.join(','),
+          metaTags:
+            bnMetaTags && bnMetaTags.length > 0 ? bnMetaTags.join(',') : '',
           name: values.bnName.trim(),
           preparationTime: values.bnPreparationTime,
-          body: values.bnBody,
+          body: bnBody,
           servingSize: values.bnServingSize,
           cookingTime: values.bnCookingTime,
         },
@@ -169,7 +171,7 @@ const AddNewProduct = ({
     // @ts-ignore
     if (addProductRes && addProductRes.status === 'ok') {
       openSuccessNotification('Recipe Created');
-      
+
       setBundleList([
         {
           // @ts-ignore
@@ -182,7 +184,6 @@ const AddNewProduct = ({
         ...bundleList,
       ]);
 
-
       // @ts-ignore
       setmyImages([]);
       setCoverImageId('');
@@ -192,6 +193,12 @@ const AddNewProduct = ({
       setBrandId('');
       setcategoryIds([]);
       setCategoryOptions([]);
+      setBnBody('');
+      setBody('');
+      setMetaTags([]);
+      setBnMetaTags([]);
+      setProductIds([]);
+      setProductList([]);
       actions.resetForm();
 
       setAddNewCategoryVisible(false);
@@ -846,7 +853,7 @@ const AddNewProduct = ({
                     <Input
                       label='Meta title'
                       value={values.metaTitle}
-                      placeHolder={'category...'}
+                      placeHolder={'...'}
                       name='metaTitle'
                       isError={
                         (touched.metaTitle && errors.metaTitle) ||
@@ -867,7 +874,7 @@ const AddNewProduct = ({
                     <Input
                       label='BN Meta title'
                       value={values.bnMetaTitle}
-                      placeHolder={'ক্যাটাগড়ি...'}
+                      placeHolder={'...'}
                       name='bnMetaTitle'
                       isError={
                         (touched.bnMetaTitle && errors.bnMetaTitle) ||
@@ -929,9 +936,7 @@ const AddNewProduct = ({
                       }}
                     />
 
-                    <h3 className='inputFieldLabel'>
-                      Meta Tags (grocery,fashion)
-                    </h3>
+                    <h3 className='inputFieldLabel'>Meta Tags</h3>
 
                     <MetaTags
                       // @ts-ignore
@@ -945,9 +950,7 @@ const AddNewProduct = ({
                       }}
                     ></div>
 
-                    <h3 className='inputFieldLabel'>
-                      BN Meta Tags (মুদিখানা,ফ্যাশন)
-                    </h3>
+                    <h3 className='inputFieldLabel'>BN Meta Tags</h3>
 
                     <MetaTags
                       // @ts-ignore

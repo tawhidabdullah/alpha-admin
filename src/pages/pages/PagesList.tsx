@@ -79,6 +79,12 @@ const MyTable = ({ data, setBrandList, roles }: myTableProps) => {
     }
   };
 
+  const getCover = (record: any) => {
+    if (record.cover) {
+      return record.cover;
+    } else return '';
+  };
+
   return (
     <>
       <Table
@@ -99,21 +105,15 @@ const MyTable = ({ data, setBrandList, roles }: myTableProps) => {
           className='classnameofthecolumn'
           render={(cover, record: any) => (
             <>
-              <img
+              <div
+                className='listCoverImage'
                 onClick={() => {
                   history.push(`/admin/page/${record.id}`);
-                  // history.push(`/admin/page/${record.id}`);
+                  setactiveCategoryForEdit(record);
                 }}
-                src={cover}
-                alt='cover img'
-                style={{
-                  height: '40px',
-                  width: '40px',
-                  objectFit: 'contain',
-                  borderRadius: '3px',
-                  cursor: 'pointer',
-                }}
-              />
+              >
+                <img src={getCover(record)} alt='' />
+              </div>
             </>
           )}
         />

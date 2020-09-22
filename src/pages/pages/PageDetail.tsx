@@ -81,7 +81,7 @@ const NewBrandDetail = ({ roles }: Props) => {
 
       // @ts-ignore
       if (tagDetailRes) {
-        console.log('tagDetailRes', tagDetailRes);
+        console.log('pageDetailRes', tagDetailRes);
         // @ts-ignore
         setTagDetailData(tagDetailRes);
       }

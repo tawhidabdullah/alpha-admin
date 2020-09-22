@@ -711,9 +711,11 @@ class Converter {
           preparationTime: post.preparationTime && post.preparationTime,
           servingSize: post.servingSize && post.servingSize,
           cookingTime: post.cookingTime && post.cookingTime,
-          cover: `${config['baseURL']}${
-            (post.cover && post.cover['thumbnail']) || ''
-          }`,
+          cover: post.cover
+            ? `${config['baseURL']}${
+                (post.cover && post.cover['thumbnail']) || ''
+              }`
+            : null,
           url: post.url,
           category: post.category,
           tags: post.tags,
@@ -1238,7 +1240,7 @@ class Converter {
             ? `${config['baseURL']}${
                 (product.cover && product.cover['thumbnail']) || ''
               }`
-            : product.cover,
+            : null,
           minimumOrder: product.minimumOrder,
           maximumOrder: product.maximumOrder,
           offerPrice: product.price && product.price['offer'],
@@ -1430,9 +1432,9 @@ class Converter {
           key: brand._id || '',
           name: brand.name && brand.name,
           description: brand.description && brand.description,
-          cover: `${config['baseURL']}${
-            brand.cover ? brand.cover.thumbnail : ''
-          }`,
+          cover: brand.cover
+            ? `${config['baseURL']}${brand.cover ? brand.cover.thumbnail : ''}`
+            : null,
         };
       });
 
@@ -1885,9 +1887,9 @@ class Converter {
           key: page._id || '',
           name: page.name && page.name,
           description: page.description && page.description,
-          cover: `${config['baseURL']}${
-            page.cover ? page.cover.thumbnail : ''
-          }`,
+          cover: page.cover
+            ? `${config['baseURL']}${page.cover ? page.cover.thumbnail : ''}`
+            : null,
         };
       });
 
