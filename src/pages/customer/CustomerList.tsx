@@ -324,7 +324,10 @@ const CustomerList = ({ history }: Props) => {
       };
       const customers = await handleCustomerListFetch({
         urlOptions: {
-          params: getSorttingvalue(),
+          params: {
+            ...getSorttingvalue(),
+            limitNumber: 252423480,
+          },
         },
       });
       // @ts-ignore

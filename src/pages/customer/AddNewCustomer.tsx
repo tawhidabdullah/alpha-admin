@@ -69,6 +69,7 @@ const initialValues = {
   address2: '',
   zipCode: '',
   password: '',
+  dealerCode: '',
 };
 
 const openSuccessNotification = (message?: any) => {
@@ -116,6 +117,7 @@ const AddNewCategory = ({
   );
 
   const [cityListState, handleCityListFetch] = useHandleFetch([], 'cityList');
+  const [toggleReferralCode, settoggleReferralCode] = useState(false);
 
   const [countryList, setCountryList] = useState([]);
   const [cityList, setCityList] = useState([]);
@@ -124,14 +126,15 @@ const AddNewCategory = ({
     const addCustomerRes = await handleAddCustomerFetch({
       body: {
         phone: values.phone,
-        email: values.email,
+        email: values.email.trim(),
         password: values.password,
         address1: values.address1,
         address2: values.address2,
-        firstName: values.firstName,
+        firstName: values.firstName.trim(),
         lastName: values.lastName,
         country: selectedCountryValue,
         city: selectedCityValue,
+        dealerCode: values.dealerCode,
       },
     });
 
@@ -157,6 +160,30 @@ const AddNewCategory = ({
 
     actions.setSubmitting(false);
   };
+
+  useEffect(() => {
+    if (!addCustomerState['isLoading']) {
+      const error = addCustomerState['error'];
+      if (error['isError'] && Object.keys(error['error']).length > 0) {
+        const errors =
+          Object.values(error['error']).length > 0
+            ? Object.values(error['error'])
+            : [];
+        errors.forEach((err, i) => {
+          if (typeof err === 'string') {
+            openErrorNotification(err);
+          } else if (typeof err === 'object') {
+            if (err && Object.keys(err).length > 0) {
+              const errs = Object.values(err);
+              errs.forEach((err) => {
+                openErrorNotification(err);
+              });
+            }
+          }
+        });
+      }
+    }
+  }, [addCustomerState]);
 
   const onChangeCity = (value) => {
     setselectedCityValue(value);
@@ -320,7 +347,7 @@ const AddNewCategory = ({
             <div className='dubbleRowInputs'>
               <div className='dubbleRowInputs__item'>
                 <Input
-                  label='Phone'
+                  label='Phone *'
                   value={values.phone}
                   name='phone'
                   isError={
@@ -359,12 +386,60 @@ const AddNewCategory = ({
             </div>
 
             <div
+              className='dubbleRowInputs'
+              style={{
+                alignItems: 'center',
+                ...(!toggleReferralCode && {
+                  margin: '10px 0',
+                }),
+              }}
+            >
+              <div className='dubbleRowInputs__item'>
+                {toggleReferralCode && (
+                  <Input
+                    label='Referral Code'
+                    value={values.dealerCode}
+                    name='dealerCode'
+                    isError={
+                      (touched.dealerCode && errors.dealerCode) ||
+                      (!isSubmitting &&
+                        addCustomerState.error['error']['dealerCode'])
+                    }
+                    errorString={
+                      (touched.dealerCode && errors.dealerCode) ||
+                      (!isSubmitting &&
+                        addCustomerState.error['error']['dealerCode'])
+                    }
+                    onChange={(e: any) => {
+                      handleChange(e);
+                      setFieldTouched('dealerCode');
+                    }}
+                  />
+                )}
+              </div>
+              <div className='dubbleRowInputs__item'>
+                <h3
+                  onClick={() => settoggleReferralCode((value) => !value)}
+                  style={{
+                    color: '#1890ff',
+                    marginBottom: '-9px',
+                    marginLeft: '115px',
+                    cursor: 'pointer',
+                  }}
+                  className='inputFieldLabel'
+                >
+                  Add Referral Code
+                </h3>
+              </div>
+            </div>
+
+            <div
               style={{
                 marginRight: '10px',
               }}
             >
               <Input
-                label='Password'
+                label='Password *'
                 type='password'
                 value={values.password}
                 name='password'
@@ -385,7 +460,7 @@ const AddNewCategory = ({
 
             <div className='dubbleRowInputs'>
               <div className='dubbleRowInputs__item'>
-                <h3 className='inputFieldLabel'>Country</h3>
+                <h3 className='inputFieldLabel'>Country *</h3>
 
                 <Form.Item
                   validateStatus={
@@ -423,7 +498,7 @@ const AddNewCategory = ({
                 </Form.Item>
               </div>
               <div className='dubbleRowInputs__item'>
-                <h3 className='inputFieldLabel'>City</h3>
+                <h3 className='inputFieldLabel'>City *</h3>
                 <Form.Item
                   // noStyle={true}
                   validateStatus={
@@ -464,53 +539,26 @@ const AddNewCategory = ({
 
             <div
               style={{
-                marginTop: '12px',
+                marginRight: '10px',
               }}
-            ></div>
-
-            <div className='dubbleRowInputs'>
-              <div className='dubbleRowInputs__item'>
-                <Input
-                  label='Address'
-                  value={values.address1}
-                  name='address1'
-                  isError={
-                    (touched.address1 && errors.address1) ||
-                    (!isSubmitting &&
-                      addCustomerState.error['error']['address1'])
-                  }
-                  errorString={
-                    (touched.address1 && errors.address1) ||
-                    (!isSubmitting &&
-                      addCustomerState.error['error']['address1'])
-                  }
-                  onChange={(e: any) => {
-                    handleChange(e);
-                    setFieldTouched('address1');
-                  }}
-                />
-              </div>
-              <div className='dubbleRowInputs__item'>
-                <Input
-                  label='Address 2'
-                  value={values.address2}
-                  name='address2'
-                  isError={
-                    (touched.address2 && errors.address2) ||
-                    (!isSubmitting &&
-                      addCustomerState.error['error']['address2'])
-                  }
-                  errorString={
-                    (touched.address2 && errors.address2) ||
-                    (!isSubmitting &&
-                      addCustomerState.error['error']['address2'])
-                  }
-                  onChange={(e: any) => {
-                    handleChange(e);
-                    setFieldTouched('address2');
-                  }}
-                />
-              </div>
+            >
+              <Input
+                label='Address *'
+                value={values.address1}
+                name='address1'
+                isError={
+                  (touched.address1 && errors.address1) ||
+                  (!isSubmitting && addCustomerState.error['error']['address1'])
+                }
+                errorString={
+                  (touched.address1 && errors.address1) ||
+                  (!isSubmitting && addCustomerState.error['error']['address1'])
+                }
+                onChange={(e: any) => {
+                  handleChange(e);
+                  setFieldTouched('address1');
+                }}
+              />
             </div>
           </Modal>
         </>

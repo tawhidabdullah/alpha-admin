@@ -157,8 +157,10 @@ const QuickEdit = ({
       setdeliveryChargeList([]);
       setselectedCityValue('');
       setselectedCountryValue('');
-      setcountryOptions([]);
-      setcityOptions([]);
+      // setcountryOptions([]);
+      // setcityOptions([]);
+      // setcountryOptions([]);
+      // setcityOptions([]);
     } else {
       openErrorNotification();
     }
@@ -273,8 +275,8 @@ const QuickEdit = ({
     setdeliveryChargeList([]);
     setselectedCityValue('');
     setselectedCountryValue('');
-    setcountryOptions([]);
-    setcityOptions([]);
+    // setcountryOptions([]);
+    // setcityOptions([]);
   };
 
   const getisSubmitButtonDisabled = (values, isValid) => {

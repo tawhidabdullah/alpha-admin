@@ -226,7 +226,7 @@
       "method": "post"
     },
     "customerList": {
-      "url": "/admin/api/customer?sort=sortItem&sortOrder=sortOrderValue",
+      "url": "/admin/api/customer?sort=sortItem&sortOrder=sortOrderValue&limit=limitNumber",
       "method": "get"
     },
     "customerDetail": {
