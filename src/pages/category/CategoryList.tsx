@@ -83,6 +83,14 @@ const MyTable = ({ data, setcategoryList, history, roles }: myTableProps) => {
     }
   };
 
+  const getCover = (record: any) => {
+    if (record.cover) {
+      return record.cover;
+    } else if (!record.cover && record.icon) {
+      return record.icon;
+    } else return '';
+  };
+
   return (
     <>
       <Table
@@ -103,22 +111,25 @@ const MyTable = ({ data, setcategoryList, history, roles }: myTableProps) => {
           className='classnameofthecolumn'
           render={(cover, record: any) => (
             <>
-              <img
-                src={cover}
+              <div
+                className='listCoverImage'
                 onClick={() => {
                   history.push(`/admin/category/${record.id}`);
-                  // setcategoryDetailVisible(true);
                   setactiveCategoryForEdit(record);
                 }}
-                alt='cover img'
-                style={{
-                  height: '40px',
-                  width: '40px',
-                  objectFit: 'contain',
-                  borderRadius: '3px',
-                  cursor: 'pointer',
-                }}
-              />
+              >
+                <img
+                  src={getCover(record)}
+                  alt=''
+                  // style={{
+                  //   height: '40px',
+                  //   width: '40px',
+                  //   objectFit: 'contain',
+                  //   borderRadius: '3px',
+                  //   cursor: 'pointer',
+                  // }}
+                />
+              </div>
             </>
           )}
         />

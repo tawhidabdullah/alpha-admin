@@ -39,6 +39,11 @@ const Demo = ({
         // rules={[{ required: true }]}
       >
         <Input
+          onKeyDown={(event) => {
+            if (event.key === 'e' || event.key === '-') {
+              event.preventDefault();
+            }
+          }}
           min={min}
           type={type}
           size={size}

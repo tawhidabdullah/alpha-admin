@@ -2977,9 +2977,9 @@ class Converter {
    */
   async addTag(data) {
     const convertedData = data;
-    if (data && data.inserted) {
+    if (data && data[0]) {
       return {
-        ...data.inserted[0],
+        ...data[0],
         status: 'ok',
       };
     }

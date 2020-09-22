@@ -39,10 +39,10 @@ import MediaLibrary from '../../components/MediaLibrary';
 import MetaTags from '../category/MetaTags';
 
 const validationSchema = Yup.object().shape({
-  name: Yup.string()
-    .label('Name')
-    .required('Name is required')
-    .min(3, 'Name must have at least 3 characters'),
+  // name: Yup.string()
+  //   .label('Name')
+  //   .required('Name is required')
+  //   .min(3, 'Name must have at least 3 characters'),
 });
 
 const openSuccessNotification = (message?: any) => {
@@ -265,18 +265,28 @@ const AddNewBrand = ({
     if (updateBrandRes && updateBrandRes.status === 'ok') {
       console.log('updateBrandRes', updateBrandRes);
 
-      setBrandList([
-        {
-          ...brandDetailData,
-          id: updateBrandRes['id'] || '',
-          key: updateBrandRes['id'] || '',
-          name: updateBrandRes['name'] || '',
-          description: updateBrandRes['description'] || '',
-          // @ts-ignore
-          ...updateBrandRes,
-        },
-        ...brandList,
-      ]);
+      const positionInTag = () => {
+        return brandList.map((item) => item.id).indexOf(values.id);
+      };
+
+      const index = positionInTag();
+
+      // @ts-ignore
+      const updatedItem = Object.assign({}, brandList[index], {
+        ...brandDetailData,
+        id: brandDetailData['id'] || '',
+        key: brandDetailData['id'] || '',
+        name: updateBrandRes['name'] || '',
+        description: updateBrandRes['description'] || '',
+        // @ts-ignore
+        ...updateBrandRes,
+      });
+      const updateTagList = [
+        ...brandList.slice(0, index),
+        updatedItem,
+        ...brandList.slice(index + 1),
+      ];
+      setBrandList(updateTagList);
 
       openSuccessNotification('Brand Updated!');
       setBrandEditVisible(false);
@@ -300,6 +310,30 @@ const AddNewBrand = ({
 
     actions.setSubmitting(false);
   };
+
+  useEffect(() => {
+    if (!updateBrandState['isLoading']) {
+      const error = updateBrandState['error'];
+      if (error['isError'] && Object.keys(error['error']).length > 0) {
+        const errors =
+          Object.values(error['error']).length > 0
+            ? Object.values(error['error'])
+            : [];
+        errors.forEach((err, i) => {
+          if (typeof err === 'string') {
+            openErrorNotification(err);
+          } else if (typeof err === 'object') {
+            if (err && Object.keys(err).length > 0) {
+              const errs = Object.values(err);
+              errs.forEach((err) => {
+                openErrorNotification(err);
+              });
+            }
+          }
+        });
+      }
+    }
+  }, [updateBrandState]);
 
   const onSwitchChange = (checked: any) => {
     // console.log(checked);
@@ -411,7 +445,7 @@ const AddNewBrand = ({
             }}
           >
             <Input
-              label='Name'
+              label='Name *'
               value={values.name}
               name='name'
               placeHolder={'microsoft,apple'}
