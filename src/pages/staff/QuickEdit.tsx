@@ -27,6 +27,7 @@ import {
   DeleteOutlined,
   FileAddOutlined,
   CheckCircleOutlined,
+  InfoCircleOutlined,
 } from '@ant-design/icons';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -88,7 +89,7 @@ const openErrorNotification = (message?: any) => {
   notification.error({
     message: message || 'Something Went Wrong',
     description: '',
-    icon: <CheckCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
+    icon: <InfoCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
   });
 };
 
@@ -143,16 +144,16 @@ const StaffQuickEdit = ({
       },
       body: {
         phone: values.phone,
-        email: values.email,
-        address: values.address,
-        firstName: values.firstName,
-        lastName: values.lastName,
-        additionalInfo: values.additionalInfo,
+        email: values.email.trim(),
+        address: values.address.trim(),
+        firstName: values.firstName.trim(),
+        lastName: values.lastName.trim(),
+        additionalInfo: values.additionalInfo.trim(),
         NID: values.NID,
-        fatherName: values.fatherName,
-        motherName: values.motherName,
+        fatherName: values.fatherName.trim(),
+        motherName: values.motherName.trim(),
         salary: values.salary,
-        designation: values.designation,
+        designation: values.designation.trim(),
         joiningDate: time,
       },
     });
@@ -187,6 +188,7 @@ const StaffQuickEdit = ({
       setCustomerList(updateTagList);
 
       setAddNewCategoryVisible(false);
+      setTimeFeild('');
       actions.resetForm();
     } else {
       openErrorNotification();
@@ -298,6 +300,7 @@ const StaffQuickEdit = ({
 
   const handleCancel = (e: any) => {
     setAddNewCategoryVisible(false);
+    setTimeFeild('');
   };
 
   const getisSubmitButtonDisabled = (values, isValid) => {
@@ -362,7 +365,7 @@ const StaffQuickEdit = ({
             <div className='dubbleRowInputs'>
               <div className='dubbleRowInputs__item'>
                 <Input
-                  label='First Name'
+                  label='First Name *'
                   value={values.firstName}
                   name='firstName'
                   isError={
@@ -407,7 +410,7 @@ const StaffQuickEdit = ({
             <div className='dubbleRowInputs'>
               <div className='dubbleRowInputs__item'>
                 <Input
-                  label='Designation'
+                  label='Designation *'
                   value={values.designation}
                   name='designation'
                   isError={
@@ -430,7 +433,7 @@ const StaffQuickEdit = ({
                 <Input
                   min={0}
                   type={'number'}
-                  label='Salary'
+                  label='Salary *'
                   value={values.salary}
                   name='salary'
                   isError={
@@ -452,7 +455,7 @@ const StaffQuickEdit = ({
             <div className='dubbleRowInputs'>
               <div className='dubbleRowInputs__item'>
                 <Input
-                  label='Phone'
+                  label='Phone *'
                   value={values.phone}
                   name='phone'
                   isError={

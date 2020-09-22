@@ -475,7 +475,7 @@ const AddNewBrand = ({
               }}
             />
 
-            <h3 className='inputFieldLabel'>Meta Tags (grocery,fashion)</h3>
+            <h3 className='inputFieldLabel'>Meta Tags </h3>
 
             <MetaTags
               // @ts-ignore
@@ -489,7 +489,7 @@ const AddNewBrand = ({
               }}
             ></div>
 
-            <h3 className='inputFieldLabel'>BN Meta Tags (মুদিখানা,ফ্যাশন)</h3>
+            <h3 className='inputFieldLabel'>BN Meta Tags </h3>
 
             <MetaTags
               // @ts-ignore

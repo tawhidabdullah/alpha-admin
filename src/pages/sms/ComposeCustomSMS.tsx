@@ -55,7 +55,7 @@ const openErrorNotification = (message?: any) => {
   notification.error({
     message: message || 'Something Went Wrong',
     description: '',
-    icon: <CheckCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
+    icon: <InfoCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
   });
 };
 

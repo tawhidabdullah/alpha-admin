@@ -92,7 +92,7 @@ const steps = [
     // description: 'Add Customer & Products'
   },
   {
-    title: 'Shipping Address',
+    title: 'Address',
   },
   {
     title: 'Confirm Order',

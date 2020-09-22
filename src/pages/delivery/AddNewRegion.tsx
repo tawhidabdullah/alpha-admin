@@ -13,6 +13,7 @@ import {
   notification,
   Modal,
   Empty,
+  Form,
 } from 'antd';
 
 import {
@@ -412,62 +413,76 @@ const AddNewRegion = ({
             <div className='dubbleRowInputs'>
               <div className='dubbleRowInputs__item'>
                 <h3 className='inputFieldLabel'>Country</h3>
-                <Select
-                  notFoundContent={
-                    <Empty
-                      description='No Country Found'
-                      image={Empty.PRESENTED_IMAGE_SIMPLE}
-                    />
+                <Form.Item
+                  validateStatus={
+                    addRegionState.error['error']['country'] ? 'error' : ''
                   }
-                  showSearch
-                  style={{ width: '100%' }}
-                  placeholder='Select a Country'
-                  optionFilterProp='children'
-                  onChange={onChangeCountry}
-                  filterOption={(input, option) =>
-                    option.children
-                      .toLowerCase()
-                      .indexOf(input.toLowerCase()) >= 0
-                  }
+                  help={addRegionState.error['error']['country']}
                 >
-                  {countryListState.done &&
-                    countryListState.data.length > 0 &&
-                    countryOptions.map((option) => {
-                      return (
-                        <Option value={option.value}>{option.name}</Option>
-                      );
-                    })}
-                </Select>
+                  <Select
+                    notFoundContent={
+                      <Empty
+                        description='No Country Found'
+                        image={Empty.PRESENTED_IMAGE_SIMPLE}
+                      />
+                    }
+                    showSearch
+                    style={{ width: '100%' }}
+                    placeholder='Select a Country'
+                    optionFilterProp='children'
+                    onChange={onChangeCountry}
+                    filterOption={(input, option) =>
+                      option.children
+                        .toLowerCase()
+                        .indexOf(input.toLowerCase()) >= 0
+                    }
+                  >
+                    {countryListState.done &&
+                      countryListState.data.length > 0 &&
+                      countryOptions.map((option) => {
+                        return (
+                          <Option value={option.value}>{option.name}</Option>
+                        );
+                      })}
+                  </Select>
+                </Form.Item>
               </div>
               <div className='dubbleRowInputs__item'>
                 <h3 className='inputFieldLabel'>City</h3>
-                <Select
-                  notFoundContent={
-                    <Empty
-                      description='First Select a Country'
-                      image={Empty.PRESENTED_IMAGE_SIMPLE}
-                    />
+                <Form.Item
+                  validateStatus={
+                    addRegionState.error['error']['city'] ? 'error' : ''
                   }
-                  mode='multiple'
-                  showSearch
-                  style={{ width: '100%' }}
-                  placeholder='Select a city'
-                  optionFilterProp='children'
-                  onChange={onChangeCity}
-                  filterOption={(input, option) =>
-                    option.children
-                      .toLowerCase()
-                      .indexOf(input.toLowerCase()) >= 0
-                  }
+                  help={addRegionState.error['error']['city']}
                 >
-                  {cityListState.done &&
-                    cityListState.data.length > 0 &&
-                    cityOptions.map((option) => {
-                      return (
-                        <Option value={option.value}>{option.name}</Option>
-                      );
-                    })}
-                </Select>
+                  <Select
+                    notFoundContent={
+                      <Empty
+                        description='First Select a Country'
+                        image={Empty.PRESENTED_IMAGE_SIMPLE}
+                      />
+                    }
+                    mode='multiple'
+                    showSearch
+                    style={{ width: '100%' }}
+                    placeholder='Select a city'
+                    optionFilterProp='children'
+                    onChange={onChangeCity}
+                    filterOption={(input, option) =>
+                      option.children
+                        .toLowerCase()
+                        .indexOf(input.toLowerCase()) >= 0
+                    }
+                  >
+                    {cityListState.done &&
+                      cityListState.data.length > 0 &&
+                      cityOptions.map((option) => {
+                        return (
+                          <Option value={option.value}>{option.name}</Option>
+                        );
+                      })}
+                  </Select>
+                </Form.Item>
               </div>
             </div>
 
@@ -478,16 +493,23 @@ const AddNewRegion = ({
             ></div>
             <h3 className='inputFieldLabel'>Delivery Charges</h3>
 
-            {deliveryChargeList.map((deliveryChargeItem) => {
-              console.log('deliveryChargeItem-region', deliveryChargeItem);
-              return (
-                <DeliveryCharge
-                  deliveryChargeItem={deliveryChargeItem}
-                  deliveryChargeList={deliveryChargeList}
-                  setdeliveryChargeList={setdeliveryChargeList}
-                />
-              );
-            })}
+            <Form.Item
+              validateStatus={
+                addRegionState.error['error']['charge'] ? 'error' : ''
+              }
+              help={addRegionState.error['error']['charge']}
+            >
+              {deliveryChargeList.map((deliveryChargeItem) => {
+                console.log('deliveryChargeItem-region', deliveryChargeItem);
+                return (
+                  <DeliveryCharge
+                    deliveryChargeItem={deliveryChargeItem}
+                    deliveryChargeList={deliveryChargeList}
+                    setdeliveryChargeList={setdeliveryChargeList}
+                  />
+                );
+              })}
+            </Form.Item>
 
             <div
               style={{

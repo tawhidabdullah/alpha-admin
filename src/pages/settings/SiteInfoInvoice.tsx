@@ -6,7 +6,7 @@ import { useHandleFetch } from '../../hooks';
 // import third party ui lib
 import { notification, Button } from 'antd';
 
-import { CheckCircleOutlined } from '@ant-design/icons';
+import { CheckCircleOutlined, InfoCircleOutlined } from '@ant-design/icons';
 
 import 'react-quill/dist/quill.snow.css';
 
@@ -33,7 +33,7 @@ const openErrorNotification = (message?: any) => {
   notification.success({
     message: message || 'Something Went Wrong',
     description: '',
-    icon: <CheckCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
+    icon: <InfoCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
   });
 };
 

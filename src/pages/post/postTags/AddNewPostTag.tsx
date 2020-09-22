@@ -1,25 +1,33 @@
+// @ts-nocheck
 import React, { useState } from 'react';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
-
 import { useHandleFetch } from '../../../hooks';
 // import third party ui lib
-import { Upload, message, Switch, Select, Button, notification, Modal, Tooltip } from 'antd';
+import {
+  Upload,
+  message,
+  Switch,
+  Select,
+  Button,
+  notification,
+  Modal,
+  Tooltip,
+} from 'antd';
 
 import {
-    FileOutlined,
-    InboxOutlined,
-    FileAddOutlined,
-    DeleteOutlined,
-    CheckCircleOutlined,
-    CloseOutlined,
-    CheckOutlined,
-    InfoCircleOutlined,
-    PlusOutlined,
-    FileImageFilled
+  FileOutlined,
+  InboxOutlined,
+  FileAddOutlined,
+  DeleteOutlined,
+  CheckCircleOutlined,
+  CloseOutlined,
+  CheckOutlined,
+  InfoCircleOutlined,
+  PlusOutlined,
+  FileImageFilled,
 } from '@ant-design/icons';
-
 
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -27,250 +35,249 @@ import 'react-quill/dist/quill.snow.css';
 // import components
 import Input from '../../../components/Field/Input';
 import TextArea from '../../../components/Field/TextArea';
-import MediaLibrary from "../../../components/MediaLibrary";
-import MetaTags from "../../../pages/category/MetaTags";
-
+import MediaLibrary from '../../../components/MediaLibrary';
+import MetaTags from '../../../pages/category/MetaTags';
 
 const validationSchema = Yup.object().shape({
-    name: Yup.string().label('Name').required('Name is required').min(3, 'Name must have at least 3 characters'),
+  name: Yup.string()
+    .label('Name')
+    .required('Name is required')
+    .min(3, 'Name must have at least 3 characters'),
 });
 
-
-
 const openSuccessNotification = (message?: any) => {
-    notification.success({
-        message: message || 'Recipe Tag Created',
-        description: '',
-        icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
-    });
+  notification.success({
+    message: message || 'Recipe Tag Created',
+    description: '',
+    icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
+  });
 };
-
 
 const openErrorNotification = (message?: any) => {
-    notification.error({
-        message: message || 'Something Went Wrong',
-        description: '',
-        icon: <CheckCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
-    });
+  notification.error({
+    message: message || 'Something Went Wrong',
+    description: '',
+    icon: <InfoCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
+  });
 };
 
-
 const initialValues = {
-    name: '',
-	bnName: '',
-	description: '',
-	bnDescription: '',
-	metaTitle: '',
-	bnMetaTitle: '',
-	metaDescription: '',
-	bnMetaDescription: '',
-	metaTags: '',
-	bnMetaTags: '',
-}
-
-
+  name: '',
+  bnName: '',
+  description: '',
+  bnDescription: '',
+  metaTitle: '',
+  bnMetaTitle: '',
+  metaDescription: '',
+  bnMetaDescription: '',
+  metaTags: '',
+  bnMetaTags: '',
+};
 
 interface Props {
-    addNewCategoryVisible?: any;
-    setAddNewCategoryVisible?: any;
-    tagList?: any;
-    setTagList?: any;
-
+  addNewCategoryVisible?: any;
+  setAddNewCategoryVisible?: any;
+  tagList?: any;
+  setTagList?: any;
 }
 
-const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, tagList, setTagList }: Props) => {
+const AddNewBrand = ({
+  addNewCategoryVisible,
+  setAddNewCategoryVisible,
+  tagList,
+  setTagList,
+}: Props) => {
+  const [addTagState, handleAddTagFetch] = useHandleFetch({}, 'postAddTag');
+  const [myImages, setmyImages] = useState(false);
+  const [visibleMedia, setvisibleMedia] = useState(false);
+  const [coverImageId, setCoverImageId] = useState('');
+  const [tags, setTags] = useState([]);
+  const [bnTags, setBnTags] = useState([]);
 
-    const [addTagState, handleAddTagFetch] = useHandleFetch({}, 'postAddTag');
-    const [myImages, setmyImages] = useState(false);
-    const [visibleMedia, setvisibleMedia] = useState(false);
-    const [coverImageId, setCoverImageId] = useState('');
-    const [tags,setTags] = useState([]);
-	const [bnTags,setBnTags] = useState([]);
+  const handleSubmit = async (values: any, actions: any) => {
+    const addTagRes = await handleAddTagFetch({
+      urlOptions: {
+        placeHolders: {
+          id: values.id,
+        },
+      },
+      body: {
+        name: values.name.trim(),
+        description: values.description,
+        // metaTitle: values.metaTitle,
+        // metaDescription: values.metaDescription,
+        // metaTags: tags.join(','),
 
-    const handleSubmit = async (values: any, actions: any) => {
-        const addTagRes = await handleAddTagFetch({
-            urlOptions: {
-                placeHolders: {
-                    id: values.id,
-                }
-            },
-            body: {
-                name: values.name.trim(),
-                description: values.description,
-                metaTitle: values.metaTitle,
-                metaDescription: values.metaDescription,
-                metaTags: tags.join(','),
+        bn: {
+          //   metaTitle: values.bnMetaTitle,
+          //   metaDescription: values.bnMetaDescription,
+          //   metaTags: bnTags.join(','),
+          name: values.bnName.trim(),
+          description: values.bnDescription,
+        },
+      },
+    });
 
+    // @ts-ignore
+    if (addTagRes && addTagRes.status === 'ok') {
+      openSuccessNotification();
+      setAddNewCategoryVisible(false);
 
-                
-                bn: {
-					metaTitle: values.bnMetaTitle,
-					metaDescription: values.bnMetaDescription,
-					metaTags: bnTags.join(','),
-					name: values.bnName.trim(),
-					description: values.bnDescription,
-				}
-            },
-        });
+      setTagList([
+        ...tagList,
+        {
+          // @ts-ignore
+          ...addTagRes,
+          id: addTagRes['_id'] || '',
+          key: addTagRes['_id'] || '',
+          name: addTagRes['name'] || '',
+          description: addTagRes['description'] || '',
+        },
+      ]);
 
-        // @ts-ignore
-        if (addTagRes && addTagRes.status === 'ok') {
-            openSuccessNotification();
-            setAddNewCategoryVisible(false);
-
-            setTagList([...tagList, {
-				// @ts-ignore
-				...addTagRes,
-                id: addTagRes['_id'] || '',
-                key: addTagRes['_id'] || '',
-                name: addTagRes['name'] || '',
-                description: addTagRes['description'] || '',
-			}])
-			
-            actions.resetForm();
-        }
-        else {
-            openErrorNotification();
-        }
-
-
-        actions.setSubmitting(false);
-
-    };
-
-
-    const handleCancel = (e: any) => {
-        setAddNewCategoryVisible(false);
-    };
-
-
-    const getisSubmitButtonDisabled = (values, isValid) => {
-        if (!values.name || !isValid) {
-            return true;
-        }
-        return false;
+      actions.resetForm();
+    } else {
+      openErrorNotification();
     }
 
+    actions.setSubmitting(false);
+  };
 
+  const handleCancel = (e: any) => {
+    setAddNewCategoryVisible(false);
+  };
 
-
-    const handleImagesDelete = (id) => {
-        // @ts-ignore
-        const newImages = myImages && myImages.filter(image => {
-            return image.id !== id;
-        })
-
-        setmyImages(newImages);
+  const getisSubmitButtonDisabled = (values, isValid) => {
+    if (!values.name || !isValid) {
+      return true;
     }
+    return false;
+  };
 
+  const handleImagesDelete = (id) => {
+    // @ts-ignore
+    const newImages =
+      myImages &&
+      myImages.filter((image) => {
+        return image.id !== id;
+      });
 
+    setmyImages(newImages);
+  };
 
+  return (
+    <Formik
+      onSubmit={(values, actions) => handleSubmit(values, actions)}
+      validationSchema={validationSchema}
+      validateOnBlur={false}
+      enableReinitialize={true}
+      initialValues={{ ...initialValues }}
+    >
+      {({
+        handleChange,
+        values,
+        handleSubmit,
+        errors,
+        isValid,
+        isSubmitting,
+        touched,
+        handleBlur,
+        setFieldTouched,
+        handleReset,
+      }) => (
+        <>
+          <Modal
+            style={{
+              top: '40px',
+            }}
+            title='Add New Recipe Tag'
+            visible={addNewCategoryVisible}
+            onOk={(e: any) => handleSubmit(e)}
+            onCancel={handleCancel}
+            okText='Create'
+            okButtonProps={{
+              loading: isSubmitting,
+              htmlType: 'submit',
+              disabled: getisSubmitButtonDisabled(values, isValid),
+            }}
+          >
+            <Input
+              label='Name'
+              value={values.name}
+              name='name'
+              placeHolder={'new,fresh'}
+              isError={
+                (touched.name && errors.name) ||
+                (!isSubmitting && addTagState.error['error']['name'])
+              }
+              errorString={
+                (touched.name && errors.name) ||
+                (!isSubmitting && addTagState.error['error']['name'])
+              }
+              onChange={(e: any) => {
+                handleChange(e);
+                setFieldTouched('name');
+              }}
+            />
 
-    return (
-        <Formik
-            onSubmit={(values, actions) => handleSubmit(values, actions)}
-            validationSchema={validationSchema}
-            validateOnBlur={false}
-            enableReinitialize={true}
-            initialValues={
-                { ...initialValues }
-            }
-        >
-            {({
-                handleChange,
-                values,
-                handleSubmit,
-                errors,
-                isValid,
-                isSubmitting,
-                touched,
-                handleBlur,
-                setFieldTouched,
-                handleReset,
-            }) => (
-                    <>
-                        <Modal
-                            style={{
-                                top: '40px'
-                            }}
-                            title="Add New Post Tag"
-                            visible={addNewCategoryVisible}
-                            onOk={(e: any) => handleSubmit(e)}
-                            onCancel={handleCancel}
-                            okText='Create'
-                            okButtonProps={{
-                                loading: isSubmitting,
-                                htmlType: "submit",
-                                disabled: getisSubmitButtonDisabled(values, isValid)
-                            }}
-                        >
-                  			<Input
-								label='Name'
-								value={values.name}
-								name='name'
-								placeHolder={'new,fresh'}
-								isError={(touched.name && errors.name) ||
-									(!isSubmitting && addTagState.error['error']['name'])}
+            <Input
+              label='BN Name'
+              value={values.bnName}
+              placeHolder={'নতুন,ফ্রেশ'}
+              name='bnName'
+              isError={
+                (touched.bnName && errors.bnName) ||
+                (!isSubmitting && addTagState.error['error']['bnName'])
+              }
+              errorString={
+                (touched.bnName && errors.bnName) ||
+                (!isSubmitting && addTagState.error['error']['bnName'])
+              }
+              onChange={(e: any) => {
+                handleChange(e);
+                setFieldTouched('bnName');
+              }}
+            />
 
-								errorString={(touched.name && errors.name) ||
-									(!isSubmitting && addTagState.error['error']['name'])}
-								onChange={(e: any) => {
-									handleChange(e);
-									setFieldTouched('name');
-								}}
-							/>
+            <TextArea
+              label='Description'
+              value={values.description}
+              name='description'
+              placeholder={'This tag...'}
+              isError={
+                (touched.description && errors.description) ||
+                (!isSubmitting && addTagState.error['error']['description'])
+              }
+              errorString={
+                (touched.description && errors.description) ||
+                (!isSubmitting && addTagState.error['error']['description'])
+              }
+              onChange={(e: any) => {
+                handleChange(e);
+                setFieldTouched('description');
+              }}
+            />
 
-							<Input
-								label='BN Name'
-								value={values.bnName}
-								placeHolder={'নতুন,ফ্রেশ'}
-								name='bnName'
-								isError={(touched.bnName && errors.bnName) ||
-									(!isSubmitting && addTagState.error['error']['bnName'])}
+            <TextArea
+              label='BN Description'
+              value={values.bnDescription}
+              placeholder={'এই ট্যাগ...'}
+              name='bnDescription'
+              isError={
+                (touched.bnDescription && errors.bnDescription) ||
+                (!isSubmitting && addTagState.error['error']['bnDescription'])
+              }
+              errorString={
+                (touched.bnDescription && errors.bnDescription) ||
+                (!isSubmitting && addTagState.error['error']['bnDescription'])
+              }
+              onChange={(e: any) => {
+                handleChange(e);
+                setFieldTouched('bnDescription');
+              }}
+            />
 
-								errorString={(touched.bnName && errors.bnName) ||
-									(!isSubmitting && addTagState.error['error']['bnName'])}
-								onChange={(e: any) => {
-									handleChange(e);
-									setFieldTouched('bnName');
-								}}
-							/>
-
-
-							<TextArea
-								label='Description'
-								value={values.description}
-                                name='description'
-                                placeholder={'This tag...'}
-								isError={(touched.description && errors.description) ||
-									(!isSubmitting && addTagState.error['error']['description'])}
-
-								errorString={(touched.description && errors.description) ||
-									(!isSubmitting && addTagState.error['error']['description'])}
-								onChange={(e: any) => {
-									handleChange(e);
-									setFieldTouched('description');
-								}}
-							/>
-
-							<TextArea
-								label='BN Description'
-								value={values.bnDescription}
-								placeholder={'এই ট্যাগ...'}
-								name='bnDescription'
-								isError={(touched.bnDescription && errors.bnDescription) ||
-									(!isSubmitting && addTagState.error['error']['bnDescription'])}
-
-								errorString={(touched.bnDescription && errors.bnDescription) ||
-									(!isSubmitting && addTagState.error['error']['bnDescription'])}
-								onChange={(e: any) => {
-									handleChange(e);
-									setFieldTouched('bnDescription');
-								}}
-							/>
-
-                                
-<Input
+            {/* <Input
 								label='Meta title'
 								value={values.metaTitle}
 								placeHolder={'category...'}
@@ -356,26 +363,20 @@ const AddNewBrand = ({ addNewCategoryVisible, setAddNewCategoryVisible, tagList,
 							// @ts-ignore
 							setTags={setBnTags}
 							tags={bnTags}
-							 />
+							 /> */}
+          </Modal>
 
-                        </Modal>
-
-                        <MediaLibrary
-                            setvisible={setvisibleMedia}
-                            visible={visibleMedia}
-                            setmyImages={setmyImages}
-                            myImages={myImages}
-                            isModalOpenForImages={true}
-
-                        />
-                    </>
-                )}
-        </Formik>
-
-
-
-
-    );
+          <MediaLibrary
+            setvisible={setvisibleMedia}
+            visible={visibleMedia}
+            setmyImages={setmyImages}
+            myImages={myImages}
+            isModalOpenForImages={true}
+          />
+        </>
+      )}
+    </Formik>
+  );
 };
 
 export default AddNewBrand;
