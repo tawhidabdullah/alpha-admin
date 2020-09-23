@@ -1581,7 +1581,11 @@ class Converter {
 
   /**
    * @public
+<<<<<<< HEAD
    * @method getConfigureAutoEmailTemplate convert api data from API to general format based on config server
+=======
+   * @method configureAutoEmailTemplate convert api data from API to general format based on config server
+>>>>>>> fc1e210... fixed email errors
    * @param {Object} data response objectc from alpha
    * @returns {Object}  converted data
    */
@@ -1597,6 +1601,7 @@ class Converter {
 
   /**
    * @public
+<<<<<<< HEAD
    * @method getConfigureAutoSMSTemplate convert api data from API to general format based on config server
    * @param {Object} data response objectc from alpha
    * @returns {Object}  converted data
@@ -1613,6 +1618,8 @@ class Converter {
 
   /**
    * @public
+=======
+>>>>>>> fc1e210... fixed email errors
    * @method sendCustomSMS convert api data from API to general format based on config server
    * @param {Object} data response objectc from alpha
    * @returns {Object}  converted data
