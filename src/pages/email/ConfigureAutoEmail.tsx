@@ -133,6 +133,10 @@ const ConfigureAutoEmail = ({}: Props) => {
           admin: isorderStatusAdmin,
           user: isorderStatusCustomer,
         },
+        newDealer: {
+          admin: isnewDealerAdmin,
+          user: isnewDealer,
+        },
       },
     });
 
