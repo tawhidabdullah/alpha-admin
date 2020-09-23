@@ -39,14 +39,17 @@ import CKEditor from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 const validationSchema = Yup.object().shape({
-  // name: Yup.string().label('Name').required('Name is required').min(3, 'Name must have at least 3 characters'),
+  name: Yup.string()
+    .label('Name')
+    .required('Name is required')
+    .min(3, 'Name must have at least 3 characters'),
 });
 
 const { TabPane } = Tabs;
 
 const openSuccessNotification = (message?: any) => {
   notification.success({
-    message: message || 'New Customer Template Updated',
+    message: message || 'New Dealer Template Updated',
     description: '',
     icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
   });
@@ -94,8 +97,8 @@ const AddNewBrand = ({ visible, setVisible }: Props) => {
     const getConfigurationAutoEmailTemplateRes = await handleAutoEmailTemplateFetch(
       {
         body: {
-          event: 'orderStatus',
-          customer: {
+          event: 'newDealer',
+          user: {
             ...customer,
           },
           admin: {
@@ -165,16 +168,16 @@ const AddNewBrand = ({ visible, setVisible }: Props) => {
       const res = await handleGetConfigureAutoEmailTemplateFetch({
         urlOptions: {
           placeHolders: {
-            eventName: 'orderStatus',
+            eventName: 'newDealer',
           },
         },
       });
 
-      console.log('orderStatus', res);
+      console.log('newDealertemplate', res);
       // @ts-ignore
       if (res) {
         setadmin(res['admin']);
-        setcustomer(res['customer']);
+        setcustomer(res['user']);
       }
       // set auto email template to customer and admin
     };
@@ -187,11 +190,11 @@ const AddNewBrand = ({ visible, setVisible }: Props) => {
 
   return (
     <Modal
-      width={'70vw'}
+      width={'80vw'}
       style={{
         top: '40px',
       }}
-      title='Order Status Template'
+      title='New Dealer Event Template'
       visible={visible}
       onOk={(e: any) => handleSubmit()}
       onCancel={handleCancel}
@@ -216,7 +219,7 @@ const AddNewBrand = ({ visible, setVisible }: Props) => {
           >
             <div
               style={{
-                width: '70%',
+                width: '65%',
               }}
             >
               <Input
@@ -274,7 +277,7 @@ const AddNewBrand = ({ visible, setVisible }: Props) => {
 
             <div
               style={{
-                width: '30%',
+                width: '35%',
                 overflowY: 'auto',
                 background: '#f7f7f7',
                 marginLeft: '20px',
@@ -311,47 +314,9 @@ const AddNewBrand = ({ visible, setVisible }: Props) => {
                       padding: '1px 10px',
                     }}
                   >
-                    &lt;?=order.status.name?&gt; :
+                    &lt;?=user.code?&gt; :
                   </b>{' '}
-                  Order Status
-                </li>
-                <li
-                  style={{
-                    fontSize: '12px',
-                    marginBottom: '10px',
-                    lineHeight: 1.7,
-                    fontWeight: 500,
-                  }}
-                >
-                  <b
-                    style={{
-                      borderRadius: '15px',
-                      backgroundColor: '#ddd',
-                      padding: '1px 10px',
-                    }}
-                  >
-                    &lt;?=customer.firstName?&gt; :
-                  </b>{' '}
-                  Customer first name
-                </li>
-                <li
-                  style={{
-                    fontSize: '12px',
-                    marginBottom: '10px',
-                    lineHeight: 1.7,
-                    fontWeight: 500,
-                  }}
-                >
-                  <b
-                    style={{
-                      borderRadius: '15px',
-                      backgroundColor: '#ddd',
-                      padding: '1px 10px',
-                    }}
-                  >
-                    &lt;?=customer.lastName?&gt; :
-                  </b>{' '}
-                  Customer last name
+                  Code
                 </li>
 
                 <li
@@ -369,9 +334,119 @@ const AddNewBrand = ({ visible, setVisible }: Props) => {
                       padding: '1px 10px',
                     }}
                   >
-                    &lt;?=order.shortCode?&gt; :
+                    &lt;?=user.firstName?&gt; :
                   </b>{' '}
-                  Order Code
+                  First Name
+                </li>
+                <li
+                  style={{
+                    fontSize: '12px',
+                    lineHeight: 2,
+                    fontWeight: 500,
+                  }}
+                >
+                  <b
+                    style={{
+                      borderRadius: '15px',
+                      backgroundColor: '#ddd',
+                      padding: '1px 10px',
+                    }}
+                  >
+                    &lt;?user.lastName?&gt; :
+                  </b>{' '}
+                  Last Name
+                </li>
+                <li
+                  style={{
+                    fontSize: '12px',
+                    lineHeight: 2,
+                    fontWeight: 500,
+                  }}
+                >
+                  <b
+                    style={{
+                      borderRadius: '15px',
+                      backgroundColor: '#ddd',
+                      padding: '1px 10px',
+                    }}
+                  >
+                    &lt;?user.phone?&gt; :
+                  </b>{' '}
+                  Phone
+                </li>
+                <li
+                  style={{
+                    fontSize: '12px',
+                    lineHeight: 2,
+                    fontWeight: 500,
+                  }}
+                >
+                  <b
+                    style={{
+                      borderRadius: '15px',
+                      backgroundColor: '#ddd',
+                      padding: '1px 10px',
+                    }}
+                  >
+                    &lt;?user.email?&gt; :
+                  </b>{' '}
+                  Email
+                </li>
+                <li
+                  style={{
+                    fontSize: '12px',
+                    lineHeight: 2,
+                    fontWeight: 500,
+                  }}
+                >
+                  <b
+                    style={{
+                      borderRadius: '15px',
+                      backgroundColor: '#ddd',
+                      padding: '1px 10px',
+                    }}
+                  >
+                    &lt;?user.email?&gt; :
+                  </b>{' '}
+                  Email
+                </li>
+
+                <li
+                  style={{
+                    fontSize: '12px',
+                    lineHeight: 2,
+                    fontWeight: 500,
+                  }}
+                >
+                  <b
+                    style={{
+                      borderRadius: '15px',
+                      backgroundColor: '#ddd',
+                      padding: '1px 10px',
+                    }}
+                  >
+                    &lt;?user.address1?&gt; :
+                  </b>{' '}
+                  Address
+                </li>
+
+                <li
+                  style={{
+                    fontSize: '12px',
+                    lineHeight: 2,
+                    fontWeight: 500,
+                  }}
+                >
+                  <b
+                    style={{
+                      borderRadius: '15px',
+                      backgroundColor: '#ddd',
+                      padding: '1px 10px',
+                    }}
+                  >
+                    &lt;?user.added?&gt; :
+                  </b>{' '}
+                  Joined
                 </li>
               </ul>
             </div>
@@ -386,7 +461,7 @@ const AddNewBrand = ({ visible, setVisible }: Props) => {
           >
             <div
               style={{
-                width: '70%',
+                width: '65%',
               }}
             >
               <Input
@@ -441,10 +516,9 @@ const AddNewBrand = ({ visible, setVisible }: Props) => {
                 </Button>
               </div>
             </div>
-
             <div
               style={{
-                width: '30%',
+                width: '35%',
                 overflowY: 'auto',
                 background: '#f7f7f7',
                 marginLeft: '20px',
@@ -481,47 +555,9 @@ const AddNewBrand = ({ visible, setVisible }: Props) => {
                       padding: '1px 10px',
                     }}
                   >
-                    &lt;?=order.status.name?&gt; :
+                    &lt;?=user.code?&gt; :
                   </b>{' '}
-                  Order Status
-                </li>
-                <li
-                  style={{
-                    fontSize: '12px',
-                    marginBottom: '10px',
-                    lineHeight: 1.7,
-                    fontWeight: 500,
-                  }}
-                >
-                  <b
-                    style={{
-                      borderRadius: '15px',
-                      backgroundColor: '#ddd',
-                      padding: '1px 10px',
-                    }}
-                  >
-                    &lt;?=customer.firstName?&gt; :
-                  </b>{' '}
-                  Customer first name
-                </li>
-                <li
-                  style={{
-                    fontSize: '12px',
-                    marginBottom: '10px',
-                    lineHeight: 1.7,
-                    fontWeight: 500,
-                  }}
-                >
-                  <b
-                    style={{
-                      borderRadius: '15px',
-                      backgroundColor: '#ddd',
-                      padding: '1px 10px',
-                    }}
-                  >
-                    &lt;?=customer.lastName?&gt; :
-                  </b>{' '}
-                  Customer last name
+                  Code
                 </li>
 
                 <li
@@ -539,9 +575,119 @@ const AddNewBrand = ({ visible, setVisible }: Props) => {
                       padding: '1px 10px',
                     }}
                   >
-                    &lt;?=order.shortCode?&gt; :
+                    &lt;?=user.firstName?&gt; :
                   </b>{' '}
-                  Order Code
+                  First Name
+                </li>
+                <li
+                  style={{
+                    fontSize: '12px',
+                    lineHeight: 2,
+                    fontWeight: 500,
+                  }}
+                >
+                  <b
+                    style={{
+                      borderRadius: '15px',
+                      backgroundColor: '#ddd',
+                      padding: '1px 10px',
+                    }}
+                  >
+                    &lt;?user.lastName?&gt; :
+                  </b>{' '}
+                  Last Name
+                </li>
+                <li
+                  style={{
+                    fontSize: '12px',
+                    lineHeight: 2,
+                    fontWeight: 500,
+                  }}
+                >
+                  <b
+                    style={{
+                      borderRadius: '15px',
+                      backgroundColor: '#ddd',
+                      padding: '1px 10px',
+                    }}
+                  >
+                    &lt;?user.phone?&gt; :
+                  </b>{' '}
+                  Phone
+                </li>
+                <li
+                  style={{
+                    fontSize: '12px',
+                    lineHeight: 2,
+                    fontWeight: 500,
+                  }}
+                >
+                  <b
+                    style={{
+                      borderRadius: '15px',
+                      backgroundColor: '#ddd',
+                      padding: '1px 10px',
+                    }}
+                  >
+                    &lt;?user.email?&gt; :
+                  </b>{' '}
+                  Email
+                </li>
+                <li
+                  style={{
+                    fontSize: '12px',
+                    lineHeight: 2,
+                    fontWeight: 500,
+                  }}
+                >
+                  <b
+                    style={{
+                      borderRadius: '15px',
+                      backgroundColor: '#ddd',
+                      padding: '1px 10px',
+                    }}
+                  >
+                    &lt;?user.email?&gt; :
+                  </b>{' '}
+                  Email
+                </li>
+
+                <li
+                  style={{
+                    fontSize: '12px',
+                    lineHeight: 2,
+                    fontWeight: 500,
+                  }}
+                >
+                  <b
+                    style={{
+                      borderRadius: '15px',
+                      backgroundColor: '#ddd',
+                      padding: '1px 10px',
+                    }}
+                  >
+                    &lt;?user.address1?&gt; :
+                  </b>{' '}
+                  Address
+                </li>
+
+                <li
+                  style={{
+                    fontSize: '12px',
+                    lineHeight: 2,
+                    fontWeight: 500,
+                  }}
+                >
+                  <b
+                    style={{
+                      borderRadius: '15px',
+                      backgroundColor: '#ddd',
+                      padding: '1px 10px',
+                    }}
+                  >
+                    &lt;?user.added?&gt; :
+                  </b>{' '}
+                  Joined
                 </li>
               </ul>
             </div>

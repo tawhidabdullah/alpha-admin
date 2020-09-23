@@ -1565,6 +1565,37 @@ class Converter {
 
   /**
    * @public
+   * @method configureAutoEmailTemplate convert api data from API to general format based on config server
+   * @param {Object} data response objectc from alpha
+   * @returns {Object}  converted data
+   */
+  async configureAutoEmailTemplate(resData) {
+    if (resData && resData.success) {
+      return {
+        status: 'ok',
+      };
+    }
+    return {};
+  }
+
+  /**
+   * @public
+   * @method configureAutoEmailTemplate convert api data from API to general format based on config server
+   * @param {Object} data response objectc from alpha
+   * @returns {Object}  converted data
+   */
+  async getConfigureAutoEmailTemplate(resData) {
+    if (resData && Object.keys(resData).length > 0) {
+      return {
+        ...resData,
+        id: resData._id,
+      };
+    }
+    return {};
+  }
+
+  /**
+   * @public
    * @method sendCustomSMS convert api data from API to general format based on config server
    * @param {Object} data response objectc from alpha
    * @returns {Object}  converted data
