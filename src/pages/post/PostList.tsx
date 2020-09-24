@@ -307,7 +307,7 @@ const TagList = ({}: Props) => {
               enterButton={false}
               className='searchbarClassName'
               placeholder='search recipes..'
-              onSearch={(value) => handleSearch(value)}
+              onChange={(e) => handleSearch(e.target.value)}
             />
           </div>
           <Button

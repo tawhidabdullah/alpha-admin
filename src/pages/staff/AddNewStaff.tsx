@@ -149,10 +149,13 @@ const AddNewCategory = ({
     if (addCustomerRes && addCustomerRes.status === 'ok') {
       openSuccessNotification();
 
+      console.log('addCustomerRes', addCustomerRes);
       setCustomerList([
         {
           id: addCustomerRes['_id'] || '',
           key: addCustomerRes['_id'] || '',
+          name: addCustomerRes['firstName'] + ' ' + addCustomerRes['lastName'],
+
           // @ts-ignore
           ...addCustomerRes,
         },

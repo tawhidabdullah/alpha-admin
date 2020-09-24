@@ -592,7 +592,9 @@ const AddNewBrand = ({
                     <div className='aboutToUploadImagesContainer__item'>
                       <div
                         className='aboutToUploadImagesContainer__item-imgContainer'
-                        onClick={() => setCoverImageId(image.id)}
+                        onClick={() => {
+                          setvisibleMedia(true);
+                        }}
                       >
                         <img src={image.cover} alt={image.alt} />
                       </div>
@@ -603,7 +605,7 @@ const AddNewBrand = ({
                       >
                         <CloseOutlined />
                       </span>
-
+                      {/* 
                       {coverImageId === image.id ? (
                         <span className='aboutToUploadImagesContainer__item-cover'>
                           <CheckOutlined />
@@ -615,7 +617,7 @@ const AddNewBrand = ({
                             <CheckOutlined />
                           </span>
                         )
-                      )}
+                      )} */}
                     </div>
                   );
                 })}

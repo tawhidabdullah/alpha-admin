@@ -113,7 +113,7 @@ const Categories = ({
               borderColor: '#eee !important',
             }}
             size='middle'
-            placeholder='cloths, grocery'
+            placeholder=''
             onSearch={(value) => console.log(value)}
             onChange={onSearchChange}
           />
@@ -159,6 +159,7 @@ const Categories = ({
           <Empty title='No category found' height={100} />
         </div>
       )}
+
       {/* <div style={{
 				marginTop: '15px'
 			}}>

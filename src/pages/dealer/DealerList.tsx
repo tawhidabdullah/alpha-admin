@@ -357,7 +357,7 @@ const CustomerList = ({ roles }: Props) => {
               enterButton={false}
               className='searchbarClassName'
               placeholder='search dealers..'
-              onSearch={(value) => handleSearch(value)}
+              onChange={(e) => handleSearch(e.target.value)}
               // style={{ width: 300 }}
             />
           </div>

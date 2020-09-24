@@ -381,7 +381,7 @@ const TagList = ({ roles }: Props) => {
               enterButton={false}
               className='searchbarClassName'
               placeholder='search admins..'
-              onSearch={(value) => handleSearch(value)}
+              onChange={(e) => handleSearch(e.target.value)}
             />
           </div>
 

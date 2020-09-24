@@ -56,7 +56,7 @@ const openErrorNotification = (message?: any) => {
   notification.error({
     message: message || 'Something Went Wrong',
     description: '',
-    icon: <InfoCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
+    icon: <CheckCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
   });
 };
 
@@ -120,8 +120,49 @@ const AddNewBrand = ({ visible, setVisible }: Props) => {
   };
 
   useEffect(() => {
+    if (!autoEmailTemplate['isLoading']) {
+      const error = autoEmailTemplate['error'];
+      if (error['isError'] && Object.keys(error['error']).length > 0) {
+        if (error['error']['registerError']) {
+          // setServerErrors(error['error']['registerError']);
+        } else if (error['error']['checkoutError']) {
+          // setServerErrors(error['error']['checkoutError']);
+        } else {
+          // setServerErrors(error['error']);
+        }
+
+        const errors =
+          Object.values(error['error']).length > 0
+            ? Object.values(error['error'])
+            : [];
+        errors.forEach((err, i) => {
+          if (typeof err === 'string') {
+            openErrorNotification(err);
+          } else if (typeof err === 'object') {
+            if (err && Object.keys(err).length > 0) {
+              const errs = Object.values(err);
+              errs.forEach((err) => {
+                openErrorNotification(err);
+              });
+            }
+          }
+        });
+      }
+    }
+
+    if (
+      !autoEmailTemplate['isLoading'] &&
+      Object.keys(autoEmailTemplate.data).length > 0
+    ) {
+      // if (autoEmailTemplate['data']['status'] === 'ok') {
+      //     openSuccessNotification('Email Sent!');
+      // }
+    }
+  }, [autoEmailTemplate]);
+
+  useEffect(() => {
     const getCustomerAutoEmail = async () => {
-      const res = await handleAutoEmailTemplateFetch({
+      const res = await handleGetConfigureAutoEmailTemplateFetch({
         urlOptions: {
           placeHolders: {
             eventName: 'orderStatus',
@@ -129,6 +170,12 @@ const AddNewBrand = ({ visible, setVisible }: Props) => {
         },
       });
 
+      console.log('orderStatus', res);
+      // @ts-ignore
+      if (res) {
+        setadmin(res['admin'] || '');
+        setcustomer(res['customer'] || '');
+      }
       // set auto email template to customer and admin
     };
     getCustomerAutoEmail();
@@ -174,7 +221,7 @@ const AddNewBrand = ({ visible, setVisible }: Props) => {
             >
               <Input
                 label='Subject'
-                value={customer.subject}
+                value={customer.subject || ''}
                 name='subject'
                 onChange={(e: any) => {
                   setcustomer({
@@ -188,7 +235,7 @@ const AddNewBrand = ({ visible, setVisible }: Props) => {
 
               <CKEditor
                 editor={ClassicEditor}
-                data={customer.body}
+                data={customer.body || ''}
                 onInit={(editor) => {
                   // You can store the "editor" and use when it is needed.
                   console.log('Editor is ready to use!', editor);
@@ -264,14 +311,15 @@ const AddNewBrand = ({ visible, setVisible }: Props) => {
                       padding: '1px 10px',
                     }}
                   >
-                    &lt;?=order.added?&gt; :
+                    &lt;?=order.status.name?&gt; :
                   </b>{' '}
-                  Order time
+                  Order Status
                 </li>
                 <li
                   style={{
                     fontSize: '12px',
-                    lineHeight: 2,
+                    marginBottom: '10px',
+                    lineHeight: 1.7,
                     fontWeight: 500,
                   }}
                 >
@@ -282,9 +330,48 @@ const AddNewBrand = ({ visible, setVisible }: Props) => {
                       padding: '1px 10px',
                     }}
                   >
-                    &lt;?shippingAddress.firstName?&gt; :
+                    &lt;?=customer.firstName?&gt; :
                   </b>{' '}
-                  Shipping first Name
+                  Customer first name
+                </li>
+                <li
+                  style={{
+                    fontSize: '12px',
+                    marginBottom: '10px',
+                    lineHeight: 1.7,
+                    fontWeight: 500,
+                  }}
+                >
+                  <b
+                    style={{
+                      borderRadius: '15px',
+                      backgroundColor: '#ddd',
+                      padding: '1px 10px',
+                    }}
+                  >
+                    &lt;?=customer.lastName?&gt; :
+                  </b>{' '}
+                  Customer last name
+                </li>
+
+                <li
+                  style={{
+                    fontSize: '12px',
+                    marginBottom: '10px',
+                    lineHeight: 1.7,
+                    fontWeight: 500,
+                  }}
+                >
+                  <b
+                    style={{
+                      borderRadius: '15px',
+                      backgroundColor: '#ddd',
+                      padding: '1px 10px',
+                    }}
+                  >
+                    &lt;?=order.shortCode?&gt; :
+                  </b>{' '}
+                  Order Code
                 </li>
               </ul>
             </div>
@@ -394,14 +481,15 @@ const AddNewBrand = ({ visible, setVisible }: Props) => {
                       padding: '1px 10px',
                     }}
                   >
-                    &lt;?=order.added?&gt; :
+                    &lt;?=order.status.name?&gt; :
                   </b>{' '}
-                  Order time
+                  Order Status
                 </li>
                 <li
                   style={{
                     fontSize: '12px',
-                    lineHeight: 2,
+                    marginBottom: '10px',
+                    lineHeight: 1.7,
                     fontWeight: 500,
                   }}
                 >
@@ -412,9 +500,48 @@ const AddNewBrand = ({ visible, setVisible }: Props) => {
                       padding: '1px 10px',
                     }}
                   >
-                    &lt;?shippingAddress.firstName?&gt; :
+                    &lt;?=customer.firstName?&gt; :
                   </b>{' '}
-                  Shipping first Name
+                  Customer first name
+                </li>
+                <li
+                  style={{
+                    fontSize: '12px',
+                    marginBottom: '10px',
+                    lineHeight: 1.7,
+                    fontWeight: 500,
+                  }}
+                >
+                  <b
+                    style={{
+                      borderRadius: '15px',
+                      backgroundColor: '#ddd',
+                      padding: '1px 10px',
+                    }}
+                  >
+                    &lt;?=customer.lastName?&gt; :
+                  </b>{' '}
+                  Customer last name
+                </li>
+
+                <li
+                  style={{
+                    fontSize: '12px',
+                    marginBottom: '10px',
+                    lineHeight: 1.7,
+                    fontWeight: 500,
+                  }}
+                >
+                  <b
+                    style={{
+                      borderRadius: '15px',
+                      backgroundColor: '#ddd',
+                      padding: '1px 10px',
+                    }}
+                  >
+                    &lt;?=order.shortCode?&gt; :
+                  </b>{' '}
+                  Order Code
                 </li>
               </ul>
             </div>

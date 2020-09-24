@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
@@ -9,9 +10,12 @@ import {
   message,
   Switch,
   Select,
-  Button,
   notification,
   Modal,
+  Form,
+  Empty,
+  Button,
+  Spin,
 } from 'antd';
 
 import {
@@ -22,6 +26,8 @@ import {
   CheckCircleOutlined,
   InfoCircleOutlined,
   PlusOutlined,
+  UsergroupAddOutlined,
+  CheckOutlined,
 } from '@ant-design/icons';
 
 import ReactQuill from 'react-quill';
@@ -69,12 +75,12 @@ interface Props {
   setComponentList?: any;
 }
 
-const AddNewBrand = ({
+const ModalChildComponent = ({
   addNewCategoryVisible,
   setAddNewCategoryVisible,
   componentList,
   setComponentList,
-}: Props) => {
+}) => {
   const [addComponentState, handleAddComponentFetch] = useHandleFetch(
     {},
     'generateSalaryReport'
@@ -141,6 +147,7 @@ const AddNewBrand = ({
       ]);
       actions.resetForm();
       setItemsList([]);
+      setMonthFeild('');
       setAddNewCategoryVisible(false);
     } else {
       openErrorNotification();
@@ -188,7 +195,7 @@ const AddNewBrand = ({
     setItemsList([
       ...itemsList,
       {
-        _id: '',
+        _id: `${Math.floor(100000 + Math.random() * 900000)}`,
         bonus: null,
         convince: null,
         extra: null,
@@ -197,6 +204,22 @@ const AddNewBrand = ({
       },
     ]);
   };
+
+  useEffect(() => {
+    if (brandState.done && brandState.data && brandState.data.length > 0) {
+      const items = brandState.data.map((staff) => {
+        return {
+          ...staff,
+          _id: staff._id,
+          bonus: staff.bonus,
+          convince: staff.convince,
+          extra: staff.extra,
+          negative: staff.negative,
+        };
+      });
+      setItemsList(items);
+    }
+  }, [brandState.data]);
 
   const handleTimeChange = (date, dateString) => {
     setTimeFeild(dateString);
@@ -209,71 +232,82 @@ const AddNewBrand = ({
   };
 
   return (
-    <Formik
-      onSubmit={(values, actions) => handleSubmit(values, actions)}
-      validationSchema={validationSchema}
-      validateOnBlur={false}
-      enableReinitialize={true}
-      initialValues={{ ...initialValues }}
-    >
-      {({
-        handleChange,
-        values,
-        handleSubmit,
-        errors,
-        isValid,
-        isSubmitting,
-        touched,
-        handleBlur,
-        setFieldTouched,
-        handleReset,
-      }) => (
-        <>
-          <Modal
-            style={{
-              top: '40px',
-            }}
-            title='Add New Component'
-            visible={addNewCategoryVisible}
-            onOk={(e: any) => handleSubmit(e)}
-            onCancel={handleCancel}
-            okText='Create'
-            okButtonProps={{
-              loading: isSubmitting,
-              htmlType: 'submit',
-              // disabled: getisSubmitButtonDisabled(values, isValid),
-            }}
-            width={'50vw'}
-            bodyStyle={{
-              margin: '0',
-              padding: '10px',
-            }}
-          >
-            <h3 className='inputFieldLabel'>Time</h3>
-            <DatePicker
-              picker='month'
-              placeholder={'2020, Jan'}
-              className='inputclassName'
+    <>
+      <Formik
+        onSubmit={(values, actions) => handleSubmit(values, actions)}
+        validationSchema={validationSchema}
+        validateOnBlur={false}
+        enableReinitialize={true}
+        initialValues={{ ...initialValues }}
+      >
+        {({
+          handleChange,
+          values,
+          handleSubmit,
+          errors,
+          isValid,
+          isSubmitting,
+          touched,
+          handleBlur,
+          setFieldTouched,
+          handleReset,
+        }) => (
+          <>
+            <Form.Item
+              validateStatus={
+                addComponentState.error['error']['year'] ||
+                addComponentState.error['error']['month']
+                  ? 'error'
+                  : ''
+              }
+              help={
+                addComponentState.error['error']['year'] ||
+                addComponentState.error['error']['month']
+              }
+              // noStyle={true}
+            >
+              <h3 className='inputFieldLabel'>Time</h3>
+              <DatePicker
+                picker='month'
+                placeholder={'2020, Jan'}
+                className='inputclassName'
+                style={{
+                  width: '100%',
+                  borderColor: '#eee',
+                }}
+                onChange={handleMonthChange}
+                {...(month && {
+                  defaultValue: moment(month),
+                })}
+              />
+            </Form.Item>
+
+            <div
               style={{
-                width: '100%',
-                borderColor: '#eee',
+                marginTop: '25px',
               }}
-              onChange={handleMonthChange}
-              {...(month && {
-                defaultValue: moment(month),
-              })}
-            />
+            ></div>
+
+            {itemsList && itemsList[0] && (
+              <h3 className='addOrderContainer-sectionTitle'>
+                <span>
+                  <UsergroupAddOutlined />
+                </span>
+                Staffs
+              </h3>
+            )}
+
             <div
               style={{
                 marginTop: '15px',
               }}
             ></div>
-            <h3 className='inputFieldLabel'>Staffs</h3>
 
             <div className='componentItemsContainer'>
-              {itemsList.map((itemComponent) => {
+              {itemsList.map((itemComponent, index) => {
                 return (
                   <ComponentItem
+                    index={index}
                     brandState={brandState}
                     componentItem={itemComponent}
                     itemsList={itemsList}
@@ -282,31 +316,106 @@ const AddNewBrand = ({
                 );
               })}
 
-              <Button
-                size='small'
-                onClick={handleAddComponentItem}
-                style={{
-                  width: '290px',
-                  minHeight: '145px',
-                  marginTop: '0px',
-                  borderRadius: '8px',
-                }}
-                type='dashed'
-                icon={<PlusOutlined />}
-              >
-                Add Staff
-              </Button>
+              {brandState.done && itemsList && !itemsList[0] && (
+                <div
+                  style={{
+                    marginTop: '5px',
+                    width: '100%',
+                    display: 'flex',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <Empty
+                    description='No Staff'
+                    image={Empty.PRESENTED_IMAGE_SIMPLE}
+                  />
+                </div>
+              )}
+              {brandState.isLoading && (
+                <div
+                  style={{
+                    padding: '15px 0',
+                    width: '100%',
+                    height: '100%',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Spin />
+                </div>
+              )}
             </div>
 
             <div
               style={{
-                marginTop: '20px',
+                padding: '15px',
+                display: 'flex',
+                justifyContent: 'flex-end',
               }}
-            />
-          </Modal>
-        </>
-      )}
-    </Formik>
+            >
+              <Button
+                style={{
+                  color: '#555',
+                  marginRight: '10px',
+                }}
+                className='btnPrimaryClassNameoutline-cancle'
+                onClick={() => setAddNewCategoryVisible(false)}
+                type='default'
+              >
+                Cancel
+              </Button>
+
+              <Button
+                className='btnPrimaryClassNameoutline'
+                onClick={handleSubmit}
+                loading={addComponentState.isLoading}
+                type='link'
+                icon={<CheckOutlined />}
+              >
+                Generate
+              </Button>
+            </div>
+          </>
+        )}
+      </Formik>
+    </>
+  );
+};
+
+const AddNewBrand = ({
+  addNewCategoryVisible,
+  setAddNewCategoryVisible,
+  componentList,
+  setComponentList,
+}: Props) => {
+  const handleCancel = () => {
+    setAddNewCategoryVisible(false);
+  };
+
+  return (
+    <Modal
+      style={{
+        top: '40px',
+      }}
+      title='Add Salary Report'
+      visible={addNewCategoryVisible}
+      onCancel={handleCancel}
+      destroyOnClose={true}
+      footer={false}
+      width={'80vw'}
+      bodyStyle={{
+        margin: '0',
+        padding: '10px',
+      }}
+    >
+      <ModalChildComponent
+        addNewCategoryVisible={addNewCategoryVisible}
+        setAddNewCategoryVisible={setAddNewCategoryVisible}
+        componentList={componentList}
+        setComponentList={setComponentList}
+      />
+    </Modal>
   );
 };
 

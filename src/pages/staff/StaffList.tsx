@@ -80,7 +80,7 @@ const MyTable = ({ data, setCustomerList }: myTableProps) => {
 
     // @ts-ignore
     if (deleteCustomerRes && deleteCustomerRes.status === 'ok') {
-      openSuccessNotification('Deleted Staffs');
+      openSuccessNotification('Deleted Staff');
       const newCustomerList = data.filter((item) => item.id !== id);
       setCustomerList(newCustomerList);
     }
@@ -243,6 +243,8 @@ const CustomerList = ({ history }: Props) => {
     'staffList'
   );
 
+  console.log('staffList', customerState);
+
   useEffect(() => {
     const setCustomers = async () => {
       const customers = await handleCustomerListFetch({});
@@ -307,7 +309,7 @@ const CustomerList = ({ history }: Props) => {
               enterButton={false}
               className='searchbarClassName'
               placeholder='search staffs..'
-              onSearch={(value) => handleSearch(value)}
+              onChange={(e) => handleSearch(e.target.value)}
               // style={{ width: 300 }}
             />
           </div>

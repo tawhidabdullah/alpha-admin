@@ -7,7 +7,16 @@ import { useHandleFetch } from '../../hooks';
 // import libraries
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import { message, Tooltip, Modal, Tabs, Empty, Badge, Spin } from 'antd';
+import {
+  message,
+  Tooltip,
+  Modal,
+  Tabs,
+  Empty,
+  Badge,
+  Spin,
+  Button,
+} from 'antd';
 
 import {
   DeleteOutlined,
@@ -85,12 +94,12 @@ interface Props {
   setProductDetailData?: any;
 }
 
-const AddNewProduct = ({
+const ModalChildComponent = ({
   productEditVisible,
   setProductEditVisible,
   productDetailData,
   setProductDetailData,
-}: Props) => {
+}) => {
   const [updateProductState, handleUpdateProductFetch] = useHandleFetch(
     {},
     'updateProduct'
@@ -156,71 +165,100 @@ const AddNewProduct = ({
     getProductDetail();
   }, [productDetailData]);
 
+  console.log('tagIds', tagIds);
+  console.log('selectedtagIds', selectedTags);
+
   useEffect(() => {
-    if (productDetailData && productDetailData.brand) {
-      setBrandId(productDetailData.brand['id']);
-    } else {
-      setBrandId('');
-    }
     if (
-      productDetailData &&
-      productDetailData.tags &&
-      productDetailData.tags.length > 0
+      productDetailState.done &&
+      productDetailState.data &&
+      Object.keys(productDetailState.data).length > 0
     ) {
-      // const tagIds = productDetailData.tags.map(item => item.id);
-      setSelectedTags(productDetailData.tags);
-    } else {
-      setSelectedTags([]);
-    }
-    if (
-      productDetailData &&
-      productDetailData.category &&
-      productDetailData.category.length > 0
-    ) {
-      const categoryIds = productDetailData.category.map((item) => item.id);
-      setCategoryOptions(categoryIds);
-    } else {
-      setCategoryOptions([]);
+      const productDetailData = productDetailState.data;
+
+      if (productDetailData.brand) {
+        setBrandId(productDetailData.brand['id']);
+      } else {
+        setBrandId('');
+      }
+      if (
+        productDetailData &&
+        productDetailData.tags &&
+        productDetailData.tags.length > 0
+      ) {
+        const selectedTagNames = productDetailData.tags.map(
+          (item) => item.name
+        );
+
+        const selectedTagIds = productDetailData.tags.map((item) => item._id);
+
+        setSelectedTags(selectedTagNames);
+        console.log('selectedTagIds55', selectedTagIds);
+        setTagIds(selectedTagIds);
+      } else {
+        setTagIds([]);
+        setSelectedTags([]);
+      }
+      if (
+        productDetailData &&
+        productDetailData.category &&
+        productDetailData.category.length > 0
+      ) {
+        const categoryIds = productDetailData.category.map((item) => item.id);
+        setCategoryOptions(categoryIds);
+      } else {
+        setCategoryOptions([]);
+      }
+
+      if (
+        productDetailData &&
+        productDetailData.pricing &&
+        productDetailData.pricing
+      ) {
+        setPricing(productDetailData.pricing);
+      } else {
+        setPricing([]);
+      }
+
+      if (
+        productDetailData &&
+        productDetailData.date &&
+        productDetailData.date
+      ) {
+        setDateFeild(productDetailData.date);
+      } else {
+        setDateFeild('');
+      }
+
+      if (
+        productDetailData &&
+        productDetailData.time &&
+        productDetailData.time
+      ) {
+        setTimeFeild(productDetailData.time);
+      } else {
+        setTimeFeild('');
+      }
+
+      if (productDetailData && productDetailData.description) {
+        setDescription(productDetailData.description);
+      } else {
+        setDescription('');
+      }
+
+      if (
+        productDetailData &&
+        productDetailData.bn &&
+        productDetailData.bn['description']
+      ) {
+        setBNDescription(productDetailData.bn['description']);
+      } else {
+        setBNDescription('');
+      }
     }
 
-    if (
-      productDetailData &&
-      productDetailData.pricing &&
-      productDetailData.pricing
-    ) {
-      setPricing(productDetailData.pricing);
-    } else {
-      setPricing([]);
-    }
-
-    if (productDetailData && productDetailData.date && productDetailData.date) {
-      setDateFeild(productDetailData.date);
-    } else {
-      setDateFeild('');
-    }
-
-    if (productDetailData && productDetailData.time && productDetailData.time) {
-      setTimeFeild(productDetailData.time);
-    } else {
-      setTimeFeild('');
-    }
-
-    if (productDetailData && productDetailData.description) {
-      setDescription(productDetailData.description);
-    } else {
-      setDescription('');
-    }
-
-    if (
-      productDetailData &&
-      productDetailData.bn &&
-      productDetailData.bn['description']
-    ) {
-      setBNDescription(productDetailData.bn['description']);
-    } else {
-      setBNDescription('');
-    }
-  }, [productDetailData]);
+    console.log('runnedBitch');
+  }, [productDetailState.done]);
 
   useEffect(() => {
     if (productDetailState.done && Object.keys(productDetailState).length > 0) {
@@ -248,7 +286,7 @@ const AddNewProduct = ({
       // @ts-ignore
       setmyImages(mahImages);
     }
-  }, [productDetailState]);
+  }, [productDetailState.done]);
 
   useEffect(() => {
     console.log('thumnail', myImages);
@@ -383,11 +421,13 @@ const AddNewProduct = ({
         pricing: pricing,
         metaTitle: values.metaTitle,
         metaDescription: values.metaDescription,
-        metaTags: metaTags.join(','),
+        metaTags: metaTags && metaTags.length > 0 ? metaTags.join(',') : '',
+
         bn: {
           metaTitle: values.bnMetaTitle,
           metaDescription: values.bnMetaDescription,
-          metaTags: bnMetaTags.join(','),
+          metaTags:
+            bnMetaTags && bnMetaTags.length > 0 ? bnMetaTags.join(',') : '',
           name: values.bnName.trim(),
           unit: values.metaUnit,
           description: bnDescription,
@@ -398,6 +438,9 @@ const AddNewProduct = ({
     // @ts-ignore
     if (updatedProductRes && updatedProductRes.status === 'ok') {
       openSuccessNotification('Product Updated');
+
+      setProductEditVisible(false);
+
       setProductEditVisible(false);
       setProductDetailData({
         // @ts-ignore
@@ -409,7 +452,17 @@ const AddNewProduct = ({
         image: productDetailData.image,
       });
 
-      console.log('updatedProductRes', updatedProductRes);
+      // setProductDetailData({
+      //     // @ts-ignore
+      //     ...updatedProductRes,
+      //     category: productDetailData.category,
+      //     brand: productDetailData.brand,
+      //     tags: productDetailData.tags,
+      //     cover: productDetailData.cover,
+      //     image: productDetailData.image,
+      // });
+
+      // console.log('updatedProductRes', updatedProductRes);
       // setProductList([...productList, {
       //     id: updatedProductRes['id'] || '',
       //     key: updatedProductRes['id'] || '',
@@ -419,15 +472,15 @@ const AddNewProduct = ({
       //     ...updatedProductRes
       // }])
       // @ts-ignore
-      setmyImages([]);
-      setCoverImageId('');
-      setPricing([]);
-      setTagIds([]);
-      setSelectedTags([]);
-      setBrandId('');
-      setcategoryIds([]);
-      setCategoryOptions([]);
-      actions.resetForm();
+      //   setmyImages([]);
+      //   setCoverImageId('');
+      //   setPricing([]);
+      //   setTagIds([]);
+      //   setSelectedTags([]);
+      //   setBrandId('');
+      //   setcategoryIds([]);
+      //   setCategoryOptions([]);
+      //   actions.resetForm();
     } else {
       // openErrorNotification();
     }
@@ -435,6 +488,7 @@ const AddNewProduct = ({
     actions.setSubmitting(false);
   };
 
+  console.log('updateProductStaet', updateProductState);
   useEffect(() => {
     if (!updateProductState['isLoading']) {
       const error = updateProductState['error'];
@@ -461,6 +515,16 @@ const AddNewProduct = ({
 
   const handleCancel = (e: any) => {
     setProductEditVisible(false);
+    // setmyImages(false);
+    // setCoverImageId('');
+    // setPricing([]);
+    // setTagIds([]);
+    // setSelectedTags([]);
+    // setBrandId('');
+    // setcategoryIds([]);
+    // setCategoryOptions([]);
+    // setMetaTags([]);
+    // setBnMetaTags([]);
   };
 
   const getisSubmitButtonDisabled = (values, isValid) => {
@@ -523,14 +587,6 @@ const AddNewProduct = ({
     setpricingTagActiveKey('2');
   };
 
-  const handleEditPricing = (id) => {
-    seTisPricingEditActive(true);
-    const pricingItem = pricing.find((item) => item.id === id);
-    if (pricingItem) {
-      setEditPricingItem(pricingItem);
-    }
-  };
-
   const handleAddPricing = (priceItem) => {
     setPricing([
       {
@@ -546,6 +602,14 @@ const AddNewProduct = ({
     const newPricing = pricing.filter((item) => item.id !== id);
     setPricing(newPricing);
     message.info('Product Pricing Deleted');
+  };
+
+  const handleEditPricing = (id) => {
+    seTisPricingEditActive(true);
+    const pricingItem = pricing.find((item) => item.id === id);
+    if (pricingItem) {
+      setEditPricingItem(pricingItem);
+    }
   };
 
   const isCategoryInValid = () => {
@@ -576,7 +640,8 @@ const AddNewProduct = ({
   useEffect(() => {
     if (
       productDetailState.data &&
-      Object.keys(productDetailState.data).length > 0
+      Object.keys(productDetailState.data).length > 0 &&
+      productDetailState.data.metaTags
     ) {
       const metaTags = productDetailState.data.metaTags.split(',');
 
@@ -588,69 +653,50 @@ const AddNewProduct = ({
     }
   }, [productDetailState['done']]);
 
-  console.log('BnproductDetailData', productDetailData);
+  console.log('productDetailData');
 
   return (
-    <Formik
-      onSubmit={(values, actions) => handleSubmit(values, actions)}
-      validationSchema={validationSchema}
-      validateOnBlur={false}
-      enableReinitialize={true}
-      initialValues={{
-        ...initialValues,
-        ...{
-          ...productDetailData,
-          ...(productDetailState['data'] &&
-            Object.keys(productDetailState['data']).length > 0 &&
-            productDetailState['data']['bn'] && {
-              bnMetaTitle: productDetailState['data']['bn'].metaTitle,
-              bnMetaDescription:
-                productDetailState['data']['bn'].metaDescription,
-              bnName: productDetailState['data']['bn'].name,
-              metaUnit: productDetailState['data']['bn'].unit,
-              bnDescription: productDetailState['data']['bn'].description,
-            }),
-        },
-      }}
-    >
-      {({
-        handleChange,
-        values,
-        handleSubmit,
-        errors,
-        isValid,
-        isSubmitting,
-        touched,
-        handleBlur,
-        setFieldTouched,
-        handleReset,
-      }) => (
-        <>
-          <Modal
-            style={{
-              top: '40px',
-            }}
-            bodyStyle={{
-              margin: 0,
-              padding: 0,
-            }}
-            width={'70vw'}
-            title='Product Edit'
-            visible={productEditVisible}
-            onOk={(e: any) => handleSubmit(e)}
-            onCancel={handleCancel}
-            destroyOnClose={true}
-            okText='Update'
-            okButtonProps={{
-              loading: isSubmitting,
-              htmlType: 'submit',
-            }}
-          >
+    <>
+      <Formik
+        onSubmit={(values, actions) => handleSubmit(values, actions)}
+        validationSchema={validationSchema}
+        validateOnBlur={false}
+        enableReinitialize={true}
+        initialValues={{
+          ...initialValues,
+          ...{
+            ...productDetailData,
+            ...(productDetailState['data'] &&
+              Object.keys(productDetailState['data']).length > 0 &&
+              productDetailState['data']['bn'] && {
+                bnMetaTitle: productDetailState['data']['bn'].metaTitle,
+                bnMetaDescription:
+                  productDetailState['data']['bn'].metaDescription,
+                bnName: productDetailState['data']['bn'].name,
+                metaUnit: productDetailState['data']['bn'].unit,
+                bnDescription: productDetailState['data']['bn'].description,
+              }),
+          },
+        }}
+      >
+        {({
+          handleChange,
+          values,
+          handleSubmit,
+          errors,
+          isValid,
+          isSubmitting,
+          touched,
+          handleBlur,
+          setFieldTouched,
+          handleReset,
+        }) => (
+          <>
             <section className='addProductGridContainer'>
               <div className='addProductGridContainer__left'>
                 <div className='addProductGridContainer__name'>
                   <div className='addProductGridContainer__item-header'>
-                    <h3>Product Information</h3>
+                    <h3>Product Information *</h3>
                     <div
                       className={
                         values.name && values.name.length > 2
@@ -1163,148 +1209,14 @@ const AddNewProduct = ({
                     )}
                   </div>
                 </div>
-
-                <div className='addProductGridContainer__image'>
-                  <div className='addProductGridContainer__item-header'>
-                    <h3>Meta Data</h3>
-
-                    <Tooltip
-                      placement='left'
-                      title={
-                        "Meta data will be used to make the user's easy and for search engine optimization."
-                      }
-                    >
-                      <a href='###'>
-                        <InfoCircleOutlined />
-                      </a>
-                    </Tooltip>
-                  </div>
-                  <div className='addProductGridContainer__item-body'>
-                    <Input
-                      label='Meta title'
-                      value={values.metaTitle}
-                      placeHolder={'category...'}
-                      name='metaTitle'
-                      isError={
-                        (touched.metaTitle && errors.metaTitle) ||
-                        (!isSubmitting &&
-                          updateProductState.error['error']['metaTitle'])
-                      }
-                      errorString={
-                        (touched.metaTitle && errors.metaTitle) ||
-                        (!isSubmitting &&
-                          updateProductState.error['error']['metaTitle'])
-                      }
-                      onChange={(e: any) => {
-                        handleChange(e);
-                        setFieldTouched('metaTitle');
-                      }}
-                    />
-
-                    <Input
-                      label='BN Meta title'
-                      value={values.bnMetaTitle}
-                      placeHolder={'ক্যাটাগড়ি...'}
-                      name='bnMetaTitle'
-                      isError={
-                        (touched.bnMetaTitle && errors.bnMetaTitle) ||
-                        (!isSubmitting &&
-                          updateProductState.error['error']['bnMetaTitle'])
-                      }
-                      errorString={
-                        (touched.bnMetaTitle && errors.bnMetaTitle) ||
-                        (!isSubmitting &&
-                          updateProductState.error['error']['bnMetaTitle'])
-                      }
-                      onChange={(e: any) => {
-                        handleChange(e);
-                        setFieldTouched('bnMetaTitle');
-                      }}
-                    />
-
-                    <TextArea
-                      label='Meta description'
-                      value={values.metaDescription}
-                      placeholder={'meta...'}
-                      name='metaDescription'
-                      isError={
-                        (touched.metaDescription && errors.metaDescription) ||
-                        (!isSubmitting &&
-                          updateProductState.error['error']['metaDescription'])
-                      }
-                      errorString={
-                        (touched.metaDescription && errors.metaDescription) ||
-                        (!isSubmitting &&
-                          updateProductState.error['error']['metaDescription'])
-                      }
-                      onChange={(e: any) => {
-                        handleChange(e);
-                        setFieldTouched('metaDescription');
-                      }}
-                    />
-
-                    <TextArea
-                      label='BN Meta Description'
-                      value={values.bnMetaDescription}
-                      placeholder={'এইয় মেট...'}
-                      name='bnMetaDescription'
-                      isError={
-                        (touched.bnMetaDescription &&
-                          errors.bnMetaDescription) ||
-                        (!isSubmitting &&
-                          updateProductState.error['error'][
-                            'bnMetaDescription'
-                          ])
-                      }
-                      errorString={
-                        (touched.bnMetaDescription &&
-                          errors.bnMetaDescription) ||
-                        (!isSubmitting &&
-                          updateProductState.error['error'][
-                            'bnMetaDescription'
-                          ])
-                      }
-                      onChange={(e: any) => {
-                        handleChange(e);
-                        setFieldTouched('bnMetaDescription');
-                      }}
-                    />
-
-                    <h3 className='inputFieldLabel'>
-                      Meta Tags (grocery,fashion)
-                    </h3>
-
-                    <MetaTags
-                      // @ts-ignore
-                      setTags={setMetaTags}
-                      tags={metaTags}
-                    />
-
-                    <div
-                      style={{
-                        marginTop: '15px',
-                      }}
-                    ></div>
-
-                    <h3 className='inputFieldLabel'>
-                      BN Meta Tags (মুদিখানা,ফ্যাশন)
-                    </h3>
-
-                    <MetaTags
-                      // @ts-ignore
-                      setTags={setBnMetaTags}
-                      tags={bnMetaTags}
-                    />
-                  </div>
-                </div>
               </div>
               <div className='addProductGridContainer__right'>
                 <div className='addProductGridContainer__category'>
                   <div className='addProductGridContainer-rightItemContainer'>
                     <div className='addProductGridContainer-rightItemContainer-header'>
-                      <h3>Categories</h3>
+                      <h3>Categories *</h3>
 
-                      <Tooltip
+                      {/* <Tooltip
                         color='red'
                         visible={
                           updateProductState.error['error']['category'] &&
@@ -1325,7 +1237,19 @@ const AddNewProduct = ({
                         >
                           <CheckCircleOutlined />
                         </div>
-                      </Tooltip>
+                      </Tooltip> */}
+                      <div
+                        className={
+                          !(categoryids.length > 0) &&
+                          !updateProductState.error['error']['category']
+                            ? 'checkicon'
+                            : updateProductState.error['error']['category']
+                            ? 'checkicon-error'
+                            : 'checkicon-active'
+                        }
+                      >
+                        <CheckCircleOutlined />
+                      </div>
                     </div>
                     <div className='addProductGridContainer-rightItemContainer-body'>
                       <Categories
@@ -1365,22 +1289,235 @@ const AddNewProduct = ({
                     </div>
                   </div>
                 </div>
+
+                <div
+                  className='addProductGridContainer__brand'
+                  style={{
+                    marginTop: '10px',
+                  }}
+                >
+                  <div className='addProductGridContainer-rightItemContainer'>
+                    <div className='addProductGridContainer-rightItemContainer-header'>
+                      <h3>Meta Tags</h3>
+
+                      <Tooltip
+                        placement='left'
+                        title={
+                          "Meta data will be used to make the user's easy and for search engine optimization."
+                        }
+                      >
+                        <a href='###'>
+                          <InfoCircleOutlined />
+                        </a>
+                      </Tooltip>
+                    </div>
+                    <div className='addProductGridContainer-rightItemContainer-body'>
+                      <Input
+                        label='Meta title'
+                        value={values.metaTitle}
+                        placeHolder={'...'}
+                        name='metaTitle'
+                        isError={
+                          (touched.metaTitle && errors.metaTitle) ||
+                          (!isSubmitting &&
+                            updateProductState.error['error']['metaTitle'])
+                        }
+                        errorString={
+                          (touched.metaTitle && errors.metaTitle) ||
+                          (!isSubmitting &&
+                            updateProductState.error['error']['metaTitle'])
+                        }
+                        onChange={(e: any) => {
+                          handleChange(e);
+                          setFieldTouched('metaTitle');
+                        }}
+                      />
+
+                      <Input
+                        label='BN Meta title'
+                        value={values.bnMetaTitle}
+                        placeHolder={'...'}
+                        name='bnMetaTitle'
+                        isError={
+                          (touched.bnMetaTitle && errors.bnMetaTitle) ||
+                          (!isSubmitting &&
+                            updateProductState.error['error']['bnMetaTitle'])
+                        }
+                        errorString={
+                          (touched.bnMetaTitle && errors.bnMetaTitle) ||
+                          (!isSubmitting &&
+                            updateProductState.error['error']['bnMetaTitle'])
+                        }
+                        onChange={(e: any) => {
+                          handleChange(e);
+                          setFieldTouched('bnMetaTitle');
+                        }}
+                      />
+
+                      <TextArea
+                        label='Meta description'
+                        value={values.metaDescription}
+                        placeholder={'meta...'}
+                        name='metaDescription'
+                        isError={
+                          (touched.metaDescription && errors.metaDescription) ||
+                          (!isSubmitting &&
+                            updateProductState.error['error'][
+                              'metaDescription'
+                            ])
+                        }
+                        errorString={
+                          (touched.metaDescription && errors.metaDescription) ||
+                          (!isSubmitting &&
+                            updateProductState.error['error'][
+                              'metaDescription'
+                            ])
+                        }
+                        onChange={(e: any) => {
+                          handleChange(e);
+                          setFieldTouched('metaDescription');
+                        }}
+                      />
+
+                      <TextArea
+                        label='BN Meta Description'
+                        value={values.bnMetaDescription}
+                        placeholder={'এইয় মেট...'}
+                        name='bnMetaDescription'
+                        isError={
+                          (touched.bnMetaDescription &&
+                            errors.bnMetaDescription) ||
+                          (!isSubmitting &&
+                            updateProductState.error['error'][
+                              'bnMetaDescription'
+                            ])
+                        }
+                        errorString={
+                          (touched.bnMetaDescription &&
+                            errors.bnMetaDescription) ||
+                          (!isSubmitting &&
+                            updateProductState.error['error'][
+                              'bnMetaDescription'
+                            ])
+                        }
+                        onChange={(e: any) => {
+                          handleChange(e);
+                          setFieldTouched('bnMetaDescription');
+                        }}
+                      />
+
+                      <h3 className='inputFieldLabel'>Meta Tags</h3>
+
+                      <MetaTags
+                        // @ts-ignore
+                        setTags={setMetaTags}
+                        tags={metaTags}
+                      />
+
+                      <div
+                        style={{
+                          marginTop: '15px',
+                        }}
+                      ></div>
+
+                      <h3 className='inputFieldLabel'>BN Meta Tags</h3>
+
+                      <MetaTags
+                        // @ts-ignore
+                        setTags={setBnMetaTags}
+                        tags={bnMetaTags}
+                      />
+                    </div>
+                  </div>
+                </div>
               </div>
             </section>
-          </Modal>
 
-          <MediaLibrary
-            setvisible={setvisible}
-            visible={visible}
-            setmyImages={setmyImages}
-            myImages={myImages}
-            setmyThumbnailImage={setmyThumbnailImage}
-            isModalOpenForThumbnail={isModalOpenForThumbnail}
-            isModalOpenForImages={isModalOpenForImages}
-          />
-        </>
-      )}
-    </Formik>
+            <div
+              style={{
+                padding: '15px',
+                display: 'flex',
+                justifyContent: 'flex-end',
+              }}
+            >
+              <Button
+                style={{
+                  color: '#555',
+                  marginRight: '10px',
+                }}
+                className='btnPrimaryClassNameoutline-cancle'
+                onClick={() => setProductEditVisible(false)}
+                type='default'
+              >
+                Cancel
+              </Button>
+
+              <Button
+                className='btnPrimaryClassNameoutline'
+                onClick={handleSubmit}
+                loading={updateProductState.isLoading}
+                type='link'
+                icon={<CheckOutlined />}
+              >
+                Update
+              </Button>
+            </div>
+
+            <MediaLibrary
+              setvisible={setvisible}
+              visible={visible}
+              setmyImages={setmyImages}
+              myImages={myImages}
+              setmyThumbnailImage={setmyThumbnailImage}
+              isModalOpenForThumbnail={isModalOpenForThumbnail}
+              isModalOpenForImages={isModalOpenForImages}
+            />
+          </>
+        )}
+      </Formik>
+    </>
+  );
+};
+
+const AddNewProduct = ({
+  productEditVisible,
+  setProductEditVisible,
+  productDetailData,
+  setProductDetailData,
+}: Props) => {
+  const handleCancel = () => {
+    setProductEditVisible(false);
+  };
+  return (
+    <Modal
+      style={{
+        top: '40px',
+      }}
+      bodyStyle={{
+        margin: 0,
+        padding: 0,
+      }}
+      width={'70vw'}
+      title='Product Edit'
+      visible={productEditVisible}
+      // onOk={(e: any) => handleSubmit(e)}
+      onCancel={handleCancel}
+      destroyOnClose={true}
+      okText='Update'
+      footer={false}
+      okButtonProps={{
+        //   loading: isSubmitting,
+        htmlType: 'submit',
+      }}
+    >
+      <ModalChildComponent
+        setProductEditVisible={setProductEditVisible}
+        productEditVisible={productEditVisible}
+        setProductDetailData={setProductDetailData}
+        productDetailData={productDetailData}
+        handleCancel={handleCancel}
+      />
+    </Modal>
   );
 };
 

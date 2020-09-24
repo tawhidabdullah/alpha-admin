@@ -7,8 +7,6 @@ import { useHandleFetch } from '../../hooks';
 // import lib
 import { EditOutlined } from '@ant-design/icons';
 
-
-
 import {
   Skeleton,
   Empty,
@@ -26,21 +24,18 @@ import {
 import { DataTableSkeleton } from '../../components/Placeholders';
 import ProductEdit from './ProductEdit';
 
-
 // import state
-import { isAccess } from "../../utils";
-import { connect } from "react-redux";
-
-
+import { isAccess } from '../../utils';
+import { connect } from 'react-redux';
 
 const { Column, ColumnGroup } = Table;
 const { Search } = CoolInput;
 
 interface Props {
-  roles: any; 
+  roles: any;
 }
 
-const NewBrandDetail = ({roles}: Props) => {
+const NewBrandDetail = ({ roles }: Props) => {
   const [productDetailState, handleProductDetailFetch] = useHandleFetch(
     {},
     'productDetailById'
@@ -124,16 +119,15 @@ const NewBrandDetail = ({roles}: Props) => {
                 productDetailData={productDetailData}
                 setProductDetailData={setProductDetailData}
               />
-                 {isAccess('postCatalogue',roles) && (
-                  <Button
+              {isAccess('postCatalogue', roles) && (
+                <Button
                   onClick={() => setProductEditVisible(true)}
                   type='link'
                   icon={<EditOutlined />}
                 >
                   Edit
                 </Button>
-                 )}
-            
+              )}
             </>
           )}
       </div>
@@ -204,6 +198,26 @@ const NewBrandDetail = ({roles}: Props) => {
                               <span
                                 onClick={() =>
                                   history.push(`/admin/category/${cat.id}`)
+                                }
+                              >
+                                {cat.name}
+                              </span>
+                            );
+                          })}
+                        </h3>
+                      </>
+                    )}
+
+                  {productDetailData['tags'] &&
+                    productDetailData['tags'].length > 0 && (
+                      <>
+                        <h3>
+                          TAGS:
+                          {productDetailData['tags'].map((cat) => {
+                            return (
+                              <span
+                                onClick={() =>
+                                  history.push(`/admin/tag/${cat._id}`)
                                 }
                               >
                                 {cat.name}
@@ -464,12 +478,9 @@ const NewBrandDetail = ({roles}: Props) => {
   );
 };
 
-
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   roles: state.globalState,
-})
+});
 
 // @ts-ignore
 export default connect(mapStateToProps, null)(NewBrandDetail);
-
-

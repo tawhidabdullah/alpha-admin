@@ -13,6 +13,8 @@ import {
   Tooltip,
   Upload,
   message,
+  Button,
+  Spin,
 } from 'antd';
 
 import {
@@ -37,10 +39,10 @@ import MediaLibrary from '../../components/MediaLibrary';
 import MetaTags from './MetaTags';
 
 const validationSchema = Yup.object().shape({
-  // name: Yup.string()
-  //   .label('Name')
-  //   .required('Name is required')
-  //   .min(3, 'Name must have at least 3 characters'),
+  //   name: Yup.string()
+  //     .label('Name')
+  //     .required('Name is required')
+  //     .min(3, 'Name must have at least 3 characters'),
 });
 
 const openSuccessNotification = (message?: any) => {
@@ -73,7 +75,7 @@ const initialValues = {
   image: [],
   url: '',
   cover: '',
-  displayOrder: '',
+  displayOrder: null,
 };
 
 const { Option } = Select;
@@ -81,28 +83,47 @@ const { Option } = Select;
 interface Props {
   addNewCategoryVisible: any;
   setAddNewCategoryVisible: any;
-  categoryList?: any;
-  setcategoryList?: any;
-  categoryDetailData?: any;
   setcategoryDetailData?: any;
+  categoryDetailData?: any;
+  categoryList?: any;
 }
 
-const AddNewCategory = ({
-  addNewCategoryVisible,
+const ModalChildComponent = ({
   setAddNewCategoryVisible,
   categoryList,
-  setcategoryList,
   categoryDetailData,
   setcategoryDetailData,
-}: Props) => {
+}) => {
   const [addCategoryState, handleAddCategoryFetch] = useHandleFetch(
     {},
     'updateCategory'
   );
+  const [categoryDetailState, handleCategoryDetailFetch] = useHandleFetch(
+    {},
+    'categoryDetail'
+  );
+
   const [
     updateCategoryIconState,
     handleUpdateCategoryIconFetch,
   ] = useHandleFetch({}, 'categoryUpdateIcon', 'form');
+
+  const [visible, setvisible] = useState(false);
+  const [myImages, setmyImages] = useState(false);
+  const [myThumbnailImage, setmyThumbnailImage] = useState(false);
+  const [isparentCategoryChecked, setisparentcategoryChecked] = useState(true);
+  const [isModalOpenForThumbnail, setisModalOpenForThumbnail] = useState(false);
+  const [isModalOpenForImages, setisModalOpenForImages] = useState(false);
+  const [selectedParentId, setselectedParentId] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
+  const [loadingThumnail, setLoadingThumbnail] = useState(false);
+  const [imageFile, setImagefile] = useState('');
+  const [tags, setTags] = useState([]);
+  const [bnTags, setBnTags] = useState([]);
+  const [visibleMedia, setvisibleMedia] = useState(false);
+  const [coverImageId, setCoverImageId] = useState('');
+  const [myGoddamnImages, setMyGoddamnImages] = useState([]);
+
   const [
     attachImageToItemMultipleState,
     handleAttachImageToItemMultipleFetch,
@@ -124,20 +145,105 @@ const AddNewCategory = ({
     handleSetImageAsThumbnailToItemFetch,
   ] = useHandleFetch({}, 'setImageAsThumbnailToItem');
 
-  const [visible, setvisible] = useState(false);
-  const [myThumbnailImage, setmyThumbnailImage] = useState(false);
-  const [isparentCategoryChecked, setisparentcategoryChecked] = useState(true);
-  const [isModalOpenForThumbnail, setisModalOpenForThumbnail] = useState(false);
-  const [isModalOpenForImages, setisModalOpenForImages] = useState(false);
-  const [selectedParentId, setselectedParentId] = useState('');
-  const [imageUrl, setImageUrl] = useState('');
-  const [loadingThumnail, setLoadingThumbnail] = useState(false);
-  const [imageFile, setImagefile] = useState('');
-  const [tags, setTags] = useState([]);
-  const [bnTags, setBnTags] = useState([]);
-  const [myImages, setmyImages] = useState(false);
-  const [coverImageId, setCoverImageId] = useState('');
-  const [myGoddamnImages, setMyGoddamnImages] = useState([]);
+  useEffect(() => {
+    const getProductDetail = async () => {
+      await handleCategoryDetailFetch({
+        urlOptions: {
+          placeHolders: {
+            id: categoryDetailData.id,
+          },
+        },
+      });
+    };
+
+    getProductDetail();
+  }, [categoryDetailData]);
+
+  useEffect(() => {
+    if (
+      categoryDetailState.done &&
+      Object.keys(categoryDetailState).length > 0
+    ) {
+      const images = categoryDetailState.data.image;
+      let mahImages = [];
+
+      if (images && images.length > 0) {
+        mahImages = images;
+      }
+
+      if (
+        categoryDetailState.data.cover &&
+        categoryDetailState.data.cover['id']
+      ) {
+        const ixists = images.find(
+          (item) => item.id === categoryDetailState.data.cover['id']
+        );
+        if (!ixists) {
+          mahImages = [categoryDetailState.data.cover, ...mahImages];
+        }
+
+        setCoverImageId(categoryDetailState.data.cover['id']);
+      }
+
+      // @ts-ignore
+      setmyImages(mahImages);
+    }
+  }, [categoryDetailState.done]);
+
+  useEffect(() => {
+    console.log('thumnail', myImages);
+    // @ts-ignore
+    if (myImages && myImages[0] && myImages.length < 2) {
+      console.log('thumnail2', myImages);
+
+      if (coverImageId !== myImages[0].id) {
+        setCoverImageId(myImages[0].id);
+        handleSetImageAsThumnail(myImages[0]);
+      }
+    }
+  }, [myImages]);
+
+  const handleDetachSingleImage = async (id) => {
+    await handleDetachImageFromItemSingleFetch({
+      urlOptions: {
+        placeHolders: {
+          imageId: id,
+          collection: 'category',
+          itemId: categoryDetailData.id,
+        },
+      },
+    });
+  };
+
+  const handleSetImageAsThumnail = async (image) => {
+    const thumbnailRes = await handleSetImageAsThumbnailToItemFetch({
+      urlOptions: {
+        placeHolders: {
+          imageId: image.id,
+          collection: 'category',
+          itemId: categoryDetailData.id,
+        },
+      },
+    });
+
+    // @ts-ignore
+    if (thumbnailRes && thumbnailRes.status === 'ok') {
+      openSuccessNotification('Set as thumbnail!');
+    } else {
+      openErrorNotification("Couldn't set as thumbnail, Something went wrong");
+    }
+  };
+
+  const handleImagesDelete = (id) => {
+    // @ts-ignore
+    const newImages =
+      myImages &&
+      myImages.filter((image) => {
+        return image.id !== id;
+      });
+
+    setmyImages(newImages);
+  };
 
   const handleSubmit = async (values: any, actions: any) => {
     // @ts-ignore
@@ -155,10 +261,8 @@ const AddNewCategory = ({
     formData.append('cover', coverImageId || imagesIds[0] ? imagesIds[0] : '');
     formData.append('parent', selectedParentId);
     formData.append('icon', imageFile);
-    formData.append('displayOrder', values.displayOrder);
 
     console.log('categoryDetailData', categoryDetailData);
-    console.log('imagesIds', imagesIds);
 
     if (categoryDetailData && Object.keys(categoryDetailData).length > 0) {
       const aboutToUpdatedImageIds = [];
@@ -210,13 +314,13 @@ const AddNewCategory = ({
       body: {
         name: values.name.trim(),
         description: values.description,
+        displayOrder: values.displayOrder,
         image: imagesIds,
         cover: coverImageId || imagesIds[0] ? imagesIds[0] : '',
         parent: selectedParentId,
         icon: imageFile,
         metaTitle: values.metaTitle,
         metaDescription: values.metaDescription,
-        displayOrder: values.displayOrder,
         metaTags: tags && tags.length > 0 ? tags.join(',') : '',
         bn: {
           metaTitle: values.bnMetaTitle,
@@ -233,18 +337,12 @@ const AddNewCategory = ({
       openSuccessNotification('Category Updated!');
       setAddNewCategoryVisible(false);
 
-      // setcategoryList([{
-      // 	id: addCategoryRes['_id'] || '',
-      // 	key: addCategoryRes['_id'] || '',
-      // 	name: addCategoryRes['name'] || '',
-      // 	description: addCategoryRes['description'] || '',
-      // 	cover: addCategoryRes['cover'] || '',
-      // 	// @ts-ignore
-      // 	...addCategoryRes
-      // },...categoryList]);
-
       setcategoryDetailData({
-        ...categoryDetailData,
+        name: addCategoryRes['name'] || '',
+        description: addCategoryRes['description'] || '',
+        cover: categoryDetailData['cover'] || '',
+        id: categoryDetailData.id,
+        key: categoryDetailData['id'] || '',
         // @ts-ignore
         ...addCategoryRes,
       });
@@ -287,122 +385,18 @@ const AddNewCategory = ({
     }
   }, [addCategoryState]);
 
-  useEffect(() => {
-    if (categoryDetailData && Object.keys(categoryDetailData).length > 0) {
-      const images = categoryDetailData.image;
-      let mahImages = [];
-
-      if (images && images.length > 0) {
-        mahImages = images;
-      }
-
-      if (categoryDetailData.cover && categoryDetailData.cover['id']) {
-        const ixists = images.find(
-          (item) => item.id === categoryDetailData.cover['id']
-        );
-        if (!ixists) {
-          mahImages = [categoryDetailData.cover, ...mahImages];
-        }
-
-        setCoverImageId(categoryDetailData.cover['id']);
-      }
-
-      // @ts-ignore
-      setmyImages(mahImages);
-    }
-  }, [categoryDetailData]);
-
-  useEffect(() => {
-    // @ts-ignore
-    if (myImages && myImages[0] && myImages.length < 2) {
-      if (coverImageId !== myImages[0].id) {
-        setCoverImageId(myImages[0].id);
-        handleSetImageAsThumnail(myImages[0]);
-      }
-    }
-  }, [myImages]);
-
-  const handleDetachSingleImage = async (id) => {
-    await handleDetachImageFromItemSingleFetch({
-      urlOptions: {
-        placeHolders: {
-          imageId: id,
-          collection: 'category',
-          itemId: categoryDetailData.id,
-        },
-      },
-    });
-  };
-
-  const handleSetImageAsThumnail = async (image) => {
-    const thumbnailRes = await handleSetImageAsThumbnailToItemFetch({
-      urlOptions: {
-        placeHolders: {
-          imageId: image.id,
-          collection: 'category',
-          itemId: categoryDetailData.id,
-        },
-      },
-    });
-
-    // @ts-ignore
-    if (thumbnailRes && thumbnailRes.status === 'ok') {
-      openSuccessNotification('Set as thumbnail!');
-      // const positionInBrand = () => {
-      //     return brandList.map(item => item.id).indexOf(categoryDetailData.id);
-      // }
-
-      // const index = positionInBrand();
-
-      // const prevItem = brandList.find(item => item.id === productRecord.id);
-
-      // if (prevItem) {
-      //     const updatedItem = Object.assign({}, brandList[index], { ...prevItem, cover: image.cover });
-      //     const updateBrandList = [...brandList.slice(0, index), updatedItem, ...brandList.slice(index + 1)];
-      //     setBrandList(updateBrandList);
-      // }
-    } else {
-      openErrorNotification("Couldn't set as thumbnail, Something went wrong");
-    }
-  };
-
-  const handleImagesDelete = (id) => {
-    // @ts-ignore
-    const newImages =
-      myImages &&
-      myImages.filter((image) => {
-        return image.id !== id;
-      });
-
-    setmyImages(newImages);
-  };
-
   const onSwitchChange = (checked: any) => {
     setisparentcategoryChecked(checked);
   };
 
   const handleCancel = (e: any) => {
+    setTags([]);
+    setBnTags([]);
     setAddNewCategoryVisible(false);
-  };
-
-  const getisSubmitButtonDisabled = (values, isValid) => {
-    if (!values.name || !isValid) {
-      return true;
-    }
-    return false;
-  };
-
-  const handleThumbnailImageDelete = (id) => {
-    // @ts-ignore
-    const newImages =
-      myThumbnailImage &&
-      myThumbnailImage.filter((image) => {
-        return image.id !== id;
-      });
-
-    if (newImages.length > 0) {
-      setmyThumbnailImage(newImages);
-    } else setmyThumbnailImage(false);
+    setImagefile('');
+    setCoverImageId('');
+    setselectedParentId('');
+    setmyImages(false);
   };
 
   const onChangeSelect = (value) => {
@@ -429,7 +423,6 @@ const AddNewCategory = ({
       setImageUrl(imageUrl);
       setImagefile(file);
       const setNewIcon = async () => {
-        console.log('mahFile', file);
         const formData = new FormData();
         formData.append('icon', file);
         // const addCategoryRes = await handleAddCategoryFetch({
@@ -487,465 +480,612 @@ const AddNewCategory = ({
         categoryDetailData.bn &&
         categoryDetailData.bn['metaTags'] &&
         categoryDetailData.bn['metaTags'].split(',');
-
       setTags(metaTags || []);
       setBnTags(bnMetaTags || []);
     }
   }, []);
 
-  // console.log('addnewCategoryTags777', tags);
-  // console.log('categoryDetailData', categoryDetailData);
-  // console.log('shitThere', myImages);
-
   return (
-    <Formik
-      onSubmit={(values, actions) => handleSubmit(values, actions)}
-      validationSchema={validationSchema}
-      validateOnBlur={false}
-      enableReinitialize={true}
-      initialValues={{
-        ...initialValues,
-        ...categoryDetailData,
-        ...(categoryDetailData &&
-          Object.keys(categoryDetailData).length > 0 && {
-            bnMetaTitle:
-              categoryDetailData['bn'] &&
-              categoryDetailData['bn'].metaTitle &&
-              categoryDetailData['bn'].metaTitle,
-            bnMetaDescription:
-              categoryDetailData['bn'] &&
-              categoryDetailData['bn'].metaDescription &&
-              categoryDetailData['bn'].metaDescription,
-            bnName:
-              categoryDetailData['bn'] &&
-              categoryDetailData['bn'].name &&
-              categoryDetailData['bn'].name,
-            bnDescription:
-              categoryDetailData['bn'] &&
-              categoryDetailData['bn'].description &&
-              categoryDetailData['bn'].description,
-          }),
-      }}
-    >
-      {({
-        handleChange,
-        values,
-        handleSubmit,
-        errors,
-        isValid,
-        isSubmitting,
-        touched,
-        handleBlur,
-        setFieldTouched,
-        handleReset,
-      }) => (
-        <>
-          <Modal
-            style={{
-              top: '40px',
-            }}
-            title='Edit Category'
-            visible={addNewCategoryVisible}
-            onOk={(e: any) => handleSubmit(e)}
-            onCancel={handleCancel}
-            okText='Update'
-            okButtonProps={{
-              loading: isSubmitting,
-              htmlType: 'submit',
-            }}
-          >
-            <Input
-              label='Name *'
-              value={values.name}
-              placeHolder={'grocery,fashion'}
-              name='name'
-              isError={
-                (touched.name && errors.name) ||
-                (!isSubmitting && addCategoryState.error['error']['name'])
-              }
-              errorString={
-                (touched.name && errors.name) ||
-                (!isSubmitting && addCategoryState.error['error']['name'])
-              }
-              onChange={(e: any) => {
-                handleChange(e);
-                setFieldTouched('name');
-              }}
-            />
+    <>
+      <Formik
+        onSubmit={(values, actions) => handleSubmit(values, actions)}
+        validationSchema={validationSchema}
+        validateOnBlur={false}
+        enableReinitialize={true}
+        initialValues={{
+          ...initialValues,
+          ...categoryDetailData,
+          ...(categoryDetailData &&
+            Object.keys(categoryDetailData).length > 0 && {
+              bnMetaTitle:
+                categoryDetailData['bn'] &&
+                categoryDetailData['bn'].metaTitle &&
+                categoryDetailData['bn'].metaTitle,
+              bnMetaDescription:
+                categoryDetailData['bn'] &&
+                categoryDetailData['bn'].metaDescription &&
+                categoryDetailData['bn'].metaDescription,
+              bnName:
+                categoryDetailData['bn'] &&
+                categoryDetailData['bn'].name &&
+                categoryDetailData['bn'].name,
+              bnDescription:
+                categoryDetailData['bn'] &&
+                categoryDetailData['bn'].description &&
+                categoryDetailData['bn'].description,
+            }),
+        }}
+      >
+        {({
+          handleChange,
+          values,
+          handleSubmit,
+          errors,
+          isValid,
+          isSubmitting,
+          touched,
+          handleBlur,
+          setFieldTouched,
+          handleReset,
+        }) => (
+          <>
+            <section className='addProductGridContainer'>
+              <div className='addProductGridContainer__left'>
+                <div className='addProductGridContainer__name'>
+                  <div className='addProductGridContainer__item-header'>
+                    <h3>Category Information *</h3>
+                    <div
+                      className={
+                        values.name && values.name.length > 2
+                          ? 'checkicon-active'
+                          : 'checkicon'
+                      }
+                    >
+                      <CheckCircleOutlined />
+                    </div>
+                  </div>
+                  <div className='addProductGridContainer__item-body'>
+                    <Input
+                      label='Name *'
+                      value={values.name}
+                      placeHolder={''}
+                      name='name'
+                      isError={
+                        (touched.name && errors.name) ||
+                        (!isSubmitting &&
+                          addCategoryState.error['error']['name'])
+                      }
+                      errorString={
+                        (touched.name && errors.name) ||
+                        (!isSubmitting &&
+                          addCategoryState.error['error']['name'])
+                      }
+                      onChange={(e: any) => {
+                        handleChange(e);
+                        setFieldTouched('name');
+                      }}
+                    />
 
-            <Input
-              label='BN Name'
-              value={values.bnName}
-              placeHolder={'মুদিখানা,ফ্যাশন'}
-              name='bnName'
-              isError={
-                (touched.bnName && errors.bnName) ||
-                (!isSubmitting && addCategoryState.error['error']['bnName'])
-              }
-              errorString={
-                (touched.bnName && errors.bnName) ||
-                (!isSubmitting && addCategoryState.error['error']['bnName'])
-              }
-              onChange={(e: any) => {
-                handleChange(e);
-                setFieldTouched('bnName');
-              }}
-            />
+                    <Input
+                      label='BN Name'
+                      value={values.bnName}
+                      placeHolder={''}
+                      name='bnName'
+                      isError={
+                        (touched.bnName && errors.bnName) ||
+                        (!isSubmitting &&
+                          addCategoryState.error['error']['bnName'])
+                      }
+                      errorString={
+                        (touched.bnName && errors.bnName) ||
+                        (!isSubmitting &&
+                          addCategoryState.error['error']['bnName'])
+                      }
+                      onChange={(e: any) => {
+                        handleChange(e);
+                        setFieldTouched('bnName');
+                      }}
+                    />
 
-            <TextArea
-              label='Description'
-              value={values.description}
-              placeholder={'This category...'}
-              name='description'
-              isError={
-                (touched.description && errors.description) ||
-                (!isSubmitting &&
-                  addCategoryState.error['error']['description'])
-              }
-              errorString={
-                (touched.description && errors.description) ||
-                (!isSubmitting &&
-                  addCategoryState.error['error']['description'])
-              }
-              onChange={(e: any) => {
-                handleChange(e);
-                setFieldTouched('description');
-              }}
-            />
+                    <TextArea
+                      label='Description'
+                      value={values.description}
+                      placeholder={'This category...'}
+                      name='description'
+                      isError={
+                        (touched.description && errors.description) ||
+                        (!isSubmitting &&
+                          addCategoryState.error['error']['description'])
+                      }
+                      errorString={
+                        (touched.description && errors.description) ||
+                        (!isSubmitting &&
+                          addCategoryState.error['error']['description'])
+                      }
+                      onChange={(e: any) => {
+                        handleChange(e);
+                        setFieldTouched('description');
+                      }}
+                    />
 
-            <TextArea
-              label='BN Description'
-              value={values.bnDescription}
-              placeholder={'এই ক্যাটাগড়ি...'}
-              name='bnDescription'
-              isError={
-                (touched.bnDescription && errors.bnDescription) ||
-                (!isSubmitting &&
-                  addCategoryState.error['error']['bnDescription'])
-              }
-              errorString={
-                (touched.bnDescription && errors.bnDescription) ||
-                (!isSubmitting &&
-                  addCategoryState.error['error']['bnDescription'])
-              }
-              onChange={(e: any) => {
-                handleChange(e);
-                setFieldTouched('bnDescription');
-              }}
-            />
+                    <TextArea
+                      label='BN Description'
+                      value={values.bnDescription}
+                      placeholder={'এই ক্যাটাগড়ি...'}
+                      name='bnDescription'
+                      isError={
+                        (touched.bnDescription && errors.bnDescription) ||
+                        (!isSubmitting &&
+                          addCategoryState.error['error']['bnDescription'])
+                      }
+                      errorString={
+                        (touched.bnDescription && errors.bnDescription) ||
+                        (!isSubmitting &&
+                          addCategoryState.error['error']['bnDescription'])
+                      }
+                      onChange={(e: any) => {
+                        handleChange(e);
+                        setFieldTouched('bnDescription');
+                      }}
+                    />
 
-            <Input
-              label='Display Order'
-              value={values.displayOrder}
-              placeHolder={'1,3,7'}
-              name='displayOrder'
-              type='number'
-              isError={
-                (touched.displayOrder && errors.displayOrder) ||
-                (!isSubmitting &&
-                  addCategoryState.error['error']['displayOrder'])
-              }
-              errorString={
-                (touched.displayOrder && errors.displayOrder) ||
-                (!isSubmitting &&
-                  addCategoryState.error['error']['displayOrder'])
-              }
-              onChange={(e: any) => {
-                handleChange(e);
-                setFieldTouched('displayOrder');
-              }}
-            />
+                    <Input
+                      label='Display Order'
+                      value={values.displayOrder}
+                      placeHolder={'1,3,7'}
+                      name='displayOrder'
+                      type='number'
+                      isError={
+                        (touched.displayOrder && errors.displayOrder) ||
+                        (!isSubmitting &&
+                          addCategoryState.error['error']['displayOrder'])
+                      }
+                      errorString={
+                        (touched.displayOrder && errors.displayOrder) ||
+                        (!isSubmitting &&
+                          addCategoryState.error['error']['displayOrder'])
+                      }
+                      onChange={(e: any) => {
+                        handleChange(e);
+                        setFieldTouched('displayOrder');
+                      }}
+                    />
 
-            <div
-              style={{
-                marginTop: '25px',
-              }}
-            ></div>
+                    <div
+                      style={{
+                        marginTop: '25px',
+                      }}
+                    ></div>
 
-            <div className='switchLabelContainer'>
-              <Switch
-                checked={isparentCategoryChecked}
-                defaultChecked
-                onChange={onSwitchChange}
-              />
-              <div className='switchLabelContainer-textContainer'>
-                <h5>Top level Category</h5>
-                <h5 className='switchLabelContainer-desc'>
-                  Disable to select a Parent Category
-                </h5>
-              </div>
-            </div>
+                    <div className='switchLabelContainer'>
+                      <Switch
+                        checked={isparentCategoryChecked}
+                        defaultChecked
+                        onChange={onSwitchChange}
+                      />
+                      <div className='switchLabelContainer-textContainer'>
+                        <h5>Top level Category</h5>
+                        <h5 className='switchLabelContainer-desc'>
+                          Disable to select a Parent Category
+                        </h5>
+                      </div>
+                    </div>
 
-            {!isparentCategoryChecked && (
-              <>
-                <h3 className='inputFieldLabel'>Parent Category</h3>
-                <Select
-                  showSearch
-                  style={{ width: 300 }}
-                  placeholder='Select a Parent Category'
-                  optionFilterProp='children'
-                  onChange={onChangeSelect}
-                  // onFocus={onFocus}
-                  // onBlur={onBlur}
-                  // onSearch={onSearch}
-                  filterOption={(input, option: any) =>
-                    option.children
-                      .toLowerCase()
-                      .indexOf(input.toLowerCase()) >= 0
-                  }
-                >
-                  {categoryList.length > 0 &&
-                    categoryList.map((category) => {
-                      return (
-                        <Option value={category.id}>{category.name}</Option>
-                      );
-                    })}
-                </Select>
-              </>
-            )}
+                    {!isparentCategoryChecked && (
+                      <>
+                        <h3 className='inputFieldLabel'>Parent Category</h3>
+                        <Select
+                          showSearch
+                          style={{ width: 300 }}
+                          placeholder='Select a Parent Category'
+                          optionFilterProp='children'
+                          onChange={onChangeSelect}
+                          // onFocus={onFocus}
+                          // onBlur={onBlur}
+                          // onSearch={onSearch}
+                          filterOption={(input, option: any) =>
+                            option.children
+                              .toLowerCase()
+                              .indexOf(input.toLowerCase()) >= 0
+                          }
+                        >
+                          {categoryList.length > 0 &&
+                            categoryList.map((category) => {
+                              return (
+                                <Option value={category.id}>
+                                  {category.name}
+                                </Option>
+                              );
+                            })}
+                        </Select>
+                      </>
+                    )}
 
-            <div
-              style={{
-                marginTop: '20px',
-              }}
-            />
+                    <div
+                      style={{
+                        marginTop: '20px',
+                      }}
+                    />
 
-            <div className='addproductSection-left-header'>
-              <h3 className='inputFieldLabel'>Icon </h3>
-              <Tooltip
-                placement='left'
-                title={'Add Icon image for this category'}
-              >
-                <a href='###'>
-                  <InfoCircleOutlined />
-                </a>
-              </Tooltip>
-            </div>
-
-            <Upload
-              style={{
-                borderRadius: '8px',
-              }}
-              name='avatar'
-              listType='picture-card'
-              className='avatar-uploader'
-              showUploadList={false}
-              beforeUpload={beforeUpload}
-              multiple={false}
-            >
-              {imageUrl ? (
-                <img src={imageUrl} alt='avatar' style={{ width: '100%' }} />
-              ) : (
-                uploadButton
-              )}
-            </Upload>
-
-            <div
-              style={{
-                marginTop: '20px',
-              }}
-            />
-
-            <div
-              className='addproductSection-left-header'
-              style={{
-                marginBottom: '-5px',
-              }}
-            >
-              <h3 className='inputFieldLabel'>Images</h3>
-              {/* <div  >
-					<FileOutlined />
-					<span>Media Center</span>
-				</div> */}
-            </div>
-
-            <div className='aboutToUploadImagesContainer'>
-              {categoryDetailData &&
-                Object.keys(categoryDetailData).length > 0 && (
-                  <>
-                    {myImages &&
-                      // @ts-ignore
-                      myImages.length > 0 &&
-                      myImages.map((image, index) => {
-                        return (
-                          <div className='aboutToUploadImagesContainer__item'>
-                            <div
-                              className='aboutToUploadImagesContainer__item-imgContainer'
-                              onClick={() => {
-                                setCoverImageId(image.id);
-                                handleSetImageAsThumnail(image);
-                              }}
-                            >
-                              <img src={image.cover} alt={image.alt} />
-                            </div>
-
-                            <span
-                              onClick={() => {
-                                handleImagesDelete(image.id);
-                                handleDetachSingleImage(image.id);
-                              }}
-                              className='aboutToUploadImagesContainer__item-remove'
-                            >
-                              <CloseOutlined />
-                            </span>
-
-                            {coverImageId === image.id ? (
-                              <span className='aboutToUploadImagesContainer__item-cover'>
-                                <CheckOutlined />
-                              </span>
-                            ) : (
-                              !coverImageId &&
-                              index === 0 && (
-                                <span className='aboutToUploadImagesContainer__item-cover'>
-                                  <CheckOutlined />
-                                </span>
-                              )
-                            )}
-                          </div>
-                        );
-                      })}
-
-                    <Tooltip title={'Attach images'}>
-                      <div
-                        onClick={() => {
-                          setvisible(true);
-                          setisModalOpenForImages(true);
-                        }}
-                        className='aboutToUploadImagesContainer__uploadItem'
+                    <div className='addproductSection-left-header'>
+                      <h3 className='inputFieldLabel'>Icon </h3>
+                      <Tooltip
+                        placement='left'
+                        title={'Add Icon image for this category'}
                       >
-                        {/* <FileAddOutlined />
+                        <a href='###'>
+                          <InfoCircleOutlined />
+                        </a>
+                      </Tooltip>
+                    </div>
+
+                    <Upload
+                      style={{
+                        borderRadius: '8px',
+                      }}
+                      name='avatar'
+                      listType='picture-card'
+                      className='avatar-uploader'
+                      showUploadList={false}
+                      beforeUpload={beforeUpload}
+                      multiple={false}
+                    >
+                      {imageUrl ? (
+                        <img
+                          src={imageUrl}
+                          alt='avatar'
+                          style={{ width: '100%' }}
+                        />
+                      ) : (
+                        uploadButton
+                      )}
+                    </Upload>
+                  </div>
+                </div>
+
+                <div className='addProductGridContainer__image'>
+                  <div className='addProductGridContainer__item-header'>
+                    <h3>Image</h3>
+
+                    <Tooltip
+                      placement='left'
+                      title={
+                        'Click on the image to select cover image, By default 1st image is selected as cover'
+                      }
+                    >
+                      <a href='###'>
+                        <InfoCircleOutlined />
+                      </a>
+                    </Tooltip>
+                  </div>
+
+                  <div
+                    style={{
+                      padding: '10px',
+                    }}
+                    className='aboutToUploadImagesContainer'
+                  >
+                    {categoryDetailState.isLoading && (
+                      <div
+                        style={{
+                          padding: '20px 0',
+                        }}
+                      >
+                        <Spin />
+                      </div>
+                    )}
+                    {categoryDetailState.done && (
+                      <>
+                        {myImages &&
+                          // @ts-ignore
+                          myImages.length > 0 &&
+                          myImages.map((image, index) => {
+                            return (
+                              <div className='aboutToUploadImagesContainer__item'>
+                                <div
+                                  className='aboutToUploadImagesContainer__item-imgContainer'
+                                  onClick={() => {
+                                    setCoverImageId(image.id);
+                                    handleSetImageAsThumnail(image);
+                                  }}
+                                >
+                                  <img src={image.cover} alt={image.alt} />
+                                </div>
+
+                                <span
+                                  onClick={() => {
+                                    handleImagesDelete(image.id);
+                                    handleDetachSingleImage(image.id);
+                                  }}
+                                  className='aboutToUploadImagesContainer__item-remove'
+                                >
+                                  <CloseOutlined />
+                                </span>
+
+                                {coverImageId === image.id ? (
+                                  <span className='aboutToUploadImagesContainer__item-cover'>
+                                    <CheckOutlined />
+                                  </span>
+                                ) : (
+                                  !coverImageId &&
+                                  index === 0 && (
+                                    <span className='aboutToUploadImagesContainer__item-cover'>
+                                      <CheckOutlined />
+                                    </span>
+                                  )
+                                )}
+                              </div>
+                            );
+                          })}
+
+                        <Tooltip title={'Attach images'}>
+                          <div
+                            onClick={() => {
+                              setvisible(true);
+                              setisModalOpenForImages(true);
+                              setisModalOpenForThumbnail(false);
+                            }}
+                            className='aboutToUploadImagesContainer__uploadItem'
+                          >
+                            {/* <FileAddOutlined />
 													<FileImageTwoTone />
 													<FileImageOutlined /> */}
-                        <FileImageFilled />
-                        {/* <h5>
+                            <FileImageFilled />
+                            {/* <h5>
 												     Select From Library
 											<     /h5> */}
-                        <span className='aboutToUploadImagesContainer__uploadItem-plus'>
-                          <PlusOutlined />
-                        </span>
-                      </div>
-                    </Tooltip>
-                  </>
-                )}
-            </div>
+                            <span className='aboutToUploadImagesContainer__uploadItem-plus'>
+                              <PlusOutlined />
+                            </span>
+                          </div>
+                        </Tooltip>
+                      </>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <div className='addProductGridContainer__right'>
+                <div className='addProductGridContainer__category'>
+                  <div className='addProductGridContainer-rightItemContainer'>
+                    <div className='addProductGridContainer-rightItemContainer-header'>
+                      <h3>Meta Tags</h3>
 
-            <Input
-              label='Meta title'
-              value={values.metaTitle}
-              placeHolder={'...'}
-              name='metaTitle'
-              isError={
-                (touched.metaTitle && errors.metaTitle) ||
-                (!isSubmitting && addCategoryState.error['error']['metaTitle'])
-              }
-              errorString={
-                (touched.metaTitle && errors.metaTitle) ||
-                (!isSubmitting && addCategoryState.error['error']['metaTitle'])
-              }
-              onChange={(e: any) => {
-                handleChange(e);
-                setFieldTouched('metaTitle');
-              }}
-            />
+                      <Tooltip
+                        placement='left'
+                        title={
+                          "Meta data will be used to make the user's easy and for search engine optimization."
+                        }
+                      >
+                        <a href='###'>
+                          <InfoCircleOutlined />
+                        </a>
+                      </Tooltip>
 
-            <Input
-              label='BN Meta title'
-              value={values.bnMetaTitle}
-              placeHolder={'...'}
-              name='bnMetaTitle'
-              isError={
-                (touched.bnMetaTitle && errors.bnMetaTitle) ||
-                (!isSubmitting &&
-                  addCategoryState.error['error']['bnMetaTitle'])
-              }
-              errorString={
-                (touched.bnMetaTitle && errors.bnMetaTitle) ||
-                (!isSubmitting &&
-                  addCategoryState.error['error']['bnMetaTitle'])
-              }
-              onChange={(e: any) => {
-                handleChange(e);
-                setFieldTouched('bnMetaTitle');
-              }}
-            />
+                      {/* <Tooltip
+                        color='red'
+                        visible={
+                          addCategoryState.error['error']['category'] &&
+                          !(categoryids.length > 0)
+                        }
+                        placement='left'
+                        title={'Select at least one category'}
+                      >
+                        <div
+                          className={
+                            !(categoryids.length > 0) &&
+                            !addCategoryState.error['error']['category']
+                              ? 'checkicon'
+                              : addCategoryState.error['error']['category']
+                              ? 'checkicon-error'
+                              : 'checkicon-active'
+                          }
+                        >
+                          <CheckCircleOutlined />
+                        </div>
+                      </Tooltip> */}
+                    </div>
+                    <div className='addProductGridContainer-rightItemContainer-body'>
+                      <Input
+                        label='Meta title'
+                        value={values.metaTitle}
+                        placeHolder={'...'}
+                        name='metaTitle'
+                        isError={
+                          (touched.metaTitle && errors.metaTitle) ||
+                          (!isSubmitting &&
+                            addCategoryState.error['error']['metaTitle'])
+                        }
+                        errorString={
+                          (touched.metaTitle && errors.metaTitle) ||
+                          (!isSubmitting &&
+                            addCategoryState.error['error']['metaTitle'])
+                        }
+                        onChange={(e: any) => {
+                          handleChange(e);
+                          setFieldTouched('metaTitle');
+                        }}
+                      />
 
-            <TextArea
-              label='Meta description'
-              value={values.metaDescription}
-              placeholder={'meta...'}
-              name='metaDescription'
-              isError={
-                (touched.metaDescription && errors.metaDescription) ||
-                (!isSubmitting &&
-                  addCategoryState.error['error']['metaDescription'])
-              }
-              errorString={
-                (touched.metaDescription && errors.metaDescription) ||
-                (!isSubmitting &&
-                  addCategoryState.error['error']['metaDescription'])
-              }
-              onChange={(e: any) => {
-                handleChange(e);
-                setFieldTouched('metaDescription');
-              }}
-            />
+                      <Input
+                        label='BN Meta title'
+                        value={values.bnMetaTitle}
+                        placeHolder={'...'}
+                        name='bnMetaTitle'
+                        isError={
+                          (touched.bnMetaTitle && errors.bnMetaTitle) ||
+                          (!isSubmitting &&
+                            addCategoryState.error['error']['bnMetaTitle'])
+                        }
+                        errorString={
+                          (touched.bnMetaTitle && errors.bnMetaTitle) ||
+                          (!isSubmitting &&
+                            addCategoryState.error['error']['bnMetaTitle'])
+                        }
+                        onChange={(e: any) => {
+                          handleChange(e);
+                          setFieldTouched('bnMetaTitle');
+                        }}
+                      />
 
-            <TextArea
-              label='BN Meta Description'
-              value={values.bnMetaDescription}
-              placeholder={'এইয় মেট...'}
-              name='bnMetaDescription'
-              isError={
-                (touched.bnMetaDescription && errors.bnMetaDescription) ||
-                (!isSubmitting &&
-                  addCategoryState.error['error']['bnMetaDescription'])
-              }
-              errorString={
-                (touched.bnMetaDescription && errors.bnMetaDescription) ||
-                (!isSubmitting &&
-                  addCategoryState.error['error']['bnMetaDescription'])
-              }
-              onChange={(e: any) => {
-                handleChange(e);
-                setFieldTouched('bnMetaDescription');
-              }}
-            />
+                      <TextArea
+                        label='Meta description'
+                        value={values.metaDescription}
+                        placeholder={'meta...'}
+                        name='metaDescription'
+                        isError={
+                          (touched.metaDescription && errors.metaDescription) ||
+                          (!isSubmitting &&
+                            addCategoryState.error['error']['metaDescription'])
+                        }
+                        errorString={
+                          (touched.metaDescription && errors.metaDescription) ||
+                          (!isSubmitting &&
+                            addCategoryState.error['error']['metaDescription'])
+                        }
+                        onChange={(e: any) => {
+                          handleChange(e);
+                          setFieldTouched('metaDescription');
+                        }}
+                      />
 
-            <h3 className='inputFieldLabel'>Meta Tags </h3>
+                      <TextArea
+                        label='BN Meta Description'
+                        value={values.bnMetaDescription}
+                        placeholder={'এইয় মেট...'}
+                        name='bnMetaDescription'
+                        isError={
+                          (touched.bnMetaDescription &&
+                            errors.bnMetaDescription) ||
+                          (!isSubmitting &&
+                            addCategoryState.error['error'][
+                              'bnMetaDescription'
+                            ])
+                        }
+                        errorString={
+                          (touched.bnMetaDescription &&
+                            errors.bnMetaDescription) ||
+                          (!isSubmitting &&
+                            addCategoryState.error['error'][
+                              'bnMetaDescription'
+                            ])
+                        }
+                        onChange={(e: any) => {
+                          handleChange(e);
+                          setFieldTouched('bnMetaDescription');
+                        }}
+                      />
 
-            <MetaTags
-              // @ts-ignore
-              setTags={setTags}
-              tags={tags}
-            />
+                      <h3 className='inputFieldLabel'>Meta Tags </h3>
+
+                      <MetaTags
+                        // @ts-ignore
+                        setTags={setTags}
+                        tags={tags}
+                      />
+
+                      <div
+                        style={{
+                          marginTop: '15px',
+                        }}
+                      ></div>
+
+                      <h3 className='inputFieldLabel'>BN Meta Tags </h3>
+
+                      <MetaTags
+                        // @ts-ignore
+                        setTags={setBnTags}
+                        tags={bnTags}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
 
             <div
               style={{
-                marginTop: '15px',
+                padding: '15px',
+                display: 'flex',
+                justifyContent: 'flex-end',
               }}
-            ></div>
+            >
+              <Button
+                style={{
+                  color: '#555',
+                  marginRight: '10px',
+                }}
+                className='btnPrimaryClassNameoutline-cancle'
+                onClick={() => setAddNewCategoryVisible(false)}
+                type='default'
+              >
+                Cancel
+              </Button>
 
-            <h3 className='inputFieldLabel'>BN Meta Tags </h3>
+              <Button
+                className='btnPrimaryClassNameoutline'
+                onClick={handleSubmit}
+                loading={addCategoryState.isLoading}
+                type='link'
+                icon={<CheckOutlined />}
+              >
+                Update
+              </Button>
+            </div>
 
-            <MetaTags
-              // @ts-ignore
-              setTags={setBnTags}
-              tags={bnTags}
+            <MediaLibrary
+              setvisible={setvisible}
+              visible={visible}
+              setmyImages={setmyImages}
+              myImages={myImages}
+              setmyThumbnailImage={setmyThumbnailImage}
+              isModalOpenForThumbnail={isModalOpenForThumbnail}
+              isModalOpenForImages={isModalOpenForImages}
             />
-          </Modal>
+          </>
+        )}
+      </Formik>
+    </>
+  );
+};
 
-          <MediaLibrary
-            setvisible={setvisible}
-            visible={visible}
-            setmyImages={setmyImages}
-            myImages={myImages}
-            setmyThumbnailImage={setmyThumbnailImage}
-            isModalOpenForThumbnail={isModalOpenForThumbnail}
-            isModalOpenForImages={isModalOpenForImages}
-          />
-        </>
-      )}
-    </Formik>
+const AddNewCategory = ({
+  setAddNewCategoryVisible,
+  addNewCategoryVisible,
+  categoryList,
+  categoryDetailData,
+  setcategoryDetailData,
+}: Props) => {
+  const handleCancel = () => {
+    setAddNewCategoryVisible(false);
+  };
+  return (
+    <Modal
+      destroyOnClose={true}
+      style={{
+        top: '40px',
+      }}
+      bodyStyle={{
+        margin: 0,
+        padding: 0,
+      }}
+      title='Edit Category'
+      visible={addNewCategoryVisible}
+      onCancel={handleCancel}
+      footer={false}
+      okText='Update'
+      width={'70vw'}
+      okButtonProps={{
+        // loading: isSubmitting,
+        htmlType: 'submit',
+      }}
+    >
+      <ModalChildComponent
+        setAddNewCategoryVisible={setAddNewCategoryVisible}
+        categoryList={categoryList}
+        categoryDetailData={categoryDetailData}
+        setcategoryDetailData={setcategoryDetailData}
+      />
+    </Modal>
   );
 };
 

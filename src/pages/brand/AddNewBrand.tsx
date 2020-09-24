@@ -177,6 +177,20 @@ const AddNewBrand = ({
     }
   }, [updateBrandState]);
 
+  useEffect(() => {
+    console.log('thumnail', myImages);
+    // @ts-ignore
+    if (myImages && myImages[0] && myImages.length < 2) {
+      console.log('thumnail2', myImages);
+
+      if (coverImageId !== myImages[0].id) {
+        setCoverImageId(myImages[0].id);
+        // set thumbnail with server for edits
+        // handleSetImageAsThumnail(myImages[0]);
+      }
+    }
+  }, [myImages]);
+
   const onSwitchChange = (checked: any) => {
     // console.log(checked);
   };
@@ -242,7 +256,7 @@ const AddNewBrand = ({
               label='Name *'
               value={values.name}
               name='name'
-              placeHolder={'microsoft,apple'}
+              placeHolder={''}
               isError={
                 (touched.name && errors.name) ||
                 (!isSubmitting && updateBrandState.error['error']['name'])
@@ -260,7 +274,7 @@ const AddNewBrand = ({
             <Input
               label='BN Name'
               value={values.bnName}
-              placeHolder={'প্রান,নোকিয়া'}
+              placeHolder={''}
               name='bnName'
               isError={
                 (touched.bnName && errors.bnName) ||
@@ -330,7 +344,7 @@ const AddNewBrand = ({
                 marginBottom: '-5px',
               }}
             >
-              <h3 className='inputFieldLabel'>Images</h3>
+              <h3 className='inputFieldLabel'>Cover</h3>
             </div>
 
             <div className='aboutToUploadImagesContainer'>
@@ -342,7 +356,10 @@ const AddNewBrand = ({
                     <div className='aboutToUploadImagesContainer__item'>
                       <div
                         className='aboutToUploadImagesContainer__item-imgContainer'
-                        onClick={() => setCoverImageId(image.id)}
+                        onClick={() => {
+                          // setCoverImageId(image.id);
+                          setvisibleMedia(true);
+                        }}
                       >
                         <img src={image.cover} alt={image.alt} />
                       </div>
@@ -354,7 +371,7 @@ const AddNewBrand = ({
                         <CloseOutlined />
                       </span>
 
-                      {coverImageId === image.id ? (
+                      {/* {coverImageId === image.id ? (
                         <span className='aboutToUploadImagesContainer__item-cover'>
                           <CheckOutlined />
                         </span>
@@ -365,7 +382,7 @@ const AddNewBrand = ({
                             <CheckOutlined />
                           </span>
                         )
-                      )}
+                      )} */}
                     </div>
                   );
                 })}

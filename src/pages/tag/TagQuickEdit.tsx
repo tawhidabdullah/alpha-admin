@@ -53,6 +53,10 @@ const initialValues = {
   bnMetaTags: '',
 };
 
+const ModalChildComponent = ({}) => {
+  return <></>;
+};
+
 interface Props {
   tagEditVisible?: any;
   setTagEditVisible?: any;
@@ -75,6 +79,9 @@ const QuickEdit = ({
   const [tags, setTags] = useState([]);
   const [bnTags, setBnTags] = useState([]);
 
+  useEffect(() => {
+    console.log('mounted11');
+  }, []);
   const handleSubmit = async (values: any, actions: any) => {
     const updateTagRes = await handleUpdateCategoryFetch({
       urlOptions: {

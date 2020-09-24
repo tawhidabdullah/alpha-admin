@@ -291,6 +291,8 @@ const CategoryList = ({ history, roles }: Props) => {
     }
   };
 
+  console.log('categoryList22', categoryList);
+
   return (
     <>
       {/* <h2 className='containerPageTitle'>

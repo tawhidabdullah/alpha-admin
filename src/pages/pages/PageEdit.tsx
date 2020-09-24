@@ -178,9 +178,9 @@ const AddNewPage = ({}: Props) => {
         },
       },
       body: {
-        name: values.name,
+        name: values.name.trim(),
         content: content,
-        url: values.name,
+        url: values.url.trim(),
         cover: myImages ? myImages[0] && myImages[0].id : '',
         metaTitle: values.metaTitle,
         metaDescription: values.metaDescription,
@@ -473,7 +473,7 @@ const AddNewPage = ({}: Props) => {
                             <div
                               className='aboutToUploadImagesContainer__item-imgContainer'
                               onClick={() => {
-                                setCoverImageId(image.id);
+                                setvisibleMedia(true);
                                 // handleSetImageAsThumnail(image);
                               }}
                             >
@@ -490,7 +490,7 @@ const AddNewPage = ({}: Props) => {
                               <CloseOutlined />
                             </span>
 
-                            {coverImageId === image.id ? (
+                            {/* {coverImageId === image.id ? (
                               <span className='aboutToUploadImagesContainer__item-cover'>
                                 <CheckOutlined />
                               </span>
@@ -501,7 +501,7 @@ const AddNewPage = ({}: Props) => {
                                   <CheckOutlined />
                                 </span>
                               )
-                            )}
+                            )} */}
                           </div>
                         );
                       })}
@@ -623,7 +623,7 @@ const AddNewPage = ({}: Props) => {
                   <Input
                     label='BN Meta Title'
                     value={values.bnMetaTitle}
-                    placeHolder={'নতুন,ফ্রেশ'}
+                    placeHolder={''}
                     name='bnMetaTitle'
                     isError={
                       (touched.bnMetaTitle && errors.bnMetaTitle) ||
@@ -692,9 +692,7 @@ const AddNewPage = ({}: Props) => {
 
               <div className='dubbleRowInputs'>
                 <div className='dubbleRowInputs__item'>
-                  <h3 className='inputFieldLabel'>
-                    Meta Tags (grocery,fashion)
-                  </h3>
+                  <h3 className='inputFieldLabel'>Meta Tags</h3>
 
                   <MetaTags
                     // @ts-ignore
@@ -703,9 +701,7 @@ const AddNewPage = ({}: Props) => {
                   />
                 </div>
                 <div className='dubbleRowInputs__item'>
-                  <h3 className='inputFieldLabel'>
-                    BN Meta Tags (মুদিখানা,ফ্যাশন)
-                  </h3>
+                  <h3 className='inputFieldLabel'>BN Meta Tags</h3>
 
                   <MetaTags
                     // @ts-ignore
