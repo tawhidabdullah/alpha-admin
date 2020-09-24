@@ -1264,7 +1264,7 @@ class Converter {
         };
       });
 
-    console.log('convertedCouponData', convertedData);
+    console.log('convertedCouponData55', convertedData);
 
     // convertedData = {
     // 	data: convertedData,
@@ -1428,6 +1428,7 @@ class Converter {
       data.length > 0 &&
       data.map((brand) => {
         return {
+          ...brand,
           id: brand._id || '',
           key: brand._id || '',
           name: brand.name && brand.name,
@@ -1580,11 +1581,27 @@ class Converter {
 
   /**
    * @public
-   * @method configureAutoEmailTemplate convert api data from API to general format based on config server
+   * @method getConfigureAutoEmailTemplate convert api data from API to general format based on config server
    * @param {Object} data response objectc from alpha
    * @returns {Object}  converted data
    */
   async getConfigureAutoEmailTemplate(resData) {
+    if (resData && Object.keys(resData).length > 0) {
+      return {
+        ...resData,
+        id: resData._id,
+      };
+    }
+    return {};
+  }
+
+  /**
+   * @public
+   * @method getConfigureAutoSMSTemplate convert api data from API to general format based on config server
+   * @param {Object} data response objectc from alpha
+   * @returns {Object}  converted data
+   */
+  async getConfigureAutoSMSTemplate(resData) {
     if (resData && Object.keys(resData).length > 0) {
       return {
         ...resData,
@@ -2392,7 +2409,7 @@ class Converter {
   async updateProduct(data) {
     const convertedData = data;
 
-    if (data && data.updated) {
+    if (data && data.updated && Object.keys(data.updated).length > 0) {
       return {
         ...data.updated,
         id: data.updated._id || data.updated.id || '',
@@ -2407,7 +2424,7 @@ class Converter {
         date: data.updated.date,
         venue: data.updated.venue,
         brand:
-          data.updated.brand && Object.key(data.updated.brand).length > 0
+          data.updated.brand && Object.keys(data.updated.brand).length > 0
             ? {
                 id: data.updated.brand.id,
                 name: data.updated.brand.name,

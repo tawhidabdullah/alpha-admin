@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 // import hoooks
 import { useHandleFetch } from '../../hooks';
 import InboxEmailDetails from './InboxEmailDetails';
-import { Spin } from 'antd';
+import { Spin, Empty } from 'antd';
 import moment from 'moment';
 
 import ReactHtmlParser from 'react-html-parser';
@@ -31,6 +31,25 @@ const Inbox = ({ emailList, setEmailList, getEmailListState }: Props) => {
             }}
           >
             <Spin size='large' />
+          </div>
+        </>
+      )}
+
+      {getEmailListState.done && emailList && !(emailList.length > 0) && (
+        <>
+          <div
+            style={{
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              margin: '50px 0',
+            }}
+          >
+            <Empty
+              description='No Email found'
+              image={Empty.PRESENTED_IMAGE_SIMPLE}
+            />
           </div>
         </>
       )}

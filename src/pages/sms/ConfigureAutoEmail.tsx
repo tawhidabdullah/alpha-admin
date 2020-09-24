@@ -38,6 +38,7 @@ import Input from '../../components/Field/Input';
 import TextArea from '../../components/Field/TextArea';
 import MediaLibrary from '../../components/MediaLibrary';
 import NewCustomerTemplate from './NewCustomerTemplate';
+import NewDealerAutoEventsTemplate from './NewDealerAutoEventsTemplate';
 import OrderStatusTemplateAutoEmail from './OrderStatusTemplateAutoEmail';
 import OrderTemplateAutoEmail from './OrderTemplateAutoEmail';
 
@@ -60,7 +61,7 @@ const openErrorNotification = (message?: any) => {
   notification.error({
     message: message || 'Something Went Wrong',
     description: '',
-    icon: <InfoCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
+    icon: <CheckCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
   });
 };
 
@@ -78,12 +79,17 @@ const ConfigureAutoEmail = ({}: Props) => {
 
   const [isnewCustomerAdmin, setnewCustomerAdmin] = useState(false);
   const [isnewCustomerCustomer, setnewCustomerCustomer] = useState(false);
+
+  const [isnewDealerAdmin, setnewDealerAdmin] = useState(false);
+  const [isnewDealer, setnewDealerDealer] = useState(false);
+
   const [isorderAdmin, setorderAdmin] = useState(false);
   const [isorderStatusAdmin, setorderStatusAdmin] = useState(false);
   const [isorderCustomer, setorderCustomer] = useState(false);
   const [isorderStatusCustomer, setIsorderStatusCustomer] = useState(false);
 
   const [newcustomermodal, setnewcustomermodal] = useState(false);
+  const [newDealermodal, setnewDealermodal] = useState(false);
   const [ordermodal, setordermodal] = useState(false);
   const [orderStatusmodal, setorderStatusmodal] = useState(false);
   const [autoEmailData, setAutoEmailData] = useState({});
@@ -99,6 +105,8 @@ const ConfigureAutoEmail = ({}: Props) => {
         setAutoEmailData(autoEmailData);
         setnewCustomerAdmin(res['newCustomer']['admin']);
         setnewCustomerCustomer(res['newCustomer']['user']);
+        setnewDealerAdmin(res['newDealer']['admin']);
+        setnewDealerDealer(res['newDealer']['user']);
         setIsorderStatusCustomer(res['orderStatus']['user']);
         setorderStatusAdmin(res['orderStatus']['admin']);
         setorderAdmin(res['order']['admin']);
@@ -125,15 +133,19 @@ const ConfigureAutoEmail = ({}: Props) => {
           admin: isorderStatusAdmin,
           user: isorderStatusCustomer,
         },
+        newDealer: {
+          admin: isnewDealerAdmin,
+          user: isnewDealer,
+        },
       },
     });
 
     // @ts-ignore
     if (updateAutoEmailRes && updateAutoEmailRes.status === 'ok') {
-      openSuccessNotification('Auto SMS Configuration Updated!');
+      openSuccessNotification('Auto email Configuration Updated!');
     } else {
       openErrorNotification(
-        "Something went wrong, Couldn't updated Auto SMS configuration"
+        "Something went wrong, Couldn't updated Auto email configuration"
       );
     }
   };
@@ -199,6 +211,72 @@ const ConfigureAutoEmail = ({}: Props) => {
                 checked={isnewCustomerCustomer}
                 defaultChecked={isnewCustomerCustomer}
                 onChange={(e) => setnewCustomerCustomer(e.target.checked)}
+              >
+                <span className='checkBoxSmallFieldLabel'>Customer</span>
+              </Checkbox>
+            </div>
+          </div>
+        </div>
+
+        <div
+          style={{
+            marginTop: '25px',
+          }}
+        ></div>
+
+        <div style={{}}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            <div
+              style={{
+                marginRight: '15px',
+                marginTop: '10px',
+              }}
+            >
+              <h3 className='checkBoxFieldLabel'>New Dealer</h3>
+            </div>
+            <Button
+              className='templateEditSmall'
+              onClick={() => setnewDealermodal(true)}
+              type='link'
+              icon={<EditOutlined />}
+            >
+              configure Template
+            </Button>
+          </div>
+          <div
+            style={{
+              marginTop: '15px',
+            }}
+          ></div>
+          <div
+            style={{
+              display: 'flex',
+              marginTop: '15px',
+            }}
+          >
+            <div
+              style={{
+                marginRight: '20px',
+              }}
+            >
+              <Checkbox
+                checked={isnewDealerAdmin}
+                defaultChecked={isnewDealerAdmin}
+                onChange={(e) => setnewDealerAdmin(e.target.checked)}
+              >
+                <span className='checkBoxSmallFieldLabel'>Admin</span>
+              </Checkbox>
+            </div>
+            <div style={{}}>
+              <Checkbox
+                checked={isnewDealer}
+                defaultChecked={isnewDealer}
+                onChange={(e) => setnewDealerDealer(e.target.checked)}
               >
                 <span className='checkBoxSmallFieldLabel'>Customer</span>
               </Checkbox>
@@ -332,37 +410,36 @@ const ConfigureAutoEmail = ({}: Props) => {
           </div>
         </div>
       </div>
-
       <div
         style={{
           marginTop: '25px',
         }}
       ></div>
-
       <Button
         onClick={(e: any) => handleUpdateAutoEmail()}
         loading={configureAutoEmailConfigurationState.isLoading}
         className='btnPrimaryClassNameoutline'
       >
-        Update Auto SMS Configuration
+        Update Auto Email Configuration
       </Button>
-
       <div
         style={{
           marginTop: '5px',
         }}
       ></div>
-
       <NewCustomerTemplate
         visible={newcustomermodal}
         setVisible={setnewcustomermodal}
+      />
+      <NewDealerAutoEventsTemplate
+        visible={newDealermodal}
+        setVisible={setnewDealermodal}
       />
 
       <OrderStatusTemplateAutoEmail
         visible={orderStatusmodal}
         setVisible={setorderStatusmodal}
       />
-
       <OrderTemplateAutoEmail visible={ordermodal} setVisible={setordermodal} />
     </>
   );

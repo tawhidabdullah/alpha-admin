@@ -153,19 +153,20 @@ const NewBrandDetail = (props: Props) => {
                     </span>
                   </h3>
                 )}
-
                 {tagDetailData['totalSalary'] && (
                   <h3>
                     TOTAL SALARY:
-                    <span>{tagDetailState['totalSalary']}</span>
+                    <span>{tagDetailData['totalSalary']}</span>
                   </h3>
                 )}
 
-                {tagDetailData['totalBonus'] && (
+                {tagDetailData['totalBonus'] ? (
                   <h3>
                     TOTAL BONUS:
                     <span>{tagDetailData['totalBonus']}</span>
                   </h3>
+                ) : (
+                  ''
                 )}
 
                 {tagDetailData['totalConvince'] && (
@@ -174,14 +175,12 @@ const NewBrandDetail = (props: Props) => {
                     <span>{tagDetailData['totalConvince']}</span>
                   </h3>
                 )}
-
                 {tagDetailData['totalExtra'] && (
                   <h3>
                     TOTAL EXTRA:
                     <span>{tagDetailData['totalExtra']}</span>
                   </h3>
                 )}
-
                 {tagDetailData['totalNegative'] && (
                   <h3>
                     TOTAL NEGATIVE:

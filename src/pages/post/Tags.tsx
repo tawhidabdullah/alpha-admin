@@ -1,21 +1,14 @@
 import React, { useEffect, useState } from 'react';
 
-
 // import hooks
 import { useHandleFetch } from '../../hooks';
 
-// import components 
-import Empty from "../../components/Empty";
+// import components
+import Empty from '../../components/Empty';
 
-
-// import libraries 
+// import libraries
 import { Button, Tag, Input, Spin } from 'antd';
-import {
-  PlusOutlined
-} from '@ant-design/icons';
-
-
-
+import { PlusOutlined } from '@ant-design/icons';
 
 const { CheckableTag } = Tag;
 const { Search } = Input;
@@ -26,24 +19,23 @@ interface Props {
   setSelectedTags?: any;
 }
 
-
-const Tags = ({
-  setTagIds,
-  setSelectedTags,
-  selectedTags
-
-}: Props) => {
+const Tags = ({ setTagIds, setSelectedTags, selectedTags }: Props) => {
   const [options, setoptions] = useState([]);
   const [selectedOpions, setselectedOptions] = useState([]);
   const [tagState, handleTagListFetch] = useHandleFetch({}, 'postTagList');
   const [searchValue, setsearchValue] = useState('');
 
-
   const handleChange = (tag, checked) => {
-    const nextSelectedTags = checked ? [...selectedTags, tag] : selectedTags.filter(t => t !== tag);
+    const nextSelectedTags = checked
+      ? [...selectedTags, tag]
+      : selectedTags.filter((t) => t !== tag);
     setSelectedTags(nextSelectedTags);
 
-    if (tagState.done && tagState.data.length > 0 && nextSelectedTags.length > 0) {
+    if (
+      tagState.done &&
+      tagState.data.length > 0 &&
+      nextSelectedTags.length > 0
+    ) {
       const selectedCategoryIds = nextSelectedTags.map((item) => {
         const selectedcategory = tagState.data.find(
           (cat) => cat.name.toLowerCase() === item.toLowerCase()
@@ -54,15 +46,12 @@ const Tags = ({
       });
       setTagIds(selectedCategoryIds);
     }
-  }
-
+  };
 
   useEffect(() => {
     if (tagState.done && tagState.data.length > 0 && selectedTags.length > 0) {
       const selectedCategoryIds = selectedTags.map((item) => {
-        const selectedcategory = tagState.data.find(
-          (cat) => cat.id === item
-        );
+        const selectedcategory = tagState.data.find((cat) => cat.id === item);
         if (selectedcategory) {
           return selectedcategory.name;
         }
@@ -71,33 +60,28 @@ const Tags = ({
     }
   }, [tagState]);
 
-
-
   useEffect(() => {
     const setTags = async () => {
       const tagListRes = await handleTagListFetch({
         urlOptions: {
           params: {
-            isSubCategory: false
-          }
-        }
+            isSubCategory: false,
+          },
+        },
       });
 
       // @ts-ignoref
       if (tagListRes && tagListRes.length > 0) {
         // @ts-ignore
         const tagOptions = tagListRes.map((tag) => {
-          return tag.name
+          return tag.name;
         });
         setoptions(tagOptions);
       }
-
     };
 
     setTags();
   }, []);
-
-
 
   // const handleChange = (selectItems) => {
   //   setselectedOptions(selectItems)
@@ -114,9 +98,7 @@ const Tags = ({
   //     setTagIds(selectedCategoryIds);
   //   }
 
-
   // }
-
 
   const onSearchChange = (e) => {
     setsearchValue(e.target.value);
@@ -131,49 +113,63 @@ const Tags = ({
       const newOptions =
         options.length > 0
           ? options.filter((option) => {
-            return option.toLowerCase().includes(searchValue.toLowerCase());
-          })
+              return option.toLowerCase().includes(searchValue.toLowerCase());
+            })
           : [];
 
       setoptions(newOptions);
     }
   };
 
-
-  console.log('selectedTags', selectedTags)
-
-
+  console.log('selectedTags', selectedTags);
 
   return (
     <>
-
       {tagState.isLoading && (
-        <div style={{
-          padding: '15px 0',
-          width: '100%',
-          height: "100%",
-          display: "flex",
-          justifyContent: 'center',
-          alignItems: 'center'
-        }}>
+        <div
+          style={{
+            padding: '15px 0',
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
           <Spin />
         </div>
       )}
 
-
-
-      {tagState.done && !(tagState.data.length > 0) && (
-        <div style={{
-          width: '100%',
-          height: "100%",
-          display: "flex",
-          justifyContent: 'center',
-          alignItems: 'center'
-        }}>
-          <Empty title='No Tag found' height={100} />
+      {tagState.done && (
+        <div className='addProduct__categoryBoxContainer-searchBox'>
+          <Search
+            width={'90%'}
+            style={{
+              height: '30px',
+              borderRadius: '3px !important',
+              borderColor: '#eee !important',
+            }}
+            size='middle'
+            placeholder='top, hot'
+            onSearch={(value) => console.log(value)}
+            onChange={onSearchChange}
+          />
         </div>
       )}
 
+      {tagState.done && !(options.length > 0) && (
+        <div
+          style={{
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <Empty title='No tags found' height={100} />
+        </div>
+      )}
 
       {/* 
       {tagState.done && tagState.data.length > 0 && options.length > 0 && <Select
@@ -192,27 +188,12 @@ const Tags = ({
 
       {tagState.done && tagState.data.length > 0 && options.length > 0 && (
         <>
-          <div className='addProduct__categoryBoxContainer-searchBox'>
-            <Search
-              width={'90%'}
-              style={{
-                height: '30px',
-                borderRadius: '3px !important',
-                borderColor: '#eee !important'
-              }}
-              size='middle'
-              placeholder='top, hot'
-              onSearch={(value) => console.log(value)}
-              onChange={onSearchChange}
-            />
-          </div>
-
-          {options.map(tag => (
+          {options.map((tag) => (
             <>
               <CheckableTag
                 key={tag}
                 checked={selectedTags.indexOf(tag) > -1}
-                onChange={checked => handleChange(tag, checked)}
+                onChange={(checked) => handleChange(tag, checked)}
               >
                 {tag}
               </CheckableTag>
@@ -220,9 +201,6 @@ const Tags = ({
           ))}
         </>
       )}
-
-
-
 
       {/* 
       <div style={{
@@ -239,7 +217,7 @@ const Tags = ({
         Add New
       </Button> */}
     </>
-  )
-}
+  );
+};
 
-export default Tags
+export default Tags;

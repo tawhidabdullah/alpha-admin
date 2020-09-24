@@ -1,4 +1,4 @@
-const isObjectEmpty = value => {
+const isObjectEmpty = (value) => {
   return !value || !Object.keys(value).length > 0;
 };
 
@@ -8,36 +8,51 @@ const manupulateURL = (url, urlOptions = {}) => {
   const params = urlOptions.params || {};
   const placeHolders = urlOptions.placeHolders || {};
 
-
-
+  console.log('99fsdfads', urlOptions);
   return url
     .split('/')
-    .map(currentValue => {
-      if (currentValue.includes(':') && !isObjectEmpty(placeHolders) && !currentValue.includes('?')) {
-        console.log('currentValue',currentValue);
-        let actualPlaceholderValue = placeHolders[currentValue.replace(':', '')];
-        console.log('actualPlaceholderValue',actualPlaceholderValue);
+    .map((currentValue) => {
+      if (
+        currentValue.includes(':') &&
+        !isObjectEmpty(placeHolders) &&
+        !currentValue.includes('?')
+      ) {
+        console.log('currentValue', currentValue);
+        let actualPlaceholderValue =
+          placeHolders[currentValue.replace(':', '')];
+        console.log('actualPlaceholderValue', actualPlaceholderValue);
         currentValue = actualPlaceholderValue;
       }
-      
-      if (currentValue.includes(':') && !isObjectEmpty(placeHolders) && currentValue.includes('?')) {
-        let fuckValue = currentValue.split('?'); 
-        if(fuckValue && fuckValue.length > 0){
-          fuckValue = fuckValue.map(item => {
-            return placeHolders[item.replace(':', '')] ? placeHolders[item.replace(':', '')] : item
-          })
+
+      if (
+        currentValue.includes(':') &&
+        !isObjectEmpty(placeHolders) &&
+        currentValue.includes('?')
+      ) {
+        let fuckValue = currentValue.split('?');
+        if (fuckValue && fuckValue.length > 0) {
+          fuckValue = fuckValue.map((item) => {
+            return placeHolders[item.replace(':', '')]
+              ? placeHolders[item.replace(':', '')]
+              : item;
+          });
         }
-        console.log('fuckValue',fuckValue);
+        console.log('fuckValue', fuckValue);
         let actualPlaceholderValue = fuckValue.join('?');
-        console.log('actualPlaceholderValue',actualPlaceholderValue,'currentVAlue',currentValue);
-        console.log('placeHolders',placeHolders);
+        console.log(
+          'actualPlaceholderValue',
+          actualPlaceholderValue,
+          'currentVAlue',
+          currentValue
+        );
+        console.log('placeHolders', placeHolders);
         currentValue = actualPlaceholderValue;
       }
 
       if (currentValue.includes('?')) {
         currentValue = currentValue
           .split('&')
-          .map(currentValue => {
+          .map((currentValue) => {
             const param = currentValue.slice(currentValue.indexOf('=') + 1);
             return currentValue.replace(param, params[param] || '');
           })

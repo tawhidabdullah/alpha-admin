@@ -16,9 +16,16 @@ import {
   CloseOutlined,
   CheckOutlined,
   InfoCircleOutlined,
+  DeleteColumnOutlined,
 } from '@ant-design/icons';
 
-const Complete = ({ setItemsList, itemsList, componentItem, brandState }) => {
+const Complete = ({
+  setItemsList,
+  itemsList,
+  componentItem,
+  brandState,
+  index,
+}) => {
   const [brandId, setBrandId] = useState('');
 
   const handleComponentItemsChange = (e) => {
@@ -73,50 +80,157 @@ const Complete = ({ setItemsList, itemsList, componentItem, brandState }) => {
     setItemsList(updateComponentList);
   };
 
+  console.log('componentItem322', componentItem);
   return (
     <>
       <div className='componentItemsContainer__item'>
-        <h3 className='inputFieldLabel-small'>Staff</h3>
-        <Sfaffid
-          brandState={brandState}
-          brandId={brandId}
-          setBrandId={setBrandId}
-        />
+        <div
+          className='componentItemsContainer__name'
+          style={{
+            marginTop: index === 0 ? '-5px' : '-35px',
+          }}
+        >
+          {!index && (
+            <h3 className='inputFieldLabel-small' style={{}}>
+              Name
+            </h3>
+          )}
+
+          <h4
+            style={{
+              margin: 0,
+              padding: 0,
+              textTransform: 'uppercase',
+              fontSize: '13px',
+              marginTop: '33px',
+            }}
+          >
+            {componentItem.name}
+          </h4>
+        </div>
+
         <div
           style={{
-            marginTop: '10px',
+            marginTop: index === 0 ? '-5px' : '-35px',
           }}
-        ></div>
-        <InputSmall
-          type='number'
-          label='Bonus'
-          value={componentItem.title}
-          name='bonus'
-          onChange={handleComponentItemsChange}
-        />
-        <InputSmall
-          type='number'
-          label='Convince'
-          value={componentItem.text}
-          name='convince'
-          onChange={handleComponentItemsChange}
-        />
+          className='componentItemsContainer__salary'
+        >
+          {!index && (
+            <h3 className='inputFieldLabel-small' style={{}}>
+              Salary
+            </h3>
+          )}
 
-        <InputSmall
-          type='number'
-          label='Extra'
-          value={componentItem.target}
-          name='extra'
-          onChange={handleComponentItemsChange}
-        />
+          <h5
+            style={{
+              margin: 0,
+              padding: 0,
+              fontSize: '12px',
+              marginTop: '33px',
+            }}
+          >
+            {componentItem.salary}
+          </h5>
+        </div>
 
-        <InputSmall
-          type='number'
-          label='Negative'
-          value={componentItem.target}
-          name='negative'
-          onChange={handleComponentItemsChange}
-        />
+        <div className='componentItemsContainer__input'>
+          {!index && (
+            <h3
+              className='inputFieldLabel-small'
+              style={{
+                marginBottom: '20px',
+              }}
+            >
+              Bonus
+            </h3>
+          )}
+          <div>
+            <InputSmall
+              type='number'
+              label={''}
+              value={componentItem.title}
+              name='bonus'
+              onChange={handleComponentItemsChange}
+            />
+          </div>
+        </div>
+        <div className='componentItemsContainer__input'>
+          {!index && (
+            <h3
+              className='inputFieldLabel-small'
+              style={{
+                marginBottom: '20px',
+              }}
+            >
+              Convince
+            </h3>
+          )}
+
+          <InputSmall
+            type='number'
+            label={''}
+            value={componentItem.text}
+            name='convince'
+            onChange={handleComponentItemsChange}
+          />
+        </div>
+        <div className='componentItemsContainer__input'>
+          {!index && (
+            <h3
+              className='inputFieldLabel-small'
+              style={{
+                marginBottom: '20px',
+              }}
+            >
+              Extra
+            </h3>
+          )}
+
+          <InputSmall
+            type='number'
+            label={''}
+            value={componentItem.target}
+            name='extra'
+            onChange={handleComponentItemsChange}
+          />
+        </div>
+        <div className='componentItemsContainer__input'>
+          {!index && (
+            <h3
+              className='inputFieldLabel-small'
+              style={{
+                marginBottom: '20px',
+              }}
+            >
+              Negative
+            </h3>
+          )}
+
+          <InputSmall
+            type='number'
+            label={''}
+            value={componentItem.target}
+            name='negative'
+            onChange={handleComponentItemsChange}
+          />
+        </div>
+
+        <div
+          onClick={() => handleAttributeDelete()}
+          className='componentItemsContainer__input'
+          style={{
+            marginTop: index === 0 ? '15px' : '-10px',
+          }}
+        >
+          <span
+            style={{
+              color: 'rgba(255, 166, 0, 0.733)',
+              cursor: 'pointer',
+            }}
+          >
+            <DeleteOutlined />
+          </span>
+        </div>
       </div>
     </>
   );

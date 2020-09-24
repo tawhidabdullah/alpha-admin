@@ -34,26 +34,62 @@ class Connector {
       credentials: 'include',
       headers: new Headers({
         ...(format === 'json' && {
-        'Content-Type': 'application/json',
+          'Content-Type': 'application/json',
         }),
         ...(options.headers && {
           ...options.headers,
         }),
       }),
 
-      ...(format === 'json' ? {
-        body: api.method !== 'get' ? JSON.stringify(options.body) : null,
-      } : {
-          body: api.method !== 'get' ? options.body : null,
-        }),
+      ...(format === 'json'
+        ? {
+            body: api.method !== 'get' ? JSON.stringify(options.body) : null,
+          }
+        : {
+            body: api.method !== 'get' ? options.body : null,
+          }),
     };
+
+    function getUrlOptions(urlOptions) {
+      if (api.method === 'get') {
+        const params = {
+          limitNumber: 10000,
+        };
+        return {
+          ...(urlOptions && {
+            ...urlOptions,
+          }),
+          params: {
+            ...(urlOptions &&
+              urlOptions.params && {
+                ...urlOptions.params,
+              }),
+            ...params,
+          },
+        };
+      }
+      return urlOptions;
+    }
+
+    function getUrl(url) {
+      if (url && api.method === 'get') {
+        return url.includes('?')
+          ? url + '&limit=limitNumber'
+          : url + '?limit=limitNumber';
+      }
+      return url;
+    }
 
     //*replace variable parts in url with actual data if params exists |or| just return the url
 
-    const url = manupulateURL(api.url, options.urlOptions);
-    console.log('url',api.url)
-    console.log('urlOptions',this.options);
-    console.log('format',format);
+    console.log('myUrl', getUrl(api.url), getUrlOptions(options.urlOptions));
+
+    const url = manupulateURL(
+      getUrl(api.url),
+      getUrlOptions(options.urlOptions)
+    );
+
+    console.log('myUrl', url);
 
     // change the formate to text if the server is wooCommerce
     if (config['server'] === 'wooCommerce') {
@@ -69,7 +105,7 @@ class Connector {
           throw formattedData.error;
         }
 
-        let convertedData = await converter[item](formattedData); //convert recieved data to app general format
+        let convertedData = await converter[item || ''](formattedData); //convert recieved data to app general format
         return convertedData;
       } else {
         let error = await res['json']();
@@ -77,7 +113,6 @@ class Connector {
         throw error;
       }
     } catch (err) {
-
       throw err;
       //TODO: breakdown errors
     }

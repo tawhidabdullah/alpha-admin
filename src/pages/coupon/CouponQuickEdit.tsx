@@ -200,9 +200,23 @@ const AddNewBrand = ({
 
       const index = positionInTag();
 
+      function getCover(id) {
+        if (!id || !myImages || !myImages[0]) {
+          return '';
+        } else {
+          if (myImages && myImages.length > 0) {
+            const item = myImages.find((item) => item.id === id);
+            if (item) {
+              return item.cover;
+            }
+          }
+        }
+      }
+
       // @ts-ignore
       const updatedItem = Object.assign({}, tagList[index], {
-        ...updateTagRes,
+        ...addTagRes,
+        cover: getCover(coverImageId),
       });
       const updateTagList = [
         ...tagList.slice(0, index),
@@ -226,6 +240,8 @@ const AddNewBrand = ({
     actions.setSubmitting(false);
   };
 
+  console.log('4444444', myImages);
+  console.log('4444444', coverImageId);
   const handleCancel = (e: any) => {
     setAddNewCategoryVisible(false);
 
@@ -620,7 +636,9 @@ const AddNewBrand = ({
                     <div className='aboutToUploadImagesContainer__item'>
                       <div
                         className='aboutToUploadImagesContainer__item-imgContainer'
-                        onClick={() => setCoverImageId(image.id)}
+                        onClick={() => {
+                          setvisibleMedia(true);
+                        }}
                       >
                         <img src={image.cover} alt={image.alt} />
                       </div>
@@ -632,7 +650,7 @@ const AddNewBrand = ({
                         <CloseOutlined />
                       </span>
 
-                      {coverImageId === image.id ? (
+                      {/* {coverImageId === image.id ? (
                         <span className='aboutToUploadImagesContainer__item-cover'>
                           <CheckOutlined />
                         </span>
@@ -643,7 +661,7 @@ const AddNewBrand = ({
                             <CheckOutlined />
                           </span>
                         )
-                      )}
+                      )} */}
                     </div>
                   );
                 })}

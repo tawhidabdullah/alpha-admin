@@ -322,7 +322,7 @@ const AddNewCategory = ({
             <Input
               label='Name *'
               value={values.name}
-              placeHolder={'grocery,fashion'}
+              placeHolder={''}
               name='name'
               isError={
                 (touched.name && errors.name) ||
@@ -341,7 +341,7 @@ const AddNewCategory = ({
             <Input
               label='BN Name'
               value={values.bnName}
-              placeHolder={'মুদিখানা,ফ্যাশন'}
+              placeHolder={''}
               name='bnName'
               isError={
                 (touched.bnName && errors.bnName) ||

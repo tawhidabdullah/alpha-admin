@@ -442,7 +442,6 @@ const CustomerList = ({ roles }: Props) => {
           params: {
             sortItem: 'added',
             sortOrderValue: '-1',
-            limitNumber: 500000,
             statusValue:
               orderStatusFilterValue === 'all' ? '' : orderStatusFilterValue,
             startDateValue: startDate,

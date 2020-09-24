@@ -7,7 +7,16 @@ import { useHandleFetch } from '../../hooks';
 // import libraries
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import { message, Tooltip, Modal, Tabs, Empty, Badge, Spin } from 'antd';
+import {
+  message,
+  Tooltip,
+  Modal,
+  Tabs,
+  Empty,
+  Badge,
+  Spin,
+  Button,
+} from 'antd';
 import CKEditor from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
@@ -74,16 +83,16 @@ const initialValues = {
 interface Props {
   addNewCategoryVisible: any;
   setAddNewCategoryVisible: any;
-  productDetailData?: any;
   setPostDetailData?: any;
+  productDetailData?: any;
 }
 
-const AddNewProduct = ({
+const ModalComponentChild = ({
   addNewCategoryVisible,
   setAddNewCategoryVisible,
   productDetailData,
   setPostDetailData,
-}: Props) => {
+}) => {
   const [addProductState, handleAddProductFetch] = useHandleFetch(
     {},
     'updatePost'
@@ -142,6 +151,8 @@ const AddNewProduct = ({
           },
           params: {
             imageValue: 1,
+            tagsOne: '1',
+            categoryOne: '1',
           },
         },
       });
@@ -218,7 +229,7 @@ const AddNewProduct = ({
 
     // @ts-ignore
     if (thumbnailRes && thumbnailRes.status === 'ok') {
-      // openSuccessNotification('Set as thumbnail!')
+      // openSuccessNotification('Set as thumbnail!');
     } else {
       openErrorNotification("Couldn't set as thumbnail, Something went wrong");
     }
@@ -236,34 +247,64 @@ const AddNewProduct = ({
   };
 
   useEffect(() => {
-    if (productDetailData && productDetailData.brand) {
-      setBrandId(productDetailData.brand['id']);
-    } else {
-      setBrandId('');
-    }
     if (
-      productDetailData &&
-      productDetailData.tags &&
-      productDetailData.tags.length > 0
+      productDetailState.done &&
+      productDetailState.data &&
+      Object.keys(productDetailState.data).length > 0
     ) {
-      // const tagIds = productDetailData.tags.map(item => item.id);
-      setSelectedTags(productDetailData.tags);
-    } else {
-      setSelectedTags([]);
-    }
-    if (
-      productDetailData &&
-      productDetailData.category &&
-      productDetailData.category.length > 0
-    ) {
-      console.log('postEditCategory2', productDetailData.category);
-      const categoryIds = productDetailData.category;
-      setCategoryOptions(categoryIds);
-    } else {
-      setCategoryOptions([]);
-    }
-  }, [productDetailData]);
+      console.log('5555', productDetailState);
+      const productDetailData = productDetailState.data;
+      if (productDetailData && productDetailData.brand) {
+        setBrandId(productDetailData.brand['id']);
+      } else {
+        setBrandId('');
+      }
 
+      if (
+        productDetailData &&
+        productDetailData.tags &&
+        productDetailData.tags.length > 0
+      ) {
+        const tagNames = productDetailData.tags.map((item) => item.name);
+        const tagIds = productDetailData.tags.map((item) => item._id);
+        console.log('tags55----', tagNames, tagIds);
+        setSelectedTags(tagNames);
+        setTagIds(tagIds);
+      } else {
+        setTagIds([]);
+        setSelectedTags([]);
+      }
+      if (
+        productDetailData &&
+        productDetailData.category &&
+        productDetailData.category.length > 0
+      ) {
+        const categoryIds = productDetailData.category;
+        setCategoryOptions(categoryIds);
+      } else {
+        setCategoryOptions([]);
+      }
+
+      if (productDetailData && productDetailData.body) {
+        setBody(productDetailData.body);
+      } else {
+        setBody('');
+      }
+
+      if (
+        productDetailData &&
+        productDetailData.bn &&
+        productDetailData.bn['body']
+      ) {
+        setBnBody(productDetailData.bn['body']);
+      } else {
+        setBnBody('');
+      }
+    }
+  }, [productDetailState]);
+
+  console.log('postSelectedTagsIds', selectedTags);
+  console.log('TagsIds', tagIds);
   useEffect(() => {
     if (
       productDetailState.done &&
@@ -435,10 +476,10 @@ const AddNewProduct = ({
 
       setPostDetailData({
         ...addProductRes,
-        id: addProductRes['id'] || '',
-        key: addProductRes['id'] || '',
-        name: values.name.trim() || '',
-        cover: addProductRes['cover']['cover'] || '',
+        id: productDetailData['id'] || '',
+        key: productDetailData['id'] || '',
+        name: values.name || '',
+        // cover: addProductRes['cover']['cover'] || '',
       });
 
       setAddNewCategoryVisible(false);
@@ -452,6 +493,12 @@ const AddNewProduct = ({
       setBrandId('');
       setcategoryIds([]);
       setCategoryOptions([]);
+      setBnBody('');
+      setBody('');
+      setMetaTags([]);
+      setBnMetaTags([]);
+      setProductIds([]);
+      setProductList([]);
       actions.resetForm();
     } else {
       // openErrorNotification();
@@ -486,7 +533,7 @@ const AddNewProduct = ({
 
   const handleCancel = (e: any) => {
     setAddNewCategoryVisible(false);
-    setmyImages(false);
+    setmyImages([]);
     setCoverImageId('');
     setPricing([]);
     setTagIds([]);
@@ -494,6 +541,12 @@ const AddNewProduct = ({
     setBrandId('');
     setcategoryIds([]);
     setCategoryOptions([]);
+    setBnBody('');
+    setBody('');
+    setMetaTags([]);
+    setBnMetaTags([]);
+    setProductIds([]);
+    setProductList([]);
   };
 
   useEffect(() => {
@@ -511,9 +564,6 @@ const AddNewProduct = ({
       setBnMetaTags(bnMetaTags || []);
     }
   }, []);
-
-  console.log('postDetailState', productDetailState);
-  console.log('postDetailData', productDetailData);
 
   return (
     <Formik
@@ -551,291 +601,268 @@ const AddNewProduct = ({
         handleReset,
       }) => (
         <>
-          <Modal
-            style={{
-              top: '40px',
-            }}
-            bodyStyle={{
-              margin: 0,
-              padding: 0,
-            }}
-            width={'70vw'}
-            title='Edit Recipe'
-            visible={addNewCategoryVisible}
-            onOk={(e: any) => handleSubmit(e)}
-            onCancel={handleCancel}
-            okText='Update'
-            okButtonProps={{
-              loading: isSubmitting,
-              htmlType: 'submit',
-            }}
-          >
-            <section className='addProductGridContainer'>
-              <div className='addProductGridContainer__left'>
-                <div className='addProductGridContainer__name'>
-                  <div className='addProductGridContainer__item-header'>
-                    <h3>Recipe Information</h3>
+          <section className='addProductGridContainer'>
+            <div className='addProductGridContainer__left'>
+              <div className='addProductGridContainer__name'>
+                <div className='addProductGridContainer__item-header'>
+                  <h3>Recipe Information</h3>
 
-                    <div
-                      className={
-                        values.name && values.name.length > 2
-                          ? 'checkicon-active'
-                          : 'checkicon'
-                      }
-                    >
-                      <CheckCircleOutlined />
-                    </div>
+                  <div
+                    className={
+                      values.name && values.name.length > 2
+                        ? 'checkicon-active'
+                        : 'checkicon'
+                    }
+                  >
+                    <CheckCircleOutlined />
                   </div>
-                  <div className='addProductGridContainer__item-body'>
-                    <Input
-                      label='Name'
-                      placeHolder='Rafti oxy'
-                      value={values.name}
-                      name='name'
-                      isError={
-                        (touched.name && errors.name) ||
-                        (!isSubmitting &&
-                          addProductState.error['error']['name'])
-                      }
-                      errorString={
-                        (touched.name && errors.name) ||
-                        (!isSubmitting &&
-                          addProductState.error['error']['name'])
-                      }
-                      onChange={(e: any) => {
-                        handleChange(e);
-                        setFieldTouched('name');
+                </div>
+                <div className='addProductGridContainer__item-body'>
+                  <Input
+                    label='Name'
+                    placeHolder='Rafti oxy'
+                    value={values.name}
+                    name='name'
+                    isError={
+                      (touched.name && errors.name) ||
+                      (!isSubmitting && addProductState.error['error']['name'])
+                    }
+                    errorString={
+                      (touched.name && errors.name) ||
+                      (!isSubmitting && addProductState.error['error']['name'])
+                    }
+                    onChange={(e: any) => {
+                      handleChange(e);
+                      setFieldTouched('name');
+                    }}
+                  />
+
+                  <Input
+                    label='BN Name'
+                    value={values.bnName}
+                    placeHolder={'রাফতি অক্স'}
+                    name='bnName'
+                    isError={
+                      (touched.bnName && errors.bnName) ||
+                      (!isSubmitting &&
+                        addProductState.error['error']['bnName'])
+                    }
+                    errorString={
+                      (touched.bnName && errors.bnName) ||
+                      (!isSubmitting &&
+                        addProductState.error['error']['bnName'])
+                    }
+                    onChange={(e: any) => {
+                      handleChange(e);
+                      setFieldTouched('bnName');
+                    }}
+                  />
+
+                  <Input
+                    label='Preparation Time'
+                    value={values.preparationTime}
+                    placeHolder='15 min'
+                    name='preparationTime'
+                    isError={
+                      (touched.preparationTime && errors.preparationTime) ||
+                      (!isSubmitting &&
+                        addProductState.error['error']['preparationTime'])
+                    }
+                    errorString={
+                      (touched.preparationTime && errors.preparationTime) ||
+                      (!isSubmitting &&
+                        addProductState.error['error']['preparationTime'])
+                    }
+                    onChange={(e: any) => {
+                      handleChange(e);
+                      setFieldTouched('preparationTime');
+                    }}
+                  />
+
+                  <Input
+                    label='BN Preparation Time'
+                    value={values.bnPreparationTime}
+                    placeHolder={'১৫ মিনিট'}
+                    name='bnPreparationTime'
+                    isError={
+                      (touched.bnPreparationTime && errors.bnPreparationTime) ||
+                      (!isSubmitting &&
+                        addProductState.error['error']['bnPreparationTime'])
+                    }
+                    errorString={
+                      (touched.bnPreparationTime && errors.bnPreparationTime) ||
+                      (!isSubmitting &&
+                        addProductState.error['error']['bnPreparationTime'])
+                    }
+                    onChange={(e: any) => {
+                      handleChange(e);
+                      setFieldTouched('bnPreparationTime');
+                    }}
+                  />
+
+                  <Input
+                    label='Cooking Time'
+                    placeHolder={'30 min'}
+                    value={values.cookingTime}
+                    name='cookingTime'
+                    isError={
+                      (touched.cookingTime && errors.cookingTime) ||
+                      (!isSubmitting &&
+                        addProductState.error['error']['cookingTime'])
+                    }
+                    errorString={
+                      (touched.cookingTime && errors.cookingTime) ||
+                      (!isSubmitting &&
+                        addProductState.error['error']['cookingTime'])
+                    }
+                    onChange={(e: any) => {
+                      handleChange(e);
+                      setFieldTouched('cookingTime');
+                    }}
+                  />
+
+                  <Input
+                    label='BN Cooking Time'
+                    placeHolder={'৩০ মিনিট'}
+                    value={values.bnCookingTime}
+                    name='bnCookingTime'
+                    isError={
+                      (touched.bnCookingTime && errors.bnCookingTime) ||
+                      (!isSubmitting &&
+                        addProductState.error['error']['bnCookingTime'])
+                    }
+                    errorString={
+                      (touched.bnCookingTime && errors.bnCookingTime) ||
+                      (!isSubmitting &&
+                        addProductState.error['error']['bnCookingTime'])
+                    }
+                    onChange={(e: any) => {
+                      handleChange(e);
+                      setFieldTouched('bnCookingTime');
+                    }}
+                  />
+
+                  <Input
+                    label='Serving Size'
+                    value={values.servingSize}
+                    name='servingSize'
+                    isError={
+                      (touched.servingSize && errors.servingSize) ||
+                      (!isSubmitting &&
+                        addProductState.error['error']['servingSize'])
+                    }
+                    errorString={
+                      (touched.servingSize && errors.servingSize) ||
+                      (!isSubmitting &&
+                        addProductState.error['error']['servingSize'])
+                    }
+                    onChange={(e: any) => {
+                      handleChange(e);
+                      setFieldTouched('servingSize');
+                    }}
+                  />
+
+                  <Input
+                    label='BN Serving Size'
+                    value={values.bnServingSize}
+                    name='bnServingSize'
+                    isError={
+                      (touched.bnServingSize && errors.bnServingSize) ||
+                      (!isSubmitting &&
+                        addProductState.error['error']['bnServingSize'])
+                    }
+                    errorString={
+                      (touched.bnServingSize && errors.bnServingSize) ||
+                      (!isSubmitting &&
+                        addProductState.error['error']['bnServingSize'])
+                    }
+                    onChange={(e: any) => {
+                      handleChange(e);
+                      setFieldTouched('bnServingSize');
+                    }}
+                  />
+
+                  <Input
+                    label='URL'
+                    value={values.url}
+                    name='url'
+                    isError={
+                      (touched.url && errors.url) ||
+                      (!isSubmitting && addProductState.error['error']['url'])
+                    }
+                    errorString={
+                      (touched.url && errors.url) ||
+                      (!isSubmitting && addProductState.error['error']['url'])
+                    }
+                    onChange={(e: any) => {
+                      handleChange(e);
+                      setFieldTouched('url');
+                    }}
+                  />
+
+                  <h3 className='inputFieldLabel'>Body</h3>
+
+                  <div
+                    style={{
+                      width: '100%',
+                      maxWidth: '100%',
+                    }}
+                  >
+                    <CKEditor
+                      editor={ClassicEditor}
+                      data={body}
+                      onInit={(editor) => {
+                        // You can store the "editor" and use when it is needed.
+                        console.log('Editor is ready to use!', editor);
+                      }}
+                      onChange={(event, editor) => {
+                        const data = editor.getData();
+                        setBody(data);
+                      }}
+                      onBlur={(event, editor) => {
+                        console.log('Blur.', editor);
+                      }}
+                      onFocus={(event, editor) => {
+                        console.log('Focus.', editor);
                       }}
                     />
+                  </div>
 
-                    <Input
-                      label='BN Name'
-                      value={values.bnName}
-                      placeHolder={'রাফতি অক্স'}
-                      name='bnName'
-                      isError={
-                        (touched.bnName && errors.bnName) ||
-                        (!isSubmitting &&
-                          addProductState.error['error']['bnName'])
-                      }
-                      errorString={
-                        (touched.bnName && errors.bnName) ||
-                        (!isSubmitting &&
-                          addProductState.error['error']['bnName'])
-                      }
-                      onChange={(e: any) => {
-                        handleChange(e);
-                        setFieldTouched('bnName');
+                  <div
+                    style={{
+                      marginTop: '15px',
+                    }}
+                  ></div>
+
+                  <h3 className='inputFieldLabel'>BN Body</h3>
+
+                  <div
+                    style={{
+                      width: '100%',
+                      maxWidth: '100%',
+                    }}
+                  >
+                    <CKEditor
+                      editor={ClassicEditor}
+                      data={bnBody}
+                      onInit={(editor) => {
+                        // You can store the "editor" and use when it is needed.
+                        console.log('Editor is ready to use!', editor);
+                      }}
+                      onChange={(event, editor) => {
+                        const data = editor.getData();
+                        setBnBody(data);
+                      }}
+                      onBlur={(event, editor) => {
+                        console.log('Blur.', editor);
+                      }}
+                      onFocus={(event, editor) => {
+                        console.log('Focus.', editor);
                       }}
                     />
+                  </div>
 
-                    <Input
-                      label='Preparation Time'
-                      value={values.preparationTime}
-                      placeHolder='15 min'
-                      name='preparationTime'
-                      isError={
-                        (touched.preparationTime && errors.preparationTime) ||
-                        (!isSubmitting &&
-                          addProductState.error['error']['preparationTime'])
-                      }
-                      errorString={
-                        (touched.preparationTime && errors.preparationTime) ||
-                        (!isSubmitting &&
-                          addProductState.error['error']['preparationTime'])
-                      }
-                      onChange={(e: any) => {
-                        handleChange(e);
-                        setFieldTouched('preparationTime');
-                      }}
-                    />
-
-                    <Input
-                      label='BN Preparation Time'
-                      value={values.bnPreparationTime}
-                      placeHolder={'১৫ মিনিট'}
-                      name='bnPreparationTime'
-                      isError={
-                        (touched.bnPreparationTime &&
-                          errors.bnPreparationTime) ||
-                        (!isSubmitting &&
-                          addProductState.error['error']['bnPreparationTime'])
-                      }
-                      errorString={
-                        (touched.bnPreparationTime &&
-                          errors.bnPreparationTime) ||
-                        (!isSubmitting &&
-                          addProductState.error['error']['bnPreparationTime'])
-                      }
-                      onChange={(e: any) => {
-                        handleChange(e);
-                        setFieldTouched('bnPreparationTime');
-                      }}
-                    />
-
-                    <Input
-                      label='Cooking Time'
-                      placeHolder={'30 min'}
-                      value={values.cookingTime}
-                      name='cookingTime'
-                      isError={
-                        (touched.cookingTime && errors.cookingTime) ||
-                        (!isSubmitting &&
-                          addProductState.error['error']['cookingTime'])
-                      }
-                      errorString={
-                        (touched.cookingTime && errors.cookingTime) ||
-                        (!isSubmitting &&
-                          addProductState.error['error']['cookingTime'])
-                      }
-                      onChange={(e: any) => {
-                        handleChange(e);
-                        setFieldTouched('cookingTime');
-                      }}
-                    />
-
-                    <Input
-                      label='BN Cooking Time'
-                      placeHolder={'৩০ মিনিট'}
-                      value={values.bnCookingTime}
-                      name='bnCookingTime'
-                      isError={
-                        (touched.bnCookingTime && errors.bnCookingTime) ||
-                        (!isSubmitting &&
-                          addProductState.error['error']['bnCookingTime'])
-                      }
-                      errorString={
-                        (touched.bnCookingTime && errors.bnCookingTime) ||
-                        (!isSubmitting &&
-                          addProductState.error['error']['bnCookingTime'])
-                      }
-                      onChange={(e: any) => {
-                        handleChange(e);
-                        setFieldTouched('bnCookingTime');
-                      }}
-                    />
-
-                    <Input
-                      label='Serving Size'
-                      value={values.servingSize}
-                      name='servingSize'
-                      isError={
-                        (touched.servingSize && errors.servingSize) ||
-                        (!isSubmitting &&
-                          addProductState.error['error']['servingSize'])
-                      }
-                      errorString={
-                        (touched.servingSize && errors.servingSize) ||
-                        (!isSubmitting &&
-                          addProductState.error['error']['servingSize'])
-                      }
-                      onChange={(e: any) => {
-                        handleChange(e);
-                        setFieldTouched('servingSize');
-                      }}
-                    />
-
-                    <Input
-                      label='BN Serving Size'
-                      value={values.bnServingSize}
-                      name='bnServingSize'
-                      isError={
-                        (touched.bnServingSize && errors.bnServingSize) ||
-                        (!isSubmitting &&
-                          addProductState.error['error']['bnServingSize'])
-                      }
-                      errorString={
-                        (touched.bnServingSize && errors.bnServingSize) ||
-                        (!isSubmitting &&
-                          addProductState.error['error']['bnServingSize'])
-                      }
-                      onChange={(e: any) => {
-                        handleChange(e);
-                        setFieldTouched('bnServingSize');
-                      }}
-                    />
-
-                    <Input
-                      label='URL'
-                      value={values.url}
-                      name='url'
-                      isError={
-                        (touched.url && errors.url) ||
-                        (!isSubmitting && addProductState.error['error']['url'])
-                      }
-                      errorString={
-                        (touched.url && errors.url) ||
-                        (!isSubmitting && addProductState.error['error']['url'])
-                      }
-                      onChange={(e: any) => {
-                        handleChange(e);
-                        setFieldTouched('url');
-                      }}
-                    />
-
-                    <h3 className='inputFieldLabel'>Body</h3>
-
-                    <div
-                      style={{
-                        width: '100%',
-                        maxWidth: '100%',
-                      }}
-                    >
-                      <CKEditor
-                        editor={ClassicEditor}
-                        data={body}
-                        onInit={(editor) => {
-                          // You can store the "editor" and use when it is needed.
-                          console.log('Editor is ready to use!', editor);
-                        }}
-                        onChange={(event, editor) => {
-                          const data = editor.getData();
-                          setBody(data);
-                        }}
-                        onBlur={(event, editor) => {
-                          console.log('Blur.', editor);
-                        }}
-                        onFocus={(event, editor) => {
-                          console.log('Focus.', editor);
-                        }}
-                      />
-                    </div>
-
-                    <div
-                      style={{
-                        marginTop: '15px',
-                      }}
-                    ></div>
-
-                    <h3 className='inputFieldLabel'>BN Body</h3>
-
-                    <div
-                      style={{
-                        width: '100%',
-                        maxWidth: '100%',
-                      }}
-                    >
-                      <CKEditor
-                        editor={ClassicEditor}
-                        data={bnBody}
-                        onInit={(editor) => {
-                          // You can store the "editor" and use when it is needed.
-                          console.log('Editor is ready to use!', editor);
-                        }}
-                        onChange={(event, editor) => {
-                          const data = editor.getData();
-                          setBnBody(data);
-                        }}
-                        onBlur={(event, editor) => {
-                          console.log('Blur.', editor);
-                        }}
-                        onFocus={(event, editor) => {
-                          console.log('Focus.', editor);
-                        }}
-                      />
-                    </div>
-
-                    {/* <div style={{
+                  {/* <div style={{
 												display: 'flex',
 												justifyContent: 'space-between'
 											}}>
@@ -860,12 +887,12 @@ const AddNewProduct = ({
 
 												</div>
 											</div> */}
-                    <div
-                      style={{
-                        marginBottom: '15px',
-                      }}
-                    ></div>
-                    {/* 
+                  <div
+                    style={{
+                      marginBottom: '15px',
+                    }}
+                  ></div>
+                  {/* 
 											<TextArea
 												rows={1}
 												label='Venue'
@@ -899,333 +926,356 @@ const AddNewProduct = ({
 													setFieldTouched('purchaseLimit');
 												}}
 											/> */}
+                </div>
+              </div>
+
+              <div className='addProductGridContainer__price'>
+                <div className='addProductGridContainer__item-header'>
+                  <h3>Products</h3>
+
+                  <div
+                    className={
+                      pricing && pricing.length > 0
+                        ? 'checkicon-active'
+                        : 'checkicon'
+                    }
+                  >
+                    <CheckCircleOutlined />
                   </div>
                 </div>
 
-                <div className='addProductGridContainer__price'>
-                  <div className='addProductGridContainer__item-header'>
-                    <h3>Products</h3>
-
-                    <div
-                      className={
-                        pricing && pricing.length > 0
-                          ? 'checkicon-active'
-                          : 'checkicon'
-                      }
-                    >
-                      <CheckCircleOutlined />
-                    </div>
-                  </div>
-
-                  <div className='addProductGridContainer__item-body'>
-                    <h3 className='inputFieldLabel'>Products</h3>
-                    <SelectProducts
-                      setProductIds={setProductIds}
-                      productIds={productIds}
-                    />
-
-                    <div
-                      style={{
-                        marginTop: '15px',
-                      }}
-                    ></div>
-
-                    <h3 className='inputFieldLabel'>Selcted Products</h3>
-
-                    <SelectedProductItems
-                      productList={productList}
-                      setProductList={setProductList}
-                    />
-                  </div>
-                </div>
-
-                <div className='addProductGridContainer__image'>
-                  <div className='addProductGridContainer__item-header'>
-                    <h3>Image</h3>
-
-                    <Tooltip
-                      placement='left'
-                      title={
-                        'Click on the image to select cover image, By default 1st image is selected as cover'
-                      }
-                    >
-                      <a href='###'>
-                        <InfoCircleOutlined />
-                      </a>
-                    </Tooltip>
-                  </div>
+                <div className='addProductGridContainer__item-body'>
+                  <h3 className='inputFieldLabel'>Products</h3>
+                  <SelectProducts
+                    setProductIds={setProductIds}
+                    productIds={productIds}
+                  />
 
                   <div
                     style={{
-                      padding: '10px',
+                      marginTop: '15px',
                     }}
-                    className='aboutToUploadImagesContainer'
+                  ></div>
+
+                  <h3 className='inputFieldLabel'>Selcted Products</h3>
+
+                  <SelectedProductItems
+                    productList={productList}
+                    setProductList={setProductList}
+                  />
+                </div>
+              </div>
+
+              <div className='addProductGridContainer__image'>
+                <div className='addProductGridContainer__item-header'>
+                  <h3>Image</h3>
+
+                  <Tooltip
+                    placement='left'
+                    title={
+                      'Click on the image to select cover image, By default 1st image is selected as cover'
+                    }
                   >
-                    {productDetailState.isLoading && (
-                      <div
-                        style={{
-                          padding: '20px 0',
-                        }}
-                      >
-                        <Spin />
-                      </div>
-                    )}
-                    {productDetailState.done && (
-                      <>
-                        {myImages &&
-                          // @ts-ignore
-                          myImages.length > 0 &&
-                          myImages.map((image, index) => {
-                            return (
-                              <div className='aboutToUploadImagesContainer__item'>
-                                <div
-                                  className='aboutToUploadImagesContainer__item-imgContainer'
-                                  onClick={() => {
-                                    setCoverImageId(image.id);
-                                    handleSetImageAsThumnail(image);
-                                  }}
-                                >
-                                  <img src={image.cover} alt={image.alt} />
-                                </div>
+                    <a href='###'>
+                      <InfoCircleOutlined />
+                    </a>
+                  </Tooltip>
+                </div>
 
-                                <span
-                                  onClick={() => {
-                                    handleImagesDelete(image.id);
-                                    handleDetachSingleImage(image.id);
-                                  }}
-                                  className='aboutToUploadImagesContainer__item-remove'
-                                >
-                                  <CloseOutlined />
+                <div
+                  style={{
+                    padding: '10px',
+                  }}
+                  className='aboutToUploadImagesContainer'
+                >
+                  {productDetailState.isLoading && (
+                    <div
+                      style={{
+                        padding: '20px 0',
+                      }}
+                    >
+                      <Spin />
+                    </div>
+                  )}
+                  {productDetailState.done && (
+                    <>
+                      {myImages &&
+                        // @ts-ignore
+                        myImages.length > 0 &&
+                        myImages.map((image, index) => {
+                          return (
+                            <div className='aboutToUploadImagesContainer__item'>
+                              <div
+                                className='aboutToUploadImagesContainer__item-imgContainer'
+                                onClick={() => {
+                                  setCoverImageId(image.id);
+                                  handleSetImageAsThumnail(image);
+                                }}
+                              >
+                                <img src={image.cover} alt={image.alt} />
+                              </div>
+
+                              <span
+                                onClick={() => {
+                                  handleImagesDelete(image.id);
+                                  handleDetachSingleImage(image.id);
+                                }}
+                                className='aboutToUploadImagesContainer__item-remove'
+                              >
+                                <CloseOutlined />
+                              </span>
+
+                              {coverImageId === image.id ? (
+                                <span className='aboutToUploadImagesContainer__item-cover'>
+                                  <CheckOutlined />
                                 </span>
-
-                                {coverImageId === image.id ? (
+                              ) : (
+                                !coverImageId &&
+                                index === 0 && (
                                   <span className='aboutToUploadImagesContainer__item-cover'>
                                     <CheckOutlined />
                                   </span>
-                                ) : (
-                                  !coverImageId &&
-                                  index === 0 && (
-                                    <span className='aboutToUploadImagesContainer__item-cover'>
-                                      <CheckOutlined />
-                                    </span>
-                                  )
-                                )}
-                              </div>
-                            );
-                          })}
+                                )
+                              )}
+                            </div>
+                          );
+                        })}
 
-                        <Tooltip title={'Attach images'}>
-                          <div
-                            onClick={() => {
-                              setvisible(true);
-                              setisModalOpenForImages(true);
-                              setisModalOpenForThumbnail(false);
-                            }}
-                            className='aboutToUploadImagesContainer__uploadItem'
-                          >
-                            {/* <FileAddOutlined />
+                      <Tooltip title={'Attach images'}>
+                        <div
+                          onClick={() => {
+                            setvisible(true);
+                            setisModalOpenForImages(true);
+                            setisModalOpenForThumbnail(false);
+                          }}
+                          className='aboutToUploadImagesContainer__uploadItem'
+                        >
+                          {/* <FileAddOutlined />
 													<FileImageTwoTone />
 													<FileImageOutlined /> */}
-                            <FileImageFilled />
-                            {/* <h5>
+                          <FileImageFilled />
+                          {/* <h5>
 												     Select From Library
 											<     /h5> */}
-                            <span className='aboutToUploadImagesContainer__uploadItem-plus'>
-                              <PlusOutlined />
-                            </span>
-                          </div>
-                        </Tooltip>
-                      </>
-                    )}
-                  </div>
-                </div>
-
-                <div className='addProductGridContainer__image'>
-                  <div className='addProductGridContainer__item-header'>
-                    <h3>Meta Data</h3>
-
-                    <Tooltip
-                      placement='left'
-                      title={
-                        "Meta data will be used to make the user's easy and for search engine optimization."
-                      }
-                    >
-                      <a href='###'>
-                        <InfoCircleOutlined />
-                      </a>
-                    </Tooltip>
-                  </div>
-                  <div className='addProductGridContainer__item-body'>
-                    <Input
-                      label='Meta title'
-                      value={values.metaTitle}
-                      placeHolder={'category...'}
-                      name='metaTitle'
-                      isError={
-                        (touched.metaTitle && errors.metaTitle) ||
-                        (!isSubmitting &&
-                          addProductState.error['error']['metaTitle'])
-                      }
-                      errorString={
-                        (touched.metaTitle && errors.metaTitle) ||
-                        (!isSubmitting &&
-                          addProductState.error['error']['metaTitle'])
-                      }
-                      onChange={(e: any) => {
-                        handleChange(e);
-                        setFieldTouched('metaTitle');
-                      }}
-                    />
-
-                    <Input
-                      label='BN Meta title'
-                      value={values.bnMetaTitle}
-                      placeHolder={'ক্যাটাগড়ি...'}
-                      name='bnMetaTitle'
-                      isError={
-                        (touched.bnMetaTitle && errors.bnMetaTitle) ||
-                        (!isSubmitting &&
-                          addProductState.error['error']['bnMetaTitle'])
-                      }
-                      errorString={
-                        (touched.bnMetaTitle && errors.bnMetaTitle) ||
-                        (!isSubmitting &&
-                          addProductState.error['error']['bnMetaTitle'])
-                      }
-                      onChange={(e: any) => {
-                        handleChange(e);
-                        setFieldTouched('bnMetaTitle');
-                      }}
-                    />
-
-                    <TextArea
-                      label='Meta description'
-                      value={values.metaDescription}
-                      placeholder={'meta...'}
-                      name='metaDescription'
-                      isError={
-                        (touched.metaDescription && errors.metaDescription) ||
-                        (!isSubmitting &&
-                          addProductState.error['error']['metaDescription'])
-                      }
-                      errorString={
-                        (touched.metaDescription && errors.metaDescription) ||
-                        (!isSubmitting &&
-                          addProductState.error['error']['metaDescription'])
-                      }
-                      onChange={(e: any) => {
-                        handleChange(e);
-                        setFieldTouched('metaDescription');
-                      }}
-                    />
-
-                    <TextArea
-                      label='BN Meta Description'
-                      value={values.bnMetaDescription}
-                      placeholder={'এইয় মেট...'}
-                      name='bnMetaDescription'
-                      isError={
-                        (touched.bnMetaDescription &&
-                          errors.bnMetaDescription) ||
-                        (!isSubmitting &&
-                          addProductState.error['error']['bnMetaDescription'])
-                      }
-                      errorString={
-                        (touched.bnMetaDescription &&
-                          errors.bnMetaDescription) ||
-                        (!isSubmitting &&
-                          addProductState.error['error']['bnMetaDescription'])
-                      }
-                      onChange={(e: any) => {
-                        handleChange(e);
-                        setFieldTouched('bnMetaDescription');
-                      }}
-                    />
-
-                    <h3 className='inputFieldLabel'>
-                      Meta Tags (grocery,fashion)
-                    </h3>
-
-                    <MetaTags
-                      // @ts-ignore
-                      setTags={setMetaTags}
-                      tags={metaTags}
-                    />
-
-                    <div
-                      style={{
-                        marginTop: '15px',
-                      }}
-                    ></div>
-
-                    <h3 className='inputFieldLabel'>
-                      BN Meta Tags (মুদিখানা,ফ্যাশন)
-                    </h3>
-
-                    <MetaTags
-                      // @ts-ignore
-                      setTags={setBnMetaTags}
-                      tags={bnMetaTags}
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className='addProductGridContainer__right'>
-                <div className='addProductGridContainer__category'>
-                  <div className='addProductGridContainer-rightItemContainer'>
-                    <div className='addProductGridContainer-rightItemContainer-header'>
-                      <h3>Recipe Categories</h3>
-
-                      <Tooltip
-                        color='red'
-                        visible={
-                          addProductState.error['error']['category'] &&
-                          !(categoryids.length > 0)
-                        }
-                        placement='left'
-                        title={'Select at least one category'}
-                      >
-                        <div
-                          className={
-                            !(categoryids.length > 0) &&
-                            !addProductState.error['error']['category']
-                              ? 'checkicon'
-                              : addProductState.error['error']['category']
-                              ? 'checkicon-error'
-                              : 'checkicon-active'
-                          }
-                        >
-                          <CheckCircleOutlined />
+                          <span className='aboutToUploadImagesContainer__uploadItem-plus'>
+                            <PlusOutlined />
+                          </span>
                         </div>
                       </Tooltip>
-                    </div>
-                    <div className='addProductGridContainer-rightItemContainer-body'>
-                      <Categories
-                        setCategoryOptions={setCategoryOptions}
-                        categoryOptions={categoryOptions}
-                        setcategoryIds={setcategoryIds}
-                      />
-                    </div>
-                  </div>
+                    </>
+                  )}
                 </div>
+              </div>
 
-                <div className='addProductGridContainer__tag'>
-                  <div className='addProductGridContainer-rightItemContainer'>
-                    <div className='addProductGridContainer-rightItemContainer-header'>
-                      <h3>Recipe Tags</h3>
-                    </div>
-                    <div className='addProductGridContainer-rightItemContainer-body'>
-                      <Tags
-                        setSelectedTags={setSelectedTags}
-                        selectedTags={selectedTags}
-                        setTagIds={setTagIds}
-                      />
-                    </div>
+              <div className='addProductGridContainer__image'>
+                <div className='addProductGridContainer__item-header'>
+                  <h3>Meta Data</h3>
+
+                  <Tooltip
+                    placement='left'
+                    title={
+                      "Meta data will be used to make the user's easy and for search engine optimization."
+                    }
+                  >
+                    <a href='###'>
+                      <InfoCircleOutlined />
+                    </a>
+                  </Tooltip>
+                </div>
+                <div className='addProductGridContainer__item-body'>
+                  <Input
+                    label='Meta title'
+                    value={values.metaTitle}
+                    placeHolder={'...'}
+                    name='metaTitle'
+                    isError={
+                      (touched.metaTitle && errors.metaTitle) ||
+                      (!isSubmitting &&
+                        addProductState.error['error']['metaTitle'])
+                    }
+                    errorString={
+                      (touched.metaTitle && errors.metaTitle) ||
+                      (!isSubmitting &&
+                        addProductState.error['error']['metaTitle'])
+                    }
+                    onChange={(e: any) => {
+                      handleChange(e);
+                      setFieldTouched('metaTitle');
+                    }}
+                  />
+
+                  <Input
+                    label='BN Meta title'
+                    value={values.bnMetaTitle}
+                    placeHolder={'...'}
+                    name='bnMetaTitle'
+                    isError={
+                      (touched.bnMetaTitle && errors.bnMetaTitle) ||
+                      (!isSubmitting &&
+                        addProductState.error['error']['bnMetaTitle'])
+                    }
+                    errorString={
+                      (touched.bnMetaTitle && errors.bnMetaTitle) ||
+                      (!isSubmitting &&
+                        addProductState.error['error']['bnMetaTitle'])
+                    }
+                    onChange={(e: any) => {
+                      handleChange(e);
+                      setFieldTouched('bnMetaTitle');
+                    }}
+                  />
+
+                  <TextArea
+                    label='Meta description'
+                    value={values.metaDescription}
+                    placeholder={'meta...'}
+                    name='metaDescription'
+                    isError={
+                      (touched.metaDescription && errors.metaDescription) ||
+                      (!isSubmitting &&
+                        addProductState.error['error']['metaDescription'])
+                    }
+                    errorString={
+                      (touched.metaDescription && errors.metaDescription) ||
+                      (!isSubmitting &&
+                        addProductState.error['error']['metaDescription'])
+                    }
+                    onChange={(e: any) => {
+                      handleChange(e);
+                      setFieldTouched('metaDescription');
+                    }}
+                  />
+
+                  <TextArea
+                    label='BN Meta Description'
+                    value={values.bnMetaDescription}
+                    placeholder={'এইয় মেট...'}
+                    name='bnMetaDescription'
+                    isError={
+                      (touched.bnMetaDescription && errors.bnMetaDescription) ||
+                      (!isSubmitting &&
+                        addProductState.error['error']['bnMetaDescription'])
+                    }
+                    errorString={
+                      (touched.bnMetaDescription && errors.bnMetaDescription) ||
+                      (!isSubmitting &&
+                        addProductState.error['error']['bnMetaDescription'])
+                    }
+                    onChange={(e: any) => {
+                      handleChange(e);
+                      setFieldTouched('bnMetaDescription');
+                    }}
+                  />
+
+                  <h3 className='inputFieldLabel'>Meta Tags</h3>
+
+                  <MetaTags
+                    // @ts-ignore
+                    setTags={setMetaTags}
+                    tags={metaTags}
+                  />
+
+                  <div
+                    style={{
+                      marginTop: '15px',
+                    }}
+                  ></div>
+
+                  <h3 className='inputFieldLabel'>BN Meta Tags</h3>
+
+                  <MetaTags
+                    // @ts-ignore
+                    setTags={setBnMetaTags}
+                    tags={bnMetaTags}
+                  />
+                </div>
+              </div>
+            </div>
+            <div className='addProductGridContainer__right'>
+              <div className='addProductGridContainer__category'>
+                <div className='addProductGridContainer-rightItemContainer'>
+                  <div className='addProductGridContainer-rightItemContainer-header'>
+                    <h3>Recipe Categories</h3>
+
+                    <Tooltip
+                      color='red'
+                      visible={
+                        addProductState.error['error']['category'] &&
+                        !(categoryids.length > 0)
+                      }
+                      placement='left'
+                      title={'Select at least one category'}
+                    >
+                      <div
+                        className={
+                          !(categoryids.length > 0) &&
+                          !addProductState.error['error']['category']
+                            ? 'checkicon'
+                            : addProductState.error['error']['category']
+                            ? 'checkicon-error'
+                            : 'checkicon-active'
+                        }
+                      >
+                        <CheckCircleOutlined />
+                      </div>
+                    </Tooltip>
+                  </div>
+                  <div className='addProductGridContainer-rightItemContainer-body'>
+                    <Categories
+                      setCategoryOptions={setCategoryOptions}
+                      categoryOptions={categoryOptions}
+                      setcategoryIds={setcategoryIds}
+                    />
                   </div>
                 </div>
               </div>
-            </section>
-          </Modal>
+
+              <div className='addProductGridContainer__tag'>
+                <div className='addProductGridContainer-rightItemContainer'>
+                  <div className='addProductGridContainer-rightItemContainer-header'>
+                    <h3>Recipe Tags</h3>
+                  </div>
+                  <div className='addProductGridContainer-rightItemContainer-body'>
+                    <Tags
+                      setSelectedTags={setSelectedTags}
+                      selectedTags={selectedTags}
+                      setTagIds={setTagIds}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <div
+            style={{
+              padding: '15px',
+              display: 'flex',
+              justifyContent: 'flex-end',
+            }}
+          >
+            <Button
+              style={{
+                color: '#555',
+                marginRight: '10px',
+              }}
+              className='btnPrimaryClassNameoutline-cancle'
+              onClick={() => setAddNewCategoryVisible(false)}
+              type='default'
+            >
+              Cancel
+            </Button>
+
+            <Button
+              className='btnPrimaryClassNameoutline'
+              onClick={handleSubmit}
+              loading={addProductState.isLoading}
+              type='link'
+              icon={<CheckOutlined />}
+            >
+              Update
+            </Button>
+          </div>
 
           <MediaLibrary
             setvisible={setvisible}
@@ -1239,6 +1289,49 @@ const AddNewProduct = ({
         </>
       )}
     </Formik>
+  );
+};
+
+const AddNewProduct = ({
+  addNewCategoryVisible,
+  setAddNewCategoryVisible,
+  productDetailData,
+  setPostDetailData,
+}: Props) => {
+  const handleCancel = () => {
+    setAddNewCategoryVisible(false);
+  };
+  return (
+    <>
+      <Modal
+        style={{
+          top: '40px',
+        }}
+        footer={false}
+        bodyStyle={{
+          margin: 0,
+          padding: 0,
+        }}
+        width={'70vw'}
+        title='Edit Recipe'
+        visible={addNewCategoryVisible}
+        // onOk={(e: any) => handleSubmit(e)}
+        onCancel={handleCancel}
+        destroyOnClose={true}
+        okText='Update'
+        okButtonProps={{
+          // loading: isSubmitting,
+          htmlType: 'submit',
+        }}
+      >
+        <ModalComponentChild
+          addNewCategoryVisible={addNewCategoryVisible}
+          setAddNewCategoryVisible={setAddNewCategoryVisible}
+          setPostDetailData={setPostDetailData}
+          productDetailData={productDetailData}
+        />
+      </Modal>
+    </>
   );
 };
 

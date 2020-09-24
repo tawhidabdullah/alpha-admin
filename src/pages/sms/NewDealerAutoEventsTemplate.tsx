@@ -49,7 +49,7 @@ const { TabPane } = Tabs;
 
 const openSuccessNotification = (message?: any) => {
   notification.success({
-    message: message || 'New Customer Template Updated',
+    message: message || 'New Dealer Template Updated',
     description: '',
     icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
   });
@@ -97,8 +97,8 @@ const AddNewBrand = ({ visible, setVisible }: Props) => {
     const getConfigurationAutoEmailTemplateRes = await handleAutoEmailTemplateFetch(
       {
         body: {
-          event: 'newCustomer',
-          customer: {
+          event: 'newDealer',
+          user: {
             ...customer,
           },
           admin: {
@@ -168,16 +168,16 @@ const AddNewBrand = ({ visible, setVisible }: Props) => {
       const res = await handleGetConfigureAutoEmailTemplateFetch({
         urlOptions: {
           placeHolders: {
-            eventName: 'newCustomer',
+            eventName: 'newDealer',
           },
         },
       });
 
-      console.log('newCustomertemplate', res);
+      console.log('newDealertemplate', res);
       // @ts-ignore
       if (res) {
         setadmin(res['admin'] || '');
-        setcustomer(res['customer'] || '');
+        setcustomer(res['user'] || '');
       }
       // set auto email template to customer and admin
     };
@@ -194,7 +194,7 @@ const AddNewBrand = ({ visible, setVisible }: Props) => {
       style={{
         top: '40px',
       }}
-      title='New Customer Event Template'
+      title='New Dealer Event Template'
       visible={visible}
       onOk={(e: any) => handleSubmit()}
       onCancel={handleCancel}
@@ -224,7 +224,7 @@ const AddNewBrand = ({ visible, setVisible }: Props) => {
             >
               <Input
                 label='Subject'
-                value={customer.subject}
+                value={customer.subject || ''}
                 name='subject'
                 onChange={(e: any) => {
                   setcustomer({
@@ -238,7 +238,7 @@ const AddNewBrand = ({ visible, setVisible }: Props) => {
 
               <CKEditor
                 editor={ClassicEditor}
-                data={customer.body}
+                data={customer.body || ''}
                 onInit={(editor) => {
                   // You can store the "editor" and use when it is needed.
                   console.log('Editor is ready to use!', editor);
@@ -314,7 +314,27 @@ const AddNewBrand = ({ visible, setVisible }: Props) => {
                       padding: '1px 10px',
                     }}
                   >
-                    &lt;?=customer.firstName?&gt; :
+                    &lt;?=user.code?&gt; :
+                  </b>{' '}
+                  Code
+                </li>
+
+                <li
+                  style={{
+                    fontSize: '12px',
+                    marginBottom: '10px',
+                    lineHeight: 1.7,
+                    fontWeight: 500,
+                  }}
+                >
+                  <b
+                    style={{
+                      borderRadius: '15px',
+                      backgroundColor: '#ddd',
+                      padding: '1px 10px',
+                    }}
+                  >
+                    &lt;?=user.firstName?&gt; :
                   </b>{' '}
                   First Name
                 </li>
@@ -332,7 +352,7 @@ const AddNewBrand = ({ visible, setVisible }: Props) => {
                       padding: '1px 10px',
                     }}
                   >
-                    &lt;?customer.lastName?&gt; :
+                    &lt;?user.lastName?&gt; :
                   </b>{' '}
                   Last Name
                 </li>
@@ -350,7 +370,7 @@ const AddNewBrand = ({ visible, setVisible }: Props) => {
                       padding: '1px 10px',
                     }}
                   >
-                    &lt;?customer.phone?&gt; :
+                    &lt;?user.phone?&gt; :
                   </b>{' '}
                   Phone
                 </li>
@@ -368,7 +388,7 @@ const AddNewBrand = ({ visible, setVisible }: Props) => {
                       padding: '1px 10px',
                     }}
                   >
-                    &lt;?customer.email?&gt; :
+                    &lt;?user.email?&gt; :
                   </b>{' '}
                   Email
                 </li>
@@ -386,7 +406,7 @@ const AddNewBrand = ({ visible, setVisible }: Props) => {
                       padding: '1px 10px',
                     }}
                   >
-                    &lt;?customer.email?&gt; :
+                    &lt;?user.email?&gt; :
                   </b>{' '}
                   Email
                 </li>
@@ -405,7 +425,7 @@ const AddNewBrand = ({ visible, setVisible }: Props) => {
                       padding: '1px 10px',
                     }}
                   >
-                    &lt;?customer.address1?&gt; :
+                    &lt;?user.address1?&gt; :
                   </b>{' '}
                   Address
                 </li>
@@ -424,7 +444,7 @@ const AddNewBrand = ({ visible, setVisible }: Props) => {
                       padding: '1px 10px',
                     }}
                   >
-                    &lt;?customer.added?&gt; :
+                    &lt;?user.added?&gt; :
                   </b>{' '}
                   Joined
                 </li>
@@ -535,7 +555,27 @@ const AddNewBrand = ({ visible, setVisible }: Props) => {
                       padding: '1px 10px',
                     }}
                   >
-                    &lt;?=customer.firstName?&gt; :
+                    &lt;?=user.code?&gt; :
+                  </b>{' '}
+                  Code
+                </li>
+
+                <li
+                  style={{
+                    fontSize: '12px',
+                    marginBottom: '10px',
+                    lineHeight: 1.7,
+                    fontWeight: 500,
+                  }}
+                >
+                  <b
+                    style={{
+                      borderRadius: '15px',
+                      backgroundColor: '#ddd',
+                      padding: '1px 10px',
+                    }}
+                  >
+                    &lt;?=user.firstName?&gt; :
                   </b>{' '}
                   First Name
                 </li>
@@ -553,7 +593,7 @@ const AddNewBrand = ({ visible, setVisible }: Props) => {
                       padding: '1px 10px',
                     }}
                   >
-                    &lt;?customer.lastName?&gt; :
+                    &lt;?user.lastName?&gt; :
                   </b>{' '}
                   Last Name
                 </li>
@@ -571,7 +611,7 @@ const AddNewBrand = ({ visible, setVisible }: Props) => {
                       padding: '1px 10px',
                     }}
                   >
-                    &lt;?customer.phone?&gt; :
+                    &lt;?user.phone?&gt; :
                   </b>{' '}
                   Phone
                 </li>
@@ -589,7 +629,7 @@ const AddNewBrand = ({ visible, setVisible }: Props) => {
                       padding: '1px 10px',
                     }}
                   >
-                    &lt;?customer.email?&gt; :
+                    &lt;?user.email?&gt; :
                   </b>{' '}
                   Email
                 </li>
@@ -607,7 +647,7 @@ const AddNewBrand = ({ visible, setVisible }: Props) => {
                       padding: '1px 10px',
                     }}
                   >
-                    &lt;?customer.email?&gt; :
+                    &lt;?user.email?&gt; :
                   </b>{' '}
                   Email
                 </li>
@@ -626,7 +666,7 @@ const AddNewBrand = ({ visible, setVisible }: Props) => {
                       padding: '1px 10px',
                     }}
                   >
-                    &lt;?customer.address1?&gt; :
+                    &lt;?user.address1?&gt; :
                   </b>{' '}
                   Address
                 </li>
@@ -645,7 +685,7 @@ const AddNewBrand = ({ visible, setVisible }: Props) => {
                       padding: '1px 10px',
                     }}
                   >
-                    &lt;?customer.added?&gt; :
+                    &lt;?user.added?&gt; :
                   </b>{' '}
                   Joined
                 </li>

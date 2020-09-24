@@ -168,4 +168,15 @@ complete salary report
 fix the order invoice 
 
 
+// on change search in --> customer/recipe/dealer/staff
+
+
+
+
+----------------------------------------------------
+EDIT RECIPIE	* bn fields not populating (preparationTime, servingSize) --> 
+suggestion --> change servingSize->serving
+   and preparationTime -> prepTime	* servingSize is not defined error
+    on updateSINGLE RECIPIE PAGE	* on edit shows 
+   "servingSize is not defined"EDIT CATEGORY: 	* bn values and meta fields not populating on edit
 */

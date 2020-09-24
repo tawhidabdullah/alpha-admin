@@ -13,7 +13,7 @@
       "method": "post"
     },
     "ImageListFromLibrary": {
-      "url": "/admin/api/image?limit=limitNumber&sort=sortItem&sortOrder=sortOrderValue",
+      "url": "/admin/api/image?sort=sortItem&sortOrder=sortOrderValue",
       "method": "get"
     },
     "viewSingleImageFromLibrary": {
@@ -49,7 +49,7 @@
       "method": "post"
     },
     "productList": {
-      "url": "/api/product?sort=sortItem&sortOrder=sortOrderValue&type=productType&limit=limitNumber",
+      "url": "/api/product?sort=sortItem&sortOrder=sortOrderValue&type=productType",
       "method": "get"
     },
     "updateStock": {
@@ -142,7 +142,7 @@
       "method": "post"
     },
     "postDetail": {
-      "url": "/admin/api/post/:id?category=categoryOne&tags=tagsOne&image=imageValue",
+      "url": "/admin/api/post/:id?category=categoryOne&tag=tagsOne&image=imageValue",
       "method": "get"
     },
     "postDetailEdit": {
@@ -150,7 +150,7 @@
       "method": "get"
     },
     "categoryList": {
-      "url": "/api/category?subCategory=isSubCategory&productCount=productCountValue&limit=limitNumber",
+      "url": "/api/category?subCategory=isSubCategory&productCount=productCountValue&sort=sortItem&sortOrder=sortOrderValue",
       "method": "get"
     },
     "categoryDetail": {
@@ -226,7 +226,7 @@
       "method": "post"
     },
     "customerList": {
-      "url": "/admin/api/customer?sort=sortItem&sortOrder=sortOrderValue&limit=limitNumber",
+      "url": "/admin/api/customer?sort=sortItem&sortOrder=sortOrderValue",
       "method": "get"
     },
     "customerDetail": {
@@ -251,7 +251,7 @@
       "method": "post"
     },
     "dealerList": {
-      "url": "/admin/api/dealer?sort=sortItem&sortOrder=sortOrderValue&limit=limitNumber",
+      "url": "/admin/api/dealer?sort=sortItem&sortOrder=sortOrderValue",
       "method": "get"
     },
     "dealerDetail": {
@@ -400,7 +400,7 @@
       "method": "get"
     },
     "regionList": {
-      "url": "/admin/api/delivery?sort=sortItem&sortOrder=sortOrderValue&limit=limitNumber",
+      "url": "/admin/api/delivery?sort=sortItem&sortOrder=sortOrderValue",
       "method": "get"
     },
     "addRegion": {
@@ -420,7 +420,7 @@
       "method": "get"
     },
     "orderList": {
-      "url": "/admin/api/order?sort=sortItem&sortOrder=sortOrderValue&limit=limitNumber&status=statusValue&startDate=startDateValue&endDate=endDateValue&deliveryRegionName=deliveryRegionNameValue",
+      "url": "/admin/api/order?sort=sortItem&sortOrder=sortOrderValue&status=statusValue&startDate=startDateValue&endDate=endDateValue&deliveryRegionName=deliveryRegionNameValue",
       "method": "get"
     },
     "orderListForCustomer": {
@@ -580,11 +580,11 @@
       "method": "post"
     },
     "getAllNotification": {
-      "url": "/admin/api/notification?limit=limitNumber&sort=sortItem&sortOrder=sortOrderValue",
+      "url": "/admin/api/notification?sort=sortItem&sortOrder=sortOrderValue",
       "method": "get"
     },
     "getAllNotificationPage": {
-      "url": "/admin/api/notification?limit=limitNumber&sort=sortItem&sortOrder=sortOrderValue",
+      "url": "/admin/api/notification?sort=sortItem&sortOrder=sortOrderValue",
       "method": "get"
     },
     "markNotificationAsRead": {

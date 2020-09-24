@@ -49,7 +49,7 @@ const { TabPane } = Tabs;
 
 const openSuccessNotification = (message?: any) => {
   notification.success({
-    message: message || 'New Customer Template Updated',
+    message: message || 'New Order Template Updated',
     description: '',
     icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
   });
@@ -59,7 +59,7 @@ const openErrorNotification = (message?: any) => {
   notification.error({
     message: message || 'Something Went Wrong',
     description: '',
-    icon: <InfoCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
+    icon: <CheckCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
   });
 };
 
@@ -123,8 +123,49 @@ const AddNewBrand = ({ visible, setVisible }: Props) => {
   };
 
   useEffect(() => {
+    if (!autoEmailTemplate['isLoading']) {
+      const error = autoEmailTemplate['error'];
+      if (error['isError'] && Object.keys(error['error']).length > 0) {
+        if (error['error']['registerError']) {
+          // setServerErrors(error['error']['registerError']);
+        } else if (error['error']['checkoutError']) {
+          // setServerErrors(error['error']['checkoutError']);
+        } else {
+          // setServerErrors(error['error']);
+        }
+
+        const errors =
+          Object.values(error['error']).length > 0
+            ? Object.values(error['error'])
+            : [];
+        errors.forEach((err, i) => {
+          if (typeof err === 'string') {
+            openErrorNotification(err);
+          } else if (typeof err === 'object') {
+            if (err && Object.keys(err).length > 0) {
+              const errs = Object.values(err);
+              errs.forEach((err) => {
+                openErrorNotification(err);
+              });
+            }
+          }
+        });
+      }
+    }
+
+    if (
+      !autoEmailTemplate['isLoading'] &&
+      Object.keys(autoEmailTemplate.data).length > 0
+    ) {
+      // if (autoEmailTemplate['data']['status'] === 'ok') {
+      //     openSuccessNotification('Email Sent!');
+      // }
+    }
+  }, [autoEmailTemplate]);
+
+  useEffect(() => {
     const getCustomerAutoEmail = async () => {
-      const res = await handleAutoEmailTemplateFetch({
+      const res = await handleGetConfigureAutoEmailTemplateFetch({
         urlOptions: {
           placeHolders: {
             eventName: 'order',
@@ -132,6 +173,12 @@ const AddNewBrand = ({ visible, setVisible }: Props) => {
         },
       });
 
+      console.log('Ordertemplate', res);
+      // @ts-ignore
+      if (res) {
+        setadmin(res['admin'] || '');
+        setcustomer(res['customer'] || '');
+      }
       // set auto email template to customer and admin
     };
     getCustomerAutoEmail();
@@ -172,7 +219,7 @@ const AddNewBrand = ({ visible, setVisible }: Props) => {
           >
             <div
               style={{
-                width: '70%',
+                width: '60%',
               }}
             >
               <Input
@@ -230,7 +277,7 @@ const AddNewBrand = ({ visible, setVisible }: Props) => {
 
             <div
               style={{
-                width: '30%',
+                width: '40%',
                 overflowY: 'auto',
                 background: '#f7f7f7',
                 marginLeft: '20px',
@@ -271,6 +318,7 @@ const AddNewBrand = ({ visible, setVisible }: Props) => {
                   </b>{' '}
                   Order time
                 </li>
+
                 <li
                   style={{
                     fontSize: '12px',
@@ -285,9 +333,83 @@ const AddNewBrand = ({ visible, setVisible }: Props) => {
                       padding: '1px 10px',
                     }}
                   >
-                    &lt;?shippingAddress.firstName?&gt; :
+                    &lt;?order.totalPrice?&gt; :
+                  </b>{' '}
+                  Total Price
+                </li>
+
+                <li
+                  style={{
+                    fontSize: '12px',
+                    lineHeight: 2,
+                    fontWeight: 500,
+                  }}
+                >
+                  <b
+                    style={{
+                      borderRadius: '15px',
+                      backgroundColor: '#ddd',
+                      padding: '1px 10px',
+                    }}
+                  >
+                    &lt;?order.status.name?&gt; :
+                  </b>{' '}
+                  Status at
+                </li>
+
+                <li
+                  style={{
+                    fontSize: '12px',
+                    lineHeight: 2,
+                    fontWeight: 500,
+                  }}
+                >
+                  <b
+                    style={{
+                      borderRadius: '15px',
+                      backgroundColor: '#ddd',
+                      padding: '1px 10px',
+                    }}
+                  >
+                    &lt;?order.shippingAddress.firstName?&gt; :
                   </b>{' '}
                   Shipping first Name
+                </li>
+                <li
+                  style={{
+                    fontSize: '12px',
+                    lineHeight: 2,
+                    fontWeight: 500,
+                  }}
+                >
+                  <b
+                    style={{
+                      borderRadius: '15px',
+                      backgroundColor: '#ddd',
+                      padding: '1px 10px',
+                    }}
+                  >
+                    &lt;?order.shippingAddress.country?&gt; :
+                  </b>{' '}
+                  Shipping Country
+                </li>
+                <li
+                  style={{
+                    fontSize: '12px',
+                    lineHeight: 2,
+                    fontWeight: 500,
+                  }}
+                >
+                  <b
+                    style={{
+                      borderRadius: '15px',
+                      backgroundColor: '#ddd',
+                      padding: '1px 10px',
+                    }}
+                  >
+                    &lt;?order.shippingAddress.city?&gt; :
+                  </b>{' '}
+                  Shipping City
                 </li>
               </ul>
             </div>
@@ -302,7 +424,7 @@ const AddNewBrand = ({ visible, setVisible }: Props) => {
           >
             <div
               style={{
-                width: '70%',
+                width: '60%',
               }}
             >
               <Input
@@ -359,7 +481,7 @@ const AddNewBrand = ({ visible, setVisible }: Props) => {
             </div>
             <div
               style={{
-                width: '30%',
+                width: '40%',
                 overflowY: 'auto',
                 background: '#f7f7f7',
                 marginLeft: '20px',
@@ -376,6 +498,7 @@ const AddNewBrand = ({ visible, setVisible }: Props) => {
                 Place the following tags to replace them with actual data while
                 sending email
               </p>
+
               <ul
                 style={{
                   padding: '15px',
@@ -400,6 +523,7 @@ const AddNewBrand = ({ visible, setVisible }: Props) => {
                   </b>{' '}
                   Order time
                 </li>
+
                 <li
                   style={{
                     fontSize: '12px',
@@ -414,9 +538,83 @@ const AddNewBrand = ({ visible, setVisible }: Props) => {
                       padding: '1px 10px',
                     }}
                   >
-                    &lt;?shippingAddress.firstName?&gt; :
+                    &lt;?order.totalPrice?&gt; :
+                  </b>{' '}
+                  Total Price
+                </li>
+
+                <li
+                  style={{
+                    fontSize: '12px',
+                    lineHeight: 2,
+                    fontWeight: 500,
+                  }}
+                >
+                  <b
+                    style={{
+                      borderRadius: '15px',
+                      backgroundColor: '#ddd',
+                      padding: '1px 10px',
+                    }}
+                  >
+                    &lt;?order.status.name?&gt; :
+                  </b>{' '}
+                  Status at
+                </li>
+
+                <li
+                  style={{
+                    fontSize: '12px',
+                    lineHeight: 2,
+                    fontWeight: 500,
+                  }}
+                >
+                  <b
+                    style={{
+                      borderRadius: '15px',
+                      backgroundColor: '#ddd',
+                      padding: '1px 10px',
+                    }}
+                  >
+                    &lt;?order.shippingAddress.firstName?&gt; :
                   </b>{' '}
                   Shipping first Name
+                </li>
+                <li
+                  style={{
+                    fontSize: '12px',
+                    lineHeight: 2,
+                    fontWeight: 500,
+                  }}
+                >
+                  <b
+                    style={{
+                      borderRadius: '15px',
+                      backgroundColor: '#ddd',
+                      padding: '1px 10px',
+                    }}
+                  >
+                    &lt;?order.shippingAddress.country?&gt; :
+                  </b>{' '}
+                  Shipping Country
+                </li>
+                <li
+                  style={{
+                    fontSize: '12px',
+                    lineHeight: 2,
+                    fontWeight: 500,
+                  }}
+                >
+                  <b
+                    style={{
+                      borderRadius: '15px',
+                      backgroundColor: '#ddd',
+                      padding: '1px 10px',
+                    }}
+                  >
+                    &lt;?order.shippingAddress.city?&gt; :
+                  </b>{' '}
+                  Shipping City
                 </li>
               </ul>
             </div>
