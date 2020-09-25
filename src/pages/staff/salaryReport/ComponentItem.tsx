@@ -80,7 +80,8 @@ const Complete = ({
     setItemsList(updateComponentList);
   };
 
-  console.log('componentItem322', componentItem);
+  console.log('componentItem322',   
+  componentItem);
   return (
     <>
       <div className='staffComponentItemsContainer__item'>

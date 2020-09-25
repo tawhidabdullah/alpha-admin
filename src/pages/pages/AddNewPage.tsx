@@ -284,7 +284,7 @@ const AddNewPage = ({}: Props) => {
               </div>
 
               <Input
-                label='URL'
+                label='Slug'
                 value={values.url}
                 name='url'
                 isError={
