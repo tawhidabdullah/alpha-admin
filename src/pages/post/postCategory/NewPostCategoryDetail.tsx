@@ -1,385 +1,371 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useHistory } from "react-router";
-
+import { useParams, useHistory } from 'react-router';
 
 // import hooks
-import { useHandleFetch } from "../../../hooks";
+import { useHandleFetch } from '../../../hooks';
 
 // import lib
+import { EditOutlined } from '@ant-design/icons';
+
 import {
-    EditOutlined,
-} from '@ant-design/icons';
-
-import { Skeleton, Empty, Button, notification, Table, Space, Input as CoolInput, Tooltip, Modal } from 'antd';
-
-
+  Skeleton,
+  Empty,
+  Button,
+  notification,
+  Table,
+  Space,
+  Input as CoolInput,
+  Tooltip,
+  Modal,
+} from 'antd';
 
 // import components
-import { DataTableSkeleton } from "../../../components/Placeholders";
-import CategoryEdit from "./PostCategoryEdit";
-
+import { DataTableSkeleton } from '../../../components/Placeholders';
+import CategoryEdit from './PostCategoryEdit';
 
 const { Column, ColumnGroup } = Table;
 const { Search } = CoolInput;
 
-
 interface Props {
-    productRecord?: any;
+  productRecord?: any;
 }
 
 const NewBrandDetail = (props: Props) => {
-    const [categoryDetailState, handleCategoryDetailFetch] = useHandleFetch({}, 'postCategoryDetail');
-    const [categoryProductsState, handleCategoryProductsFetch] = useHandleFetch({}, 'categoryPostList');
+  const [categoryDetailState, handleCategoryDetailFetch] = useHandleFetch(
+    {},
+    'postCategoryDetail'
+  );
+  const [categoryProductsState, handleCategoryProductsFetch] = useHandleFetch(
+    {},
+    'categoryPostList'
+  );
 
-    const params = useParams();
-    const history = useHistory();
-    const categoryId = params['id'];
-    const [categoryEditVisible, setCategoryEditVisible] = useState(false);
-    const [categoryDetail,setcategoryDetail] = useState({}); 
+  const params = useParams();
+  const history = useHistory();
+  const categoryId = params['id'];
+  const [categoryEditVisible, setCategoryEditVisible] = useState(false);
+  const [categoryDetail, setcategoryDetail] = useState({});
 
+  useEffect(() => {
+    const getCategoryDetail = async () => {
+      const categoryDetailDataRes = await handleCategoryDetailFetch({
+        urlOptions: {
+          placeHolders: {
+            id: categoryId,
+          },
+        },
+      });
 
+      // @ts-ignore
+      if (categoryDetailDataRes) {
+        // @ts-ignore
+        setcategoryDetail(categoryDetailDataRes);
+      }
+    };
 
-    useEffect(() => {
+    getCategoryDetail();
+  }, [categoryId]);
 
-        const getCategoryDetail = async () => {
-            const categoryDetailDataRes =  await handleCategoryDetailFetch({
-                urlOptions: {
-                    placeHolders: {
-                        id: categoryId
+  useEffect(() => {
+    const getCategoryProducts = async () => {
+      await handleCategoryProductsFetch({
+        urlOptions: {
+          placeHolders: {
+            id: categoryId,
+          },
+        },
+      });
+    };
+
+    getCategoryProducts();
+  }, [categoryId]);
+
+  console.log('postcategoryDetail', categoryDetail);
+
+  console.log('brandParams', params);
+
+  const getImagesInCollumn = (imgs) => {
+    if (!imgs[0]) return false;
+    imgs = imgs.map((item) => item.cover);
+    const columns = {};
+
+    let localIndex = 0;
+    let columnNumber = 0;
+
+    imgs.forEach((item, index) => {
+      if (localIndex < 3) {
+        if (columns[columnNumber]) {
+          columns[columnNumber] = [...columns[columnNumber], item];
+        } else columns[columnNumber] = [item];
+
+        localIndex = localIndex + 1;
+        columnNumber = columnNumber + 1;
+      } else {
+        localIndex = 0;
+        columnNumber = 0;
+        console.log('localIndex', localIndex);
+      }
+    });
+
+    return columns;
+  };
+
+  const row =
+    categoryDetailState.done && categoryDetail && categoryDetail['image']
+      ? getImagesInCollumn(categoryDetail['image'])
+      : [];
+
+  return (
+    <div className='brandDetailContainer'>
+      <div className='brandDetailContainer__heading'>
+        <h3>Category Detail</h3>
+
+        {categoryDetailState.done &&
+          categoryDetail &&
+          Object.keys(categoryDetail).length > 0 && (
+            <>
+              <CategoryEdit
+                addNewCategoryVisible={categoryEditVisible}
+                setAddNewCategoryVisible={setCategoryEditVisible}
+                categoryDetailData={categoryDetail}
+                setcategoryDetailData={setcategoryDetail}
+              />
+
+              <Button
+                onClick={() => setCategoryEditVisible(true)}
+                type='link'
+                icon={<EditOutlined />}
+              >
+                Edit
+              </Button>
+            </>
+          )}
+      </div>
+      <Skeleton
+        avatar
+        paragraph={{ rows: 3 }}
+        loading={categoryDetailState.isLoading}
+      >
+        {categoryDetailState.done &&
+          categoryDetail &&
+          !(Object.keys(categoryDetail).length > 0) && (
+            <Empty
+              description='No  category found'
+              image={Empty.PRESENTED_IMAGE_SIMPLE}
+            />
+          )}
+
+        {categoryDetailState.done &&
+          categoryDetail &&
+          Object.keys(categoryDetail).length > 0 && (
+            <>
+              <div className='brandDetailContainer__header'>
+                <div className='brandDetailContainer__header-coverContainer brandDetailContainer__header-coverContainer-category'>
+                  <img
+                    src={
+                      categoryDetail['cover'] &&
+                      categoryDetail['cover']['cover']
                     }
-                }
-            }); 
+                    alt=''
+                  />
+                </div>
+                <div className='brandDetailContainer__header-info'>
+                  <h2>{categoryDetail['name']}</h2>
+                  <h3>{categoryDetail['description']}</h3>
 
-            // @ts-ignore
-            if(categoryDetailDataRes){
-                  // @ts-ignore
-                setcategoryDetail(categoryDetailDataRes)
+                  {categoryDetail['url'] && (
+                    <h3>
+                      URL:
+                      <span>{categoryDetail['url']}</span>
+                    </h3>
+                  )}
+                </div>
+              </div>
 
-            }
+              {categoryDetail['icon'] && (
+                <>
+                  <div className='brandDetailContainer__heading'>
+                    <h3>Icon</h3>
+                  </div>
 
-        };
-
-        getCategoryDetail();
-
-    }, [categoryId]);
-
-    useEffect(() => {
-
-        const getCategoryProducts = async () => {
-            await handleCategoryProductsFetch({
-                urlOptions: {
-                    placeHolders: {
-                        id: categoryId
-                    }
-                }
-            })
-        };
-
-        getCategoryProducts();
-
-    }, [categoryId]);
-
-
-
-
-    console.log('postcategoryDetail', categoryDetail);
-
-    console.log('brandParams', params);
-
-
-    const getImagesInCollumn = (imgs) => {
-        if (!imgs[0]) return false;
-        imgs = imgs.map(item => item.cover);
-        const columns = {};
-
-        let localIndex = 0;
-        let columnNumber = 0;
-
-
-        imgs.forEach((item, index) => {
-            if (localIndex < 3) {
-                if (columns[columnNumber]) {
-                    columns[columnNumber] = [...columns[columnNumber], item]
-                }
-                else columns[columnNumber] = [item];
-
-                localIndex = localIndex + 1;
-                columnNumber = columnNumber + 1;
-
-            }
-            else {
-                localIndex = 0;
-                columnNumber = 0;
-                console.log('localIndex', localIndex)
-            }
-        });
-
-        return columns;
-    }
-
-
-    const row = categoryDetailState.done && categoryDetail && categoryDetail['image'] ? getImagesInCollumn(categoryDetail['image']) : [];
-
-
-
-    return (
-        <div className='brandDetailContainer'>
-
-            <div className='brandDetailContainer__heading'>
-                <h3>
-                   Recipe Category Detail
-                </h3>
-
-                {categoryDetailState.done && categoryDetail && (Object.keys(categoryDetail).length > 0) && (
-                    <>
-                        <CategoryEdit
-                            addNewCategoryVisible={categoryEditVisible}
-                            setAddNewCategoryVisible={setCategoryEditVisible}
-                            categoryDetailData={categoryDetail}
-                            setcategoryDetailData={setcategoryDetail}
-
-                        />
-
-                        <Button
-                            onClick={() => setCategoryEditVisible(true)}
-                            type='link'
-                            icon={<EditOutlined />}
-                        >
-                            Edit
-                      </Button>
-                    </>
-                )}
-
-            </div>
-            <Skeleton
-                avatar paragraph={{ rows: 3 }}
-                loading={categoryDetailState.isLoading}>
-                {categoryDetailState.done && categoryDetail && !(Object.keys(categoryDetail).length > 0) && (
-                    <Empty description='No Recipe category found' image={Empty.PRESENTED_IMAGE_SIMPLE} />
-                )}
-
-
-
-                {categoryDetailState.done && categoryDetail && (Object.keys(categoryDetail).length > 0) && (
-                    <>
-                        <div className='brandDetailContainer__header'>
-                            <div className='brandDetailContainer__header-coverContainer brandDetailContainer__header-coverContainer-category'>
-                                <img src={categoryDetail['cover'] && categoryDetail['cover']['cover']} alt="" />
-                            </div>
-                            <div className='brandDetailContainer__header-info'>
-                                <h2>
-                                    {categoryDetail['name']}
-                                </h2>
-                                <h3>
-                                    {categoryDetail['description']}
-                                </h3>
-                          
-                                {categoryDetail['url'] && (
-                                    <h3>
-                                        URL:
-                                        <span>
-                                            {categoryDetail['url']}
-                                        </span>
-
-                                    </h3>
-                                )}
-
-                            </div>
-                        </div>
-
-
-                        {categoryDetail['icon'] && (
-                            <>
-                                <div className='brandDetailContainer__heading'>
-                                    <h3>
-                                        Icon
-                                    </h3>
-                                </div>
-
-                                <div className='brandDetailContainer__inlineBox'>
-                                    <div className='brandDetailContainer__header-coverContainer brandDetailContainer__header-coverContainer-icon'>
-                                        <img src={categoryDetail['icon'] && categoryDetail['icon']} alt="" />
-                                    </div>
-
-                                </div>
-
-                                <div style={{
-                                    marginBottom: "25px"
-                                }}></div>
-                            </>
-                        )}
-
-
-                        {categoryDetail['image'] && categoryDetail['image'].length > 0 && (
-                            <>
-                                <div className='brandDetailContainer__heading'>
-                                    <h3>
-                                        Image Gallary
-                                   </h3>
-                                </div>
-
-                                <div className='brandDetailContainer__imageGallary'>
-                                    <div className='imgGallaryContainer'>
-
-                                        <div className="imgGallary-row">
-                                            {row && Object.keys(row).map(column => {
-                                                return (
-                                                    <div className="imgGallary-column">
-                                                        {row[column] && row[column].map(img => {
-                                                            return <img 
-                                                            alt='..'
-                                                            src={img} style={{
-                                                                width: '100%'
-                                                            }} />
-                                                        })}
-
-                                                    </div>
-                                                )
-                                            })}
-
-
-                                        </div>
-                                    </div>
-
-                                </div>
-
-                                <div style={{
-                                    marginBottom: "25px"
-                                }}></div>
-                            </>
-                        )}
-
-
-                    </>
-
-                )}
-
-            </Skeleton>
-
-            <div className='brandDetailContainer__heading'>
-                <h3>
-                    Recipes
-                </h3>
-            </div>
-            <div className='brandDetailContainer__body'>
-                {categoryProductsState.isLoading && <DataTableSkeleton />}
-                {categoryProductsState.done && !(categoryProductsState.data.length > 0) && (
-                    <div style={{
-                        marginTop: '100px'
-                    }}>
-                        <Empty description='No recipes exists in this category' image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                  <div className='brandDetailContainer__inlineBox'>
+                    <div className='brandDetailContainer__header-coverContainer brandDetailContainer__header-coverContainer-icon'>
+                      <img
+                        src={categoryDetail['icon'] && categoryDetail['icon']}
+                        alt=''
+                      />
                     </div>
-                )}
+                  </div>
 
-                {categoryProductsState.done && categoryProductsState.data && categoryProductsState.data.length > 0 && (
-                    <>
-                        <Table
-                            style={{
-                                paddingTop: '10px',
-                                borderRadius: '5px !important',
-                                overflow: 'hidden',
-                                boxShadow: '0 0.125rem 0.625rem rgba(227, 231, 250, 0.3), 0 0.0625rem 0.125rem rgba(206, 220, 233, 0.4)'
-                            }}
+                  <div
+                    style={{
+                      marginBottom: '25px',
+                    }}
+                  ></div>
+                </>
+              )}
 
-                            size='small'
-                            dataSource={categoryProductsState.data}
-                            tableLayout={'auto'}
-                            onHeaderRow={column => {
-                                return {
-                                    style: {
-                                        color: 'red !important'
-                                    }
+              {categoryDetail['image'] && categoryDetail['image'].length > 0 && (
+                <>
+                  <div className='brandDetailContainer__heading'>
+                    <h3>Image Gallary</h3>
+                  </div>
 
-                                };
-                            }}
-                        >
-                            
-                <Column
-                    title=""
-                    dataIndex="cover"
-                    key="id"
-                    width={'80px'}
+                  <div className='brandDetailContainer__imageGallary'>
+                    <div className='imgGallaryContainer'>
+                      <div className='imgGallary-row'>
+                        {row &&
+                          Object.keys(row).map((column) => {
+                            return (
+                              <div className='imgGallary-column'>
+                                {row[column] &&
+                                  row[column].map((img) => {
+                                    return (
+                                      <img
+                                        alt='..'
+                                        src={img}
+                                        style={{
+                                          width: '100%',
+                                        }}
+                                      />
+                                    );
+                                  })}
+                              </div>
+                            );
+                          })}
+                      </div>
+                    </div>
+                  </div>
 
-                    className='classnameofthecolumn'
+                  <div
+                    style={{
+                      marginBottom: '25px',
+                    }}
+                  ></div>
+                </>
+              )}
+            </>
+          )}
+      </Skeleton>
 
-                    render={(cover, record: any) => (
-                        <>
-                            <img
-                                onClick={() => {
-                                    history.push(`/admin/posts/${record.id}`)
-                                }}
-                                src={cover} alt='cover img' style={{
-                                    height: '40px',
-                                    width: '40px',
-                                    objectFit: "contain",
-                                    borderRadius: '3px',
-                                    cursor: 'pointer'
-                                }} />
-                        </>
-                    )}
-                />
-
-                <Column
-                    title="Name"
-                    dataIndex="name"
-                    key="id"
-                    className='classnameofthecolumn'
-                    render={(text, record: any) => (
-                        <>
-
-                            <h4
-                                onClick={() => {
-                                    history.push(`/admin/posts/${record.id}`)
-                                    // setBrandDetailVisible(true);
-                                }}
-                                style={{
-                                    fontWeight: 400,
-                                    color: '#555',
-                                    cursor: 'pointer'
-                                }}>
-                                {text}
-                            </h4>
-
-
-                        </>
-                    )}
-                />
-
-
-
-                <Column
-                    title="Preparation Time"
-                    dataIndex="preparationTime"
-                    key="id"
-                    className='classnameofthecolumn'
-
-                />
-
-
-                <Column
-                    title="Cooking Time"
-                    dataIndex="cookingTime"
-                    key="id"
-                    className='classnameofthecolumn'
-                />
-
-                
-                <Column
-                    title="People"
-                    dataIndex="servingSize"
-                    key="id"
-                    className='classnameofthecolumn'
-                />
-
-
-            
-                        </Table>
-                    </>
-                )}
-
+      <div className='brandDetailContainer__heading'>
+        <h3>s</h3>
+      </div>
+      <div className='brandDetailContainer__body'>
+        {categoryProductsState.isLoading && <DataTableSkeleton />}
+        {categoryProductsState.done &&
+          !(categoryProductsState.data.length > 0) && (
+            <div
+              style={{
+                marginTop: '100px',
+              }}
+            >
+              <Empty
+                description='No Notice exists in this category'
+                image={Empty.PRESENTED_IMAGE_SIMPLE}
+              />
             </div>
-        </div>
-    )
-}
+          )}
 
-export default NewBrandDetail
+        {categoryProductsState.done &&
+          categoryProductsState.data &&
+          categoryProductsState.data.length > 0 && (
+            <>
+              <Table
+                style={{
+                  paddingTop: '10px',
+                  borderRadius: '5px !important',
+                  overflow: 'hidden',
+                  boxShadow:
+                    '0 0.125rem 0.625rem rgba(227, 231, 250, 0.3), 0 0.0625rem 0.125rem rgba(206, 220, 233, 0.4)',
+                }}
+                size='small'
+                dataSource={categoryProductsState.data}
+                tableLayout={'auto'}
+                onHeaderRow={(column) => {
+                  return {
+                    style: {
+                      color: 'red !important',
+                    },
+                  };
+                }}
+              >
+                <Column
+                  title=''
+                  dataIndex='cover'
+                  key='id'
+                  width={'80px'}
+                  className='classnameofthecolumn'
+                  render={(cover, record: any) => (
+                    <>
+                      <img
+                        onClick={() => {
+                          history.push(`/admin/posts/${record.id}`);
+                        }}
+                        src={cover}
+                        alt='cover img'
+                        style={{
+                          height: '40px',
+                          width: '40px',
+                          objectFit: 'contain',
+                          borderRadius: '3px',
+                          cursor: 'pointer',
+                        }}
+                      />
+                    </>
+                  )}
+                />
+
+                <Column
+                  title='Name'
+                  dataIndex='name'
+                  key='id'
+                  className='classnameofthecolumn'
+                  render={(text, record: any) => (
+                    <>
+                      <h4
+                        onClick={() => {
+                          history.push(`/admin/posts/${record.id}`);
+                          // setBrandDetailVisible(true);
+                        }}
+                        style={{
+                          fontWeight: 400,
+                          color: '#555',
+                          cursor: 'pointer',
+                        }}
+                      >
+                        {text}
+                      </h4>
+                    </>
+                  )}
+                />
+
+                <Column
+                  title='Preparation Time'
+                  dataIndex='preparationTime'
+                  key='id'
+                  className='classnameofthecolumn'
+                />
+
+                <Column
+                  title='Cooking Time'
+                  dataIndex='cookingTime'
+                  key='id'
+                  className='classnameofthecolumn'
+                />
+
+                <Column
+                  title='People'
+                  dataIndex='servingSize'
+                  key='id'
+                  className='classnameofthecolumn'
+                />
+              </Table>
+            </>
+          )}
+      </div>
+    </div>
+  );
+};
+
+export default NewBrandDetail;

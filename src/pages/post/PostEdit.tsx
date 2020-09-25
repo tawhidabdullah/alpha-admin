@@ -472,7 +472,7 @@ const ModalComponentChild = ({
 
     // @ts-ignore
     if (addProductRes && addProductRes.status === 'ok') {
-      openSuccessNotification('Recipe Updated');
+      openSuccessNotification('Notice Updated');
 
       setPostDetailData({
         ...addProductRes,
@@ -605,7 +605,7 @@ const ModalComponentChild = ({
             <div className='addProductGridContainer__left'>
               <div className='addProductGridContainer__name'>
                 <div className='addProductGridContainer__item-header'>
-                  <h3>Recipe Information</h3>
+                  <h3>Notice Information</h3>
 
                   <div
                     className={
@@ -658,7 +658,7 @@ const ModalComponentChild = ({
                     }}
                   />
 
-                  <Input
+                  {/* <Input
                     label='Preparation Time'
                     value={values.preparationTime}
                     placeHolder='15 min'
@@ -780,7 +780,7 @@ const ModalComponentChild = ({
                       handleChange(e);
                       setFieldTouched('bnServingSize');
                     }}
-                  />
+                  /> */}
 
                   <Input
                     label='URL'
@@ -929,7 +929,7 @@ const ModalComponentChild = ({
                 </div>
               </div>
 
-              <div className='addProductGridContainer__price'>
+              {/* <div className='addProductGridContainer__price'>
                 <div className='addProductGridContainer__item-header'>
                   <h3>Products</h3>
 
@@ -964,7 +964,7 @@ const ModalComponentChild = ({
                     setProductList={setProductList}
                   />
                 </div>
-              </div>
+              </div> */}
 
               <div className='addProductGridContainer__image'>
                 <div className='addProductGridContainer__item-header'>
@@ -1195,7 +1195,7 @@ const ModalComponentChild = ({
               <div className='addProductGridContainer__category'>
                 <div className='addProductGridContainer-rightItemContainer'>
                   <div className='addProductGridContainer-rightItemContainer-header'>
-                    <h3>Recipe Categories</h3>
+                    <h3>Notice Categories</h3>
 
                     <Tooltip
                       color='red'
@@ -1233,7 +1233,7 @@ const ModalComponentChild = ({
               <div className='addProductGridContainer__tag'>
                 <div className='addProductGridContainer-rightItemContainer'>
                   <div className='addProductGridContainer-rightItemContainer-header'>
-                    <h3>Recipe Tags</h3>
+                    <h3>Notice Tags</h3>
                   </div>
                   <div className='addProductGridContainer-rightItemContainer-body'>
                     <Tags
@@ -1313,7 +1313,7 @@ const AddNewProduct = ({
           padding: 0,
         }}
         width={'70vw'}
-        title='Edit Recipe'
+        title='Edit Notice'
         visible={addNewCategoryVisible}
         // onOk={(e: any) => handleSubmit(e)}
         onCancel={handleCancel}

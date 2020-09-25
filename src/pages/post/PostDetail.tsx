@@ -111,7 +111,7 @@ const NewBrandDetail = (props: Props) => {
   return (
     <div className='brandDetailContainer'>
       <div className='brandDetailContainer__heading'>
-        <h3>Recipe Detail</h3>
+        <h3>Notice Detail</h3>
 
         {productDetailState.done &&
           postDetailData &&
@@ -142,7 +142,7 @@ const NewBrandDetail = (props: Props) => {
           postDetailData &&
           !(Object.keys(postDetailData).length > 0) && (
             <Empty
-              description='No Recipe found'
+              description='No Notice found'
               image={Empty.PRESENTED_IMAGE_SIMPLE}
             />
           )}
@@ -271,7 +271,7 @@ const NewBrandDetail = (props: Props) => {
                       }}
                     >
                       <Empty
-                        description='No Products exists for this Recipe'
+                        description='No Products exists for this Notice'
                         image={Empty.PRESENTED_IMAGE_SIMPLE}
                       />
                     </div>

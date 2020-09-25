@@ -19,7 +19,7 @@ import {
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { useHistory } from 'react-router';
-import Moment from 'react-moment';
+import moment from 'moment';
 
 import {
   FileOutlined,
@@ -98,7 +98,7 @@ const MyTable = ({ data, setTagList }) => {
 
     // @ts-ignore
     if (deleteTagRes && deleteTagRes.status === 'ok') {
-      openSuccessNotification('Deleted Recipe');
+      openSuccessNotification('Deleted Notice');
       const newtagList = data.filter((item) => item.id !== id);
       setTagList(newtagList);
     }
@@ -175,7 +175,7 @@ const MyTable = ({ data, setTagList }) => {
             </>
           )}
         />
-
+        {/* 
         <Column
           title='Preparation Time'
           dataIndex='preparationTime'
@@ -195,6 +195,26 @@ const MyTable = ({ data, setTagList }) => {
           dataIndex='servingSize'
           key='id'
           className='classnameofthecolumn'
+        /> */}
+
+        <Column
+          title='Created'
+          dataIndex='added'
+          key='id'
+          className='classnameofthecolumn'
+          render={(text, record: any) => (
+            <>{text && moment(text).format('MMMM Do YYYY, h:mm a')}</>
+          )}
+        />
+
+        <Column
+          title='Updated'
+          dataIndex='updated'
+          key='id'
+          className='classnameofthecolumn'
+          render={(text, record: any) => (
+            <>{text && moment(text).format('MMMM Do YYYY, h:mm a')}</>
+          )}
         />
 
         <Column
@@ -205,7 +225,7 @@ const MyTable = ({ data, setTagList }) => {
           render={(text, record: any) => (
             <Space size='middle'>
               <a href='##'>
-                <Tooltip placement='top' title='Edit recipe'>
+                <Tooltip placement='top' title='Edit notice'>
                   <span
                     className='iconSize'
                     onClick={() => {
@@ -302,11 +322,11 @@ const TagList = ({}: Props) => {
       <div className='categoryListContainer'>
         <div className='categoryListContainer__header'>
           <div className='categoryListContainer__header-searchBar-tag'>
-            <h2 className='categoryListContainer__header-title'>Recipes</h2>
+            <h2 className='categoryListContainer__header-title'>Notices</h2>
             <Search
               enterButton={false}
               className='searchbarClassName'
-              placeholder='search recipes..'
+              placeholder='search notices..'
               onChange={(e) => handleSearch(e.target.value)}
             />
           </div>
@@ -332,7 +352,7 @@ const TagList = ({}: Props) => {
               }}
             >
               <Empty
-                description='No Recipe found'
+                description='No Notice found'
                 image={Empty.PRESENTED_IMAGE_SIMPLE}
               />
             </div>

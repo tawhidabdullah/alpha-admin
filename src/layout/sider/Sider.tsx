@@ -107,19 +107,19 @@ const SiderComponent = ({ roles }: any) => {
         <SubMenu
           key='sub333'
           icon={<GoldOutlined />}
-          title='Recipes'
+          title='Notices'
           // onTitleClick={() => props.history.push('/product')}
         >
           <Menu.Item icon={<RadarChartOutlined />} key='655'>
-            <Link to='/admin/posts'>List Recipe</Link>
+            <Link to='/admin/posts'>List Notice</Link>
           </Menu.Item>
 
           <Menu.Item icon={<TagOutlined />} key='2222444'>
-            <Link to='/admin/posts/category'>Recipe Category</Link>
+            <Link to='/admin/posts/category'>Notice Category</Link>
           </Menu.Item>
 
           <Menu.Item key='955' icon={<TagsOutlined />}>
-            <Link to='/admin/posts/tag'>Recipe Tags</Link>
+            <Link to='/admin/posts/tag'>Notice Tags</Link>
           </Menu.Item>
         </SubMenu>
 

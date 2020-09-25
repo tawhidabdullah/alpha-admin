@@ -47,7 +47,7 @@ import AddNewTag from './AddNewPostTag';
 
 const openSuccessNotification = (message?: any) => {
   notification.success({
-    message: message || 'Recipe Tag Created',
+    message: message || ' Tag Created',
     description: '',
     icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
   });
@@ -97,7 +97,7 @@ const MyTable = ({ data, setTagList }) => {
 
     // @ts-ignore
     if (deleteTagRes && deleteTagRes.status === 'ok') {
-      openSuccessNotification('Deleted Recipe Tag');
+      openSuccessNotification('Deleted  Tag');
       const newtagList = data.filter((item) => item.id !== id);
       setTagList(newtagList);
     }
@@ -163,7 +163,7 @@ const MyTable = ({ data, setTagList }) => {
           render={(text, record: any) => (
             <Space size='middle'>
               <a href='##'>
-                <Tooltip placement='top' title='Edit Recipe tag'>
+                <Tooltip placement='top' title='Edit  tag'>
                   <span
                     className='iconSize'
                     onClick={() => {
@@ -211,7 +211,7 @@ const TagList = ({}: Props) => {
 
   const [tagState, handleTagListFetch] = useHandleFetch({}, 'postTagList');
 
-  console.log('recipetaglist', tagState);
+  console.log('taglist', tagState);
 
   useEffect(() => {
     const setTags = async () => {
@@ -238,12 +238,12 @@ const TagList = ({}: Props) => {
       <div className='categoryListContainer'>
         <div className='categoryListContainer__header'>
           <div className='categoryListContainer__header-searchBar-tag'>
-            <h2 className='categoryListContainer__header-title'>Recipe Tags</h2>
+            <h2 className='categoryListContainer__header-title'> Tags</h2>
 
             <Search
               enterButton={false}
               className='searchbarClassName'
-              placeholder='search recipe tags..'
+              placeholder='search  tags..'
               onChange={(e) => handleSearch(e.target.value)}
             />
           </div>
@@ -269,7 +269,7 @@ const TagList = ({}: Props) => {
               }}
             >
               <Empty
-                description='No Recipe tags found'
+                description='No  tags found'
                 image={Empty.PRESENTED_IMAGE_SIMPLE}
               />
             </div>

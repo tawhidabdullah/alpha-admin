@@ -46,7 +46,7 @@ const validationSchema = Yup.object().shape({
 
 const openSuccessNotification = (message?: any) => {
   notification.success({
-    message: message || 'Recipe Tag Updated',
+    message: message || ' Tag Updated',
     description: '',
     icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
   });

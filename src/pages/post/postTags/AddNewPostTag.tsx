@@ -47,7 +47,7 @@ const validationSchema = Yup.object().shape({
 
 const openSuccessNotification = (message?: any) => {
   notification.success({
-    message: message || 'Recipe Tag Created',
+    message: message || ' Tag Created',
     description: '',
     icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
   });
@@ -190,7 +190,7 @@ const AddNewBrand = ({
             style={{
               top: '40px',
             }}
-            title='Add New Recipe Tag'
+            title='Add New  Tag'
             visible={addNewCategoryVisible}
             onOk={(e: any) => handleSubmit(e)}
             onCancel={handleCancel}

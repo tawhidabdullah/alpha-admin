@@ -32,7 +32,7 @@ const { Search } = Input;
 
 const openSuccessNotification = (message?: any) => {
   notification.success({
-    message: message || 'Post Recipe Created',
+    message: message || 'Post  Created',
     description: '',
     icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
   });
@@ -72,7 +72,7 @@ const MyTable = ({ data, setcategoryList, history }: myTableProps) => {
 
     // @ts-ignore
     if (deleteCategoryRes && deleteCategoryRes.status === 'ok') {
-      openSuccessNotification('Deleted Recipe Category');
+      openSuccessNotification('Deleted  Category');
       const newCategoryList = data.filter((item) => item.id !== id);
       setcategoryList(newCategoryList);
     }
@@ -158,7 +158,7 @@ const MyTable = ({ data, setcategoryList, history }: myTableProps) => {
             /> */}
 
         <Column
-          title='Recipes'
+          title='s'
           dataIndex='productCount'
           key='id'
           className='classnameofthecolumn'
@@ -297,14 +297,12 @@ const CategoryList = ({ history }: Props) => {
       <div className='categoryListContainer'>
         <div className='categoryListContainer__header'>
           <div className='categoryListContainer__header-searchBar'>
-            <h2 className='categoryListContainer__header-title'>
-              Recipe Categories
-            </h2>
+            <h2 className='categoryListContainer__header-title'>Categories</h2>
 
             <Search
               enterButton={false}
               className='searchbarClassName'
-              placeholder='search recipe categories..'
+              placeholder='search  categories..'
               onChange={(e) => handleSearch(e.target.value)}
             />
           </div>
@@ -343,7 +341,7 @@ const CategoryList = ({ history }: Props) => {
                 marginTop: '50px',
               }}
             >
-              <Empty title='No Recipe Category found' />
+              <Empty title='No Category found' />
             </div>
           )}
         </div>

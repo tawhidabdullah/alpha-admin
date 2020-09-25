@@ -170,7 +170,7 @@ const AddNewProduct = ({
 
     // @ts-ignore
     if (addProductRes && addProductRes.status === 'ok') {
-      openSuccessNotification('Recipe Created');
+      openSuccessNotification('notice Created');
 
       setBundleList([
         {
@@ -377,7 +377,7 @@ const AddNewProduct = ({
               padding: 0,
             }}
             width={'70vw'}
-            title='Add New Recipe'
+            title='Add New Notice'
             visible={addNewCategoryVisible}
             onOk={(e: any) => handleSubmit(e)}
             onCancel={handleCancel}
@@ -391,7 +391,7 @@ const AddNewProduct = ({
               <div className='addProductGridContainer__left'>
                 <div className='addProductGridContainer__name'>
                   <div className='addProductGridContainer__item-header'>
-                    <h3>Recipe Information</h3>
+                    <h3>Notice Information</h3>
 
                     <div
                       className={
@@ -406,7 +406,7 @@ const AddNewProduct = ({
                   <div className='addProductGridContainer__item-body'>
                     <Input
                       label='Name'
-                      placeHolder='Rafti oxy'
+                      placeHolder=''
                       value={values.name}
                       name='name'
                       isError={
@@ -428,7 +428,7 @@ const AddNewProduct = ({
                     <Input
                       label='BN Name'
                       value={values.bnName}
-                      placeHolder={'রাফতি অক্স'}
+                      placeHolder={''}
                       name='bnName'
                       isError={
                         (touched.bnName && errors.bnName) ||
@@ -446,7 +446,7 @@ const AddNewProduct = ({
                       }}
                     />
 
-                    <Input
+                    {/* <Input
                       label='Preparation Time'
                       value={values.preparationTime}
                       placeHolder='15 min'
@@ -570,7 +570,7 @@ const AddNewProduct = ({
                         handleChange(e);
                         setFieldTouched('bnServingSize');
                       }}
-                    />
+                    /> */}
 
                     <Input
                       label='URL'
@@ -719,7 +719,7 @@ const AddNewProduct = ({
                   </div>
                 </div>
 
-                <div className='addProductGridContainer__price'>
+                {/* <div className='addProductGridContainer__price'>
                   <div className='addProductGridContainer__item-header'>
                     <h3>Products</h3>
 
@@ -754,7 +754,7 @@ const AddNewProduct = ({
                       setProductList={setProductList}
                     />
                   </div>
-                </div>
+                </div> */}
 
                 <div className='addProductGridContainer__image'>
                   <div className='addProductGridContainer__item-header'>
@@ -964,7 +964,7 @@ const AddNewProduct = ({
                 <div className='addProductGridContainer__category'>
                   <div className='addProductGridContainer-rightItemContainer'>
                     <div className='addProductGridContainer-rightItemContainer-header'>
-                      <h3>Recipe Categories</h3>
+                      <h3>Notice Categories</h3>
 
                       <Tooltip
                         color='red'
@@ -1002,7 +1002,7 @@ const AddNewProduct = ({
                 <div className='addProductGridContainer__tag'>
                   <div className='addProductGridContainer-rightItemContainer'>
                     <div className='addProductGridContainer-rightItemContainer-header'>
-                      <h3>Recipe Tags</h3>
+                      <h3>Notice Tags</h3>
                     </div>
                     <div className='addProductGridContainer-rightItemContainer-body'>
                       <Tags
