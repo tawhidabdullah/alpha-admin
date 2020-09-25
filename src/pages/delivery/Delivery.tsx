@@ -129,7 +129,7 @@ const MyTable = ({ data, setRegionList, roles }: myTableProps) => {
             <>
               {tags &&
                 tags.length > 0 &&
-                tags.map((tag) => (
+                tags.slice(0, 3).map((tag) => (
                   <Tag
                     style={{
                       borderRadius: '5px',
@@ -142,7 +142,16 @@ const MyTable = ({ data, setRegionList, roles }: myTableProps) => {
                   </Tag>
                 ))}
 
-              {/* {tags && tags.length === 3 && '.......'} */}
+              <span
+                style={{
+                  color: '#1890ff',
+                }}
+              >
+                {/* {tags &&
+                  tags.length > 3 &&
+                  `.....${tags.length - tags.slice(0, 3).length}more`} */}
+                {tags && tags.slice(0, 3).length === 3 && `more.....`}
+              </span>
             </>
           )}
         />
