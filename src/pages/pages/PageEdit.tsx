@@ -171,6 +171,7 @@ const AddNewPage = ({}: Props) => {
   }, [tagDetailData]);
 
   const handleAddPageSubmit = async (values: any, actions: any) => {
+    const url = values.url.trim()  ? values.url.replace('/page/','') : ''
     const addOrderRes = await handleAddPageFetch({
       urlOptions: {
         placeHolders: {
@@ -180,7 +181,7 @@ const AddNewPage = ({}: Props) => {
       body: {
         name: values.name.trim(),
         content: content,
-        url: values.url.trim(),
+        url: url,
         cover: myImages ? myImages[0] && myImages[0].id : '',
         metaTitle: values.metaTitle,
         metaDescription: values.metaDescription,
@@ -442,7 +443,7 @@ const AddNewPage = ({}: Props) => {
               </div>
 
               <Input
-                label='URL'
+                label='Slug'
                 value={values.url}
                 name='url'
                 isError={
