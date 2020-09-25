@@ -123,9 +123,6 @@ const SiderComponent = ({ roles }: any) => {
           </Menu.Item>
         </SubMenu>
 
-        {/* <Menu.Item key='9' icon={<TagsOutlined />}>
-					<Link to='/tag'>Tags</Link>
-				</Menu.Item> */}
         {/* <Menu.Item key='1012' icon={<FileExcelOutlined />}>
                     <Link to='/admin/posts'>
                         Recipies

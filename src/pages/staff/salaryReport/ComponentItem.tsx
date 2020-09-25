@@ -83,9 +83,9 @@ const Complete = ({
   console.log('componentItem322', componentItem);
   return (
     <>
-      <div className='componentItemsContainer__item'>
+      <div className='staffComponentItemsContainer__item'>
         <div
-          className='componentItemsContainer__name'
+          className='staffComponentItemsContainer__name'
           style={{
             marginTop: index === 0 ? '-5px' : '-35px',
           }}
@@ -113,7 +113,7 @@ const Complete = ({
           style={{
             marginTop: index === 0 ? '-5px' : '-35px',
           }}
-          className='componentItemsContainer__salary'
+          className='staffComponentItemsContainer__salary'
         >
           {!index && (
             <h3 className='inputFieldLabel-small' style={{}}>
@@ -133,7 +133,7 @@ const Complete = ({
           </h5>
         </div>
 
-        <div className='componentItemsContainer__input'>
+        <div className='staffComponentItemsContainer__input'>
           {!index && (
             <h3
               className='inputFieldLabel-small'
@@ -154,7 +154,7 @@ const Complete = ({
             />
           </div>
         </div>
-        <div className='componentItemsContainer__input'>
+        <div className='staffComponentItemsContainer__input'>
           {!index && (
             <h3
               className='inputFieldLabel-small'
@@ -174,7 +174,7 @@ const Complete = ({
             onChange={handleComponentItemsChange}
           />
         </div>
-        <div className='componentItemsContainer__input'>
+        <div className='staffComponentItemsContainer__input'>
           {!index && (
             <h3
               className='inputFieldLabel-small'
@@ -194,7 +194,7 @@ const Complete = ({
             onChange={handleComponentItemsChange}
           />
         </div>
-        <div className='componentItemsContainer__input'>
+        <div className='staffComponentItemsContainer__input'>
           {!index && (
             <h3
               className='inputFieldLabel-small'
@@ -217,7 +217,7 @@ const Complete = ({
 
         <div
           onClick={() => handleAttributeDelete()}
-          className='componentItemsContainer__input'
+          className='staffComponentItemsContainer__input'
           style={{
             marginTop: index === 0 ? '15px' : '-10px',
           }}
