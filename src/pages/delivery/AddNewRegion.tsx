@@ -2,6 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
+import Empty from '../../components/Empty';
+
+// /
+import CitySelectForDeliveryRegion from './CitySelectForDeliveryRegion';
+
 import { useHandleFetch } from '../../hooks';
 // import third party ui lib
 import {
@@ -12,8 +17,8 @@ import {
   Button,
   notification,
   Modal,
-  Empty,
   Form,
+  Spin,
 } from 'antd';
 
 import {
@@ -82,6 +87,9 @@ const AddNewRegion = ({
   const [countryOptions, setcountryOptions] = useState([]);
   const [cityOptions, setcityOptions] = useState([]);
 
+  const [accesscheckedList, setAccessCheckedList] = useState([]);
+  const [checkAll, setCheckAll] = useState(false);
+
   const [countryListState, handleCountryListFetch] = useHandleFetch(
     [],
     'countryList'
@@ -118,7 +126,7 @@ const AddNewRegion = ({
           pickUpLocation: values.pickUpLocation,
           time: values.time,
           country: selectedCountryValue,
-          city: selectedCityValue,
+          city: accesscheckedList,
           charge,
         },
       });
@@ -410,87 +418,6 @@ const AddNewRegion = ({
               />
             </div>
 
-            <div className='dubbleRowInputs'>
-              <div className='dubbleRowInputs__item'>
-                <h3 className='inputFieldLabel'>Country</h3>
-                <Form.Item
-                  validateStatus={
-                    addRegionState.error['error']['country'] ? 'error' : ''
-                  }
-                  help={addRegionState.error['error']['country']}
-                >
-                  <Select
-                    notFoundContent={
-                      <Empty
-                        description='No Country Found'
-                        image={Empty.PRESENTED_IMAGE_SIMPLE}
-                      />
-                    }
-                    showSearch
-                    style={{ width: '100%' }}
-                    placeholder='Select a Country'
-                    optionFilterProp='children'
-                    onChange={onChangeCountry}
-                    filterOption={(input, option) =>
-                      option.children
-                        .toLowerCase()
-                        .indexOf(input.toLowerCase()) >= 0
-                    }
-                  >
-                    {countryListState.done &&
-                      countryListState.data.length > 0 &&
-                      countryOptions.map((option) => {
-                        return (
-                          <Option value={option.value}>{option.name}</Option>
-                        );
-                      })}
-                  </Select>
-                </Form.Item>
-              </div>
-              <div className='dubbleRowInputs__item'>
-                <h3 className='inputFieldLabel'>City</h3>
-                <Form.Item
-                  validateStatus={
-                    addRegionState.error['error']['city'] ? 'error' : ''
-                  }
-                  help={addRegionState.error['error']['city']}
-                >
-                  <Select
-                    notFoundContent={
-                      <Empty
-                        description='First Select a Country'
-                        image={Empty.PRESENTED_IMAGE_SIMPLE}
-                      />
-                    }
-                    mode='multiple'
-                    showSearch
-                    style={{ width: '100%' }}
-                    placeholder='Select a city'
-                    optionFilterProp='children'
-                    onChange={onChangeCity}
-                    filterOption={(input, option) =>
-                      option.children
-                        .toLowerCase()
-                        .indexOf(input.toLowerCase()) >= 0
-                    }
-                  >
-                    {cityListState.done &&
-                      cityListState.data.length > 0 &&
-                      cityOptions.map((option) => {
-                        return (
-                          <Option value={option.value}>{option.name}</Option>
-                        );
-                      })}
-                  </Select>
-                </Form.Item>
-              </div>
-            </div>
-
-            <div
-              style={{
-                marginTop: '12px',
-              }}
-            ></div>
             <h3 className='inputFieldLabel'>Delivery Charges</h3>
 
             <Form.Item
@@ -524,6 +451,114 @@ const AddNewRegion = ({
             >
               Add Charge
             </Button>
+
+            <div
+              style={{
+                marginTop: '15px',
+              }}
+            ></div>
+            <h3 className='inputFieldLabel'>Country</h3>
+            <Form.Item
+              validateStatus={
+                addRegionState.error['error']['country'] ? 'error' : ''
+              }
+              help={addRegionState.error['error']['country']}
+            >
+              <Select
+                notFoundContent={
+                  <Empty title='No Country Found' height={200} />
+                }
+                showSearch
+                style={{ width: '100%' }}
+                placeholder='Select a Country'
+                optionFilterProp='children'
+                onChange={onChangeCountry}
+                filterOption={(input, option) =>
+                  option.children.toLowerCase().indexOf(input.toLowerCase()) >=
+                  0
+                }
+              >
+                {countryListState.done &&
+                  countryListState.data.length > 0 &&
+                  countryOptions.map((option) => {
+                    return <Option value={option.value}>{option.name}</Option>;
+                  })}
+              </Select>
+            </Form.Item>
+
+            <div
+              style={{
+                marginTop: '15px',
+              }}
+            ></div>
+            <h3 className='inputFieldLabel'>Cities</h3>
+
+            {cityListState.done && selectedCountryValue && !cityOptions[0] && (
+              <>
+                <div
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Empty title='No City found' height={100} />
+                </div>
+              </>
+            )}
+
+            {!selectedCountryValue && (
+              <>
+                <div
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    margin: '50px 0',
+                  }}
+                >
+                  <Empty title='Select Country first' height={100} />
+                </div>
+              </>
+            )}
+
+            {cityListState.isLoading && (
+              <div
+                style={{
+                  padding: '15px 0',
+                  width: '100%',
+                  height: '100%',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+              >
+                <Spin />
+              </div>
+            )}
+
+            {cityOptions && cityOptions.length > 0 && (
+              <Form.Item
+                validateStatus={
+                  addRegionState.error['error']['city'] ? 'error' : ''
+                }
+                help={addRegionState.error['error']['city']}
+              >
+                <CitySelectForDeliveryRegion
+                  checkAll={checkAll}
+                  setCheckAll={setCheckAll}
+                  plainOptions={cityOptions}
+                  setPlainOptions={setcityOptions}
+                  checkedList={accesscheckedList}
+                  setCheckedList={setAccessCheckedList}
+                  cityListState={cityListState}
+                />
+              </Form.Item>
+            )}
           </Modal>
         </>
       )}
