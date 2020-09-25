@@ -145,6 +145,7 @@ const QuickEdit = ({
       const updatedItem = Object.assign({}, regionList[index], {
         // @ts-ignore
         ...addRegionRes,
+        id: customer.id,
       });
       const updateRegionList = [
         ...regionList.slice(0, index),

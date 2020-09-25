@@ -104,7 +104,7 @@ const SiderComponent = ({ roles }: any) => {
           </SubMenu>
         )}
 
-        {/* <SubMenu
+        <SubMenu
           key='sub333'
           icon={<GoldOutlined />}
           title='Recipes'
@@ -121,11 +121,8 @@ const SiderComponent = ({ roles }: any) => {
           <Menu.Item key='955' icon={<TagsOutlined />}>
             <Link to='/admin/posts/tag'>Recipe Tags</Link>
           </Menu.Item>
-        </SubMenu> */}
+        </SubMenu>
 
-        {/* <Menu.Item key='9' icon={<TagsOutlined />}>
-					<Link to='/tag'>Tags</Link>
-				</Menu.Item> */}
         {/* <Menu.Item key='1012' icon={<FileExcelOutlined />}>
                     <Link to='/admin/posts'>
                         Recipies
