@@ -303,7 +303,7 @@ const ModalChildComponent = ({
               }}
             ></div>
 
-            <div className='componentItemsContainer'>
+            <div className='staffComponentItemsContainer'>
               {itemsList.map((itemComponent, index) => {
                 return (
                   <ComponentItem

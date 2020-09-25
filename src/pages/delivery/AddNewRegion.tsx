@@ -129,8 +129,8 @@ const AddNewRegion = ({
 
         setRegionList([
           {
-            id: addRegionRes['id'] || '',
-            key: addRegionRes['id'] || '',
+            id: addRegionRes['_id'] || '',
+            key: addRegionRes['_id'] || '',
             name: addRegionRes['name'] || '',
             // @ts-ignore
             ...addRegionRes,
