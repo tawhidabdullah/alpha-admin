@@ -170,6 +170,13 @@ const NewBrandDetail = ({ roles }: Props) => {
     tagDetailState.data['products']
   );
 
+  const getCover = (record: any) => {
+    if (record.cover) {
+      return record.cover;
+    } else return '';
+  };
+
+
   return (
     <div className='brandDetailContainer'>
       <OrderNoteEdit
@@ -250,6 +257,10 @@ const NewBrandDetail = ({ roles }: Props) => {
                   className='brandDetailContainer__header'
                 >
                   <div className='brandDetailContainer__header-info'>
+                    {tagDetailState.data['shortCode'] && (
+                        <h2>#{tagDetailState.data['shortCode']}</h2>
+                    )}
+                 
                     <h2>{tagDetailState.data['name']}</h2>
                     <h3>{tagDetailState.data['description']}</h3>
                     {tagDetailState.data['url'] && (
@@ -499,20 +510,16 @@ const NewBrandDetail = ({ roles }: Props) => {
                   className='classnameofthecolumn'
                   render={(cover, record: any) => (
                     <>
-                      <img
-                        onClick={() => {
-                          history.push(`/admin/product/${record.id}`);
-                        }}
-                        src={cover}
-                        alt='cover img'
-                        style={{
-                          height: '40px',
-                          width: '40px',
-                          objectFit: 'contain',
-                          borderRadius: '3px',
-                          cursor: 'pointer',
-                        }}
-                      />
+                    <div
+                      className='listCoverImage'
+                      onClick={() => {
+                        history.push(`/admin/product/${record.id}`);
+                      }}
+                    >
+                      <img src={getCover(record)} alt='' />
+                    </div>
+
+         
                     </>
                   )}
                 />

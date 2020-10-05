@@ -162,8 +162,9 @@ class ComponentToPrint extends React.Component {
                                           {' '}
                                           <img
                                             src={`${config.baseURL}/images/logo.png`}
-                                            width={100}
-                                            height={100}
+                                            style={{
+                                              width: '175px'
+                                            }}
                                             alt='logo'
                                             border={0}
                                           />
@@ -618,7 +619,7 @@ class ComponentToPrint extends React.Component {
                                         'deliveryCharge'
                                       ] === 0
                                     ? 'Free'
-                                    : `-${
+                                    : `+${
                                         orderDetailState.data &&
                                         orderDetailState.data['deliveryCharge']
                                       }`}
@@ -646,7 +647,7 @@ class ComponentToPrint extends React.Component {
                                   }}
                                 >
                                   <strong>
-                                    {orderDetailState.data['total'] -
+                                    {orderDetailState.data['total'] +
                                       orderDetailState.data['deliveryCharge'] ||
                                       0}
                                   </strong>
