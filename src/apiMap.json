@@ -162,7 +162,7 @@
       "method": "get"
     },
     "categorySelectist": {
-      "url": "/api/category?subCategory=isSubCategory&sort=sortItem&sortOrder=sortOrderValue",
+      "url": "/api/category?subCategory=isSubCategory&productCount=productCountValue&sort=sortItem&sortOrder=sortOrderValue",
       "method": "get"
     },
     "addCategory": {
