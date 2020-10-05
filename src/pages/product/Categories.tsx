@@ -33,7 +33,17 @@ const Categories = ({
 
   useEffect(() => {
     const setCategories = async () => {
-      const categoryListRes = await handleCategoryListFetch({});
+      const categoryListRes = await handleCategoryListFetch({
+        urlOptions: {
+          params: {
+            isSubCategory: true,
+            productCountValue: true,
+            sortItem: 'added',
+            sortOrderValue: '-1',
+            limitNumber: 5000000,
+          }
+        }
+      });
 
       // @ts-ignore
       if (categoryListRes && categoryListRes.length > 0) {
