@@ -53,7 +53,7 @@ class Connector {
     function getUrlOptions(urlOptions) {
       if (api.method === 'get') {
         const params = {
-          limitNumber: 10000,
+          limitNumber: 100000000000,
         };
         return {
           ...(urlOptions && {

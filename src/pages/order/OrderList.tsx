@@ -492,8 +492,11 @@ const CustomerList = ({ roles }: Props) => {
 
   const handleSearch = (value) => {
     if (orderState.data.length > 0) {
-      const newOrderList = orderState.data.filter((item) =>
-        item.name.includes(value)
+      const newOrderList = orderState.data.filter((item) => {
+        console.log('orderItem3',item)
+        return `#${item.shortCode.toLowerCase()}`.includes(value.toLowerCase()) ||  `${item.shortCode.toLowerCase()}`.includes(value.toLowerCase())
+      }
+        
       );
       setOrderList(newOrderList);
     }
@@ -579,7 +582,7 @@ const CustomerList = ({ roles }: Props) => {
               enterButton={false}
               className='searchbarClassName'
               placeholder='search orders..'
-              onSearch={(value) => handleSearch(value)}
+              onChange={(e) => handleSearch(e.target.value)}
               // style={{ width: 300 }}
             />
           </div>
