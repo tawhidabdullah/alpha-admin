@@ -240,6 +240,32 @@ const NewBrandDetail = ({ roles }: Props) => {
                 </>
               )}
 
+
+          {categoryDetail['thumbnail'] && (
+                <>
+                  <div className='brandDetailContainer__heading'>
+                    <h3>Thumbnail</h3>
+                  </div>
+
+                  <div className='brandDetailContainer__inlineBox'>
+                    <div className='brandDetailContainer__header-coverContainer brandDetailContainer__header-coverContainer-thumbnail'>
+                      <img
+                        src={categoryDetail['thumbnail'] && categoryDetail['thumbnail']}
+                        alt=''
+                      />
+                    </div>
+                  </div>
+
+                  <div
+                    style={{
+                      marginBottom: '25px',
+                    }}
+                  ></div>
+                </>
+              )}
+
+
+
               {categoryDetail['image'] && categoryDetail['image'].length > 0 && (
                 <>
                   <div className='brandDetailContainer__heading'>

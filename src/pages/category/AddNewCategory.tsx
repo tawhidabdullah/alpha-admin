@@ -102,8 +102,10 @@ const AddNewCategory = ({
   const [coverImageId, setCoverImageId] = useState('');
   const [selectedParentId, setselectedParentId] = useState('');
   const [imageUrl, setImageUrl] = useState('');
+  const [thumbnailImageUrl, setThumbnailImageUrl] = useState('');
   const [loadingThumnail, setLoadingThumbnail] = useState(false);
   const [imageFile, setImagefile] = useState('');
+  const [thumbnailImageFile, setThumbnailImagefile] = useState('');
   const [tags, setTags] = useState([]);
   const [bnTags, setBnTags] = useState([]);
 
@@ -121,16 +123,17 @@ const AddNewCategory = ({
       metaTitle: values.bnMetaTitle,
       metaDescription: values.bnMetaDescription,
       metaTags: bnTags.join(','),
-      name: values.bnName.trim(),
+      name: values.bnName?.trim(),
       description: values.bnDescription,
     };
 
-    formData.append('name', values.name.trim());
+    formData.append('name', values.name?.trim());
     formData.append('description', values.description);
     formData.append('image', JSON.stringify(imagesIds));
     formData.append('cover', coverImageId || imagesIds[0] ? imagesIds[0] : '');
     formData.append('parent', selectedParentId);
     formData.append('icon', imageFile);
+    formData.append('thumbnail', thumbnailImageFile);
     formData.append('metaTitle', values.metaTitle);
     formData.append('displayOrder', values.displayOrder);
     formData.append('metaDescription', values.metaDescription);
@@ -176,6 +179,7 @@ const AddNewCategory = ({
       setselectedParentId('');
       setisparentcategoryChecked(true);
       setImageUrl('');
+      setThumbnailImageUrl('');
     } else {
       openErrorNotification();
     }
@@ -276,6 +280,28 @@ const AddNewCategory = ({
 
     return false;
   }
+
+  function beforeThumbnailUpload(file) {
+    const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+    if (!isJpgOrPng) {
+      message.error('You can only upload JPG/PNG file!');
+    }
+    const isLt2M = file.size / 1024 / 1024 < 2;
+    if (!isLt2M) {
+      message.error('Image must smaller than 2MB!');
+    }
+
+    getBase64(file, (imageUrl) => {
+      setThumbnailImageUrl(imageUrl);
+      setThumbnailImagefile(file); 
+      setLoadingThumbnail(false);
+    });
+
+    return false;
+  }
+
+
+  
 
   const uploadButton = (
     <div>
@@ -500,6 +526,41 @@ const AddNewCategory = ({
             >
               {imageUrl ? (
                 <img src={imageUrl} alt='avatar' style={{ width: '100%' }} />
+              ) : (
+                uploadButton
+              )}
+            </Upload>
+
+            <div
+              style={{
+                marginTop: '20px',
+              }}
+            />
+            <div className='addproductSection-left-header'>
+              <h3 className='inputFieldLabel'>Thumbnail</h3>
+              <Tooltip
+                placement='left'
+                title={'Add thumbnail image for this category'}
+              >
+                <a href='###'>
+                  <InfoCircleOutlined />
+                </a>
+              </Tooltip>
+            </div>
+
+            <Upload
+              style={{
+                borderRadius: '8px',
+              }}
+              name='avatar'
+              listType='picture-card'
+              className='avatar-uploader'
+              showUploadList={false}
+              beforeUpload={beforeThumbnailUpload}
+              multiple={false}
+            >
+              {thumbnailImageUrl ? (
+                <img src={thumbnailImageUrl} alt='avatar' style={{ width: '100%' }} />
               ) : (
                 uploadButton
               )}

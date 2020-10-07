@@ -27,6 +27,7 @@ class Converter {
             ? `${config['baseURL']}${category.cover.thumbnail}`
             : null,
           icon: category.icon ? `${config['baseURL']}${category.icon}` : null,
+          thumbnail: category.thumbnail ? `${config['baseURL']}${category.thumbnail}` : null,
           image:
             (data.image &&
               data.image.length > 0 &&
@@ -2592,6 +2593,26 @@ class Converter {
     return convertedData;
   }
 
+
+    /**
+   * @public
+   * @method categoryUpdateThumbnail convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+  async categoryUpdateThumbnail(data) {
+    const convertedData = data;
+
+    if (data && data.updated) {
+      return {
+        ...data.updated,
+        status: 'ok',
+      };
+    }
+
+    return convertedData;
+  }
+
   /**
    * @public
    * @method updateImageFromLibrary convert api data from API to general format based on config server
@@ -4050,6 +4071,7 @@ class Converter {
       description: data.description && data.description,
       productCount: data.productCount || 0,
       icon: data.icon ? `${config['baseURL']}${data.icon}` : '',
+      thumbnail: data.thumbnail ? `${config['baseURL']}${data.thumbnail}` : null,
       type:
         data.subCategory.length > 0 &&
         data.subCategory[0] &&

@@ -141,6 +141,10 @@
       "url": "/admin/api/category/update/icon/:id",
       "method": "post"
     },
+    "categoryUpdateThumbnail": {
+      "url": "/admin/api/category/update/thumbnail/:id",
+      "method": "post"
+    },
     "postDetail": {
       "url": "/admin/api/post/:id?category=categoryOne&tag=tagsOne&image=imageValue",
       "method": "get"

@@ -109,6 +109,12 @@ const ModalChildComponent = ({
     handleUpdateCategoryIconFetch,
   ] = useHandleFetch({}, 'categoryUpdateIcon', 'form');
 
+  const [
+    updateCategoryThumbnailState,
+    handleUpdateCategoryThumbnailFetch,
+  ] = useHandleFetch({}, 'categoryUpdateThumbnail', 'form');
+
+
   const [visible, setvisible] = useState(false);
   const [myImages, setmyImages] = useState(false);
   const [myThumbnailImage, setmyThumbnailImage] = useState(false);
@@ -116,9 +122,11 @@ const ModalChildComponent = ({
   const [isModalOpenForThumbnail, setisModalOpenForThumbnail] = useState(false);
   const [isModalOpenForImages, setisModalOpenForImages] = useState(false);
   const [selectedParentId, setselectedParentId] = useState('');
-  const [imageUrl, setImageUrl] = useState('');
-  const [loadingThumnail, setLoadingThumbnail] = useState(false);
   const [imageFile, setImagefile] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
+  const [thumbnailImageFile, setThumbnailImagefile] = useState('');
+  const [thumbnailImageUrl, setThumbnailImageUrl] = useState('');
+  const [loadingThumnail, setLoadingThumbnail] = useState(false);
   const [tags, setTags] = useState([]);
   const [bnTags, setBnTags] = useState([]);
   const [visibleMedia, setvisibleMedia] = useState(false);
@@ -256,12 +264,13 @@ const ModalChildComponent = ({
 
     const formData = new FormData();
 
-    formData.append('name', values.name.trim());
+    formData.append('name', values.name?.trim());
     formData.append('description', values.description);
     formData.append('image', JSON.stringify(imagesIds));
     formData.append('cover', coverImageId || imagesIds[0] ? imagesIds[0] : '');
     formData.append('parent', selectedParentId);
     formData.append('icon', imageFile);
+    formData.append('thumbnail', thumbnailImageFile);
 
     console.log('categoryDetailData', categoryDetailData);
 
@@ -313,7 +322,7 @@ const ModalChildComponent = ({
         },
       },
       body: {
-        name: values.name.trim(),
+        name: values.name?.trim(),
         description: values.description,
         displayOrder: values.displayOrder,
         image: imagesIds,
@@ -327,7 +336,7 @@ const ModalChildComponent = ({
           metaTitle: values.bnMetaTitle,
           metaDescription: values.bnMetaDescription,
           metaTags: bnTags && bnTags.length > 0 ? bnTags.join(',') : '',
-          name: values.bnName.trim(),
+          name: values.bnName?.trim(),
           description: values.bnDescription,
         },
       },
@@ -380,6 +389,7 @@ const ModalChildComponent = ({
       setselectedParentId('');
       setisparentcategoryChecked(true);
       setImageUrl('');
+      setThumbnailImageUrl('');
     } else {
       openErrorNotification();
     }
@@ -480,6 +490,55 @@ const ModalChildComponent = ({
     return false;
   }
 
+
+  function beforeThumbnailUpload(file) {
+    const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+    if (!isJpgOrPng) {
+      message.error('You can only upload JPG/PNG file!');
+    }
+    const isLt2M = file.size / 1024 / 1024 < 2;
+    if (!isLt2M) {
+      message.error('Image must smaller than 2MB!');
+    }
+
+    getBase64(file, (imageUrl) => {
+      setThumbnailImageUrl(imageUrl)
+      setThumbnailImagefile(file)
+      const setNewIcon = async () => {
+        const formData = new FormData();
+        formData.append('thumbnail', file);
+        // const addCategoryRes = await handleAddCategoryFetch({
+        // 	body: formData,
+        // });
+        const res = await handleUpdateCategoryThumbnailFetch({
+          urlOptions: {
+            placeHolders: {
+              id: categoryDetailData.id,
+            },
+          },
+          body: formData,
+        });
+
+        // @ts-ignore
+        if (res && res.status === 'ok') {
+          openSuccessNotification('Category Thumbnail updated!');
+        } else {
+          openErrorNotification(
+            "Couldn't update category Thumbnail, Something went wrong"
+          );
+        }
+      };
+
+      setNewIcon();
+      setLoadingThumbnail(false);
+    });
+
+    return false;
+  }
+
+
+
+  
   useEffect(() => {
     if (categoryDetailData && Object.keys(categoryDetailData).length > 0) {
       const iconUrl = categoryDetailData.icon && categoryDetailData.icon;
@@ -487,6 +546,15 @@ const ModalChildComponent = ({
       setImageUrl(iconUrl);
     }
   }, []);
+
+
+  useEffect(() => {
+    if (categoryDetailData && Object.keys(categoryDetailData).length > 0) {
+      const thumbnailImageUrl = categoryDetailData.thumbnail && categoryDetailData.thumbnail;
+      setThumbnailImageUrl(thumbnailImageUrl);
+    }
+  }, []);
+
 
   const uploadButton = (
     <div>
@@ -766,6 +834,50 @@ const ModalChildComponent = ({
                         uploadButton
                       )}
                     </Upload>
+
+
+                    
+                    <div
+                      style={{
+                        marginTop: '20px',
+                      }}
+                    />
+
+                    <div className='addproductSection-left-header'>
+                      <h3 className='inputFieldLabel'>Thumbnail</h3>
+                      <Tooltip
+                        placement='left'
+                        title={'Add thumbnail image for this category'}
+                      >
+                        <a href='###'>
+                          <InfoCircleOutlined />
+                        </a>
+                      </Tooltip>
+                    </div>
+
+                    <Upload
+                      style={{
+                        borderRadius: '8px',
+                      }}
+                      name='avatar'
+                      listType='picture-card'
+                      className='avatar-uploader'
+                      showUploadList={false}
+                      beforeUpload={beforeThumbnailUpload}
+                      multiple={false}
+                    >
+                      {thumbnailImageUrl ? (
+                        <img
+                          src={thumbnailImageUrl}
+                          alt='avatar'
+                          style={{ width: '100%' }}
+                        />
+                      ) : (
+                        uploadButton
+                      )}
+                    </Upload>
+
+
                   </div>
                 </div>
 
