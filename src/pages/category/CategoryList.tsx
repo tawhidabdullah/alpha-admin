@@ -55,9 +55,10 @@ interface myTableProps {
   setcategoryList?: any;
   history?: any;
   roles?: any;
+  data2?:any; 
 }
 
-const MyTable = ({ data, setcategoryList, history, roles }: myTableProps) => {
+const MyTable = ({ data, setcategoryList, history, roles,data2 }: myTableProps) => {
   const [visible, setvisible] = useState(false);
   const [activeCategoryForEdit, setactiveCategoryForEdit] = useState(false);
   const [deleteCategoryState, handleDeleteCategoryFetch] = useHandleFetch(
@@ -233,6 +234,7 @@ const MyTable = ({ data, setcategoryList, history, roles }: myTableProps) => {
           categoryList={data}
           setAddNewCategoryVisible={setvisible}
           addNewCategoryVisible={visible}
+          categoryList2={data2}
         />
       )}
     </>
@@ -250,6 +252,7 @@ const CategoryList = ({ history, roles }: Props) => {
     'categoryList'
   );
   const [categoryList, setcategoryList] = useState([]);
+  const [categoryList2, setcategoryList2] = useState([]);
 
   useEffect(() => {
     const setCategories = async () => {
@@ -266,6 +269,8 @@ const CategoryList = ({ history, roles }: Props) => {
       });
       // @ts-ignore
       setcategoryList(categories);
+      // @ts-ignore
+      setcategoryList2(categories)
     };
     setCategories();
   }, []);
@@ -316,7 +321,9 @@ const CategoryList = ({ history, roles }: Props) => {
               // type="primary"
               className='btnPrimaryClassNameoutline'
               icon={<PlusOutlined />}
-              onClick={() => setAddNewCategoryVisible(true)}
+              onClick={() => {
+                setAddNewCategoryVisible(true)
+              }}
             >
               Add New
             </Button>
@@ -339,6 +346,7 @@ const CategoryList = ({ history, roles }: Props) => {
               history={history}
               setcategoryList={setcategoryList}
               data={categoryList}
+              data2={categoryList2}
             />
           )}
           {categoryState.isLoading && <DataTableSkeleton />}
@@ -361,6 +369,7 @@ const CategoryList = ({ history, roles }: Props) => {
           setAddNewCategoryVisible={setAddNewCategoryVisible}
           categoryList={categoryList}
           setcategoryList={setcategoryList}
+          categoryList2={categoryList2}
         />
       )}
     </>

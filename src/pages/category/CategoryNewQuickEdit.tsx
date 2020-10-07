@@ -86,6 +86,7 @@ interface Props {
   categoryList?: any;
   setcategoryList?: any;
   categoryDetailData?: any;
+  categoryList2?:any; 
 }
 
 const ModalChildComponent = ({
@@ -94,6 +95,7 @@ const ModalChildComponent = ({
   categoryList,
   setcategoryList,
   categoryDetailData,
+  categoryList2
 }) => {
   const [addCategoryState, handleAddCategoryFetch] = useHandleFetch(
     {},
@@ -783,8 +785,8 @@ const ModalChildComponent = ({
                               .indexOf(input.toLowerCase()) >= 0
                           }
                         >
-                          {categoryList.length > 0 &&
-                            categoryList.map((category) => {
+                          {categoryList2.length > 0 &&
+                            categoryList2.map((category) => {
                               return (
                                 <Option value={category.id}>
                                   {category.name}

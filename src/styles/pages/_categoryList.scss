@@ -247,6 +247,7 @@
     }
     &-body {
       padding: 10px;
+    
 
       &-pricingContainer {
         display: flex;
@@ -476,6 +477,9 @@
 
   &__category {
     margin-bottom: 10px;
+
+
+
   }
 
   &__tag {
@@ -507,6 +511,8 @@
 
     &-body {
       padding: 10px;
+      max-height: 300px;
+      overflow-y: scroll;
     }
   }
 }

@@ -80,6 +80,7 @@ interface Props {
   setAddNewCategoryVisible: any;
   categoryList?: any;
   setcategoryList?: any;
+  categoryList2?:any; 
 }
 
 const AddNewCategory = ({
@@ -87,6 +88,7 @@ const AddNewCategory = ({
   setAddNewCategoryVisible,
   categoryList,
   setcategoryList,
+  categoryList2
 }: Props) => {
   const [addCategoryState, handleAddCategoryFetch] = useHandleFetch(
     {},
@@ -485,8 +487,8 @@ const AddNewCategory = ({
                       .indexOf(input.toLowerCase()) >= 0
                   }
                 >
-                  {categoryList.length > 0 &&
-                    categoryList.map((category) => {
+                  {categoryList2.length > 0 &&
+                    categoryList2.map((category) => {
                       return (
                         <Option value={category.id}>{category.name}</Option>
                       );
