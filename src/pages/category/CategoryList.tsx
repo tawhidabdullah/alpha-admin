@@ -14,7 +14,7 @@ import {
   PlusOutlined,
   EditOutlined,
   DeleteOutlined,
-  CheckCircleOutlined,
+  CheckCircleOutlined
 } from '@ant-design/icons';
 
 import { AddNewCategory, QuickEdit } from '../category';
@@ -30,8 +30,9 @@ import Empty from '../../components/Empty';
 // import state
 import { isAccess } from '../../utils';
 import { connect } from 'react-redux';
+import { setNestedObjectValues } from 'formik';
 
-const { Column, ColumnGroup } = Table;
+const { Column } = Table;
 const { Search } = Input;
 
 const openSuccessNotification = (message?: any) => {
@@ -59,6 +60,7 @@ interface myTableProps {
 }
 
 const MyTable = ({ data, setcategoryList, history, roles,data2 }: myTableProps) => {
+  console.log('categoryList22222',data2)
   const [visible, setvisible] = useState(false);
   const [activeCategoryForEdit, setactiveCategoryForEdit] = useState(false);
   const [deleteCategoryState, handleDeleteCategoryFetch] = useHandleFetch(
@@ -92,17 +94,14 @@ const MyTable = ({ data, setcategoryList, history, roles,data2 }: myTableProps) 
     } else return '';
   };
 
+  console.log('catshit',data2)
   return (
     <>
       <Table
-        // expandable={{
-        //     expandedRowRender: record => <p style={{ margin: 0 }}>{record.name}</p>,
-        //     rowExpandable: record => record.name !== 'Not Expandable',
-        //   }}
-        // bordered={true}
+        expandable={{
+            rowExpandable: record => true,
+          }}
         size='small'
-        // pagination={false}
-        dataSource={data}
       >
         <Column
           title=''
@@ -289,14 +288,24 @@ const CategoryList = ({ history, roles }: Props) => {
 
   const handleSearch = (value) => {
     if (categoryState.data.length > 0) {
-      const newCategoryList = categoryState.data.filter((item) =>
-        item.name.toLowerCase().includes(value.toLowerCase())
+      const newCategoryList = categoryState.data.filter((item) => {
+        if(item.name.toLowerCase().includes(value.toLowerCase())){
+          return true; 
+        }
+        if(item.subCategory &&
+          item.subCategory.length > 0 &&
+          item.subCategory[0] &&
+          item.subCategory[0]['name']?.toLowerCase().includes(value?.toLowerCase())){
+          return true; 
+        }
+        return false; 
+        }
       );
       setcategoryList(newCategoryList);
     }
   };
 
-  console.log('categoryList22', categoryList);
+  console.log('categoryList22', categoryList2);
 
   return (
     <>
@@ -332,11 +341,11 @@ const CategoryList = ({ history, roles }: Props) => {
 
         <div className='categoryListContainer__afterHeader'>
           {/* <Search
-      placeholder="search categories.."
-      size="large"
-      onSearch={value => console.log(value)}
-      style={{ width: 300 }}
-    /> */}
+              placeholder="search categories.."
+              size="large"
+              onSearch={value => console.log(value)}
+              style={{ width: 300 }}
+            /> */}
         </div>
 
         <div className='categoryListContainer__categoryList'>
