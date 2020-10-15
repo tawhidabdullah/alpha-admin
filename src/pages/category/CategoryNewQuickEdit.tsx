@@ -97,6 +97,7 @@ const ModalChildComponent = ({
   categoryDetailData,
   categoryList2
 }) => {
+  console.log('categoryList211',categoryList2)
   const [addCategoryState, handleAddCategoryFetch] = useHandleFetch(
     {},
     'updateCategory'
@@ -581,6 +582,7 @@ const ModalChildComponent = ({
     }
   }, []);
 
+
   return (
     <>
       <Formik
@@ -785,7 +787,7 @@ const ModalChildComponent = ({
                               .indexOf(input.toLowerCase()) >= 0
                           }
                         >
-                          {categoryList2.length > 0 &&
+                          {categoryList2 && categoryList2.length > 0 &&
                             categoryList2.map((category) => {
                               return (
                                 <Option value={category.id}>
@@ -1194,6 +1196,7 @@ const AddNewCategory = ({
   categoryList,
   setcategoryList,
   categoryDetailData,
+  categoryList2
 }: Props) => {
   const handleCancel = () => {
     setAddNewCategoryVisible(false);
@@ -1225,6 +1228,7 @@ const AddNewCategory = ({
         categoryList={categoryList}
         setcategoryList={setcategoryList}
         categoryDetailData={categoryDetailData}
+        categoryList2={categoryList2}
       />
     </Modal>
   );
