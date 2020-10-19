@@ -123,8 +123,11 @@ const AddNewBrand = ({
       openSuccessNotification();
       setAddNewCategoryVisible(false);
 
+      let newTagList = tagList || []; 
+      console.log('errorTagList',newTagList); 
+
       setTagList([
-        ...tagList,
+        ...newTagList,
         {
           // @ts-ignore
           ...addTagRes,

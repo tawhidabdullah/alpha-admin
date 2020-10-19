@@ -99,7 +99,7 @@ const MyTable = ({ data, setTagList }) => {
     if (deleteTagRes && deleteTagRes.status === 'ok') {
       openSuccessNotification('Deleted  Tag');
       const newtagList = data.filter((item) => item.id !== id);
-      setTagList(newtagList);
+      setTagList(newtagList || []);
     }
   };
 
