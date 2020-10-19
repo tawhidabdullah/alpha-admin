@@ -103,7 +103,7 @@ const NotificationList = (props: Props) => {
           getAllNotificationState.data.map((item, index) => {
             return (
               <div
-                onClick={() => history.push(`/admin/${item.type}/${item._id}`)}
+                onClick={() => history.push(`/admin/${item.type}/${item.eventId}`)}
                 className='notificationListItemContainer__item'
               >
                 <span className='notificationListItemContainer__item-icon'>
