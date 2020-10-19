@@ -193,7 +193,7 @@ const HeaderComponent = (props: Props) => {
               <div
                 onClick={() => {
                   handleNotificationAsRead(item._id);
-                  history.push(`/admin/${item.type}/${item._id}`);
+                  history.push(`/admin/${item.type}/${item.eventId}`);
                 }}
                 className={
                   !item.read
