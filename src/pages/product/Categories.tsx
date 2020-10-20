@@ -137,7 +137,9 @@ const Categories = ({
             <div
               style={
                 {
-                  // marginLeft: "-20px",
+                  overflow: 'auto',
+                  maxHeight: '300px'
+
                 }
               }
             >
