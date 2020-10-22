@@ -106,110 +106,10 @@ class ComponentToPrint extends React.Component {
                                           >
                                             Bill From:
                                           </span>
-                                          <span
-                                            style={{
-                                              display: 'block',
-                                              marginTop: '10px',
-                                              fontSize: '12px',
-                                              fontWeight: '500',
-                                              color: '#000',
-                                            }}
-                                          >
-                                            {orderDetailState.data['name']}
-                                          </span>
-                                          <span
-                                            style={{
-                                              display: 'block',
-                                              marginTop: '10px',
-                                              fontSize: '12px',
-                                              fontWeight: '500',
-                                              color: '#000',
-                                            }}
-                                          >
-                                            {orderDetailState.data['address']}
-                                          </span>
-                                          <span
-                                            style={{
-                                              display: 'block',
-                                              marginTop: '10px',
-                                              fontSize: '12px',
-                                              fontWeight: '500',
-                                              color: '#000',
-                                            }}
-                                          >
-                                            {orderDetailState.data['phone']}
-                                          </span>
-                                          <span
-                                            style={{
-                                              display: 'block',
-                                              marginTop: '10px',
-                                              fontSize: '12px',
-                                              fontWeight: '500',
-                                              color: '#000',
-                                              marginBottom: '50px',
-                                            }}
-                                          >
-                                            {orderDetailState.data['email']}
-                                          </span>
-                                        </td>
 
-                                        <td
-                                          style={{
-                                            verticalAlign: 'top',
-                                          }}
-                                          align='right'
-                                        >
-                                          {' '}
-                                          <img
-                                            src={`${config.baseURL}/images/logo.png`}
-                                            style={{
-                                              width: '175px'
-                                            }}
-                                            alt='logo'
-                                            border={0}
-                                          />
-                                        </td>
-                                      </tr>
-                                    </tbody>
-                                  </table>
-                                  <table
-                                    width={'100%'}
-                                    border={0}
-                                    cellPadding={0}
-                                    cellSpacing={0}
-                                    align='left'
-                                    className='col'
-                                  >
-                                    <tbody>
-                                      <tr className='visibleMobile'>
-                                        <td height={20} />
-                                      </tr>
-                                      <tr>
-                                        <td height={5} />
-                                      </tr>
-                                      <tr></tr>
-                                      <tr></tr>
-                                      <tr>
-                                        <td
-                                          style={{
-                                            fontSize: 12,
-                                            color: '#5b5b5b',
 
-                                            lineHeight: 1.6,
-                                            verticalAlign: 'top',
-                                            textAlign: 'left',
-                                          }}
-                                        >
-                                          <span
-                                            style={{
-                                              display: 'inline-block',
-                                              fontSize: '14px',
-                                              fontWeight: '600',
-                                              color: '#000',
-                                            }}
-                                          >
-                                            Bill To:
-                                          </span>
+
+
                                           <span
                                             style={{
                                               display: 'block',
@@ -271,6 +171,7 @@ class ComponentToPrint extends React.Component {
                                               fontSize: '12px',
                                               fontWeight: '500',
                                               color: '#000',
+                                              marginBottom: '50px',
                                             }}
                                           >
                                             {invoiceSettingsState.done &&
@@ -281,6 +182,115 @@ class ComponentToPrint extends React.Component {
                                               invoiceSettingsState.data[
                                                 'email'
                                               ]}
+                                          </span>
+
+
+
+                                      
+                                        </td>
+
+                                        <td
+                                          style={{
+                                            verticalAlign: 'top',
+                                          }}
+                                          align='right'
+                                        >
+                                          {' '}
+                                          <img
+                                            src={`${config.baseURL}/images/logo.png`}
+                                            style={{
+                                              width: '175px'
+                                            }}
+                                            alt='logo'
+                                            border={0}
+                                          />
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                  <table
+                                    width={'100%'}
+                                    border={0}
+                                    cellPadding={0}
+                                    cellSpacing={0}
+                                    align='left'
+                                    className='col'
+                                  >
+                                    <tbody>
+                                      <tr className='visibleMobile'>
+                                        <td height={20} />
+                                      </tr>
+                                      <tr>
+                                        <td height={5} />
+                                      </tr>
+                                      <tr></tr>
+                                      <tr></tr>
+                                      <tr>
+                                        <td
+                                          style={{
+                                            fontSize: 12,
+                                            color: '#5b5b5b',
+
+                                            lineHeight: 1.6,
+                                            verticalAlign: 'top',
+                                            textAlign: 'left',
+                                          }}
+                                        >
+                                          <span
+                                            style={{
+                                              display: 'inline-block',
+                                              fontSize: '14px',
+                                              fontWeight: '600',
+                                              color: '#000',
+                                            }}
+                                          >
+                                            Bill To:
+                                          </span>
+                                    
+                                          <span
+                                            style={{
+                                              display: 'block',
+                                              marginTop: '10px',
+                                              fontSize: '12px',
+                                              fontWeight: '500',
+                                              color: '#000',
+                                            }}
+                                          >
+                                            {orderDetailState.data['name']}
+                                          </span>
+                                          <span
+                                            style={{
+                                              display: 'block',
+                                              marginTop: '10px',
+                                              fontSize: '12px',
+                                              fontWeight: '500',
+                                              color: '#000',
+                                            }}
+                                          >
+                                            {orderDetailState.data['address']}
+                                          </span>
+                                          <span
+                                            style={{
+                                              display: 'block',
+                                              marginTop: '10px',
+                                              fontSize: '12px',
+                                              fontWeight: '500',
+                                              color: '#000',
+                                            }}
+                                          >
+                                            {orderDetailState.data['phone']}
+                                          </span>
+                                          <span
+                                            style={{
+                                              display: 'block',
+                                              marginTop: '10px',
+                                              fontSize: '12px',
+                                              fontWeight: '500',
+                                              color: '#000',
+                                           
+                                            }}
+                                          >
+                                            {orderDetailState.data['email']}
                                           </span>
                                         </td>
 
