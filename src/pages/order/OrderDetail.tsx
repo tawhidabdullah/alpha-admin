@@ -3,6 +3,7 @@ import { useParams, useHistory } from 'react-router';
 
 // import hooks
 import { useHandleFetch } from '../../hooks';
+import moment from 'moment'; 
 
 // import lib
 import {
@@ -263,10 +264,11 @@ const NewBrandDetail = ({ roles }: Props) => {
                  
                     <h2>{tagDetailState.data['name']}</h2>
                     <h3>{tagDetailState.data['description']}</h3>
-                    {tagDetailState.data['url'] && (
+
+                    {tagDetailState.data['added'] && (
                       <h3>
-                        URL:
-                        <span>{tagDetailState.data['url']}</span>
+                        CREATED AT:
+                        <span>{tagDetailState.data['added'] && moment(tagDetailState.data['added']).format('MMMM Do YYYY, a')}</span>
                       </h3>
                     )}
 
@@ -326,15 +328,15 @@ const NewBrandDetail = ({ roles }: Props) => {
                       </h3>
                     )}
 
-                    {/* 
-                            {tagDetailState['data']['deliveryCharge'] && (
-                                <h3>
-                                    DELIVERY CHARGE:
-                                    <span>
-                                        {tagDetailState['data']['deliveryCharge']}
-                                    </span>
-                                </h3>
-                            )} */}
+                    
+                      {typeof tagDetailState['data']['deliveryCharge'] !== 'undefined' && (
+                          <h3>
+                              DELIVERY CHARGE:
+                              <span>
+                                  {tagDetailState['data']['deliveryCharge']}
+                              </span>
+                          </h3>
+                      )}
 
                     {tagDetailState['data']['deliveryName'] && (
                       <h3>
@@ -351,6 +353,8 @@ const NewBrandDetail = ({ roles }: Props) => {
                         <span>{`${tagDetailState['data']['total']}`}</span>
                       </h3>
                     )}
+
+
                   </div>
                 </div>
 

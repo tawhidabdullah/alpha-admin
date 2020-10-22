@@ -4186,7 +4186,7 @@ class Converter {
             ? order.status['name']
             : 'pending',
         total: order.totalPrice,
-        deliveryCharge: order.totalPrice,
+        deliveryCharge: order.deliveryCharge,
         deliveryRegion: order.deliveryRegion,
         deliveryName: order.deliveryRegion && order.deliveryRegion['name'],
         deliveryPickUpLocation:
@@ -4229,7 +4229,7 @@ class Converter {
                 };
               })
             : [],
-        date_created: order.added,
+        added: order.added,
         paymentMethod: order['payment']['paymentMethod'],
         paymentStatus: order['payment']['status'],
         payment: order['payment'],

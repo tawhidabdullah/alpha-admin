@@ -177,6 +177,14 @@ const MyTable = ({ data, setOrderList, roles }: myTableProps) => {
         </Menu.Item>
 
         <Menu.Item
+          onClick={() => handleUpdateOrderStatus(record, id, 'refunded')}
+          key='1'
+          icon={<CheckOutlined />}
+        >
+          Refunded
+        </Menu.Item>
+
+        <Menu.Item
           onClick={() => handleUpdateOrderStatus(record, id, 'cancel')}
           key='1'
           icon={<CheckOutlined />}
@@ -535,6 +543,10 @@ const CustomerList = ({ roles }: Props) => {
     {
       name: 'Cancel',
       value: 'cancel',
+    },
+    {
+      name: 'Refunded',
+      value: 'refunded',
     },
   ];
 

@@ -183,7 +183,7 @@ const MyTable = ({ data, setCustomerList }: myTableProps) => {
           className='classnameofthecolumn'
           render={(text, record: any) => (
             <Space size='middle'>
-              <h5>{text && moment(text).format('MMMM Do YYYY, h:mm a')}</h5>
+              <h5>{text && moment(text).format('MMMM Do YYYY')}</h5>
             </Space>
           )}
         />
