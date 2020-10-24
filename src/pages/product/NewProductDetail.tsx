@@ -6,6 +6,8 @@ import { useHandleFetch } from '../../hooks';
 
 // import lib
 import { EditOutlined } from '@ant-design/icons';
+import ReactHtmlParser from 'react-html-parser';
+
 
 import {
   Skeleton,
@@ -162,31 +164,14 @@ const NewBrandDetail = ({ roles }: Props) => {
                 <div className='brandDetailContainer__header-info'>
                   <h2>{productDetailData['name']}</h2>
                   <h4>{productDetailData['price']}</h4>
-                  <h3>{productDetailData['description']}</h3>
 
+                  
                   {productDetailData['url'] && (
                     <h3>
                       URL:
                       <span>{productDetailData['url']}</span>
                     </h3>
                   )}
-
-                  {/* 
-                                {productDetailData['tags'] && productDetailData['tags'].length > 0 &&
-                                    (<>
-                                        <h3>
-                                            TAGS:
-                                        {productDetailData['tags'].map(tag => {
-                                            return (
-                                                <span>
-                                                    {tag.name}
-                                                </span>
-                                            )
-                                        })}
-                                        </h3>
-
-                                    </>)
-                                } */}
 
                   {productDetailData['category'] &&
                     productDetailData['category'].length > 0 && (
@@ -208,6 +193,32 @@ const NewBrandDetail = ({ roles }: Props) => {
                       </>
                     )}
 
+
+
+                  <div style={{
+                    margin: '30px 0'
+                  }}>{ReactHtmlParser(productDetailData['description']) || ''}</div>
+
+
+
+                  {/* 
+                                {productDetailData['tags'] && productDetailData['tags'].length > 0 &&
+                                    (<>
+                                        <h3>
+                                            TAGS:
+                                        {productDetailData['tags'].map(tag => {
+                                            return (
+                                                <span>
+                                                    {tag.name}
+                                                </span>
+                                            )
+                                        })}
+                                        </h3>
+
+                                    </>)
+                                } */}
+
+      
                   {productDetailData['tags'] &&
                     productDetailData['tags'].length > 0 && (
                       <>
