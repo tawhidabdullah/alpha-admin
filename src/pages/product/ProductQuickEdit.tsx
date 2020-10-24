@@ -147,6 +147,8 @@ const ModalChildComponent = ({
   const [time, setTimeFeild] = useState('');
   const [description, setDescription] = useState('');
   const [bnDescription, setBNDescription] = useState('');
+  const [shortDescription, setShortDescription] = useState('');
+  const [bnShortDescription, setBNShortDescription] = useState('');
   const [metaTags, setMetaTags] = useState([]);
   const [bnMetaTags, setBnMetaTags] = useState([]);
   const [editpricingItem, setEditPricingItem] = useState({});
@@ -257,6 +259,24 @@ const ModalChildComponent = ({
       } else {
         setBNDescription('');
       }
+
+
+      if (productDetailData && productDetailData.shortDescription) {
+        setShortDescription(productDetailData.shortDescription);
+      } else {
+        setShortDescription('');
+      }
+
+      if (
+        productDetailData &&
+        productDetailData.bn &&
+        productDetailData.bn['shortDescription']
+      ) {
+        setBNShortDescription(productDetailData.bn['shortDescription']);
+      } else {
+        setBNShortDescription('');
+      }
+
     }
 
     console.log('runnedBitch');
@@ -896,6 +916,77 @@ const ModalChildComponent = ({
                         setFieldTouched('model');
                       }}
                     />
+
+                                                          
+                    <h3 className='inputFieldLabel'>Short Description</h3>
+
+                    <div
+                      style={{
+                        width: '100%',
+                        maxWidth: '100%',
+                      }}
+                    >
+                      <CKEditor
+                        editor={ClassicEditor}
+                        data={shortDescription}
+                        onInit={(editor) => {
+                          // You can store the "editor" and use when it is needed.
+                          console.log('Editor is ready to use!', editor);
+                        }}
+                        onChange={(event, editor) => {
+                          const data = editor.getData();
+                          setShortDescription(data);
+                        }}
+                        onBlur={(event, editor) => {
+                          console.log('Blur.', editor);
+                        }}
+                        onFocus={(event, editor) => {
+                          console.log('Focus.', editor);
+                        }}
+                      />
+                    </div>
+
+                    <div
+                      style={{
+                        marginTop: '15px',
+                      }}
+                    ></div>
+
+                    <h3 className='inputFieldLabel'>BN Short Description</h3>
+
+                    <div
+                      style={{
+                        width: '100%',
+                        maxWidth: '100%',
+                      }}
+                    >
+                      <CKEditor
+                        editor={ClassicEditor}
+                        data={bnShortDescription}
+                        onInit={(editor) => {
+                          // You can store the "editor" and use when it is needed.
+                          console.log('Editor is ready to use!', editor);
+                        }}
+                        onChange={(event, editor) => {
+                          const data = editor.getData();
+                          setBNShortDescription(data);
+                        }}
+                        onBlur={(event, editor) => {
+                          console.log('Blur.', editor);
+                        }}
+                        onFocus={(event, editor) => {
+                          console.log('Focus.', editor);
+                        }}
+                      />
+                    </div>
+
+
+                    <div
+                      style={{
+                        marginTop: '15px',
+                      }}
+                    ></div>
+
 
                     <h3 className='inputFieldLabel'>Description</h3>
 
