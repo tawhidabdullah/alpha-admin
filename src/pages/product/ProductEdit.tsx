@@ -440,7 +440,8 @@ const ModalChildComponent = ({
         metaTitle: values.metaTitle,
         metaDescription: values.metaDescription,
         metaTags: metaTags && metaTags.length > 0 ? metaTags.join(',') : '',
-
+        shortDescription: shortDescription,
+      
         bn: {
           metaTitle: values.bnMetaTitle,
           metaDescription: values.bnMetaDescription,
@@ -449,6 +450,7 @@ const ModalChildComponent = ({
           name: values.bnName.trim(),
           unit: values.metaUnit,
           description: bnDescription,
+          shortDescription: bnShortDescription
         },
       },
     });

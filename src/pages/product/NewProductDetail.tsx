@@ -195,10 +195,27 @@ const NewBrandDetail = ({ roles }: Props) => {
 
 
 
-                  <div style={{
-                    margin: '30px 0'
-                  }}>{ReactHtmlParser(productDetailData['description']) || ''}</div>
+                {productDetailData['shortDescription'] && (
+                    <h3 style={{
+                      margin: '30px 0'
+                    }}>
+                      Short Description:
+                      <span>{ReactHtmlParser(productDetailData['shortDescription']) || ''}</span>
+                    </h3>
+                  )}
 
+
+                    {productDetailData['description'] && (
+                    <h3 style={{
+                      margin: '30px 0'
+                    }}>
+                      Description:
+                      <span>{ReactHtmlParser(productDetailData['description']) || ''}</span>
+                    </h3>
+                  )}
+
+
+              
 
 
                   {/* 
