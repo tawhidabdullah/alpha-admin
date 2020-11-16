@@ -91,8 +91,8 @@ interface Props {
 const ModalComponentChild = ({
   addNewCategoryVisible,
   setAddNewCategoryVisible,
-  productList: bundleList,
-  setProductList: setBundleList,
+  bundleList ,
+  setBundleList,
   productDetailData,
 }) => {
   const [addProductState, handleAddProductFetch] = useHandleFetch(
@@ -436,6 +436,8 @@ const ModalComponentChild = ({
       }
     }
 
+
+    console.log('bundleList',bundleList)
     const addProductRes = await handleAddProductFetch({
       urlOptions: {
         placeHolders: {
@@ -482,7 +484,8 @@ const ModalComponentChild = ({
 
       const index = positionInTag();
 
-      const getCover = (id) => {
+
+      function getCover (id){
         if (!id || !myImages || !myImages[0]) {
           return '';
         } else {
@@ -495,14 +498,20 @@ const ModalComponentChild = ({
         }
       };
 
+
       // @ts-ignore
       const updatedItem = Object.assign({}, bundleList[index], {
         ...addProductRes,
         id: addProductRes['id'] || '',
         key: addProductRes['id'] || '',
         name: values.name.trim() || '',
-        cover: getCover(coverImageId),
+        // cover: getCover(coverImageId),
       });
+
+
+
+     
+
       const updateTagList = [
         ...bundleList.slice(0, index),
         updatedItem,
@@ -1355,7 +1364,7 @@ const AddNewProduct = ({
       >
         <ModalComponentChild
           addNewCategoryVisible={addNewCategoryVisible}
-          setAddNewCategoryVisible={bundleList}
+          setAddNewCategoryVisible={setAddNewCategoryVisible}
           bundleList={bundleList}
           setBundleList={setBundleList}
           productDetailData={productDetailData}
