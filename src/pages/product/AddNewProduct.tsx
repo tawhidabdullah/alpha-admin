@@ -722,8 +722,7 @@ const AddNewProduct = ({
                                         )}
                                       </div>
                                     )}
-
-
+                                    
                                   {Boolean(item?.maximumPurchaseLimit) && (
                                        <div>
                                        <h3>Maximum Purchase Limit</h3>

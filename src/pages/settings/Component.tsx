@@ -54,6 +54,8 @@ const text = `
   it can be found as a welcome guest in many households across the world.
 `;
 
+
+
 function getBase64(file: any) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -486,7 +488,6 @@ const Component = (props) => {
           {componentState.done && componentList.length > 0 && (
             <div className='componentsItemContainer'>
               {componentList.map((component) => {
-                console.log('mycomponent');
                 return (
                   <div className='componentsItemContainer-item'>
                     <Collapse

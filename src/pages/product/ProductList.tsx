@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { withRouter, useHistory } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { withRouter, useHistory } from "react-router-dom";
 import {
   notification,
   Empty,
@@ -13,7 +13,7 @@ import {
   Input,
   Tooltip,
   Popconfirm,
-} from 'antd';
+} from "antd";
 import {
   CheckCircleOutlined,
   DownOutlined,
@@ -21,29 +21,29 @@ import {
   EditOutlined,
   DeleteOutlined,
   CheckOutlined,
-} from '@ant-design/icons';
+} from "@ant-design/icons";
 
 /// import hooks
-import { useHandleFetch } from '../../hooks';
+import { useHandleFetch } from "../../hooks";
 
 // import components
-import { DataTableSkeleton } from '../../components/Placeholders';
-import AddNewProduct from './AddNewProduct';
-import ProductQuickEdit from './ProductQuickEdit';
+import { DataTableSkeleton } from "../../components/Placeholders";
+import AddNewProduct from "./AddNewProduct";
+import ProductQuickEdit from "./ProductQuickEdit";
 // import QuickEdit from './QuickEdit';
 
 // import state
-import { isAccess } from '../../utils';
-import { connect } from 'react-redux';
+import { isAccess } from "../../utils";
+import { connect } from "react-redux";
 
 const { Column, ColumnGroup } = Table;
 const { Search } = Input;
 
 const openSuccessNotification = (msg?: any) => {
   notification.success({
-    message: msg || 'Product Deleted',
-    description: '',
-    icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
+    message: msg || "Product Deleted",
+    description: "",
+    icon: <CheckCircleOutlined style={{ color: "rgba(0, 128, 0, 0.493)" }} />,
   });
 };
 
@@ -58,12 +58,12 @@ const MyTable = ({ data, setProductList, roles }: myTableProps) => {
   const [activeCategoryForEdit, setactiveCategoryForEdit] = useState(false);
   const [deleteProductState, handleDeleteProductFetch] = useHandleFetch(
     {},
-    'deleteProduct'
+    "deleteProduct"
   );
   const [productDetailVisible, setproductDetailVisible] = useState(false);
   const [updateOrderStatusState, handleUpdateOrderStatusFetch] = useHandleFetch(
     {},
-    'updateStock'
+    "updateStock"
   );
 
   const history = useHistory();
@@ -78,7 +78,7 @@ const MyTable = ({ data, setProductList, roles }: myTableProps) => {
     });
 
     // @ts-ignore
-    if (deleteProductRes && deleteProductRes.status === 'ok') {
+    if (deleteProductRes && deleteProductRes.status === "ok") {
       openSuccessNotification();
       const newProductList = data.filter((item) => item.id !== id);
       setProductList(newProductList);
@@ -100,15 +100,15 @@ const MyTable = ({ data, setProductList, roles }: myTableProps) => {
     });
 
     // @ts-ignore
-    if (updateOrderStatusRes && updateOrderStatusRes.status === 'ok') {
-      openSuccessNotification('Updated Stock');
+    if (updateOrderStatusRes && updateOrderStatusRes.status === "ok") {
+      openSuccessNotification("Updated Stock");
 
       const positionInTag = () => {
         return data.map((item) => item.id).indexOf(id);
       };
 
       const index = positionInTag();
-      console.log('recordis', record, index);
+      console.log("recordis", record, index);
 
       // @ts-ignore
       const updatedItem = Object.assign({}, data[index], {
@@ -119,7 +119,7 @@ const MyTable = ({ data, setProductList, roles }: myTableProps) => {
         updatedItem,
         ...data.slice(index + 1),
       ];
-      console.log('updateOrderList', updateOrderList, '-----', setProductList);
+      console.log("updateOrderList", updateOrderList, "-----", setProductList);
       setProductList(updateOrderList);
     }
   };
@@ -129,7 +129,7 @@ const MyTable = ({ data, setProductList, roles }: myTableProps) => {
       <Menu>
         <Menu.Item
           onClick={() => handleUpdateOrderStatus(record, id, true)}
-          key='1'
+          key="1"
           icon={<CheckOutlined />}
         >
           In stock
@@ -137,7 +137,7 @@ const MyTable = ({ data, setProductList, roles }: myTableProps) => {
 
         <Menu.Item
           onClick={() => handleUpdateOrderStatus(record, id, false)}
-          key='1'
+          key="1"
           icon={<CheckOutlined />}
         >
           Out of stock
@@ -156,62 +156,62 @@ const MyTable = ({ data, setProductList, roles }: myTableProps) => {
   const getCover = (record: any) => {
     if (record.cover) {
       return record.cover;
-    } else return '';
+    } else return "";
   };
 
   return (
     <>
       <Table
         style={{
-          paddingTop: '10px',
-          borderRadius: '5px !important',
-          overflow: 'hidden',
+          paddingTop: "10px",
+          borderRadius: "5px !important",
+          overflow: "hidden",
           boxShadow:
-            '0 0.125rem 0.625rem rgba(227, 231, 250, 0.3), 0 0.0625rem 0.125rem rgba(206, 220, 233, 0.4)',
+            "0 0.125rem 0.625rem rgba(227, 231, 250, 0.3), 0 0.0625rem 0.125rem rgba(206, 220, 233, 0.4)",
         }}
         // expandable={{
         //     expandedRowRender: record => <p style={{ margin: 0 }}>{record.name}</p>,
         //     rowExpandable: record => record.name !== 'Not Expandable',
         //   }}
         // bordered={true}
-        size='small'
+        size="small"
         // pagination={false}
         dataSource={data}
-        tableLayout={'auto'}
+        tableLayout={"auto"}
         onHeaderRow={(column) => {
           return {
             style: {
-              color: 'red !important',
+              color: "red !important",
             },
           };
         }}
       >
         <Column
-          title=''
-          dataIndex='cover'
-          key='id'
-          width={'80px'}
-          className='classnameofthecolumn'
+          title=""
+          dataIndex="cover"
+          key="id"
+          width={"80px"}
+          className="classnameofthecolumn"
           render={(cover, record: any) => (
             <>
               <div
-                className='listCoverImage'
+                className="listCoverImage"
                 onClick={() => {
                   history.push(`/admin/product/${record.id}`);
                   setactiveCategoryForEdit(record);
                 }}
               >
-                <img src={getCover(record)} alt='' />
+                <img src={getCover(record)} alt="" />
               </div>
             </>
           )}
         />
 
         <Column
-          title='Name'
-          dataIndex='name'
-          key='id'
-          className='classnameofthecolumn'
+          title="Name"
+          dataIndex="name"
+          key="id"
+          className="classnameofthecolumn"
           render={(text, record: any) => (
             <>
               <h4
@@ -221,8 +221,8 @@ const MyTable = ({ data, setProductList, roles }: myTableProps) => {
                 }}
                 style={{
                   fontWeight: 400,
-                  color: '#555',
-                  cursor: 'pointer',
+                  color: "#555",
+                  cursor: "pointer",
                 }}
               >
                 {text}
@@ -232,51 +232,51 @@ const MyTable = ({ data, setProductList, roles }: myTableProps) => {
         />
 
         <Column
-          title='Offer Price'
-          dataIndex='offerPrice'
-          key='id'
-          className='classnameofthecolumn'
+          title="Offer Price"
+          dataIndex="offerPrice"
+          key="id"
+          className="classnameofthecolumn"
         />
 
         <Column
-          title='Price'
-          dataIndex='price'
-          key='id'
-          className='classnameofthecolumn'
+          title="Price"
+          dataIndex="price"
+          key="id"
+          className="classnameofthecolumn"
         />
 
         <Column
-          title='Available'
-          dataIndex='available'
-          key='id'
-          className='classnameofthecolumn'
+          title="Available"
+          dataIndex="available"
+          key="id"
+          className="classnameofthecolumn"
         />
 
         <Column
-          align='right'
-          title='Stock'
-          dataIndex='inStock'
-          key='id'
-          className='classnameofthecolumn'
+          align="right"
+          title="Stock"
+          dataIndex="inStock"
+          key="id"
+          className="classnameofthecolumn"
           render={(text, record: any) => (
             <>
-              {isAccess('postCatalogue', roles) ? (
+              {isAccess("postCatalogue", roles) ? (
                 <Dropdown
                   overlay={() => StatusItemMenu(record, record.id)}
-                  placement='bottomRight'
+                  placement="bottomRight"
                 >
-                  <a href='##'>
+                  <a href="##">
                     <span
                       // className={'product-attributeTag'}
                       style={{
-                        fontSize: '12px',
+                        fontSize: "12px",
                       }}
                     >
-                      {text ? 'In Stock' : 'Out of stock'}
+                      {text ? "In Stock" : "Out of stock"}
                       <span
                         style={{
-                          marginLeft: '5px',
-                          fontSize: '10px',
+                          marginLeft: "5px",
+                          fontSize: "10px",
                         }}
                       >
                         <DownOutlined />
@@ -285,18 +285,18 @@ const MyTable = ({ data, setProductList, roles }: myTableProps) => {
                   </a>
                 </Dropdown>
               ) : (
-                <a href='##'>
+                <a href="##">
                   <span
                     // className={'product-attributeTag'}
                     style={{
-                      fontSize: '12px',
+                      fontSize: "12px",
                     }}
                   >
-                    {text ? 'In Stock' : 'Out of stock'}
+                    {text ? "In Stock" : "Out of stock"}
                     <span
                       style={{
-                        marginLeft: '5px',
-                        fontSize: '10px',
+                        marginLeft: "5px",
+                        fontSize: "10px",
                       }}
                     ></span>
                   </span>
@@ -340,18 +340,18 @@ const MyTable = ({ data, setProductList, roles }: myTableProps) => {
           )}
         /> */}
 
-        {isAccess('postCatalogue', roles) && (
+        {isAccess("postCatalogue", roles) && (
           <Column
-            className='classnameofthecolumn'
-            title=''
-            key='action'
-            align='right'
+            className="classnameofthecolumn"
+            title=""
+            key="action"
+            align="right"
             render={(text, record: any) => (
-              <Space size='middle'>
-                <a href='##'>
-                  <Tooltip placement='top' title='Edit Product'>
+              <Space size="middle">
+                <a href="##">
+                  <Tooltip placement="top" title="Edit Product">
                     <span
-                      className='iconSize'
+                      className="iconSize"
                       onClick={() => {
                         setvisible(true);
                         setactiveCategoryForEdit(record);
@@ -364,11 +364,11 @@ const MyTable = ({ data, setProductList, roles }: myTableProps) => {
 
                 <Popconfirm
                   onConfirm={() => handleDeleteProduct(record.id)}
-                  title='Are you sure？'
-                  okText='Yes'
-                  cancelText='No'
+                  title="Are you sure？"
+                  okText="Yes"
+                  cancelText="No"
                 >
-                  <span className='iconSize iconSize-danger'>
+                  <span className="iconSize iconSize-danger">
                     <DeleteOutlined />
                   </span>
                 </Popconfirm>
@@ -400,7 +400,7 @@ const ProductList = ({ roles }: Props) => {
 
   const [productState, handleProductListFetch] = useHandleFetch(
     {},
-    'productList'
+    "productList"
   );
 
   useEffect(() => {
@@ -408,9 +408,9 @@ const ProductList = ({ roles }: Props) => {
       const products = await handleProductListFetch({
         urlOptions: {
           params: {
-            sortItem: 'added',
-            sortOrderValue: '-1',
-            productType: 'product',
+            sortItem: "added",
+            sortOrderValue: "-1",
+            productType: "product",
             limitNumber: 5000000,
           },
         },
@@ -421,7 +421,7 @@ const ProductList = ({ roles }: Props) => {
     setProducts();
   }, []);
 
-  console.log('myFuckingProductList', productList);
+  console.log("myFuckingProductList", productList);
 
   const [addNewCategoryVisible, setAddNewCategoryVisible] = useState(false);
 
@@ -441,24 +441,24 @@ const ProductList = ({ roles }: Props) => {
       {/* <h2 className='containerPageTitle'>
       Categories
     </h2> */}
-      <div className='categoryListContainer'>
-        <div className='categoryListContainer__header'>
-          <div className='categoryListContainer__header-searchBar'>
-            <h2 className='categoryListContainer__header-title'>Products</h2>
+      <div className="categoryListContainer">
+        <div className="categoryListContainer__header">
+          <div className="categoryListContainer__header-searchBar">
+            <h2 className="categoryListContainer__header-title">Products</h2>
 
             <Search
               enterButton={false}
-              className='searchbarClassName'
-              placeholder='search products..'
+              className="searchbarClassName"
+              placeholder="search products.."
               onChange={(e) => handleSearch(e.target.value)}
               // style={{ width: 300 }}
             />
           </div>
 
-          {isAccess('postCatalogue', roles) && (
+          {isAccess("postCatalogue", roles) && (
             <Button
               // type="primary"
-              className='btnPrimaryClassNameoutline'
+              className="btnPrimaryClassNameoutline"
               icon={<PlusOutlined />}
               onClick={() => setAddNewCategoryVisible(true)}
             >
@@ -467,7 +467,7 @@ const ProductList = ({ roles }: Props) => {
           )}
         </div>
 
-        <div className='categoryListContainer__afterHeader'>
+        <div className="categoryListContainer__afterHeader">
           {/* <Search
       placeholder="search categories.."
       size="large"
@@ -476,7 +476,7 @@ const ProductList = ({ roles }: Props) => {
     /> */}
         </div>
 
-        <div className='categoryListContainer__categoryList'>
+        <div className="categoryListContainer__categoryList">
           {productState.done && productList.length > 0 && (
             <MyTable
               roles={roles}
@@ -488,11 +488,11 @@ const ProductList = ({ roles }: Props) => {
           {productState.done && !(productList.length > 0) && (
             <div
               style={{
-                marginTop: '200px',
+                marginTop: "200px",
               }}
             >
               <Empty
-                description='No Products found'
+                description="No Products found"
                 image={Empty.PRESENTED_IMAGE_SIMPLE}
               />
             </div>

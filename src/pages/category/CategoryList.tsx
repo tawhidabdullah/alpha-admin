@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { withRouter } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { withRouter } from "react-router-dom";
 import {
   Table,
   notification,
@@ -9,45 +9,45 @@ import {
   Input,
   Tooltip,
   Popconfirm,
-} from 'antd';
+} from "antd";
 import {
   PlusOutlined,
   EditOutlined,
   DeleteOutlined,
-  CheckCircleOutlined
-} from '@ant-design/icons';
+  CheckCircleOutlined,
+} from "@ant-design/icons";
 
-import { AddNewCategory, QuickEdit } from '../category';
-import CategoryNewQuickEdit from './CategoryNewQuickEdit';
+import { AddNewCategory, QuickEdit } from "../category";
+import CategoryNewQuickEdit from "./CategoryNewQuickEdit";
 
 /// import hooks
-import { useFetch, useHandleFetch } from '../../hooks';
+import { useFetch, useHandleFetch } from "../../hooks";
 
 // import components
-import { DataTableSkeleton } from '../../components/Placeholders';
-import Empty from '../../components/Empty';
+import { DataTableSkeleton } from "../../components/Placeholders";
+import Empty from "../../components/Empty";
 
 // import state
-import { isAccess } from '../../utils';
-import { connect } from 'react-redux';
-import { setNestedObjectValues } from 'formik';
+import { isAccess } from "../../utils";
+import { connect } from "react-redux";
+import { setNestedObjectValues } from "formik";
 
 const { Column } = Table;
 const { Search } = Input;
 
 const openSuccessNotification = (message?: any) => {
   notification.success({
-    message: message || 'Category Created',
-    description: '',
-    icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
+    message: message || "Category Created",
+    description: "",
+    icon: <CheckCircleOutlined style={{ color: "rgba(0, 128, 0, 0.493)" }} />,
   });
 };
 
 const openErrorNotification = (message?: any) => {
   notification.success({
-    message: message || 'Something Went Wrong',
-    description: '',
-    icon: <CheckCircleOutlined style={{ color: 'rgb(241, 67, 67)' }} />,
+    message: message || "Something Went Wrong",
+    description: "",
+    icon: <CheckCircleOutlined style={{ color: "rgb(241, 67, 67)" }} />,
   });
 };
 
@@ -56,16 +56,22 @@ interface myTableProps {
   setcategoryList?: any;
   history?: any;
   roles?: any;
-  data2?:any; 
+  data2?: any;
 }
 
-const MyTable = ({ data, setcategoryList, history, roles,data2 }: myTableProps) => {
-  console.log('categoryList22222',data2)
+const MyTable = ({
+  data,
+  setcategoryList,
+  history,
+  roles,
+  data2,
+}: myTableProps) => {
+  console.log("categoryList22222", data2);
   const [visible, setvisible] = useState(false);
   const [activeCategoryForEdit, setactiveCategoryForEdit] = useState(false);
   const [deleteCategoryState, handleDeleteCategoryFetch] = useHandleFetch(
     {},
-    'deleteCategory'
+    "deleteCategory"
   );
   // console.log('activeCategoryForEdit',activeCategoryForEdit);
 
@@ -79,8 +85,8 @@ const MyTable = ({ data, setcategoryList, history, roles,data2 }: myTableProps) 
     });
 
     // @ts-ignore
-    if (deleteCategoryRes && deleteCategoryRes.status === 'ok') {
-      openSuccessNotification('Deleted Category');
+    if (deleteCategoryRes && deleteCategoryRes.status === "ok") {
+      openSuccessNotification("Deleted Category");
       const newCategoryList = data.filter((item) => item.id !== id);
       setcategoryList(newCategoryList);
     }
@@ -91,43 +97,62 @@ const MyTable = ({ data, setcategoryList, history, roles,data2 }: myTableProps) 
       return record.cover;
     } else if (!record.cover && record.icon) {
       return record.icon;
-    } else return '';
+    } else return "";
   };
 
-  console.log('catshit',data2)
+  console.log("catshit", data2);
   return (
     <>
       <Table
-        expandable={{
-            rowExpandable: record => true,
-          }}
-        size='small'
+        style={{
+          paddingTop: "10px",
+          borderRadius: "5px !important",
+          overflow: "hidden",
+          boxShadow:
+            "0 0.125rem 0.625rem rgba(227, 231, 250, 0.3), 0 0.0625rem 0.125rem rgba(206, 220, 233, 0.4)",
+        }}
+        // expandable={{
+        //     expandedRowRender: record => <p style={{ margin: 0 }}>{record.name}</p>,
+        //     rowExpandable: record => record.name !== 'Not Expandable',
+        //   }}
+        // bordered={true}
+        size="small"
+        // pagination={false}
+        dataSource={data}
+        tableLayout={"auto"}
+        onHeaderRow={(column) => {
+          return {
+            style: {
+              color: "red !important",
+            },
+          };
+        }}
       >
         <Column
-          title=''
-          dataIndex='cover'
-          key='id'
-          width={'80px'}
-          className='classnameofthecolumn'
+          title=""
+          dataIndex="cover"
+          key="id"
+          width={"80px"}
+          className="classnameofthecolumn"
           render={(cover, record: any) => (
             <>
               <div
-                className='listCoverImage'
+                className="listCoverImage"
                 onClick={() => {
                   history.push(`/admin/category/${record.id}`);
                   setactiveCategoryForEdit(record);
                 }}
               >
-                <img src={getCover(record)} alt='' />
+                <img src={getCover(record)} alt="" />
               </div>
             </>
           )}
         />
         <Column
-          title='Name'
-          dataIndex='name'
-          key='id'
-          className='classnameofthecolumn'
+          title="Name"
+          dataIndex="name"
+          key="id"
+          className="classnameofthecolumn"
           render={(text, record: any) => (
             <>
               <h4
@@ -138,8 +163,8 @@ const MyTable = ({ data, setcategoryList, history, roles,data2 }: myTableProps) 
                 }}
                 style={{
                   fontWeight: 400,
-                  color: '#555',
-                  cursor: 'pointer',
+                  color: "#555",
+                  cursor: "pointer",
                 }}
               >
                 {text}
@@ -149,17 +174,17 @@ const MyTable = ({ data, setcategoryList, history, roles,data2 }: myTableProps) 
         />
 
         <Column
-          title='Sub Cateogory'
-          dataIndex='subCount'
-          key='id'
-          className='classnameofthecolumn'
+          title="Sub Cateogory"
+          dataIndex="subCount"
+          key="id"
+          className="classnameofthecolumn"
         />
 
         <Column
-          title='Product'
-          dataIndex='productCount'
-          key='id'
-          className='classnameofthecolumn'
+          title="Product"
+          dataIndex="productCount"
+          key="id"
+          className="classnameofthecolumn"
         />
 
         {/* <Column 
@@ -189,18 +214,18 @@ const MyTable = ({ data, setcategoryList, history, roles,data2 }: myTableProps) 
           )}
         /> */}
 
-        {isAccess('postCatalogue', roles) && (
+        {isAccess("postCatalogue", roles) && (
           <Column
-            className='classnameofthecolumn'
-            title=''
-            key='action'
-            align='right'
+            className="classnameofthecolumn"
+            title=""
+            key="action"
+            align="right"
             render={(text, record: any) => (
-              <Space size='middle'>
-                <a href='##'>
-                  <Tooltip placement='top' title='Edit Category'>
+              <Space size="middle">
+                <a href="##">
+                  <Tooltip placement="top" title="Edit Category">
                     <span
-                      className='iconSize'
+                      className="iconSize"
                       onClick={() => {
                         setvisible(true);
                         setactiveCategoryForEdit(record);
@@ -212,11 +237,11 @@ const MyTable = ({ data, setcategoryList, history, roles,data2 }: myTableProps) 
                 </a>
                 <Popconfirm
                   onConfirm={() => handleDeleteCategory(record.id)}
-                  title='Are you sure？'
-                  okText='Yes'
-                  cancelText='No'
+                  title="Are you sure？"
+                  okText="Yes"
+                  cancelText="No"
                 >
-                  <span className='iconSize iconSize-danger'>
+                  <span className="iconSize iconSize-danger">
                     <DeleteOutlined />
                   </span>
                 </Popconfirm>
@@ -248,7 +273,7 @@ interface Props {
 const CategoryList = ({ history, roles }: Props) => {
   const [categoryState, handleCategoryListFetch] = useHandleFetch(
     {},
-    'categoryList'
+    "categoryList"
   );
   const [categoryList, setcategoryList] = useState([]);
   const [categoryList2, setcategoryList2] = useState([]);
@@ -260,8 +285,8 @@ const CategoryList = ({ history, roles }: Props) => {
           params: {
             isSubCategory: true,
             productCountValue: true,
-            sortItem: 'added',
-            sortOrderValue: '-1',
+            sortItem: "added",
+            sortOrderValue: "-1",
             limitNumber: 5000000,
           },
         },
@@ -269,7 +294,7 @@ const CategoryList = ({ history, roles }: Props) => {
       // @ts-ignore
       setcategoryList(categories);
       // @ts-ignore
-      setcategoryList2(categories)
+      setcategoryList2(categories);
     };
     setCategories();
   }, []);
@@ -289,49 +314,52 @@ const CategoryList = ({ history, roles }: Props) => {
   const handleSearch = (value) => {
     if (categoryState.data.length > 0) {
       const newCategoryList = categoryState.data.filter((item) => {
-        if(item.name.toLowerCase().includes(value.toLowerCase())){
-          return true; 
+        if (item.name.toLowerCase().includes(value.toLowerCase())) {
+          return true;
         }
-        if(item.subCategory &&
+        if (
+          item.subCategory &&
           item.subCategory.length > 0 &&
           item.subCategory[0] &&
-          item.subCategory[0]['name']?.toLowerCase().includes(value?.toLowerCase())){
-          return true; 
+          item.subCategory[0]["name"]
+            ?.toLowerCase()
+            .includes(value?.toLowerCase())
+        ) {
+          return true;
         }
-        return false; 
-        }
-      );
+        return false;
+      });
       setcategoryList(newCategoryList);
     }
   };
 
-  console.log('categoryList22', categoryList2);
+  console.log("categoryList22", categoryList2);
 
   return (
     <>
       {/* <h2 className='containerPageTitle'>
       Categories
     </h2> */}
-      <div className='categoryListContainer'>
-        <div className='categoryListContainer__header'>
-          <div className='categoryListContainer__header-searchBar'>
-            <h2 className='categoryListContainer__header-title'>Categories</h2>
+      <div className="categoryListContainer">
+        <div className="categoryListContainer__header">
+          <div className="categoryListContainer__header-searchBar">
+            <h2 className="categoryListContainer__header-title">Categories</h2>
 
             <Search
               enterButton={false}
-              className='searchbarClassName'
-              placeholder='search categories..'
+              className="searchbarClassName"
+              placeholder="search categories.."
               onChange={(e) => handleSearch(e.target.value)}
             />
           </div>
 
-          {isAccess('postCatalogue', roles) && (
+          {isAccess("postCatalogue", roles) && (
             <Button
               // type="primary"
-              className='btnPrimaryClassNameoutline'
+              className="btnPrimaryClassNameoutline"
               icon={<PlusOutlined />}
               onClick={() => {
-                setAddNewCategoryVisible(true)
+                setAddNewCategoryVisible(true);
               }}
             >
               Add New
@@ -339,7 +367,7 @@ const CategoryList = ({ history, roles }: Props) => {
           )}
         </div>
 
-        <div className='categoryListContainer__afterHeader'>
+        <div className="categoryListContainer__afterHeader">
           {/* <Search
               placeholder="search categories.."
               size="large"
@@ -348,7 +376,7 @@ const CategoryList = ({ history, roles }: Props) => {
             /> */}
         </div>
 
-        <div className='categoryListContainer__categoryList'>
+        <div className="categoryListContainer__categoryList">
           {categoryState.done && categoryList.length > 0 && (
             <MyTable
               roles={roles}
@@ -363,10 +391,10 @@ const CategoryList = ({ history, roles }: Props) => {
           {categoryState.done && !(categoryList.length > 0) && (
             <div
               style={{
-                marginTop: '50px',
+                marginTop: "50px",
               }}
             >
-              <Empty title='No Category found' />
+              <Empty title="No Category found" />
             </div>
           )}
         </div>
