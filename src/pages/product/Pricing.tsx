@@ -27,6 +27,9 @@ const Pricing = ({
     minimum: '',
   });
 
+
+  const [maximumPurchaseLimit,setMaximumPurchaseLimit] = useState(''); 
+
   const [attributeList, setAttributeList] = useState([]);
 
   useEffect(() => {
@@ -40,6 +43,10 @@ const Pricing = ({
         ...stock,
         ...pricingItem['stock'],
       });
+
+
+      // set maximumPurchaseLimit as default
+      setMaximumPurchaseLimit(pricingItem?.maximumPurchaseLimit)
 
       const attributeListItems = [];
       if (
@@ -97,22 +104,28 @@ const Pricing = ({
       }
 
       const priceItem = {
-        price: price,
-        stock: stock,
-        attribute: attribute,
+        price,
+        stock,
+        attribute,
+        maximumPurchaseLimit
       };
 
+
+      // resetting the fields
       setprice({
         regular: '',
         offer: '',
       });
       setStock({ available: '', minimum: '' });
-      handleAddPricing(priceItem);
+      setMaximumPurchaseLimit(''); 
       setAttributeList([]);
+
+      handleAddPricing(priceItem);
     } else {
       const priceItem = {
         price: price,
         stock: stock,
+        maximumPurchaseLimit,
         attribute: {},
       };
 
@@ -121,6 +134,7 @@ const Pricing = ({
         offer: '',
       });
       setStock({ available: '', minimum: '' });
+      setMaximumPurchaseLimit(''); 
       setAttributeList([]);
       handleAddPricing(priceItem);
     }
@@ -140,9 +154,10 @@ const Pricing = ({
       }
 
       const priceItem = {
-        price: price,
-        stock: stock,
-        attribute: attribute,
+        price,
+        stock,
+        attribute,
+        maximumPurchaseLimit,
         id: pricingItem.id,
       };
 
@@ -151,13 +166,16 @@ const Pricing = ({
         offer: '',
       });
       setStock({ available: '', minimum: '' });
-      handleUpdatePricing(priceItem);
       setAttributeList([]);
+      setMaximumPurchaseLimit(''); 
+      handleUpdatePricing(priceItem);
+
     } else {
       const priceItem = {
-        price: price,
-        stock: stock,
+        price,
+        stock,
         attribute: {},
+        maximumPurchaseLimit,
         id: pricingItem.id,
       };
 
@@ -167,6 +185,7 @@ const Pricing = ({
       });
       setStock({ available: '', minimum: '' });
       setAttributeList([]);
+      setMaximumPurchaseLimit(''); 
       handleUpdatePricing(priceItem);
     }
   };
@@ -187,6 +206,10 @@ const Pricing = ({
       return true;
     } else return false;
   };
+
+  const handleMaximumPurChaseLimit = (e) => {
+    setMaximumPurchaseLimit(e.target.value)
+  }
 
   // console.log('attributeList', attributeList);
 
@@ -279,6 +302,26 @@ const Pricing = ({
                     onChange={handleStockChange}
                   />
                 </div>
+              </div>
+            </div>
+            <div
+              style={{
+                marginTop: '25px',
+              }}
+              className='addProductGridContainer__item-body-variationCard-item'
+            >
+              <h4>
+                Maximum Purchase Limit
+              </h4>
+              <div className='addProductGridContainer__item-body-variationCard-item-container'>
+              <InputSmall
+                    min={0}
+                    type='number'
+                    // label='Available'
+                    value={maximumPurchaseLimit}
+                    name='maximumPurchaseLimit'
+                    onChange={handleMaximumPurChaseLimit}
+                  />
               </div>
             </div>
           </div>

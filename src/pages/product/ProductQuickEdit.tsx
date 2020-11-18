@@ -1077,6 +1077,17 @@ const ModalChildComponent = ({
                                         )}
                                       </div>
                                     )}
+
+
+                                    {Boolean(item?.maximumPurchaseLimit) && (
+                                       <div>
+                                       <h3>Maximum Purchase Limit</h3>
+                                       <div className='addProductGridContainer__item-body-pricingContainer-item-body'>
+                                       <h4>{item?.maximumPurchaseLimit}</h4>
+                                       </div>
+                                     </div>
+                                    )}
+
                                   </div>
 
                                   {item.attribute &&

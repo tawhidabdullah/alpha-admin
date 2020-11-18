@@ -42,6 +42,7 @@ const initialValues = {
   metaTitle: '',
   metaTags: '',
   metaDescription: '',
+  injectHTML: '',
 };
 
 interface Props {}
@@ -71,6 +72,7 @@ const UpdateSiteSEO = ({}: Props) => {
         metaTitle: values.metaTitle,
         metaTags: values.metaTags,
         metaDescription: values.metaDescription,
+        injectHTML: values.injectHTML
       },
     });
 
@@ -196,7 +198,36 @@ const UpdateSiteSEO = ({}: Props) => {
                 }}
               />
             </div>
+
+     
+
           </div>
+
+          <div 
+              className='siteInfoContainer__item-item'>
+              <TextArea
+                rows={8}
+                label='Inject HTML ( Inside <head></head> Tag )'
+                value={values.injectHTML}
+                name='injectHTML'
+                isError={
+                  (touched.injectHTML && errors.injectHTML) ||
+                  (!isSubmitting &&
+                    UpdateSiteSettingsState.error['error']['injectHTML'])
+                }
+                errorString={
+                  (touched.injectHTML && errors.injectHTML) ||
+                  (!isSubmitting &&
+                    UpdateSiteSettingsState.error['error']['injectHTML'])
+                }
+                onChange={(e: any) => {
+                  handleChange(e);
+                  setFieldTouched('injectHTML');
+                }}
+              />
+            </div>
+
+
 
           <div
             style={{
@@ -210,7 +241,7 @@ const UpdateSiteSEO = ({}: Props) => {
             // disabled={getisSubmitButtonDisabled(values, isValid)}
             className='btnPrimaryClassNameoutline'
           >
-            Update Site SEO
+            Update
           </Button>
 
           <div
