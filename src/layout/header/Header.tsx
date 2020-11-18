@@ -234,6 +234,8 @@ const HeaderComponent = (props: Props) => {
         transition: ' all .2s',
         alignItems: 'center',
         alignContent: 'center',
+        position: 'fixed',
+        width: '100%'
       }}
     >
       <h2

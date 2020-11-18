@@ -57,9 +57,15 @@ const SiderComponent = ({ roles }: any) => {
   return (
     <Sider
       width={260}
+      className='siderForAlphaAdmin'
       style={{
         boxShadow: '7px 0 60px rgba(0,0,0,.05)',
         border: 'none',
+        overflowY: 'auto',
+        overflowX: 'hidden',
+        height: 'calc(100vh - 100px)',
+        position: 'fixed',
+        top: '60px'
       }}
       collapsible
       collapsed={collapsed}

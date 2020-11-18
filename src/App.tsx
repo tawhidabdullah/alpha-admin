@@ -7,7 +7,7 @@ import Login from './pages/auth/login';
 import Sider from './layout/sider';
 import Header from './layout/header';
 import Content from './layout/content';
-// import Footer from './layout/footer';
+import Footer from './layout/footer';
 
 // import state
 import { glboalOperations } from './state/ducks/globalState';
@@ -54,7 +54,7 @@ const App = ({ saveRoles, saveCredentials }) => {
             <Sider />
             <Content />
           </Layout>
-          {/* <Footer /> */}
+          <Footer />
         </Layout>
       </Switch>
     </Router>
