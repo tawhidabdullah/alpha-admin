@@ -681,3 +681,18 @@
     }
   }
 }
+
+// sider for alpha admin
+.siderForAlphaAdmin::-webkit-scrollbar {
+  width: 10px;
+  height: 30px;
+}
+.siderForAlphaAdmin::-webkit-scrollbar-thumb {
+  background: #eee;
+  border-radius: 20px;
+  box-shadow: inset 2px 2px 2px hsla(0, 0%, 100%, 0.2),
+    inset -2px -2px 2px rgba(0, 0, 0, 0.25);
+}
+.siderForAlphaAdmin::-webkit-scrollbar-track {
+  background: #fff;
+}

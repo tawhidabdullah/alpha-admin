@@ -12,7 +12,7 @@ interface Props {
 
 const FooterComponent = (props: Props) => {
     return (
-        <Footer style={{ textAlign: 'center', background: '#fafafa', color: '#1890ff' }}>
+        <Footer style={{ textAlign: 'center', background: '#fff', color: '#1890ff' }}>
             © 2020 The Admin - Developed By Lotus Technology Development.
         </Footer>
     )

@@ -211,7 +211,7 @@ const PageVisits = (props: Props) => {
                     <CalendarOutlined />
                 </span>
 
-                            In the last month
+                            All Time
                      </h3>
         </div>
 
