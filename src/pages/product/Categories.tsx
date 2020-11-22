@@ -82,11 +82,11 @@ const Categories = ({
       const newOptions =
         options.length > 0
           ? options.filter((option) => {
-              return (
-                option &&
-                option.title.toLowerCase().includes(searchValue.toLowerCase())
-              );
-            })
+            return (
+              option &&
+              option.title.toLowerCase().includes(searchValue.toLowerCase())
+            );
+          })
           : [];
 
       setoptions(newOptions);
