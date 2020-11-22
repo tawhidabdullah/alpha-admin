@@ -91,7 +91,7 @@ const QuickEdit = ({
           metaTitle: values.bnMetaTitle,
           metaDescription: values.bnMetaDescription,
           metaTags: bnTags.join(','),
-          name: values.bnName.trim(),
+          name: values.bnName,
           description: values.bnDescription,
         },
       },
@@ -392,7 +392,7 @@ const QuickEdit = ({
               }}
             />
 
-            <h3 className='inputFieldLabel'>Meta Tags (grocery,fashion)</h3>
+            <h3 className='inputFieldLabel'>Meta Tags</h3>
 
             <MetaTags
               // @ts-ignore
@@ -406,7 +406,7 @@ const QuickEdit = ({
               }}
             ></div>
 
-            <h3 className='inputFieldLabel'>BN Meta Tags (মুদিখানা,ফ্যাশন)</h3>
+            <h3 className='inputFieldLabel'>BN Meta Tags</h3>
 
             <MetaTags
               // @ts-ignore

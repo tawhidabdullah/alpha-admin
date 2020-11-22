@@ -177,7 +177,7 @@ const MyTable = ({ data, setTagList, roles }) => {
             render={(text, record: any) => (
               <Space size='middle'>
                 <a href='##'>
-                  <Tooltip placement='top' title='Quick Edit Tag'>
+                  <Tooltip placement='top' title='Edit Tag'>
                     <span
                       className='iconSize'
                       onClick={() => {

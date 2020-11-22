@@ -97,7 +97,7 @@ const AddNewBrand = ({
   const [tags, setTags] = useState([]);
   const [bnTags, setBnTags] = useState([]);
 
-  console.log('brandImages', myImages);
+  console.log('brandList22', brandList);
   const handleSubmit = async (values: any, actions: any) => {
     // @ts-ignore
     const imagesIds = myImages

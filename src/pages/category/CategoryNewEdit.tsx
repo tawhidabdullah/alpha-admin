@@ -5,6 +5,9 @@ import * as Yup from 'yup';
 
 import { useHandleFetch } from '../../hooks';
 // import third party ui lib
+
+// import config
+import config from "../../config.json";
 import {
   Switch,
   Select,
@@ -123,6 +126,7 @@ const ModalChildComponent = ({
   const [visibleMedia, setvisibleMedia] = useState(false);
   const [coverImageId, setCoverImageId] = useState('');
   const [myGoddamnImages, setMyGoddamnImages] = useState([]);
+  const [iconUrl,setIconUrl] = useState(''); 
 
   const [
     attachImageToItemMultipleState,
@@ -343,17 +347,18 @@ const ModalChildComponent = ({
         cover: categoryDetailData['cover'] || '',
         id: categoryDetailData.id,
         key: categoryDetailData['id'] || '',
+        icon: iconUrl,
         // @ts-ignore
         ...addCategoryRes,
       });
 
       actions.resetForm();
       // @ts-ignore
-      setmyImages([]);
-      setCoverImageId('');
-      setselectedParentId('');
-      setisparentcategoryChecked(true);
-      setImageUrl('');
+      // setmyImages([]);
+      // setCoverImageId('');
+      // setselectedParentId('');
+      // setisparentcategoryChecked(true);
+      // setImageUrl('');
     } else {
       openErrorNotification();
     }
@@ -387,6 +392,9 @@ const ModalChildComponent = ({
 
   const onSwitchChange = (checked: any) => {
     setisparentcategoryChecked(checked);
+    if(checked) {
+     setselectedParentId('');
+    }
   };
 
   const handleCancel = (e: any) => {
@@ -439,6 +447,7 @@ const ModalChildComponent = ({
 
         // @ts-ignore
         if (res && res.status === 'ok') {
+          setIconUrl(`${config.baseURL}${res.icon}`)
           openSuccessNotification('Category Icon updated!');
         } else {
           openErrorNotification(
@@ -457,10 +466,20 @@ const ModalChildComponent = ({
   useEffect(() => {
     if (categoryDetailData && Object.keys(categoryDetailData).length > 0) {
       const iconUrl = categoryDetailData.icon && categoryDetailData.icon;
-
       setImageUrl(iconUrl);
     }
-  }, []);
+  }, [categoryDetailData]);
+
+  useEffect(() => {
+    if (categoryDetailData && Object.keys(categoryDetailData).length > 0) {
+      const parent = categoryDetailData?.parent;
+      if(parent) {
+        setselectedParentId(parent);
+        setisparentcategoryChecked(false);
+      } 
+    }
+  }, [categoryDetailData]);
+
 
   const uploadButton = (
     <div>
@@ -680,6 +699,7 @@ const ModalChildComponent = ({
                           placeholder='Select a Parent Category'
                           optionFilterProp='children'
                           onChange={onChangeSelect}
+                          value={selectedParentId}
                           // onFocus={onFocus}
                           // onBlur={onBlur}
                           // onSearch={onSearch}

@@ -4,6 +4,7 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 
 import { useHandleFetch } from '../../hooks';
+import config from '../../config.json'
 // import third party ui lib
 import {
   Switch,
@@ -125,6 +126,7 @@ const ModalChildComponent = ({
   const [coverImageId, setCoverImageId] = useState('');
   const [myGoddamnImages, setMyGoddamnImages] = useState([]);
 
+  const [iconUrl,setIconUrl] = useState(''); 
   const [
     attachImageToItemMultipleState,
     handleAttachImageToItemMultipleFetch,
@@ -323,6 +325,7 @@ const ModalChildComponent = ({
         metaTitle: values.metaTitle,
         metaDescription: values.metaDescription,
         metaTags: tags && tags.length > 0 ? tags.join(',') : '',
+        
         bn: {
           metaTitle: values.bnMetaTitle,
           metaDescription: values.bnMetaDescription,
@@ -362,6 +365,7 @@ const ModalChildComponent = ({
         description: addCategoryRes['description'] || '',
         id: categoryDetailData.id,
         key: categoryDetailData['id'] || '',
+        icon: iconUrl,
         // @ts-ignore
         ...addCategoryRes,
         cover: getCover(coverImageId),
@@ -411,9 +415,13 @@ const ModalChildComponent = ({
     }
   }, [addCategoryState]);
 
-  const onSwitchChange = (checked: any) => {
+const onSwitchChange = (checked: any) => {
     setisparentcategoryChecked(checked);
+    if(checked) {
+     setselectedParentId('');
+    }
   };
+
 
   const handleCancel = (e: any) => {
     setTags([]);
@@ -428,6 +436,9 @@ const ModalChildComponent = ({
   const onChangeSelect = (value) => {
     setselectedParentId(value);
   };
+
+
+
 
   function getBase64(img, callback) {
     const reader = new FileReader();
@@ -465,6 +476,8 @@ const ModalChildComponent = ({
 
         // @ts-ignore
         if (res && res.status === 'ok') {
+
+          setIconUrl(`${config.baseURL}${res.icon}`)
           openSuccessNotification('Category Icon updated!');
         } else {
           openErrorNotification(
@@ -488,6 +501,18 @@ const ModalChildComponent = ({
     }
   }, []);
 
+  useEffect(() => {
+    if (categoryDetailData && Object.keys(categoryDetailData).length > 0) {
+      const parent = categoryDetailData?.parent;
+      if(parent) {
+        setselectedParentId(parent);
+        setisparentcategoryChecked(false);
+      } 
+    }
+  }, [categoryDetailData]);
+
+ 
+  
   const uploadButton = (
     <div>
       {loadingThumnail ? <LoadingOutlined /> : <PlusOutlined />}
@@ -705,6 +730,7 @@ const ModalChildComponent = ({
                           style={{ width: 300 }}
                           placeholder='Select a Parent Category'
                           optionFilterProp='children'
+                          value={selectedParentId}
                           onChange={onChangeSelect}
                           // onFocus={onFocus}
                           // onBlur={onBlur}

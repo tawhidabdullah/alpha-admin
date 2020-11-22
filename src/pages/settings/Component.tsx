@@ -182,6 +182,7 @@ const Component = (props) => {
   const [itemVisible, setitemVisible] = useState(false);
   const [componentId, setComponentId] = useState('');
 
+
   const [componentState, handleComponentListFetch] = useHandleFetch(
     {},
     'componentList'
@@ -194,6 +195,8 @@ const Component = (props) => {
     {},
     'updateComponent'
   );
+
+  
 
   const [componentList, setComponentList] = useState([]);
 
@@ -455,7 +458,8 @@ const Component = (props) => {
               enterButton={false}
               className='searchbarClassName'
               placeholder='search components..'
-              onSearch={(value) => handleSearch(value)}
+              
+              onChange={(e) => handleSearch(e.target.value)}
             />
           </div>
           <Button

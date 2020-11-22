@@ -69,7 +69,7 @@ const Inbox = ({ emailList, setEmailList, getEmailListState }: Props) => {
                         >
                           <div className='sentEmailListContainer__item-info'>
                             <h3>To: {` ${item.recipient}`}</h3>
-                            <span>{`${item.subject}`}</span>
+                            <span>{`${item.subject || 'No Subject'}`}</span>
                           </div>
 
                           <h4>

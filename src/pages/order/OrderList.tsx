@@ -49,7 +49,7 @@ const { RangePicker } = DatePicker;
 
 const openSuccessNotification = (message?: any) => {
   notification.success({
-    message: message || 'Tag Created',
+    message: message || 'Order Created',
     description: '',
     icon: <CheckCircleOutlined style={{ color: 'rgba(0, 128, 0, 0.493)' }} />,
   });
@@ -446,7 +446,7 @@ const CustomerList = ({ roles }: Props) => {
               orderStatusFilterValue === 'all' ? '' : orderStatusFilterValue,
             startDateValue: startDate,
             endDateValue: endDate,
-            deliveryRegionNameValue: deliveryRegionNameValue,
+            deliveryRegionNameValue: deliveryRegionNameValue === 'all' ? '' : deliveryRegionNameValue,
           },
         },
       });
@@ -480,7 +480,7 @@ const CustomerList = ({ roles }: Props) => {
           };
         });
         // @ts-ignore
-        setRegionList(regionListOptions);
+        setRegionList([{name: 'All Region', value: 'all'},...regionListOptions]);
       }
     };
     setRegions();
@@ -512,7 +512,7 @@ const CustomerList = ({ roles }: Props) => {
 
   const orderFilteringOption = [
     {
-      name: 'All',
+      name: 'All Status',
       value: 'all',
     },
     {
@@ -557,7 +557,7 @@ const CustomerList = ({ roles }: Props) => {
           date_created: item.date_created
             ? moment(item.joiningDate).format('MMMM Do YYYY, h:mm a')
             : '',
-          Status: item.status,
+          status: item.status,
           total: item.total,
         };
       });
@@ -581,7 +581,7 @@ const CustomerList = ({ roles }: Props) => {
             <Search
               enterButton={false}
               className='searchbarClassName'
-              placeholder='search orders..'
+              placeholder='search orders (ex. #04343)'
               onChange={(e) => handleSearch(e.target.value)}
               // style={{ width: 300 }}
             />
@@ -673,6 +673,7 @@ const CustomerList = ({ roles }: Props) => {
                       .toLowerCase()
                       .indexOf(input.toLowerCase()) >= 0
                   }
+                  defaultValue={'all'}
                 >
                   {regionList.map((option) => {
                     return <Option value={option.value}>{option.name}</Option>;

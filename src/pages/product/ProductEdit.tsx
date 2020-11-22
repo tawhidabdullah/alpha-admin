@@ -450,6 +450,7 @@ const ModalChildComponent = ({
         tags: productDetailData.tags,
         cover: productDetailData.cover,
         image: productDetailData.image,
+        id: productDetailData.id
       });
 
       // setProductDetailData({

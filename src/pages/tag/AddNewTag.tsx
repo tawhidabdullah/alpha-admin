@@ -101,7 +101,7 @@ const AddNewBrand = ({
         },
       },
       body: {
-        name: values.name.trim(),
+        name: values.name,
         description: values.description,
         metaTitle: values.metaTitle,
         metaDescription: values.metaDescription,
@@ -111,7 +111,7 @@ const AddNewBrand = ({
           metaTitle: values.bnMetaTitle,
           metaDescription: values.bnMetaDescription,
           metaTags: bnTags.join(','),
-          name: values.bnName.trim(),
+          name: values.bnName,
           description: values.bnDescription,
         },
       },
@@ -122,11 +122,15 @@ const AddNewBrand = ({
       openSuccessNotification();
 
       setTagList([
+        
+        
         {
+          
           id: addTagRes['_id'] || '',
           key: addTagRes['_id'] || '',
           name: addTagRes['name'] || '',
           description: addTagRes['description'] || '',
+          ...addTagRes
         },
         ...tagList,
       ]);
