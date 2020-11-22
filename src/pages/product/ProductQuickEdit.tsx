@@ -158,7 +158,7 @@ const ModalChildComponent = ({
       await handleProductDetailFetch({
         urlOptions: {
           placeHolders: {
-            id: productDetailData.id,
+            id: productDetailData.id || productDetailData._id,
           },
         },
       });
@@ -167,8 +167,6 @@ const ModalChildComponent = ({
     getProductDetail();
   }, [productDetailData]);
 
-  console.log('tagIds', tagIds);
-  console.log('selectedtagIds', selectedTags);
 
   useEffect(() => {
     if (
@@ -464,7 +462,8 @@ const ModalChildComponent = ({
       const updatedItem = Object.assign({}, productList[index], {
         ...productDetailData,
         ...updatedProductRes,
-        id: productDetailData.id,
+        id: productDetailData.id || productDetailData._id || values.id || values._id,
+
         cover: getCover(coverImageId),
       });
       const updateProductList = [
@@ -669,7 +668,6 @@ const ModalChildComponent = ({
     ) {
       const metaTags = productDetailState.data.metaTags.split(',');
 
-      console.log('localMetaTags', metaTags);
 
       const bnMetaTags = productDetailState.data.bn['metaTags'].split(',');
       setMetaTags(metaTags || []);

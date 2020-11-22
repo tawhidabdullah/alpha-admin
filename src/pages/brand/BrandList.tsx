@@ -258,7 +258,7 @@ const CategoryList = ({ roles }: Props) => {
         },
       });
       // @ts-ignore
-      setBrandList(brands);
+      setBrandList(brands || []);
     };
     setBrands();
   }, []);

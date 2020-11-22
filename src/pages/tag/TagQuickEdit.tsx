@@ -94,13 +94,13 @@ const QuickEdit = ({
         description: values.description,
         metaTitle: values.metaTitle,
         metaDescription: values.metaDescription,
-        metaTags: tags.join(','),
+        metaTags: tags?.join(','),
 
         bn: {
           metaTitle: values.bnMetaTitle,
           metaDescription: values.bnMetaDescription,
-          metaTags: bnTags.join(','),
-          name: values.bnName.trim(),
+          metaTags: bnTags?.join(','),
+          name: values.bnName,
           description: values.bnDescription,
         },
       },
@@ -116,6 +116,7 @@ const QuickEdit = ({
 
       // @ts-ignore
       const updatedItem = Object.assign({}, tagList[index], {
+        ...values,
         // @ts-ignore
         ...updateTagRes,
       });
@@ -126,7 +127,6 @@ const QuickEdit = ({
       ];
       setTagList(updateTagList);
 
-      console.log('categoryupdateTagRes', updateTagRes);
       openSuccessNotification();
       setTagEditVisible(false);
 
@@ -181,22 +181,23 @@ const QuickEdit = ({
     return false;
   };
 
-  // useEffect(()=>{
+  useEffect(()=>{
 
-  //     if(tagDetailData && Object.keys(tagDetailData).length > 0){
-  //         const metaTags = tagDetailData.metaTags.split(',');
+      if(tagDetailData && Object.keys(tagDetailData).length > 0){
+          const metaTags = tagDetailData.metaTags.split(',');
 
-  //         console.log('localMetaTags',metaTags);
+          console.log('localMetaTags',metaTags);
 
-  //         const bnMetaTags = tagDetailData.bn['metaTags'].split(',');
+          const bnMetaTags = tagDetailData.bn['metaTags'].split(',');
 
-  //         setTags(metaTags)
-  //         setBnTags(bnMetaTags)
-  //     }
+          setTags(metaTags)
+          setBnTags(bnMetaTags)
+      }
 
-  // },[]);
+  },[]);
 
   console.log('tagDetailData', tagDetailData);
+
 
   return (
     <Formik
@@ -413,7 +414,7 @@ const QuickEdit = ({
               }}
             />
 
-            <h3 className='inputFieldLabel'>Meta Tags (grocery,fashion)</h3>
+            <h3 className='inputFieldLabel'>Meta Tags </h3>
 
             <MetaTags
               // @ts-ignore
@@ -427,7 +428,7 @@ const QuickEdit = ({
               }}
             ></div>
 
-            <h3 className='inputFieldLabel'>BN Meta Tags (মুদিখানা,ফ্যাশন)</h3>
+            <h3 className='inputFieldLabel'>BN Meta Tags</h3>
 
             <MetaTags
               // @ts-ignore

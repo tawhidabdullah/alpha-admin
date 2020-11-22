@@ -67,7 +67,7 @@ const ContentComponent = (props: Props) => {
         backgroundColor: '#fff',
         paddingTop: '20px',
         marginLeft: '260px',
-        marginTop: '30px'
+        marginTop: '50px'
       }}
     >
       <Switch>
