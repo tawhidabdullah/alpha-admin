@@ -13,6 +13,7 @@ interface Props {
     limit?: number;
     loading?: any;
     total?: any;
+    current?: any;
 }
 
 const TableListWithPagination = ({ children, data, handlePageChange, limit, loading, total }: Props) => {
@@ -32,7 +33,7 @@ const TableListWithPagination = ({ children, data, handlePageChange, limit, load
                 {
                     onChange: handlePageChange,
                     pageSize: limit,
-                    total, defaultCurrent: 1,
+                    total, defaultCurrent: 1, hideOnSinglePage: true
                 }
             }
             dataSource={data}

@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React, { useState, useEffect } from 'react';
+import { useQueryCache } from 'react-query';
 
 // import hooks
 import { useHandleFetch } from '../../hooks';
@@ -83,6 +84,7 @@ interface Props {
   setAddNewCategoryVisible: any;
   productList?: any;
   setProductList?: any;
+  productListState?: any;
 }
 
 const AddNewProduct = ({
@@ -90,6 +92,7 @@ const AddNewProduct = ({
   setAddNewCategoryVisible,
   productList,
   setProductList,
+  productListState
 }: Props) => {
   const [addProductState, handleAddProductFetch] = useHandleFetch(
     {},
@@ -116,6 +119,7 @@ const AddNewProduct = ({
   const [editpricingItem, setEditPricingItem] = useState({});
   const [pricingTagActiveKey, setpricingTagActiveKey] = useState('1');
   const [isPricingEditActive, seTisPricingEditActive] = useState(false);
+  const cache = useQueryCache();
 
   const makeEmptyCategoryOptions = (setEmpty) => {
     setEmpty([]);
@@ -125,8 +129,8 @@ const AddNewProduct = ({
     // @ts-ignore
     const imagesIds = myImages
       ? myImages.map((image) => {
-          return image.id;
-        })
+        return image.id;
+      })
       : [];
 
     const addProductRes = await handleAddProductFetch({
@@ -161,19 +165,53 @@ const AddNewProduct = ({
       openSuccessNotification('Product Created');
       setAddNewCategoryVisible(false);
 
-      console.log('addProductRes22', addProductRes);
-      setProductList([
-        {
-          // @ts-ignore
-          ...addProductRes,
-          id: addProductRes['_id'] || '',
-          key: addProductRes['_id'] || '',
-          name: addProductRes['name'] || '',
-          description: addProductRes['description'] || '',
-          cover: addProductRes['cover'] || '',
-        },
-        ...productList,
-      ]);
+      // console.log('addProductRes22', addProductRes);
+      // setProductList([
+      //   {
+      //     // @ts-ignore
+      //     ...addProductRes,
+      //     id: addProductRes['_id'] || '',
+      //     key: addProductRes['_id'] || '',
+      //     name: addProductRes['name'] || '',
+      //     description: addProductRes['description'] || '',
+      //     cover: addProductRes['cover'] || '',
+      //   },
+      //   ...productList,
+      // ]);
+
+      // productListState
+
+
+      const queries = cache.getQueries();
+      const queriesKeyMap = queries.filter(query => {
+        const queryKey = query?.queryKey;
+        // @ts-ignore
+        return queryKey?.[0] === 'product' && typeof queryKey?.[1] === 'number'
+      }).map(query => query?.queryKey);
+
+      const firstQueryKey = queriesKeyMap?.[0];
+
+
+      if (firstQueryKey) {
+        // @ts-ignore
+        cache.setQueryData(firstQueryKey, ((prev) => {
+          let newProductItem = {
+            ...addProductRes,
+            id: addProductRes['_id'] || '',
+            key: addProductRes['_id'] || '',
+            name: addProductRes['name'] || '',
+            description: addProductRes['description'] || '',
+            cover: addProductRes['cover'] || '',
+          }
+          return {
+            // @ts-ignore
+            ...prev,
+            // @ts-ignore
+            data: [newProductItem, ...prev?.data],
+          }
+        }))
+      }
+
       // @ts-ignore
       setmyImages([]);
       setCoverImageId('');
@@ -242,7 +280,7 @@ const AddNewProduct = ({
     setmyImages(newImages);
   };
 
-  const handleDeleteFromSelectedImage = () => {};
+  const handleDeleteFromSelectedImage = () => { };
 
   const handleThumbnailImageDelete = (id) => {
     // @ts-ignore
@@ -258,7 +296,7 @@ const AddNewProduct = ({
   };
 
   const handleAddPricing = (priceItem) => {
-    console.log('addedPricing',priceItem);
+    console.log('addedPricing', priceItem);
     setPricing([
       {
         ...priceItem,
@@ -349,86 +387,86 @@ const AddNewProduct = ({
         setFieldTouched,
         handleReset,
       }) => (
-        <>
-          <Modal
-            style={{
-              top: '40px',
-            }}
-            bodyStyle={{
-              margin: 0,
-              padding: 0,
-            }}
-            width={'70vw'}
-            title='Add New Product'
-            visible={addNewCategoryVisible}
-            onOk={(e: any) => handleSubmit(e)}
-            onCancel={handleCancel}
-            okText='Create'
-            okButtonProps={{
-              loading: isSubmitting,
-              htmlType: 'submit',
-            }}
-          >
-            <section className='addProductGridContainer'>
-              <div className='addProductGridContainer__left'>
-                <div className='addProductGridContainer__name'>
-                  <div className='addProductGridContainer__item-header'>
-                    <h3>Product Information *</h3>
+          <>
+            <Modal
+              style={{
+                top: '40px',
+              }}
+              bodyStyle={{
+                margin: 0,
+                padding: 0,
+              }}
+              width={'70vw'}
+              title='Add New Product'
+              visible={addNewCategoryVisible}
+              onOk={(e: any) => handleSubmit(e)}
+              onCancel={handleCancel}
+              okText='Create'
+              okButtonProps={{
+                loading: isSubmitting,
+                htmlType: 'submit',
+              }}
+            >
+              <section className='addProductGridContainer'>
+                <div className='addProductGridContainer__left'>
+                  <div className='addProductGridContainer__name'>
+                    <div className='addProductGridContainer__item-header'>
+                      <h3>Product Information *</h3>
 
-                    <div
-                      className={
-                        values.name && values.name.length > 2
-                          ? 'checkicon-active'
-                          : 'checkicon'
-                      }
-                    >
-                      <CheckCircleOutlined />
+                      <div
+                        className={
+                          values.name && values.name.length > 2
+                            ? 'checkicon-active'
+                            : 'checkicon'
+                        }
+                      >
+                        <CheckCircleOutlined />
+                      </div>
                     </div>
-                  </div>
-                  <div className='addProductGridContainer__item-body'>
-                    <Input
-                      label='Name *'
-                      value={values.name}
-                      placeHolder={'Rafty ox'}
-                      name='name'
-                      isError={
-                        (touched.name && errors.name) ||
-                        (!isSubmitting &&
-                          addProductState.error['error']['name'])
-                      }
-                      errorString={
-                        (touched.name && errors.name) ||
-                        (!isSubmitting &&
-                          addProductState.error['error']['name'])
-                      }
-                      onChange={(e: any) => {
-                        handleChange(e);
-                        setFieldTouched('name');
-                      }}
-                    />
+                    <div className='addProductGridContainer__item-body'>
+                      <Input
+                        label='Name *'
+                        value={values.name}
+                        placeHolder={'Rafty ox'}
+                        name='name'
+                        isError={
+                          (touched.name && errors.name) ||
+                          (!isSubmitting &&
+                            addProductState.error['error']['name'])
+                        }
+                        errorString={
+                          (touched.name && errors.name) ||
+                          (!isSubmitting &&
+                            addProductState.error['error']['name'])
+                        }
+                        onChange={(e: any) => {
+                          handleChange(e);
+                          setFieldTouched('name');
+                        }}
+                      />
 
-                    <Input
-                      label='BN Name'
-                      value={values.bnName}
-                      placeHolder={'রাফতি অক্স'}
-                      name='bnName'
-                      isError={
-                        (touched.bnName && errors.bnName) ||
-                        (!isSubmitting &&
-                          addProductState.error['error']['bnName'])
-                      }
-                      errorString={
-                        (touched.bnName && errors.bnName) ||
-                        (!isSubmitting &&
-                          addProductState.error['error']['bnName'])
-                      }
-                      onChange={(e: any) => {
-                        handleChange(e);
-                        setFieldTouched('bnName');
-                      }}
-                    />
+                      <Input
+                        label='BN Name'
+                        value={values.bnName}
+                        placeHolder={'রাফতি অক্স'}
+                        name='bnName'
+                        isError={
+                          (touched.bnName && errors.bnName) ||
+                          (!isSubmitting &&
+                            addProductState.error['error']['bnName'])
+                        }
+                        errorString={
+                          (touched.bnName && errors.bnName) ||
+                          (!isSubmitting &&
+                            addProductState.error['error']['bnName'])
+                        }
+                        onChange={(e: any) => {
+                          handleChange(e);
+                          setFieldTouched('bnName');
+                        }}
+                      />
 
-                    {/* <div style={{
+                      {/* <div style={{
 												display: 'flex',
 												justifyContent: 'space-between'
 											}}>
@@ -453,7 +491,7 @@ const AddNewProduct = ({
 												</div>
 											</div> */}
 
-                    {/* 
+                      {/* 
 											<TextArea
 												rows={1}
 												label='Venue'
@@ -488,591 +526,591 @@ const AddNewProduct = ({
 												}}
 											/> */}
 
-                    <Input
-                      label='Unit'
-                      value={values.unit}
-                      name='unit'
-                      placeHolder={'KG,POUND,GM'}
-                      isError={
-                        (touched.unit && errors.unit) ||
-                        (!isSubmitting &&
-                          addProductState.error['error']['unit'])
-                      }
-                      errorString={
-                        (touched.unit && errors.unit) ||
-                        (!isSubmitting &&
-                          addProductState.error['error']['unit'])
-                      }
-                      onChange={(e: any) => {
-                        handleChange(e);
-                        setFieldTouched('unit');
-                      }}
-                    />
-
-                    <Input
-                      label='BN Unit'
-                      value={values.bnUnit}
-                      placeHolder={'কেজি,গ্রাম'}
-                      name='bnUnit'
-                      isError={
-                        (touched.bnUnit && errors.bnUnit) ||
-                        (!isSubmitting &&
-                          addProductState.error['error']['bnUnit'])
-                      }
-                      errorString={
-                        (touched.bnUnit && errors.bnUnit) ||
-                        (!isSubmitting &&
-                          addProductState.error['error']['bnUnit'])
-                      }
-                      onChange={(e: any) => {
-                        handleChange(e);
-                        setFieldTouched('bnUnit');
-                      }}
-                    />
-
-                    <Input
-                      label='Model Number'
-                      value={values.model}
-                      name='model'
-                      isError={
-                        (touched.model && errors.model) ||
-                        (!isSubmitting &&
-                          addProductState.error['error']['model'])
-                      }
-                      errorString={
-                        (touched.model && errors.model) ||
-                        (!isSubmitting &&
-                          addProductState.error['error']['model'])
-                      }
-                      onChange={(e: any) => {
-                        handleChange(e);
-                        setFieldTouched('model');
-                      }}
-                    />
-
-                    <h3 className='inputFieldLabel'>Description</h3>
-
-                    <div
-                      style={{
-                        width: '100%',
-                        maxWidth: '100%',
-                      }}
-                    >
-                      <CKEditor
-                        editor={ClassicEditor}
-                        data={description}
-                        onInit={(editor) => {
-                          // You can store the "editor" and use when it is needed.
-                          console.log('Editor is ready to use!', editor);
-                        }}
-                        onChange={(event, editor) => {
-                          const data = editor.getData();
-                          setDescription(data);
-                        }}
-                        onBlur={(event, editor) => {
-                          console.log('Blur.', editor);
-                        }}
-                        onFocus={(event, editor) => {
-                          console.log('Focus.', editor);
+                      <Input
+                        label='Unit'
+                        value={values.unit}
+                        name='unit'
+                        placeHolder={'KG,POUND,GM'}
+                        isError={
+                          (touched.unit && errors.unit) ||
+                          (!isSubmitting &&
+                            addProductState.error['error']['unit'])
+                        }
+                        errorString={
+                          (touched.unit && errors.unit) ||
+                          (!isSubmitting &&
+                            addProductState.error['error']['unit'])
+                        }
+                        onChange={(e: any) => {
+                          handleChange(e);
+                          setFieldTouched('unit');
                         }}
                       />
-                    </div>
 
-                    <div
-                      style={{
-                        marginTop: '15px',
-                      }}
-                    ></div>
-
-                    <h3 className='inputFieldLabel'>BN Description</h3>
-
-                    <div
-                      style={{
-                        width: '100%',
-                        maxWidth: '100%',
-                      }}
-                    >
-                      <CKEditor
-                        editor={ClassicEditor}
-                        data={bnDescription}
-                        onInit={(editor) => {
-                          // You can store the "editor" and use when it is needed.
-                          console.log('Editor is ready to use!', editor);
-                        }}
-                        onChange={(event, editor) => {
-                          const data = editor.getData();
-                          setBNDescription(data);
-                        }}
-                        onBlur={(event, editor) => {
-                          console.log('Blur.', editor);
-                        }}
-                        onFocus={(event, editor) => {
-                          console.log('Focus.', editor);
+                      <Input
+                        label='BN Unit'
+                        value={values.bnUnit}
+                        placeHolder={'কেজি,গ্রাম'}
+                        name='bnUnit'
+                        isError={
+                          (touched.bnUnit && errors.bnUnit) ||
+                          (!isSubmitting &&
+                            addProductState.error['error']['bnUnit'])
+                        }
+                        errorString={
+                          (touched.bnUnit && errors.bnUnit) ||
+                          (!isSubmitting &&
+                            addProductState.error['error']['bnUnit'])
+                        }
+                        onChange={(e: any) => {
+                          handleChange(e);
+                          setFieldTouched('bnUnit');
                         }}
                       />
-                    </div>
-                  </div>
-                </div>
 
-                <div className='addProductGridContainer__price'>
-                  <div className='addProductGridContainer__item-header'>
-                    <h3>Product Pricing *</h3>
+                      <Input
+                        label='Model Number'
+                        value={values.model}
+                        name='model'
+                        isError={
+                          (touched.model && errors.model) ||
+                          (!isSubmitting &&
+                            addProductState.error['error']['model'])
+                        }
+                        errorString={
+                          (touched.model && errors.model) ||
+                          (!isSubmitting &&
+                            addProductState.error['error']['model'])
+                        }
+                        onChange={(e: any) => {
+                          handleChange(e);
+                          setFieldTouched('model');
+                        }}
+                      />
 
-                    <div
-                      className={
-                        pricing && pricing.length > 0
-                          ? 'checkicon-active'
-                          : 'checkicon'
-                      }
-                    >
-                      <CheckCircleOutlined />
-                    </div>
-                  </div>
+                      <h3 className='inputFieldLabel'>Description</h3>
 
-                  <div className='addProductGridContainer__item-body'>
-                    <Tabs
-                      animated={true}
-                      tabPosition='top'
-                      type='card'
-                      activeKey={pricingTagActiveKey}
-                      onChange={(value) => {
-                        setpricingTagActiveKey(`${value}`);
-                      }}
-                    >
-                      <TabPane tab='Add Variation' key='1'>
-                        <Pricing
-                          handleAddPricing={handleAddPricing}
-                          pricingItem={editpricingItem}
-                          handleUpdatePricing={handleUpdatePricing}
-                          isPricingEditActive={isPricingEditActive}
+                      <div
+                        style={{
+                          width: '100%',
+                          maxWidth: '100%',
+                        }}
+                      >
+                        <CKEditor
+                          editor={ClassicEditor}
+                          data={description}
+                          onInit={(editor) => {
+                            // You can store the "editor" and use when it is needed.
+                            console.log('Editor is ready to use!', editor);
+                          }}
+                          onChange={(event, editor) => {
+                            const data = editor.getData();
+                            setDescription(data);
+                          }}
+                          onBlur={(event, editor) => {
+                            console.log('Blur.', editor);
+                          }}
+                          onFocus={(event, editor) => {
+                            console.log('Focus.', editor);
+                          }}
                         />
-                      </TabPane>
-                      <TabPane tab='Pricing List' key='2'>
-                        <div className='addProductGridContainer__item-body-pricingContainer'>
-                          {pricing.length > 0 &&
-                            pricing.map((item) => {
-                              return (
-                                <div className='addProductGridContainer__item-body-pricingContainer-item'>
-                                  <div className='addProductGridContainer__item-body-pricingContainer-item-edit'>
-                                    {/* <span>
+                      </div>
+
+                      <div
+                        style={{
+                          marginTop: '15px',
+                        }}
+                      ></div>
+
+                      <h3 className='inputFieldLabel'>BN Description</h3>
+
+                      <div
+                        style={{
+                          width: '100%',
+                          maxWidth: '100%',
+                        }}
+                      >
+                        <CKEditor
+                          editor={ClassicEditor}
+                          data={bnDescription}
+                          onInit={(editor) => {
+                            // You can store the "editor" and use when it is needed.
+                            console.log('Editor is ready to use!', editor);
+                          }}
+                          onChange={(event, editor) => {
+                            const data = editor.getData();
+                            setBNDescription(data);
+                          }}
+                          onBlur={(event, editor) => {
+                            console.log('Blur.', editor);
+                          }}
+                          onFocus={(event, editor) => {
+                            console.log('Focus.', editor);
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className='addProductGridContainer__price'>
+                    <div className='addProductGridContainer__item-header'>
+                      <h3>Product Pricing *</h3>
+
+                      <div
+                        className={
+                          pricing && pricing.length > 0
+                            ? 'checkicon-active'
+                            : 'checkicon'
+                        }
+                      >
+                        <CheckCircleOutlined />
+                      </div>
+                    </div>
+
+                    <div className='addProductGridContainer__item-body'>
+                      <Tabs
+                        animated={true}
+                        tabPosition='top'
+                        type='card'
+                        activeKey={pricingTagActiveKey}
+                        onChange={(value) => {
+                          setpricingTagActiveKey(`${value}`);
+                        }}
+                      >
+                        <TabPane tab='Add Variation' key='1'>
+                          <Pricing
+                            handleAddPricing={handleAddPricing}
+                            pricingItem={editpricingItem}
+                            handleUpdatePricing={handleUpdatePricing}
+                            isPricingEditActive={isPricingEditActive}
+                          />
+                        </TabPane>
+                        <TabPane tab='Pricing List' key='2'>
+                          <div className='addProductGridContainer__item-body-pricingContainer'>
+                            {pricing.length > 0 &&
+                              pricing.map((item) => {
+                                return (
+                                  <div className='addProductGridContainer__item-body-pricingContainer-item'>
+                                    <div className='addProductGridContainer__item-body-pricingContainer-item-edit'>
+                                      {/* <span>
 																		<EditOutlined />
 																		</span> */}
-                                    <span
-                                      className='pricingEditIcon'
-                                      onClick={() => {
-                                        handleEditPricing(item.id);
-                                        setpricingTagActiveKey('1');
-                                      }}
-                                    >
-                                      <EditOutlined />
-                                    </span>
-                                    <span
-                                      className='pricingDeleteIcon'
-                                      onClick={() =>
-                                        handleDeletePricing(item.id)
-                                      }
-                                    >
-                                      <DeleteOutlined />
-                                    </span>
-                                  </div>
-                                  <div className='addProductGridContainer__item-body-pricingContainer-item-two'>
-                                    <div>
-                                      <h3>Price</h3>
-                                      <div className='addProductGridContainer__item-body-pricingContainer-item-body'>
-                                        {item.price.offer ? (
-                                          <>
-                                            <h4>{item.price.offer}</h4>/
-                                            <h5
-                                              style={{
-                                                textDecoration: 'line-through',
-                                              }}
-                                            >
-                                              {item.price.regular}
-                                            </h5>
-                                          </>
-                                        ) : (
-                                          <h4>{item.price.regular}</h4>
-                                        )}
-                                      </div>
+                                      <span
+                                        className='pricingEditIcon'
+                                        onClick={() => {
+                                          handleEditPricing(item.id);
+                                          setpricingTagActiveKey('1');
+                                        }}
+                                      >
+                                        <EditOutlined />
+                                      </span>
+                                      <span
+                                        className='pricingDeleteIcon'
+                                        onClick={() =>
+                                          handleDeletePricing(item.id)
+                                        }
+                                      >
+                                        <DeleteOutlined />
+                                      </span>
                                     </div>
-
-                                    {item.stock && item.stock['available'] && (
+                                    <div className='addProductGridContainer__item-body-pricingContainer-item-two'>
                                       <div>
-                                        <Badge
-                                          overflowCount={999}
-                                          count={item.stock.available}
-                                        >
-                                          <h3>Stock</h3>
-                                        </Badge>
-                                        {item.stock['minimum'] && (
-                                          <>
-                                            <div className='addProductGridContainer__item-body-pricingContainer-item-body'>
-                                              <div>
-                                                <h6>
-                                                  min
-                                                  <Badge
-                                                    className='site-badge-count-4'
-                                                    overflowCount={999}
-                                                    count={item.stock.minimum}
-                                                  />
-                                                </h6>
-                                              </div>
-                                            </div>
-                                          </>
-                                        )}
-                                      </div>
-                                    )}
-                                    
-                                  {Boolean(item?.maximumPurchaseLimit) && (
-                                       <div>
-                                       <h3>Maximum Purchase Limit</h3>
-                                       <div className='addProductGridContainer__item-body-pricingContainer-item-body'>
-                                       <h4>{item?.maximumPurchaseLimit}</h4>
-                                       </div>
-                                     </div>
-                                    )}
-                                  </div>
-
-                                  {item.attribute &&
-                                    Object.values(item.attribute).length >
-                                      0 && (
-                                      <>
-                                        <h3>Attributes</h3>
+                                        <h3>Price</h3>
                                         <div className='addProductGridContainer__item-body-pricingContainer-item-body'>
-                                          {item.attribute &&
-                                            Object.keys(item.attribute).length >
-                                              0 &&
-                                            Object.keys(item.attribute).map(
-                                              (attributeItem) => {
-                                                return (
-                                                  <div>
-                                                    <h6>{attributeItem}</h6>
-                                                    <h4>
-                                                      {
-                                                        item.attribute[
-                                                          attributeItem
-                                                        ]
-                                                      }
-                                                    </h4>
-                                                  </div>
-                                                );
-                                              }
+                                          {item.price.offer ? (
+                                            <>
+                                              <h4>{item.price.offer}</h4>/
+                                            <h5
+                                                style={{
+                                                  textDecoration: 'line-through',
+                                                }}
+                                              >
+                                                {item.price.regular}
+                                              </h5>
+                                            </>
+                                          ) : (
+                                              <h4>{item.price.regular}</h4>
                                             )}
                                         </div>
-                                      </>
-                                    )}
-                                </div>
-                              );
-                            })}
+                                      </div>
 
-                          {!(pricing.length > 0) && (
-                            <div
-                              style={{
-                                width: '100%',
-                                display: 'flex',
-                                justifyContent: 'center',
-                              }}
-                            >
-                              <Empty
-                                description='No Pricing added'
-                                image={Empty.PRESENTED_IMAGE_SIMPLE}
-                              />
-                            </div>
-                          )}
-                        </div>
-                      </TabPane>
-                    </Tabs>
+                                      {item.stock && item.stock['available'] && (
+                                        <div>
+                                          <Badge
+                                            overflowCount={999}
+                                            count={item.stock.available}
+                                          >
+                                            <h3>Stock</h3>
+                                          </Badge>
+                                          {item.stock['minimum'] && (
+                                            <>
+                                              <div className='addProductGridContainer__item-body-pricingContainer-item-body'>
+                                                <div>
+                                                  <h6>
+                                                    min
+                                                  <Badge
+                                                      className='site-badge-count-4'
+                                                      overflowCount={999}
+                                                      count={item.stock.minimum}
+                                                    />
+                                                  </h6>
+                                                </div>
+                                              </div>
+                                            </>
+                                          )}
+                                        </div>
+                                      )}
 
-                    <div className='addProductGridContainer__item-body-container'></div>
-                  </div>
-                </div>
+                                      {Boolean(item?.maximumPurchaseLimit) && (
+                                        <div>
+                                          <h3>Maximum Purchase Limit</h3>
+                                          <div className='addProductGridContainer__item-body-pricingContainer-item-body'>
+                                            <h4>{item?.maximumPurchaseLimit}</h4>
+                                          </div>
+                                        </div>
+                                      )}
+                                    </div>
 
-                <div className='addProductGridContainer__image'>
-                  <div className='addProductGridContainer__item-header'>
-                    <h3>Image</h3>
+                                    {item.attribute &&
+                                      Object.values(item.attribute).length >
+                                      0 && (
+                                        <>
+                                          <h3>Attributes</h3>
+                                          <div className='addProductGridContainer__item-body-pricingContainer-item-body'>
+                                            {item.attribute &&
+                                              Object.keys(item.attribute).length >
+                                              0 &&
+                                              Object.keys(item.attribute).map(
+                                                (attributeItem) => {
+                                                  return (
+                                                    <div>
+                                                      <h6>{attributeItem}</h6>
+                                                      <h4>
+                                                        {
+                                                          item.attribute[
+                                                          attributeItem
+                                                          ]
+                                                        }
+                                                      </h4>
+                                                    </div>
+                                                  );
+                                                }
+                                              )}
+                                          </div>
+                                        </>
+                                      )}
+                                  </div>
+                                );
+                              })}
 
-                    <Tooltip
-                      placement='left'
-                      title={
-                        'Click on the image to select cover image, By default 1st image is selected as cover'
-                      }
-                    >
-                      <a href='###'>
-                        <InfoCircleOutlined />
-                      </a>
-                    </Tooltip>
-                  </div>
-                  <div className='addProductGridContainer__item-body'>
-                    <div className='aboutToUploadImagesContainer'>
-                      {myImages &&
-                        // @ts-ignore
-                        myImages.length > 0 &&
-                        myImages.map((image, index) => {
-                          return (
-                            <div className='aboutToUploadImagesContainer__item'>
+                            {!(pricing.length > 0) && (
                               <div
-                                className='aboutToUploadImagesContainer__item-imgContainer'
-                                onClick={() => setCoverImageId(image.id)}
+                                style={{
+                                  width: '100%',
+                                  display: 'flex',
+                                  justifyContent: 'center',
+                                }}
                               >
-                                <img src={image.cover} alt={image.alt} />
+                                <Empty
+                                  description='No Pricing added'
+                                  image={Empty.PRESENTED_IMAGE_SIMPLE}
+                                />
                               </div>
+                            )}
+                          </div>
+                        </TabPane>
+                      </Tabs>
 
-                              <span
-                                onClick={() => handleImagesDelete(image.id)}
-                                className='aboutToUploadImagesContainer__item-remove'
-                              >
-                                <CloseOutlined />
-                              </span>
+                      <div className='addProductGridContainer__item-body-container'></div>
+                    </div>
+                  </div>
 
-                              {coverImageId === image.id ? (
-                                <span className='aboutToUploadImagesContainer__item-cover'>
-                                  <CheckOutlined />
+                  <div className='addProductGridContainer__image'>
+                    <div className='addProductGridContainer__item-header'>
+                      <h3>Image</h3>
+
+                      <Tooltip
+                        placement='left'
+                        title={
+                          'Click on the image to select cover image, By default 1st image is selected as cover'
+                        }
+                      >
+                        <a href='###'>
+                          <InfoCircleOutlined />
+                        </a>
+                      </Tooltip>
+                    </div>
+                    <div className='addProductGridContainer__item-body'>
+                      <div className='aboutToUploadImagesContainer'>
+                        {myImages &&
+                          // @ts-ignore
+                          myImages.length > 0 &&
+                          myImages.map((image, index) => {
+                            return (
+                              <div className='aboutToUploadImagesContainer__item'>
+                                <div
+                                  className='aboutToUploadImagesContainer__item-imgContainer'
+                                  onClick={() => setCoverImageId(image.id)}
+                                >
+                                  <img src={image.cover} alt={image.alt} />
+                                </div>
+
+                                <span
+                                  onClick={() => handleImagesDelete(image.id)}
+                                  className='aboutToUploadImagesContainer__item-remove'
+                                >
+                                  <CloseOutlined />
                                 </span>
-                              ) : (
-                                !coverImageId &&
-                                index === 0 && (
+
+                                {coverImageId === image.id ? (
                                   <span className='aboutToUploadImagesContainer__item-cover'>
                                     <CheckOutlined />
                                   </span>
-                                )
-                              )}
-                            </div>
-                          );
-                        })}
+                                ) : (
+                                    !coverImageId &&
+                                    index === 0 && (
+                                      <span className='aboutToUploadImagesContainer__item-cover'>
+                                        <CheckOutlined />
+                                      </span>
+                                    )
+                                  )}
+                              </div>
+                            );
+                          })}
 
-                      <Tooltip title={'Attach images'}>
-                        <div
-                          onClick={() => {
-                            setvisible(true);
-                            setisModalOpenForImages(true);
-                            setisModalOpenForThumbnail(false);
-                          }}
-                          className='aboutToUploadImagesContainer__uploadItem'
-                        >
-                          {/* <FileAddOutlined />
+                        <Tooltip title={'Attach images'}>
+                          <div
+                            onClick={() => {
+                              setvisible(true);
+                              setisModalOpenForImages(true);
+                              setisModalOpenForThumbnail(false);
+                            }}
+                            className='aboutToUploadImagesContainer__uploadItem'
+                          >
+                            {/* <FileAddOutlined />
 													<FileImageTwoTone />
 													<FileImageOutlined /> */}
-                          <FileImageFilled />
-                          {/* <h5>
+                            <FileImageFilled />
+                            {/* <h5>
 												     Select From Library
 											<     /h5> */}
-                          <span className='aboutToUploadImagesContainer__uploadItem-plus'>
-                            <PlusOutlined />
-                          </span>
-                        </div>
-                      </Tooltip>
+                            <span className='aboutToUploadImagesContainer__uploadItem-plus'>
+                              <PlusOutlined />
+                            </span>
+                          </div>
+                        </Tooltip>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <div className='addProductGridContainer__image'>
-                  <div className='addProductGridContainer__item-header'>
-                    <h3>Meta Data</h3>
-
-                    <Tooltip
-                      placement='left'
-                      title={
-                        "Meta data will be used to make the user's easy and for search engine optimization."
-                      }
-                    >
-                      <a href='###'>
-                        <InfoCircleOutlined />
-                      </a>
-                    </Tooltip>
-                  </div>
-                  <div className='addProductGridContainer__item-body'>
-                    <Input
-                      label='Meta title'
-                      value={values.metaTitle}
-                      placeHolder={'...'}
-                      name='metaTitle'
-                      isError={
-                        (touched.metaTitle && errors.metaTitle) ||
-                        (!isSubmitting &&
-                          addProductState.error['error']['metaTitle'])
-                      }
-                      errorString={
-                        (touched.metaTitle && errors.metaTitle) ||
-                        (!isSubmitting &&
-                          addProductState.error['error']['metaTitle'])
-                      }
-                      onChange={(e: any) => {
-                        handleChange(e);
-                        setFieldTouched('metaTitle');
-                      }}
-                    />
-
-                    <Input
-                      label='BN Meta title'
-                      value={values.bnMetaTitle}
-                      placeHolder={'...'}
-                      name='bnMetaTitle'
-                      isError={
-                        (touched.bnMetaTitle && errors.bnMetaTitle) ||
-                        (!isSubmitting &&
-                          addProductState.error['error']['bnMetaTitle'])
-                      }
-                      errorString={
-                        (touched.bnMetaTitle && errors.bnMetaTitle) ||
-                        (!isSubmitting &&
-                          addProductState.error['error']['bnMetaTitle'])
-                      }
-                      onChange={(e: any) => {
-                        handleChange(e);
-                        setFieldTouched('bnMetaTitle');
-                      }}
-                    />
-
-                    <TextArea
-                      label='Meta description'
-                      value={values.metaDescription}
-                      placeholder={'meta...'}
-                      name='metaDescription'
-                      isError={
-                        (touched.metaDescription && errors.metaDescription) ||
-                        (!isSubmitting &&
-                          addProductState.error['error']['metaDescription'])
-                      }
-                      errorString={
-                        (touched.metaDescription && errors.metaDescription) ||
-                        (!isSubmitting &&
-                          addProductState.error['error']['metaDescription'])
-                      }
-                      onChange={(e: any) => {
-                        handleChange(e);
-                        setFieldTouched('metaDescription');
-                      }}
-                    />
-
-                    <TextArea
-                      label='BN Meta Description'
-                      value={values.bnMetaDescription}
-                      placeholder={'এইয় মেট...'}
-                      name='bnMetaDescription'
-                      isError={
-                        (touched.bnMetaDescription &&
-                          errors.bnMetaDescription) ||
-                        (!isSubmitting &&
-                          addProductState.error['error']['bnMetaDescription'])
-                      }
-                      errorString={
-                        (touched.bnMetaDescription &&
-                          errors.bnMetaDescription) ||
-                        (!isSubmitting &&
-                          addProductState.error['error']['bnMetaDescription'])
-                      }
-                      onChange={(e: any) => {
-                        handleChange(e);
-                        setFieldTouched('bnMetaDescription');
-                      }}
-                    />
-
-                    <h3 className='inputFieldLabel'>
-                      Meta Tags (grocery,fashion)
-                    </h3>
-
-                    <MetaTags
-                      // @ts-ignore
-                      setTags={setMetaTags}
-                      tags={metaTags}
-                    />
-
-                    <div
-                      style={{
-                        marginTop: '15px',
-                      }}
-                    ></div>
-
-                    <h3 className='inputFieldLabel'>
-                      BN Meta Tags (মুদিখানা,ফ্যাশন)
-                    </h3>
-
-                    <MetaTags
-                      // @ts-ignore
-                      setTags={setBnMetaTags}
-                      tags={bnMetaTags}
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className='addProductGridContainer__right'>
-                <div className='addProductGridContainer__category'>
-                  <div className='addProductGridContainer-rightItemContainer'>
-                    <div className='addProductGridContainer-rightItemContainer-header'>
-                      <h3>Categories *</h3>
+                  <div className='addProductGridContainer__image'>
+                    <div className='addProductGridContainer__item-header'>
+                      <h3>Meta Data</h3>
 
                       <Tooltip
-                        color='red'
-                        visible={
-                          addProductState.error['error']['category'] &&
-                          !(categoryids.length > 0)
-                        }
                         placement='left'
-                        title={'Select at least one category'}
+                        title={
+                          "Meta data will be used to make the user's easy and for search engine optimization."
+                        }
                       >
-                        <div
-                          className={
-                            !(categoryids.length > 0) &&
-                            !addProductState.error['error']['category']
-                              ? 'checkicon'
-                              : addProductState.error['error']['category']
-                              ? 'checkicon-error'
-                              : 'checkicon-active'
-                          }
-                        >
-                          <CheckCircleOutlined />
-                        </div>
+                        <a href='###'>
+                          <InfoCircleOutlined />
+                        </a>
                       </Tooltip>
                     </div>
-                    <div className='addProductGridContainer-rightItemContainer-body'>
-                      <Categories
-                        setCategoryOptions={setCategoryOptions}
-                        categoryOptions={categoryOptions}
-                        setcategoryIds={setcategoryIds}
+                    <div className='addProductGridContainer__item-body'>
+                      <Input
+                        label='Meta title'
+                        value={values.metaTitle}
+                        placeHolder={'...'}
+                        name='metaTitle'
+                        isError={
+                          (touched.metaTitle && errors.metaTitle) ||
+                          (!isSubmitting &&
+                            addProductState.error['error']['metaTitle'])
+                        }
+                        errorString={
+                          (touched.metaTitle && errors.metaTitle) ||
+                          (!isSubmitting &&
+                            addProductState.error['error']['metaTitle'])
+                        }
+                        onChange={(e: any) => {
+                          handleChange(e);
+                          setFieldTouched('metaTitle');
+                        }}
+                      />
+
+                      <Input
+                        label='BN Meta title'
+                        value={values.bnMetaTitle}
+                        placeHolder={'...'}
+                        name='bnMetaTitle'
+                        isError={
+                          (touched.bnMetaTitle && errors.bnMetaTitle) ||
+                          (!isSubmitting &&
+                            addProductState.error['error']['bnMetaTitle'])
+                        }
+                        errorString={
+                          (touched.bnMetaTitle && errors.bnMetaTitle) ||
+                          (!isSubmitting &&
+                            addProductState.error['error']['bnMetaTitle'])
+                        }
+                        onChange={(e: any) => {
+                          handleChange(e);
+                          setFieldTouched('bnMetaTitle');
+                        }}
+                      />
+
+                      <TextArea
+                        label='Meta description'
+                        value={values.metaDescription}
+                        placeholder={'meta...'}
+                        name='metaDescription'
+                        isError={
+                          (touched.metaDescription && errors.metaDescription) ||
+                          (!isSubmitting &&
+                            addProductState.error['error']['metaDescription'])
+                        }
+                        errorString={
+                          (touched.metaDescription && errors.metaDescription) ||
+                          (!isSubmitting &&
+                            addProductState.error['error']['metaDescription'])
+                        }
+                        onChange={(e: any) => {
+                          handleChange(e);
+                          setFieldTouched('metaDescription');
+                        }}
+                      />
+
+                      <TextArea
+                        label='BN Meta Description'
+                        value={values.bnMetaDescription}
+                        placeholder={'এইয় মেট...'}
+                        name='bnMetaDescription'
+                        isError={
+                          (touched.bnMetaDescription &&
+                            errors.bnMetaDescription) ||
+                          (!isSubmitting &&
+                            addProductState.error['error']['bnMetaDescription'])
+                        }
+                        errorString={
+                          (touched.bnMetaDescription &&
+                            errors.bnMetaDescription) ||
+                          (!isSubmitting &&
+                            addProductState.error['error']['bnMetaDescription'])
+                        }
+                        onChange={(e: any) => {
+                          handleChange(e);
+                          setFieldTouched('bnMetaDescription');
+                        }}
+                      />
+
+                      <h3 className='inputFieldLabel'>
+                        Meta Tags (grocery,fashion)
+                    </h3>
+
+                      <MetaTags
+                        // @ts-ignore
+                        setTags={setMetaTags}
+                        tags={metaTags}
+                      />
+
+                      <div
+                        style={{
+                          marginTop: '15px',
+                        }}
+                      ></div>
+
+                      <h3 className='inputFieldLabel'>
+                        BN Meta Tags (মুদিখানা,ফ্যাশন)
+                    </h3>
+
+                      <MetaTags
+                        // @ts-ignore
+                        setTags={setBnMetaTags}
+                        tags={bnMetaTags}
                       />
                     </div>
                   </div>
                 </div>
+                <div className='addProductGridContainer__right'>
+                  <div className='addProductGridContainer__category'>
+                    <div className='addProductGridContainer-rightItemContainer'>
+                      <div className='addProductGridContainer-rightItemContainer-header'>
+                        <h3>Categories *</h3>
 
-                <div className='addProductGridContainer__tag'>
-                  <div className='addProductGridContainer-rightItemContainer'>
-                    <div className='addProductGridContainer-rightItemContainer-header'>
-                      <h3>Tags</h3>
+                        <Tooltip
+                          color='red'
+                          visible={
+                            addProductState.error['error']['category'] &&
+                            !(categoryids.length > 0)
+                          }
+                          placement='left'
+                          title={'Select at least one category'}
+                        >
+                          <div
+                            className={
+                              !(categoryids.length > 0) &&
+                                !addProductState.error['error']['category']
+                                ? 'checkicon'
+                                : addProductState.error['error']['category']
+                                  ? 'checkicon-error'
+                                  : 'checkicon-active'
+                            }
+                          >
+                            <CheckCircleOutlined />
+                          </div>
+                        </Tooltip>
+                      </div>
+                      <div className='addProductGridContainer-rightItemContainer-body'>
+                        <Categories
+                          setCategoryOptions={setCategoryOptions}
+                          categoryOptions={categoryOptions}
+                          setcategoryIds={setcategoryIds}
+                        />
+                      </div>
                     </div>
-                    <div className='addProductGridContainer-rightItemContainer-body'>
-                      <Tags
-                        setSelectedTags={setSelectedTags}
-                        selectedTags={selectedTags}
-                        setTagIds={setTagIds}
-                      />
+                  </div>
+
+                  <div className='addProductGridContainer__tag'>
+                    <div className='addProductGridContainer-rightItemContainer'>
+                      <div className='addProductGridContainer-rightItemContainer-header'>
+                        <h3>Tags</h3>
+                      </div>
+                      <div className='addProductGridContainer-rightItemContainer-body'>
+                        <Tags
+                          setSelectedTags={setSelectedTags}
+                          selectedTags={selectedTags}
+                          setTagIds={setTagIds}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className='addProductGridContainer__brand'>
+                    <div className='addProductGridContainer-rightItemContainer'>
+                      <div className='addProductGridContainer-rightItemContainer-header'>
+                        <h3>Brand</h3>
+                      </div>
+                      <div className='addProductGridContainer-rightItemContainer-body'>
+                        <Brands setBrandId={setBrandId} />
+                      </div>
                     </div>
                   </div>
                 </div>
-                <div className='addProductGridContainer__brand'>
-                  <div className='addProductGridContainer-rightItemContainer'>
-                    <div className='addProductGridContainer-rightItemContainer-header'>
-                      <h3>Brand</h3>
-                    </div>
-                    <div className='addProductGridContainer-rightItemContainer-body'>
-                      <Brands setBrandId={setBrandId} />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </section>
-          </Modal>
+              </section>
+            </Modal>
 
-          <MediaLibrary
-            setvisible={setvisible}
-            visible={visible}
-            setmyImages={setmyImages}
-            myImages={myImages}
-            setmyThumbnailImage={setmyThumbnailImage}
-            isModalOpenForThumbnail={isModalOpenForThumbnail}
-            isModalOpenForImages={isModalOpenForImages}
-          />
-        </>
-      )}
+            <MediaLibrary
+              setvisible={setvisible}
+              visible={visible}
+              setmyImages={setmyImages}
+              myImages={myImages}
+              setmyThumbnailImage={setmyThumbnailImage}
+              isModalOpenForThumbnail={isModalOpenForThumbnail}
+              isModalOpenForImages={isModalOpenForImages}
+            />
+          </>
+        )}
     </Formik>
   );
 };
@@ -1085,18 +1123,18 @@ export default AddNewProduct;
 Product variation ---->
 
 Price [title]
-	[regular input field] [offer inputfield]
+  [regular input field] [offer inputfield]
 
 Stock [title]
-	[available input field] [minimum inputfield]
+  [available input field] [minimum inputfield]
 
 default [default can be set to true]
 
 attributes [title]
-	[add attributes name]
-		[add attrubutes value]
+  [add attributes name]
+    [add attrubutes value]
 
-	[add attributes name]
-		[add attrubutes value
+  [add attributes name]
+    [add attrubutes value
 
 */ //

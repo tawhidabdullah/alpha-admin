@@ -28,6 +28,8 @@ import {
 
 /// import hooks
 import { useHandleFetch, usePaginate } from "../../hooks";
+import Empty from "../../components/Empty";
+
 
 // import components
 import { DataTableSkeleton } from "../../components/Placeholders";
@@ -471,21 +473,34 @@ const ProductList = ({ roles }: Props) => {
         <div className="categoryListContainer__afterHeader" />
 
         <div className="categoryListContainer__categoryList">
-          <MyTable
-            productListState={productListState}
-            roles={roles}
-            setProductList={setProductList}
-            data={[]}
-          />
+          {productListState.resolvedData?.data?.length > 0 && (
+            <MyTable
+              productListState={productListState}
+              roles={roles}
+              setProductList={setProductList}
+              data={[]}
+            />
+          )}
+          {productListState.status === 'loading' && <DataTableSkeleton />}
+          {productListState.isError || !(productListState.resolvedData?.data?.length) && (
+            <div
+              style={{
+                marginTop: "50px",
+              }}
+            >
+              <Empty title="No Product found" />
+            </div>
+          )}
         </div>
       </div>
 
-      {productState.done && (
+      {productListState.isSuccess && (
         <AddNewProduct
           addNewCategoryVisible={addNewCategoryVisible}
           setAddNewCategoryVisible={setAddNewCategoryVisible}
           productList={productState.data}
           setProductList={setProductList}
+          productListState={productListState}
         />
       )}
 

@@ -18,6 +18,7 @@ interface IState {
     readonly isError: boolean;
     readonly isSuccess: boolean;
     setPage: any;
+    isFetchingMore: any;
 }
 
 const useQueryPaginate = (
@@ -43,7 +44,7 @@ const useQueryPaginate = (
     }, [])
 
 
-    const { isLoading, isError, data, error, isSuccess, isFetching, status, resolvedData, latestData } = usePaginatedQuery(
+    const { isLoading, isError, data, error, isSuccess, isFetching, status, resolvedData, latestData, isFetchingMore } = usePaginatedQuery(
         [key || item, page],
         fetchProjects,
         {
@@ -72,7 +73,8 @@ const useQueryPaginate = (
         status,
         resolvedData,
         latestData,
-        setPage
+        setPage,
+        isFetchingMore
     };
 };
 
