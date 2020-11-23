@@ -1,19 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { withRouter, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
+import { queryCache, useMutation, useQueryCache } from 'react-query'
+import config from "../../config.json";
 import {
   notification,
-  Empty,
   Table,
-  Badge,
   Menu,
   Dropdown,
   Space,
-  Tag,
   Button,
   Input,
   Tooltip,
   Popconfirm,
 } from "antd";
+
+
 import {
   CheckCircleOutlined,
   DownOutlined,
@@ -21,16 +22,22 @@ import {
   EditOutlined,
   DeleteOutlined,
   CheckOutlined,
+  DownloadOutlined,
+  UploadOutlined,
 } from "@ant-design/icons";
 
 /// import hooks
-import { useHandleFetch } from "../../hooks";
+import { useHandleFetch, usePaginate } from "../../hooks";
 
 // import components
 import { DataTableSkeleton } from "../../components/Placeholders";
 import AddNewProduct from "./AddNewProduct";
 import ProductQuickEdit from "./ProductQuickEdit";
+import UploadCSV from "./UploadCSV";
 // import QuickEdit from './QuickEdit';
+
+// ** IMPORT TABLE
+import TableListWithPagination from "../../components/TableListWithPagination";
 
 // import state
 import { isAccess } from "../../utils";
@@ -51,9 +58,10 @@ interface myTableProps {
   data: any;
   setProductList: any;
   roles: any;
+  productListState: any
 }
 
-const MyTable = ({ data, setProductList, roles }: myTableProps) => {
+const MyTable = ({ data, setProductList, roles, productListState }: myTableProps) => {
   const [visible, setvisible] = useState(false);
   const [activeCategoryForEdit, setactiveCategoryForEdit] = useState(false);
   const [deleteProductState, handleDeleteProductFetch] = useHandleFetch(
@@ -67,6 +75,9 @@ const MyTable = ({ data, setProductList, roles }: myTableProps) => {
   );
 
   const history = useHistory();
+  const cache = useQueryCache();
+
+
 
   const handleDeleteProduct = async (id) => {
     const deleteProductRes = await handleDeleteProductFetch({
@@ -79,13 +90,42 @@ const MyTable = ({ data, setProductList, roles }: myTableProps) => {
 
     // @ts-ignore
     if (deleteProductRes && deleteProductRes.status === "ok") {
+      const queries = cache.getQueries();
+      const queriesKeyMap = queries.filter(query => {
+        const queryKey = query?.queryKey;
+        // @ts-ignore
+        return queryKey?.[0] === 'product' && typeof queryKey?.[1] === 'number'
+      }).map(query => query?.queryKey);
+
+      const idQueryKey = queriesKeyMap.find(key => {
+        let isKey = false;
+        // @ts-ignore
+        if (cache.getQueryData(key)?.data.find(item => item.id === id)) {
+          isKey = true;
+        }
+        return isKey;
+      })
+      if (idQueryKey?.[0]) {
+        // @ts-ignore
+        cache.setQueryData(idQueryKey, ((prev) => {
+          return {
+            // @ts-ignore
+            ...prev,
+            // @ts-ignore
+            data: prev.data?.filter(item => item.id !== id),
+          }
+        }))
+      }
+
+      console.log({ idQueryKey: idQueryKey })
+
       openSuccessNotification();
-      const newProductList = data.filter((item) => item.id !== id);
-      setProductList(newProductList);
+
     }
 
-    // console.log('deleteProductRes', deleteProductRes)
   };
+
+
 
   const handleUpdateOrderStatus = async (record, id, newStatus) => {
     const updateOrderStatusRes = await handleUpdateOrderStatusFetch({
@@ -142,13 +182,6 @@ const MyTable = ({ data, setProductList, roles }: myTableProps) => {
         >
           Out of stock
         </Menu.Item>
-
-        {/* <Menu.Item
-                      onClick={() => handleUpdateOrderStatus(record,id,'deliver')}
-                      key="1" icon={<CheckOutlined />}>
-                      Delivered
-                    </Menu.Item>
-              */}
       </Menu>
     );
   };
@@ -161,29 +194,13 @@ const MyTable = ({ data, setProductList, roles }: myTableProps) => {
 
   return (
     <>
-      <Table
-        style={{
-          paddingTop: "10px",
-          borderRadius: "5px !important",
-          overflow: "hidden",
-          boxShadow:
-            "0 0.125rem 0.625rem rgba(227, 231, 250, 0.3), 0 0.0625rem 0.125rem rgba(206, 220, 233, 0.4)",
-        }}
-        // expandable={{
-        //     expandedRowRender: record => <p style={{ margin: 0 }}>{record.name}</p>,
-        //     rowExpandable: record => record.name !== 'Not Expandable',
-        //   }}
-        // bordered={true}
-        size="small"
-        // pagination={false}
-        dataSource={data}
-        tableLayout={"auto"}
-        onHeaderRow={(column) => {
-          return {
-            style: {
-              color: "red !important",
-            },
-          };
+      <TableListWithPagination
+        data={productListState?.resolvedData?.data || []}
+        total={productListState?.resolvedData?.total}
+        loading={productListState.status === 'loading' || productListState.isFetching}
+        limit={11}
+        handlePageChange={(pageNumber, _) => {
+          productListState?.setPage(pageNumber)
         }}
       >
         <Column
@@ -267,7 +284,6 @@ const MyTable = ({ data, setProductList, roles }: myTableProps) => {
                 >
                   <a href="##">
                     <span
-                      // className={'product-attributeTag'}
                       style={{
                         fontSize: "12px",
                       }}
@@ -285,61 +301,25 @@ const MyTable = ({ data, setProductList, roles }: myTableProps) => {
                   </a>
                 </Dropdown>
               ) : (
-                <a href="##">
-                  <span
-                    // className={'product-attributeTag'}
-                    style={{
-                      fontSize: "12px",
-                    }}
-                  >
-                    {text ? "In Stock" : "Out of stock"}
+                  <a href="##">
                     <span
                       style={{
-                        marginLeft: "5px",
-                        fontSize: "10px",
+                        fontSize: "12px",
                       }}
-                    ></span>
-                  </span>
-                </a>
-              )}
+                    >
+                      {text ? "In Stock" : "Out of stock"}
+                      <span
+                        style={{
+                          marginLeft: "5px",
+                          fontSize: "10px",
+                        }}
+                      ></span>
+                    </span>
+                  </a>
+                )}
             </>
           )}
         />
-
-        {/* <Column
-          title="Unit"
-          dataIndex="unit"
-          key="id"
-          className='classnameofthecolumn'
-
-        /> */}
-        {/* <Column 
-          
-          className='classnameofthecolumn'
-
-          title="Product" dataIndex="product" key="product" /> */}
-
-        {/* <Column 
-          
-          className='classnameofthecolumn'
-
-          title="Sub Category" dataIndex="subCategory" key="subCategory" /> */}
-
-        {/* <Column
-          title="Tags"
-          dataIndex="tags"
-          key="tags"
-          render={tags => (
-            <>
-              {tags.map((tag : any) => (
-                <Tag color="blue" key={tag}>
-                  {tag}
-                </Tag>
-              ))}
-            </>
-          )}
-        /> */}
-
         {isAccess("postCatalogue", roles) && (
           <Column
             className="classnameofthecolumn"
@@ -376,11 +356,12 @@ const MyTable = ({ data, setProductList, roles }: myTableProps) => {
             )}
           />
         )}
-      </Table>
+      </TableListWithPagination>
 
       {activeCategoryForEdit && (
         <ProductQuickEdit
           productList={data}
+          productListState={productListState}
           setProductList={setProductList}
           setProductEditVisible={setvisible}
           productEditVisible={visible}
@@ -397,31 +378,23 @@ interface Props {
 
 const ProductList = ({ roles }: Props) => {
   const [productList, setProductList] = useState([]);
+  const [isUploadCSVModalOpen, setIsUploadCSVModalOpen] = useState(false);
 
   const [productState, handleProductListFetch] = useHandleFetch(
     {},
     "productList"
   );
 
-  useEffect(() => {
-    const setProducts = async () => {
-      const products = await handleProductListFetch({
-        urlOptions: {
-          params: {
-            sortItem: "added",
-            sortOrderValue: "-1",
-            productType: "product",
-            limitNumber: 5000000,
-          },
-        },
-      });
-      // @ts-ignore
-      setProductList(products);
-    };
-    setProducts();
-  }, []);
+  const productListState = usePaginate('productList', {
+    urlOptions: {
+      params: {
+        limitNumber: 11,
+        sortItem: 'added',
+        sortOrderValue: '-1',
+      }
+    },
+  }, `product`);
 
-  console.log("myFuckingProductList", productList);
 
   const [addNewCategoryVisible, setAddNewCategoryVisible] = useState(false);
 
@@ -438,9 +411,6 @@ const ProductList = ({ roles }: Props) => {
 
   return (
     <>
-      {/* <h2 className='containerPageTitle'>
-      Categories
-    </h2> */}
       <div className="categoryListContainer">
         <div className="categoryListContainer__header">
           <div className="categoryListContainer__header-searchBar">
@@ -451,52 +421,62 @@ const ProductList = ({ roles }: Props) => {
               className="searchbarClassName"
               placeholder="search products.."
               onChange={(e) => handleSearch(e.target.value)}
-              // style={{ width: 300 }}
+            // style={{ width: 300 }}
             />
           </div>
 
-          {isAccess("postCatalogue", roles) && (
-            <Button
-              // type="primary"
-              className="btnPrimaryClassNameoutline"
-              icon={<PlusOutlined />}
-              onClick={() => setAddNewCategoryVisible(true)}
-            >
-              Add New
-            </Button>
-          )}
+          <div>
+            {isAccess("postCatalogue", roles) && (
+              <Button
+                style={{
+                  marginRight: '15px'
+                }}
+                className="btnPrimaryClassNameoutline"
+                icon={<DownloadOutlined />}
+                onClick={() => {
+                  window.open(`${config.baseURL}/admin/api/product/csv`);
+                }}
+              >
+                Export CSV
+              </Button>
+            )}
+
+            {isAccess("postCatalogue", roles) && (
+              <Button
+                style={{
+                  marginRight: '15px'
+                }}
+                className="btnPrimaryClassNameoutline"
+                icon={<UploadOutlined />}
+                onClick={() => setIsUploadCSVModalOpen(true)}
+              >
+                Upload CSV
+              </Button>
+            )}
+
+
+            {isAccess("postCatalogue", roles) && (
+              <Button
+                // type="primary"
+                className="btnPrimaryClassNameoutline"
+                icon={<PlusOutlined />}
+                onClick={() => setAddNewCategoryVisible(true)}
+              >
+                Add New
+              </Button>
+            )}
+          </div>
         </div>
 
-        <div className="categoryListContainer__afterHeader">
-          {/* <Search
-      placeholder="search categories.."
-      size="large"
-      onSearch={value => console.log(value)}
-      style={{ width: 300 }}
-    /> */}
-        </div>
+        <div className="categoryListContainer__afterHeader" />
 
         <div className="categoryListContainer__categoryList">
-          {productState.done && productList.length > 0 && (
-            <MyTable
-              roles={roles}
-              setProductList={setProductList}
-              data={productList}
-            />
-          )}
-          {productState.isLoading && <DataTableSkeleton />}
-          {productState.done && !(productList.length > 0) && (
-            <div
-              style={{
-                marginTop: "200px",
-              }}
-            >
-              <Empty
-                description="No Products found"
-                image={Empty.PRESENTED_IMAGE_SIMPLE}
-              />
-            </div>
-          )}
+          <MyTable
+            productListState={productListState}
+            roles={roles}
+            setProductList={setProductList}
+            data={[]}
+          />
         </div>
       </div>
 
@@ -508,6 +488,13 @@ const ProductList = ({ roles }: Props) => {
           setProductList={setProductList}
         />
       )}
+
+      <UploadCSV
+        isUploadCSVModalOpen={isUploadCSVModalOpen}
+        setIsUploadCSVModalOpen={setIsUploadCSVModalOpen}
+      />
+
+
     </>
   );
 };

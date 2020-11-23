@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React, { useState, useEffect } from 'react';
+import { useQueryCache } from 'react-query'
 
 // import hooks
 import { useHandleFetch } from '../../hooks';
@@ -93,6 +94,7 @@ interface Props {
   productDetailData?: any;
   productList?: any;
   setProductList?: any;
+  productListState?: any;
 }
 
 const ModalChildComponent = ({
@@ -101,6 +103,7 @@ const ModalChildComponent = ({
   productDetailData,
   setProductList,
   productList,
+  productListState
 }) => {
   const [updateProductState, handleUpdateProductFetch] = useHandleFetch(
     {},
@@ -152,6 +155,7 @@ const ModalChildComponent = ({
   const [editpricingItem, setEditPricingItem] = useState({});
   const [pricingTagActiveKey, setpricingTagActiveKey] = useState('2');
   const [isPricingEditActive, seTisPricingEditActive] = useState(false);
+  const cache = useQueryCache();
 
   useEffect(() => {
     const getProductDetail = async () => {
@@ -329,21 +333,6 @@ const ModalChildComponent = ({
     // @ts-ignore
     if (thumbnailRes && thumbnailRes.status === 'ok') {
       openSuccessNotification('Set as thumbnail!');
-      // const positionInBrand = () => {
-      //     return productList.map(item => item.id).indexOf(productDetailData.id);
-      // }
-
-      // const index = positionInBrand();
-
-      // const prevItem = productList.find(item => item.id === productDetailData.id);
-
-      // if (prevItem) {
-      //     console.log('prevItem--', prevItem, 'image--', image);
-      //     const updatedItem = Object.assign({}, productList[index], { ...prevItem, cover: image.cover });
-      //     const updateProductList = [...productList.slice(0, index), updatedItem, ...productList.slice(index + 1)];
-      //     setProductList(updateProductList);
-
-      // }
     } else {
       openErrorNotification("Couldn't set as thumbnail, Something went wrong");
     }
@@ -357,8 +346,8 @@ const ModalChildComponent = ({
     // @ts-ignore
     const imagesIds = myImages
       ? myImages.map((image) => {
-          return image.id;
-        })
+        return image.id;
+      })
       : [];
 
     if (productDetailData && Object.keys(productDetailData).length > 0) {
@@ -439,39 +428,71 @@ const ModalChildComponent = ({
     if (updatedProductRes && updatedProductRes.status === 'ok') {
       openSuccessNotification('Product Updated');
 
-      const positionInAttribute = () => {
-        return productList.map((item) => item.id).indexOf(productDetailData.id);
-      };
 
-      const index = positionInAttribute();
+      const queries = cache.getQueries();
+      const queriesKeyMap = queries.filter(query => {
+        const queryKey = query?.queryKey;
+        // @ts-ignore
+        return queryKey?.[0] === 'product' && typeof queryKey?.[1] === 'number'
+      }).map(query => query?.queryKey);
 
-      function getCover(id) {
-        if (!id || !myImages || !myImages[0]) {
-          return '';
-        } else {
-          if (myImages && myImages.length > 0) {
-            const item = myImages.find((item) => item.id === id);
-            if (item) {
-              return item.cover;
+      const idQueryKey = queriesKeyMap.find(key => {
+        let isKey = false;
+        // @ts-ignore
+        if (cache.getQueryData(key)?.data.find(item => item.id === productDetailData.id)) {
+          isKey = true;
+        }
+        return isKey;
+      })
+      if (idQueryKey?.[0]) {
+        // @ts-ignore
+        cache.setQueryData(idQueryKey, ((prev) => {
+          const productList = prev?.data;
+          const positionInAttribute = () => {
+            return productList.map((item) => item.id).indexOf(productDetailData.id);
+          };
+
+          const index = positionInAttribute();
+
+          function getCover(id) {
+            if (!id || !myImages || !myImages[0]) {
+              return '';
+            } else {
+              if (myImages && myImages.length > 0) {
+                const item = myImages.find((item) => item.id === id);
+                if (item) {
+                  return item.cover;
+                }
+              }
             }
           }
-        }
+
+          // @ts-ignore
+          const updatedItem = Object.assign({}, productList[index], {
+            ...productDetailData,
+            ...updatedProductRes,
+            id: productDetailData.id || productDetailData._id || values.id || values._id,
+
+            cover: getCover(coverImageId),
+          });
+          const updateProductList = [
+            ...productList.slice(0, index),
+            updatedItem,
+            ...productList.slice(index + 1),
+          ];
+
+
+          return {
+            // @ts-ignore
+            ...prev,
+            // @ts-ignore
+            data: updateProductList,
+          }
+        }))
       }
 
-      // @ts-ignore
-      const updatedItem = Object.assign({}, productList[index], {
-        ...productDetailData,
-        ...updatedProductRes,
-        id: productDetailData.id || productDetailData._id || values.id || values._id,
 
-        cover: getCover(coverImageId),
-      });
-      const updateProductList = [
-        ...productList.slice(0, index),
-        updatedItem,
-        ...productList.slice(index + 1),
-      ];
-      setProductList(updateProductList);
+      // setProductList(updateProductList);
 
       setProductEditVisible(false);
 
@@ -573,7 +594,7 @@ const ModalChildComponent = ({
     setmyImages(newImages);
   };
 
-  const handleDeleteFromSelectedImage = () => {};
+  const handleDeleteFromSelectedImage = () => { };
 
   const handleThumbnailImageDelete = (id) => {
     // @ts-ignore
@@ -691,13 +712,13 @@ const ModalChildComponent = ({
             ...(productDetailState['data'] &&
               Object.keys(productDetailState['data']).length > 0 &&
               productDetailState['data']['bn'] && {
-                bnMetaTitle: productDetailState['data']['bn'].metaTitle,
-                bnMetaDescription:
-                  productDetailState['data']['bn'].metaDescription,
-                bnName: productDetailState['data']['bn'].name,
-                metaUnit: productDetailState['data']['bn'].unit,
-                bnDescription: productDetailState['data']['bn'].description,
-              }),
+              bnMetaTitle: productDetailState['data']['bn'].metaTitle,
+              bnMetaDescription:
+                productDetailState['data']['bn'].metaDescription,
+              bnName: productDetailState['data']['bn'].name,
+              metaUnit: productDetailState['data']['bn'].unit,
+              bnDescription: productDetailState['data']['bn'].description,
+            }),
           },
         }}
       >
@@ -713,66 +734,66 @@ const ModalChildComponent = ({
           setFieldTouched,
           handleReset,
         }) => (
-          <>
-            <section className='addProductGridContainer'>
-              <div className='addProductGridContainer__left'>
-                <div className='addProductGridContainer__name'>
-                  <div className='addProductGridContainer__item-header'>
-                    <h3>Product Information *</h3>
-                    <div
-                      className={
-                        values.name && values.name.length > 2
-                          ? 'checkicon-active'
-                          : 'checkicon'
-                      }
-                    >
-                      <CheckCircleOutlined />
+            <>
+              <section className='addProductGridContainer'>
+                <div className='addProductGridContainer__left'>
+                  <div className='addProductGridContainer__name'>
+                    <div className='addProductGridContainer__item-header'>
+                      <h3>Product Information *</h3>
+                      <div
+                        className={
+                          values.name && values.name.length > 2
+                            ? 'checkicon-active'
+                            : 'checkicon'
+                        }
+                      >
+                        <CheckCircleOutlined />
+                      </div>
                     </div>
-                  </div>
-                  <div className='addProductGridContainer__item-body'>
-                    <Input
-                      label='Name *'
-                      value={values.name}
-                      placeHolder={'Rafty ox'}
-                      name='name'
-                      isError={
-                        (touched.name && errors.name) ||
-                        (!isSubmitting &&
-                          updateProductState.error['error']['name'])
-                      }
-                      errorString={
-                        (touched.name && errors.name) ||
-                        (!isSubmitting &&
-                          updateProductState.error['error']['name'])
-                      }
-                      onChange={(e: any) => {
-                        handleChange(e);
-                        setFieldTouched('name');
-                      }}
-                    />
+                    <div className='addProductGridContainer__item-body'>
+                      <Input
+                        label='Name *'
+                        value={values.name}
+                        placeHolder={'Rafty ox'}
+                        name='name'
+                        isError={
+                          (touched.name && errors.name) ||
+                          (!isSubmitting &&
+                            updateProductState.error['error']['name'])
+                        }
+                        errorString={
+                          (touched.name && errors.name) ||
+                          (!isSubmitting &&
+                            updateProductState.error['error']['name'])
+                        }
+                        onChange={(e: any) => {
+                          handleChange(e);
+                          setFieldTouched('name');
+                        }}
+                      />
 
-                    <Input
-                      label='BN Name'
-                      value={values.bnName}
-                      placeHolder={'রাফতি অক্স'}
-                      name='bnName'
-                      isError={
-                        (touched.bnName && errors.bnName) ||
-                        (!isSubmitting &&
-                          updateProductState.error['error']['bnName'])
-                      }
-                      errorString={
-                        (touched.bnName && errors.bnName) ||
-                        (!isSubmitting &&
-                          updateProductState.error['error']['bnName'])
-                      }
-                      onChange={(e: any) => {
-                        handleChange(e);
-                        setFieldTouched('bnName');
-                      }}
-                    />
+                      <Input
+                        label='BN Name'
+                        value={values.bnName}
+                        placeHolder={'রাফতি অক্স'}
+                        name='bnName'
+                        isError={
+                          (touched.bnName && errors.bnName) ||
+                          (!isSubmitting &&
+                            updateProductState.error['error']['bnName'])
+                        }
+                        errorString={
+                          (touched.bnName && errors.bnName) ||
+                          (!isSubmitting &&
+                            updateProductState.error['error']['bnName'])
+                        }
+                        onChange={(e: any) => {
+                          handleChange(e);
+                          setFieldTouched('bnName');
+                        }}
+                      />
 
-                    {/* <div style={{
+                      {/* <div style={{
 												display: 'flex',
 												justifyContent: 'space-between'
 											}}>
@@ -798,7 +819,7 @@ const ModalChildComponent = ({
 												</div>
 											</div> */}
 
-                    {/* 
+                      {/* 
 											<TextArea
 												rows={1}
 												label='Venue'
@@ -833,423 +854,423 @@ const ModalChildComponent = ({
 												}}
 											/> */}
 
-                    <Input
-                      label='Unit'
-                      value={values.unit}
-                      name='unit'
-                      placeHolder={'KG,POUND,GM'}
-                      isError={
-                        (touched.unit && errors.unit) ||
-                        (!isSubmitting &&
-                          updateProductState.error['error']['unit'])
-                      }
-                      errorString={
-                        (touched.unit && errors.unit) ||
-                        (!isSubmitting &&
-                          updateProductState.error['error']['unit'])
-                      }
-                      onChange={(e: any) => {
-                        handleChange(e);
-                        setFieldTouched('unit');
-                      }}
-                    />
-
-                    <Input
-                      label='BN Unit'
-                      value={values.bnUnit}
-                      placeHolder={'কেজি,গ্রাম'}
-                      name='bnUnit'
-                      isError={
-                        (touched.bnUnit && errors.bnUnit) ||
-                        (!isSubmitting &&
-                          updateProductState.error['error']['bnUnit'])
-                      }
-                      errorString={
-                        (touched.bnUnit && errors.bnUnit) ||
-                        (!isSubmitting &&
-                          updateProductState.error['error']['bnUnit'])
-                      }
-                      onChange={(e: any) => {
-                        handleChange(e);
-                        setFieldTouched('bnUnit');
-                      }}
-                    />
-
-                    <Input
-                      label='Model Number'
-                      value={values.model}
-                      name='model'
-                      isError={
-                        (touched.model && errors.model) ||
-                        (!isSubmitting &&
-                          updateProductState.error['error']['model'])
-                      }
-                      errorString={
-                        (touched.model && errors.model) ||
-                        (!isSubmitting &&
-                          updateProductState.error['error']['model'])
-                      }
-                      onChange={(e: any) => {
-                        handleChange(e);
-                        setFieldTouched('model');
-                      }}
-                    />
-
-                    <h3 className='inputFieldLabel'>Description</h3>
-
-                    <div
-                      style={{
-                        width: '100%',
-                        maxWidth: '100%',
-                      }}
-                    >
-                      <CKEditor
-                        editor={ClassicEditor}
-                        data={description}
-                        onInit={(editor) => {
-                          // You can store the "editor" and use when it is needed.
-                          console.log('Editor is ready to use!', editor);
-                        }}
-                        onChange={(event, editor) => {
-                          const data = editor.getData();
-                          setDescription(data);
-                        }}
-                        onBlur={(event, editor) => {
-                          console.log('Blur.', editor);
-                        }}
-                        onFocus={(event, editor) => {
-                          console.log('Focus.', editor);
+                      <Input
+                        label='Unit'
+                        value={values.unit}
+                        name='unit'
+                        placeHolder={'KG,POUND,GM'}
+                        isError={
+                          (touched.unit && errors.unit) ||
+                          (!isSubmitting &&
+                            updateProductState.error['error']['unit'])
+                        }
+                        errorString={
+                          (touched.unit && errors.unit) ||
+                          (!isSubmitting &&
+                            updateProductState.error['error']['unit'])
+                        }
+                        onChange={(e: any) => {
+                          handleChange(e);
+                          setFieldTouched('unit');
                         }}
                       />
-                    </div>
 
-                    <div
-                      style={{
-                        marginTop: '15px',
-                      }}
-                    ></div>
-
-                    <h3 className='inputFieldLabel'>BN Description</h3>
-
-                    <div
-                      style={{
-                        width: '100%',
-                        maxWidth: '100%',
-                      }}
-                    >
-                      <CKEditor
-                        editor={ClassicEditor}
-                        data={bnDescription}
-                        onInit={(editor) => {
-                          // You can store the "editor" and use when it is needed.
-                          console.log('Editor is ready to use!', editor);
-                        }}
-                        onChange={(event, editor) => {
-                          const data = editor.getData();
-                          setBNDescription(data);
-                        }}
-                        onBlur={(event, editor) => {
-                          console.log('Blur.', editor);
-                        }}
-                        onFocus={(event, editor) => {
-                          console.log('Focus.', editor);
+                      <Input
+                        label='BN Unit'
+                        value={values.bnUnit}
+                        placeHolder={'কেজি,গ্রাম'}
+                        name='bnUnit'
+                        isError={
+                          (touched.bnUnit && errors.bnUnit) ||
+                          (!isSubmitting &&
+                            updateProductState.error['error']['bnUnit'])
+                        }
+                        errorString={
+                          (touched.bnUnit && errors.bnUnit) ||
+                          (!isSubmitting &&
+                            updateProductState.error['error']['bnUnit'])
+                        }
+                        onChange={(e: any) => {
+                          handleChange(e);
+                          setFieldTouched('bnUnit');
                         }}
                       />
-                    </div>
 
-                    <div
-                      style={{
-                        marginTop: '15px',
-                      }}
-                    >
-                      {' '}
-                    </div>
-                  </div>
-                </div>
+                      <Input
+                        label='Model Number'
+                        value={values.model}
+                        name='model'
+                        isError={
+                          (touched.model && errors.model) ||
+                          (!isSubmitting &&
+                            updateProductState.error['error']['model'])
+                        }
+                        errorString={
+                          (touched.model && errors.model) ||
+                          (!isSubmitting &&
+                            updateProductState.error['error']['model'])
+                        }
+                        onChange={(e: any) => {
+                          handleChange(e);
+                          setFieldTouched('model');
+                        }}
+                      />
 
-                <div className='addProductGridContainer__price'>
-                  <div className='addProductGridContainer__item-header'>
-                    <h3>Product Pricing *</h3>
+                      <h3 className='inputFieldLabel'>Description</h3>
 
-                    <div
-                      className={
-                        pricing && pricing.length > 0
-                          ? 'checkicon-active'
-                          : 'checkicon'
-                      }
-                    >
-                      <CheckCircleOutlined />
-                    </div>
-                  </div>
-
-                  <div className='addProductGridContainer__item-body'>
-                    <Tabs
-                      animated={true}
-                      tabPosition='top'
-                      type='card'
-                      activeKey={pricingTagActiveKey}
-                      onChange={(value) => {
-                        setpricingTagActiveKey(`${value}`);
-                      }}
-                    >
-                      <TabPane tab='Add Variation' key='1'>
-                        <Pricing
-                          handleAddPricing={handleAddPricing}
-                          pricingItem={editpricingItem}
-                          handleUpdatePricing={handleUpdatePricing}
-                          isPricingEditActive={isPricingEditActive}
+                      <div
+                        style={{
+                          width: '100%',
+                          maxWidth: '100%',
+                        }}
+                      >
+                        <CKEditor
+                          editor={ClassicEditor}
+                          data={description}
+                          onInit={(editor) => {
+                            // You can store the "editor" and use when it is needed.
+                            console.log('Editor is ready to use!', editor);
+                          }}
+                          onChange={(event, editor) => {
+                            const data = editor.getData();
+                            setDescription(data);
+                          }}
+                          onBlur={(event, editor) => {
+                            console.log('Blur.', editor);
+                          }}
+                          onFocus={(event, editor) => {
+                            console.log('Focus.', editor);
+                          }}
                         />
-                      </TabPane>
-                      <TabPane tab='Pricing List' key='2'>
-                        <div className='addProductGridContainer__item-body-pricingContainer'>
-                          {pricing.length > 0 &&
-                            pricing.map((item) => {
-                              return (
-                                <div className='addProductGridContainer__item-body-pricingContainer-item'>
-                                  <div className='addProductGridContainer__item-body-pricingContainer-item-edit'>
-                                    {/* <span>
+                      </div>
+
+                      <div
+                        style={{
+                          marginTop: '15px',
+                        }}
+                      ></div>
+
+                      <h3 className='inputFieldLabel'>BN Description</h3>
+
+                      <div
+                        style={{
+                          width: '100%',
+                          maxWidth: '100%',
+                        }}
+                      >
+                        <CKEditor
+                          editor={ClassicEditor}
+                          data={bnDescription}
+                          onInit={(editor) => {
+                            // You can store the "editor" and use when it is needed.
+                            console.log('Editor is ready to use!', editor);
+                          }}
+                          onChange={(event, editor) => {
+                            const data = editor.getData();
+                            setBNDescription(data);
+                          }}
+                          onBlur={(event, editor) => {
+                            console.log('Blur.', editor);
+                          }}
+                          onFocus={(event, editor) => {
+                            console.log('Focus.', editor);
+                          }}
+                        />
+                      </div>
+
+                      <div
+                        style={{
+                          marginTop: '15px',
+                        }}
+                      >
+                        {' '}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className='addProductGridContainer__price'>
+                    <div className='addProductGridContainer__item-header'>
+                      <h3>Product Pricing *</h3>
+
+                      <div
+                        className={
+                          pricing && pricing.length > 0
+                            ? 'checkicon-active'
+                            : 'checkicon'
+                        }
+                      >
+                        <CheckCircleOutlined />
+                      </div>
+                    </div>
+
+                    <div className='addProductGridContainer__item-body'>
+                      <Tabs
+                        animated={true}
+                        tabPosition='top'
+                        type='card'
+                        activeKey={pricingTagActiveKey}
+                        onChange={(value) => {
+                          setpricingTagActiveKey(`${value}`);
+                        }}
+                      >
+                        <TabPane tab='Add Variation' key='1'>
+                          <Pricing
+                            handleAddPricing={handleAddPricing}
+                            pricingItem={editpricingItem}
+                            handleUpdatePricing={handleUpdatePricing}
+                            isPricingEditActive={isPricingEditActive}
+                          />
+                        </TabPane>
+                        <TabPane tab='Pricing List' key='2'>
+                          <div className='addProductGridContainer__item-body-pricingContainer'>
+                            {pricing.length > 0 &&
+                              pricing.map((item) => {
+                                return (
+                                  <div className='addProductGridContainer__item-body-pricingContainer-item'>
+                                    <div className='addProductGridContainer__item-body-pricingContainer-item-edit'>
+                                      {/* <span>
 																		<EditOutlined />
 																		</span> */}
-                                    <span
-                                      className='pricingEditIcon'
-                                      onClick={() => {
-                                        handleEditPricing(item.id);
-                                        setpricingTagActiveKey('1');
-                                      }}
-                                    >
-                                      <EditOutlined />
-                                    </span>
-                                    <span
-                                      className='pricingDeleteIcon'
-                                      onClick={() =>
-                                        handleDeletePricing(item.id)
-                                      }
-                                    >
-                                      <DeleteOutlined />
-                                    </span>
-                                  </div>
-                                  <div className='addProductGridContainer__item-body-pricingContainer-item-two'>
-                                    <div>
-                                      <h3>Price</h3>
-                                      <div className='addProductGridContainer__item-body-pricingContainer-item-body'>
-                                        {item.price.offer ? (
-                                          <>
-                                            <h4>{item.price.offer}</h4>/
-                                            <h5
-                                              style={{
-                                                textDecoration: 'line-through',
-                                              }}
-                                            >
-                                              {item.price.regular}
-                                            </h5>
-                                          </>
-                                        ) : (
-                                          <h4>{item.price.regular}</h4>
-                                        )}
-                                      </div>
+                                      <span
+                                        className='pricingEditIcon'
+                                        onClick={() => {
+                                          handleEditPricing(item.id);
+                                          setpricingTagActiveKey('1');
+                                        }}
+                                      >
+                                        <EditOutlined />
+                                      </span>
+                                      <span
+                                        className='pricingDeleteIcon'
+                                        onClick={() =>
+                                          handleDeletePricing(item.id)
+                                        }
+                                      >
+                                        <DeleteOutlined />
+                                      </span>
                                     </div>
-
-                                    {item.stock && item.stock['available'] && (
+                                    <div className='addProductGridContainer__item-body-pricingContainer-item-two'>
                                       <div>
-                                        <Badge
-                                          overflowCount={999}
-                                          count={item.stock.available}
-                                        >
-                                          <h3>Stock</h3>
-                                        </Badge>
-                                        {item.stock['minimum'] && (
-                                          <>
-                                            <div className='addProductGridContainer__item-body-pricingContainer-item-body'>
-                                              <div>
-                                                <h6>
-                                                  min
-                                                  <Badge
-                                                    className='site-badge-count-4'
-                                                    overflowCount={999}
-                                                    count={item.stock.minimum}
-                                                  />
-                                                </h6>
-                                              </div>
-                                            </div>
-                                          </>
-                                        )}
-                                      </div>
-                                    )}
-
-
-                                    {Boolean(item?.maximumPurchaseLimit) && (
-                                       <div>
-                                       <h3>Maximum Purchase Limit</h3>
-                                       <div className='addProductGridContainer__item-body-pricingContainer-item-body'>
-                                       <h4>{item?.maximumPurchaseLimit}</h4>
-                                       </div>
-                                     </div>
-                                    )}
-
-                                  </div>
-
-                                  {item.attribute &&
-                                    Object.values(item.attribute).length >
-                                      0 && (
-                                      <>
-                                        <h3>Attributes</h3>
+                                        <h3>Price</h3>
                                         <div className='addProductGridContainer__item-body-pricingContainer-item-body'>
-                                          {item.attribute &&
-                                            Object.keys(item.attribute).length >
-                                              0 &&
-                                            Object.keys(item.attribute).map(
-                                              (attributeItem) => {
-                                                return (
-                                                  <div>
-                                                    <h6>{attributeItem}</h6>
-                                                    <h4>
-                                                      {
-                                                        item.attribute[
-                                                          attributeItem
-                                                        ]
-                                                      }
-                                                    </h4>
-                                                  </div>
-                                                );
-                                              }
+                                          {item.price.offer ? (
+                                            <>
+                                              <h4>{item.price.offer}</h4>/
+                                            <h5
+                                                style={{
+                                                  textDecoration: 'line-through',
+                                                }}
+                                              >
+                                                {item.price.regular}
+                                              </h5>
+                                            </>
+                                          ) : (
+                                              <h4>{item.price.regular}</h4>
                                             )}
                                         </div>
-                                      </>
+                                      </div>
+
+                                      {item.stock && item.stock['available'] && (
+                                        <div>
+                                          <Badge
+                                            overflowCount={999}
+                                            count={item.stock.available}
+                                          >
+                                            <h3>Stock</h3>
+                                          </Badge>
+                                          {item.stock['minimum'] && (
+                                            <>
+                                              <div className='addProductGridContainer__item-body-pricingContainer-item-body'>
+                                                <div>
+                                                  <h6>
+                                                    min
+                                                  <Badge
+                                                      className='site-badge-count-4'
+                                                      overflowCount={999}
+                                                      count={item.stock.minimum}
+                                                    />
+                                                  </h6>
+                                                </div>
+                                              </div>
+                                            </>
+                                          )}
+                                        </div>
+                                      )}
+
+
+                                      {Boolean(item?.maximumPurchaseLimit) && (
+                                        <div>
+                                          <h3>Maximum Purchase Limit</h3>
+                                          <div className='addProductGridContainer__item-body-pricingContainer-item-body'>
+                                            <h4>{item?.maximumPurchaseLimit}</h4>
+                                          </div>
+                                        </div>
+                                      )}
+
+                                    </div>
+
+                                    {item.attribute &&
+                                      Object.values(item.attribute).length >
+                                      0 && (
+                                        <>
+                                          <h3>Attributes</h3>
+                                          <div className='addProductGridContainer__item-body-pricingContainer-item-body'>
+                                            {item.attribute &&
+                                              Object.keys(item.attribute).length >
+                                              0 &&
+                                              Object.keys(item.attribute).map(
+                                                (attributeItem) => {
+                                                  return (
+                                                    <div>
+                                                      <h6>{attributeItem}</h6>
+                                                      <h4>
+                                                        {
+                                                          item.attribute[
+                                                          attributeItem
+                                                          ]
+                                                        }
+                                                      </h4>
+                                                    </div>
+                                                  );
+                                                }
+                                              )}
+                                          </div>
+                                        </>
+                                      )}
+                                  </div>
+                                );
+                              })}
+
+                            {!(pricing.length > 0) && (
+                              <div
+                                style={{
+                                  width: '100%',
+                                  display: 'flex',
+                                  justifyContent: 'center',
+                                }}
+                              >
+                                <Empty
+                                  description='No Pricing added'
+                                  image={Empty.PRESENTED_IMAGE_SIMPLE}
+                                />
+                              </div>
+                            )}
+                          </div>
+                        </TabPane>
+                      </Tabs>
+
+                      <div className='addProductGridContainer__item-body-container'></div>
+                    </div>
+                  </div>
+
+                  <div className='addProductGridContainer__image'>
+                    <div className='addProductGridContainer__item-header'>
+                      <h3>Image</h3>
+
+                      <Tooltip
+                        placement='left'
+                        title={
+                          'Click on the image to select cover image, By default 1st image is selected as cover'
+                        }
+                      >
+                        <a href='###'>
+                          <InfoCircleOutlined />
+                        </a>
+                      </Tooltip>
+                    </div>
+
+                    <div
+                      style={{
+                        padding: '10px',
+                      }}
+                      className='aboutToUploadImagesContainer'
+                    >
+                      {productDetailState.isLoading && (
+                        <div
+                          style={{
+                            padding: '20px 0',
+                          }}
+                        >
+                          <Spin />
+                        </div>
+                      )}
+                      {productDetailState.done && (
+                        <>
+                          {myImages &&
+                            // @ts-ignore
+                            myImages.length > 0 &&
+                            myImages.map((image, index) => {
+                              return (
+                                <div className='aboutToUploadImagesContainer__item'>
+                                  <div
+                                    className='aboutToUploadImagesContainer__item-imgContainer'
+                                    onClick={() => {
+                                      setCoverImageId(image.id);
+                                      handleSetImageAsThumnail(image);
+                                    }}
+                                  >
+                                    <img src={image.cover} alt={image.alt} />
+                                  </div>
+
+                                  <span
+                                    onClick={() => {
+                                      handleImagesDelete(image.id);
+                                      handleDetachSingleImage(image.id);
+                                    }}
+                                    className='aboutToUploadImagesContainer__item-remove'
+                                  >
+                                    <CloseOutlined />
+                                  </span>
+
+                                  {coverImageId === image.id ? (
+                                    <span className='aboutToUploadImagesContainer__item-cover'>
+                                      <CheckOutlined />
+                                    </span>
+                                  ) : (
+                                      !coverImageId &&
+                                      index === 0 && (
+                                        <span className='aboutToUploadImagesContainer__item-cover'>
+                                          <CheckOutlined />
+                                        </span>
+                                      )
                                     )}
                                 </div>
                               );
                             })}
 
-                          {!(pricing.length > 0) && (
+                          <Tooltip title={'Attach images'}>
                             <div
-                              style={{
-                                width: '100%',
-                                display: 'flex',
-                                justifyContent: 'center',
+                              onClick={() => {
+                                setvisible(true);
+                                setisModalOpenForImages(true);
+                                setisModalOpenForThumbnail(false);
                               }}
+                              className='aboutToUploadImagesContainer__uploadItem'
                             >
-                              <Empty
-                                description='No Pricing added'
-                                image={Empty.PRESENTED_IMAGE_SIMPLE}
-                              />
-                            </div>
-                          )}
-                        </div>
-                      </TabPane>
-                    </Tabs>
-
-                    <div className='addProductGridContainer__item-body-container'></div>
-                  </div>
-                </div>
-
-                <div className='addProductGridContainer__image'>
-                  <div className='addProductGridContainer__item-header'>
-                    <h3>Image</h3>
-
-                    <Tooltip
-                      placement='left'
-                      title={
-                        'Click on the image to select cover image, By default 1st image is selected as cover'
-                      }
-                    >
-                      <a href='###'>
-                        <InfoCircleOutlined />
-                      </a>
-                    </Tooltip>
-                  </div>
-
-                  <div
-                    style={{
-                      padding: '10px',
-                    }}
-                    className='aboutToUploadImagesContainer'
-                  >
-                    {productDetailState.isLoading && (
-                      <div
-                        style={{
-                          padding: '20px 0',
-                        }}
-                      >
-                        <Spin />
-                      </div>
-                    )}
-                    {productDetailState.done && (
-                      <>
-                        {myImages &&
-                          // @ts-ignore
-                          myImages.length > 0 &&
-                          myImages.map((image, index) => {
-                            return (
-                              <div className='aboutToUploadImagesContainer__item'>
-                                <div
-                                  className='aboutToUploadImagesContainer__item-imgContainer'
-                                  onClick={() => {
-                                    setCoverImageId(image.id);
-                                    handleSetImageAsThumnail(image);
-                                  }}
-                                >
-                                  <img src={image.cover} alt={image.alt} />
-                                </div>
-
-                                <span
-                                  onClick={() => {
-                                    handleImagesDelete(image.id);
-                                    handleDetachSingleImage(image.id);
-                                  }}
-                                  className='aboutToUploadImagesContainer__item-remove'
-                                >
-                                  <CloseOutlined />
-                                </span>
-
-                                {coverImageId === image.id ? (
-                                  <span className='aboutToUploadImagesContainer__item-cover'>
-                                    <CheckOutlined />
-                                  </span>
-                                ) : (
-                                  !coverImageId &&
-                                  index === 0 && (
-                                    <span className='aboutToUploadImagesContainer__item-cover'>
-                                      <CheckOutlined />
-                                    </span>
-                                  )
-                                )}
-                              </div>
-                            );
-                          })}
-
-                        <Tooltip title={'Attach images'}>
-                          <div
-                            onClick={() => {
-                              setvisible(true);
-                              setisModalOpenForImages(true);
-                              setisModalOpenForThumbnail(false);
-                            }}
-                            className='aboutToUploadImagesContainer__uploadItem'
-                          >
-                            {/* <FileAddOutlined />
+                              {/* <FileAddOutlined />
 													<FileImageTwoTone />
 													<FileImageOutlined /> */}
-                            <FileImageFilled />
-                            {/* <h5>
+                              <FileImageFilled />
+                              {/* <h5>
 												     Select From Library
 											<     /h5> */}
-                            <span className='aboutToUploadImagesContainer__uploadItem-plus'>
-                              <PlusOutlined />
-                            </span>
-                          </div>
-                        </Tooltip>
-                      </>
-                    )}
+                              <span className='aboutToUploadImagesContainer__uploadItem-plus'>
+                                <PlusOutlined />
+                              </span>
+                            </div>
+                          </Tooltip>
+                        </>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className='addProductGridContainer__right'>
-                <div className='addProductGridContainer__category'>
-                  <div className='addProductGridContainer-rightItemContainer'>
-                    <div className='addProductGridContainer-rightItemContainer-header'>
-                      <h3>Categories *</h3>
+                <div className='addProductGridContainer__right'>
+                  <div className='addProductGridContainer__category'>
+                    <div className='addProductGridContainer-rightItemContainer'>
+                      <div className='addProductGridContainer-rightItemContainer-header'>
+                        <h3>Categories *</h3>
 
-                      {/* <Tooltip
+                        {/* <Tooltip
                         color='red'
                         visible={
                           updateProductState.error['error']['category'] &&
@@ -1271,242 +1292,242 @@ const ModalChildComponent = ({
                           <CheckCircleOutlined />
                         </div>
                       </Tooltip> */}
-                      <div
-                        className={
-                          !(categoryids.length > 0) &&
-                          !updateProductState.error['error']['category']
-                            ? 'checkicon'
-                            : updateProductState.error['error']['category']
-                            ? 'checkicon-error'
-                            : 'checkicon-active'
-                        }
-                      >
-                        <CheckCircleOutlined />
+                        <div
+                          className={
+                            !(categoryids.length > 0) &&
+                              !updateProductState.error['error']['category']
+                              ? 'checkicon'
+                              : updateProductState.error['error']['category']
+                                ? 'checkicon-error'
+                                : 'checkicon-active'
+                          }
+                        >
+                          <CheckCircleOutlined />
+                        </div>
+                      </div>
+                      <div className='addProductGridContainer-rightItemContainer-body'>
+                        <Categories
+                          setCategoryOptions={setCategoryOptions}
+                          categoryOptions={categoryOptions}
+                          setcategoryIds={setcategoryIds}
+                        />
                       </div>
                     </div>
-                    <div className='addProductGridContainer-rightItemContainer-body'>
-                      <Categories
-                        setCategoryOptions={setCategoryOptions}
-                        categoryOptions={categoryOptions}
-                        setcategoryIds={setcategoryIds}
-                      />
+                  </div>
+
+                  <div className='addProductGridContainer__tag'>
+                    <div className='addProductGridContainer-rightItemContainer'>
+                      <div className='addProductGridContainer-rightItemContainer-header'>
+                        <h3>Tags</h3>
+                      </div>
+                      <div className='addProductGridContainer-rightItemContainer-body'>
+                        <Tags
+                          setSelectedTags={setSelectedTags}
+                          selectedTags={selectedTags}
+                          setTagIds={setTagIds}
+                        />
+                      </div>
                     </div>
                   </div>
-                </div>
-
-                <div className='addProductGridContainer__tag'>
-                  <div className='addProductGridContainer-rightItemContainer'>
-                    <div className='addProductGridContainer-rightItemContainer-header'>
-                      <h3>Tags</h3>
-                    </div>
-                    <div className='addProductGridContainer-rightItemContainer-body'>
-                      <Tags
-                        setSelectedTags={setSelectedTags}
-                        selectedTags={selectedTags}
-                        setTagIds={setTagIds}
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div className='addProductGridContainer__brand'>
-                  <div className='addProductGridContainer-rightItemContainer'>
-                    <div className='addProductGridContainer-rightItemContainer-header'>
-                      <h3>Brand</h3>
-                    </div>
-                    <div className='addProductGridContainer-rightItemContainer-body'>
-                      <Brands
-                        productDetailState={productDetailState}
-                        brandId={brandId}
-                        setBrandId={setBrandId}
-                      />
+                  <div className='addProductGridContainer__brand'>
+                    <div className='addProductGridContainer-rightItemContainer'>
+                      <div className='addProductGridContainer-rightItemContainer-header'>
+                        <h3>Brand</h3>
+                      </div>
+                      <div className='addProductGridContainer-rightItemContainer-body'>
+                        <Brands
+                          productDetailState={productDetailState}
+                          brandId={brandId}
+                          setBrandId={setBrandId}
+                        />
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <div
-                  className='addProductGridContainer__brand'
-                  style={{
-                    marginTop: '10px',
-                  }}
-                >
-                  <div className='addProductGridContainer-rightItemContainer'>
-                    <div className='addProductGridContainer-rightItemContainer-header'>
-                      <h3>Meta Tags</h3>
+                  <div
+                    className='addProductGridContainer__brand'
+                    style={{
+                      marginTop: '10px',
+                    }}
+                  >
+                    <div className='addProductGridContainer-rightItemContainer'>
+                      <div className='addProductGridContainer-rightItemContainer-header'>
+                        <h3>Meta Tags</h3>
 
-                      <Tooltip
-                        placement='left'
-                        title={
-                          "Meta data will be used to make the user's easy and for search engine optimization."
-                        }
-                      >
-                        <a href='###'>
-                          <InfoCircleOutlined />
-                        </a>
-                      </Tooltip>
-                    </div>
-                    <div className='addProductGridContainer-rightItemContainer-body'>
-                      <Input
-                        label='Meta title'
-                        value={values.metaTitle}
-                        placeHolder={'...'}
-                        name='metaTitle'
-                        isError={
-                          (touched.metaTitle && errors.metaTitle) ||
-                          (!isSubmitting &&
-                            updateProductState.error['error']['metaTitle'])
-                        }
-                        errorString={
-                          (touched.metaTitle && errors.metaTitle) ||
-                          (!isSubmitting &&
-                            updateProductState.error['error']['metaTitle'])
-                        }
-                        onChange={(e: any) => {
-                          handleChange(e);
-                          setFieldTouched('metaTitle');
-                        }}
-                      />
+                        <Tooltip
+                          placement='left'
+                          title={
+                            "Meta data will be used to make the user's easy and for search engine optimization."
+                          }
+                        >
+                          <a href='###'>
+                            <InfoCircleOutlined />
+                          </a>
+                        </Tooltip>
+                      </div>
+                      <div className='addProductGridContainer-rightItemContainer-body'>
+                        <Input
+                          label='Meta title'
+                          value={values.metaTitle}
+                          placeHolder={'...'}
+                          name='metaTitle'
+                          isError={
+                            (touched.metaTitle && errors.metaTitle) ||
+                            (!isSubmitting &&
+                              updateProductState.error['error']['metaTitle'])
+                          }
+                          errorString={
+                            (touched.metaTitle && errors.metaTitle) ||
+                            (!isSubmitting &&
+                              updateProductState.error['error']['metaTitle'])
+                          }
+                          onChange={(e: any) => {
+                            handleChange(e);
+                            setFieldTouched('metaTitle');
+                          }}
+                        />
 
-                      <Input
-                        label='BN Meta title'
-                        value={values.bnMetaTitle}
-                        placeHolder={'...'}
-                        name='bnMetaTitle'
-                        isError={
-                          (touched.bnMetaTitle && errors.bnMetaTitle) ||
-                          (!isSubmitting &&
-                            updateProductState.error['error']['bnMetaTitle'])
-                        }
-                        errorString={
-                          (touched.bnMetaTitle && errors.bnMetaTitle) ||
-                          (!isSubmitting &&
-                            updateProductState.error['error']['bnMetaTitle'])
-                        }
-                        onChange={(e: any) => {
-                          handleChange(e);
-                          setFieldTouched('bnMetaTitle');
-                        }}
-                      />
+                        <Input
+                          label='BN Meta title'
+                          value={values.bnMetaTitle}
+                          placeHolder={'...'}
+                          name='bnMetaTitle'
+                          isError={
+                            (touched.bnMetaTitle && errors.bnMetaTitle) ||
+                            (!isSubmitting &&
+                              updateProductState.error['error']['bnMetaTitle'])
+                          }
+                          errorString={
+                            (touched.bnMetaTitle && errors.bnMetaTitle) ||
+                            (!isSubmitting &&
+                              updateProductState.error['error']['bnMetaTitle'])
+                          }
+                          onChange={(e: any) => {
+                            handleChange(e);
+                            setFieldTouched('bnMetaTitle');
+                          }}
+                        />
 
-                      <TextArea
-                        label='Meta description'
-                        value={values.metaDescription}
-                        placeholder={'meta...'}
-                        name='metaDescription'
-                        isError={
-                          (touched.metaDescription && errors.metaDescription) ||
-                          (!isSubmitting &&
-                            updateProductState.error['error'][
+                        <TextArea
+                          label='Meta description'
+                          value={values.metaDescription}
+                          placeholder={'meta...'}
+                          name='metaDescription'
+                          isError={
+                            (touched.metaDescription && errors.metaDescription) ||
+                            (!isSubmitting &&
+                              updateProductState.error['error'][
                               'metaDescription'
-                            ])
-                        }
-                        errorString={
-                          (touched.metaDescription && errors.metaDescription) ||
-                          (!isSubmitting &&
-                            updateProductState.error['error'][
+                              ])
+                          }
+                          errorString={
+                            (touched.metaDescription && errors.metaDescription) ||
+                            (!isSubmitting &&
+                              updateProductState.error['error'][
                               'metaDescription'
-                            ])
-                        }
-                        onChange={(e: any) => {
-                          handleChange(e);
-                          setFieldTouched('metaDescription');
-                        }}
-                      />
+                              ])
+                          }
+                          onChange={(e: any) => {
+                            handleChange(e);
+                            setFieldTouched('metaDescription');
+                          }}
+                        />
 
-                      <TextArea
-                        label='BN Meta Description'
-                        value={values.bnMetaDescription}
-                        placeholder={'এইয় মেট...'}
-                        name='bnMetaDescription'
-                        isError={
-                          (touched.bnMetaDescription &&
-                            errors.bnMetaDescription) ||
-                          (!isSubmitting &&
-                            updateProductState.error['error'][
+                        <TextArea
+                          label='BN Meta Description'
+                          value={values.bnMetaDescription}
+                          placeholder={'এইয় মেট...'}
+                          name='bnMetaDescription'
+                          isError={
+                            (touched.bnMetaDescription &&
+                              errors.bnMetaDescription) ||
+                            (!isSubmitting &&
+                              updateProductState.error['error'][
                               'bnMetaDescription'
-                            ])
-                        }
-                        errorString={
-                          (touched.bnMetaDescription &&
-                            errors.bnMetaDescription) ||
-                          (!isSubmitting &&
-                            updateProductState.error['error'][
+                              ])
+                          }
+                          errorString={
+                            (touched.bnMetaDescription &&
+                              errors.bnMetaDescription) ||
+                            (!isSubmitting &&
+                              updateProductState.error['error'][
                               'bnMetaDescription'
-                            ])
-                        }
-                        onChange={(e: any) => {
-                          handleChange(e);
-                          setFieldTouched('bnMetaDescription');
-                        }}
-                      />
+                              ])
+                          }
+                          onChange={(e: any) => {
+                            handleChange(e);
+                            setFieldTouched('bnMetaDescription');
+                          }}
+                        />
 
-                      <h3 className='inputFieldLabel'>Meta Tags</h3>
+                        <h3 className='inputFieldLabel'>Meta Tags</h3>
 
-                      <MetaTags
-                        // @ts-ignore
-                        setTags={setMetaTags}
-                        tags={metaTags}
-                      />
+                        <MetaTags
+                          // @ts-ignore
+                          setTags={setMetaTags}
+                          tags={metaTags}
+                        />
 
-                      <div
-                        style={{
-                          marginTop: '15px',
-                        }}
-                      ></div>
+                        <div
+                          style={{
+                            marginTop: '15px',
+                          }}
+                        ></div>
 
-                      <h3 className='inputFieldLabel'>BN Meta Tags</h3>
+                        <h3 className='inputFieldLabel'>BN Meta Tags</h3>
 
-                      <MetaTags
-                        // @ts-ignore
-                        setTags={setBnMetaTags}
-                        tags={bnMetaTags}
-                      />
+                        <MetaTags
+                          // @ts-ignore
+                          setTags={setBnMetaTags}
+                          tags={bnMetaTags}
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </section>
+              </section>
 
-            <div
-              style={{
-                padding: '15px',
-                display: 'flex',
-                justifyContent: 'flex-end',
-              }}
-            >
-              <Button
+              <div
                 style={{
-                  color: '#555',
-                  marginRight: '10px',
+                  padding: '15px',
+                  display: 'flex',
+                  justifyContent: 'flex-end',
                 }}
-                className='btnPrimaryClassNameoutline-cancle'
-                onClick={() => setProductEditVisible(false)}
-                type='default'
               >
-                Cancel
+                <Button
+                  style={{
+                    color: '#555',
+                    marginRight: '10px',
+                  }}
+                  className='btnPrimaryClassNameoutline-cancle'
+                  onClick={() => setProductEditVisible(false)}
+                  type='default'
+                >
+                  Cancel
               </Button>
 
-              <Button
-                className='btnPrimaryClassNameoutline'
-                onClick={handleSubmit}
-                loading={updateProductState.isLoading}
-                type='link'
-                icon={<CheckOutlined />}
-              >
-                Update
+                <Button
+                  className='btnPrimaryClassNameoutline'
+                  onClick={handleSubmit}
+                  loading={updateProductState.isLoading}
+                  type='link'
+                  icon={<CheckOutlined />}
+                >
+                  Update
               </Button>
-            </div>
+              </div>
 
-            <MediaLibrary
-              setvisible={setvisible}
-              visible={visible}
-              setmyImages={setmyImages}
-              myImages={myImages}
-              setmyThumbnailImage={setmyThumbnailImage}
-              isModalOpenForThumbnail={isModalOpenForThumbnail}
-              isModalOpenForImages={isModalOpenForImages}
-            />
-          </>
-        )}
+              <MediaLibrary
+                setvisible={setvisible}
+                visible={visible}
+                setmyImages={setmyImages}
+                myImages={myImages}
+                setmyThumbnailImage={setmyThumbnailImage}
+                isModalOpenForThumbnail={isModalOpenForThumbnail}
+                isModalOpenForImages={isModalOpenForImages}
+              />
+            </>
+          )}
       </Formik>
     </>
   );
@@ -1518,6 +1539,7 @@ const AddNewProduct = ({
   productDetailData,
   setProductList,
   productList,
+  productListState
 }: Props) => {
   const handleCancel = () => {
     setProductEditVisible(false);
@@ -1551,6 +1573,7 @@ const AddNewProduct = ({
         productEditVisible={productEditVisible}
         productDetailData={productDetailData}
         handleCancel={handleCancel}
+        productListState={productListState}
       />
     </Modal>
   );
@@ -1564,18 +1587,18 @@ export default AddNewProduct;
 Product variation ---->
 
 Price [title]
-	[regular input field] [offer inputfield]
+  [regular input field] [offer inputfield]
 
 Stock [title]
-	[available input field] [minimum inputfield]
+  [available input field] [minimum inputfield]
 
 default [default can be set to true]
 
 attributes [title]
-	[add attributes name]
-		[add attrubutes value]
+  [add attributes name]
+    [add attrubutes value]
 
-	[add attributes name]
-		[add attrubutes value
+  [add attributes name]
+    [add attrubutes value
 
 */ //

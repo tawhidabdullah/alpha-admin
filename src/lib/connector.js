@@ -43,18 +43,23 @@ class Connector {
 
       ...(format === 'json'
         ? {
-            body: api.method !== 'get' ? JSON.stringify(options.body) : null,
-          }
+          body: api.method !== 'get' ? JSON.stringify(options.body) : null,
+        }
         : {
-            body: api.method !== 'get' ? options.body : null,
-          }),
+          body: api.method !== 'get' ? options.body : null,
+        }),
     };
 
     function getUrlOptions(urlOptions) {
       if (api.method === 'get') {
-        const params = {
-          limitNumber: 100000000000,
+        let params = {};
+
+        if (!urlOptions?.params?.limitNumber) {
+          params.limitNumber = 100000000000;
         };
+
+        console.log('urlparams', urlOptions);
+
         return {
           ...(urlOptions && {
             ...urlOptions,
@@ -62,8 +67,8 @@ class Connector {
           params: {
             ...(urlOptions &&
               urlOptions.params && {
-                ...urlOptions.params,
-              }),
+              ...urlOptions.params,
+            }),
             ...params,
           },
         };

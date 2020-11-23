@@ -13,7 +13,7 @@
       "method": "post"
     },
     "ImageListFromLibrary": {
-      "url": "/admin/api/image?sort=sortItem&sortOrder=sortOrderValue",
+      "url": "/admin/api/image?sort=sortItem&sortOrder=sortOrderValue&limit=limitNumber&page=pageNumber",
       "method": "get"
     },
     "viewSingleImageFromLibrary": {
@@ -49,7 +49,7 @@
       "method": "post"
     },
     "productList": {
-      "url": "/api/product?sort=sortItem&sortOrder=sortOrderValue&type=productType",
+      "url": "/api/product?sort=sortItem&sortOrder=sortOrderValue&type=productType&page=pageNumber",
       "method": "get"
     },
     "updateStock": {
@@ -62,6 +62,10 @@
     },
     "updateProduct": {
       "url": "/admin/api/product/update/:id",
+      "method": "post"
+    },
+    "uploadProductCSV": {
+      "url": "/admin/api/product/update/bulk/csv",
       "method": "post"
     },
     "deletePost": {
@@ -88,7 +92,6 @@
       "url": "/api/post/category/:id/post?sort=sortItem&sortOrder=sortOrderValue",
       "method": "get"
     },
-
     "postList": {
       "url": "/admin/api/post?sort=sortItem&sortOrder=sortOrderValue",
       "method": "get"
@@ -241,7 +244,6 @@
       "url": "/admin/api/bundle/add",
       "method": "post"
     },
-
     "addDealer": {
       "url": "/admin/api/dealer/add",
       "method": "post"
@@ -382,7 +384,6 @@
       "url": "/admin/api/staff",
       "method": "get"
     },
-
     "addExpense": {
       "url": "/admin/api/expense/add",
       "method": "post"
@@ -619,7 +620,6 @@
       "url": "/admin/api/order?metric=metricType&startDate=startDateValue&endDate=endDateValue",
       "method": "get"
     },
-
     "getAnalyticsTotalUserCount": {
       "url": "/admin/api/analytics/user?metric=metricValue&startDate=startDateValue&endDate=endDateValue",
       "method": "get"
@@ -664,7 +664,6 @@
       "url": "/admin/api/email/inbox/send",
       "method": "post"
     },
-
     "getSMSConfiguration": {
       "url": "/admin/api/sms/configuration",
       "method": "get"
@@ -701,7 +700,6 @@
       "url": "/admin/api/sms/inbox/send",
       "method": "post"
     },
-
     "login": {
       "url": "/admin/auth/login",
       "method": "post"

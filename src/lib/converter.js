@@ -54,18 +54,18 @@ class Converter {
             category.subCategory.length > 0 &&
             category.subCategory[0] &&
             category.subCategory[0]['name'] && {
-              children: category.subCategory.map((subCat) => {
-                return {
-                  id: subCat._id || '',
-                  key: subCat._id,
-                  name: subCat.name && subCat.name,
-                  description: subCat.description && subCat.description,
-                  cover: subCat.cover
-                    ? `${config['baseURL']}${subCat.cover.thumbnail}`
-                    : '',
-                };
-              }),
+            children: category.subCategory.map((subCat) => {
+              return {
+                id: subCat._id || '',
+                key: subCat._id,
+                name: subCat.name && subCat.name,
+                description: subCat.description && subCat.description,
+                cover: subCat.cover
+                  ? `${config['baseURL']}${subCat.cover.thumbnail}`
+                  : '',
+              };
             }),
+          }),
         };
       });
 
@@ -114,9 +114,8 @@ class Converter {
         id: data._id || '',
         name: data.name && data.name,
         cover: {
-          cover: `${config['baseURL']}${
-            data.cover ? data.cover.original && data.cover.original : ''
-          }`,
+          cover: `${config['baseURL']}${data.cover ? data.cover.original && data.cover.original : ''
+            }`,
           id: data.cover ? data.cover._id : '',
         },
         url: data.url,
@@ -207,19 +206,18 @@ class Converter {
             category.subCategory.length > 0 &&
             category.subCategory[0] &&
             category.subCategory[0]['name'] && {
-              children: category.subCategory.map((subCat) => {
-                return {
-                  id: subCat._id || '',
-                  key: subCat._id,
-                  title: subCat.name && subCat.name,
-                  cover: subCat.cover
-                    ? `${config['baseURL']}${
-                        subCat.cover.thumbnail ? subCat.cover.thumbnail : ''
-                      }`
-                    : '',
-                };
-              }),
+            children: category.subCategory.map((subCat) => {
+              return {
+                id: subCat._id || '',
+                key: subCat._id,
+                title: subCat.name && subCat.name,
+                cover: subCat.cover
+                  ? `${config['baseURL']}${subCat.cover.thumbnail ? subCat.cover.thumbnail : ''
+                  }`
+                  : '',
+              };
             }),
+          }),
         };
       });
 
@@ -265,9 +263,8 @@ class Converter {
           id: product._id || '',
           name: product.name && product.name,
           description: product.description && product.description,
-          cover: `${config['baseURL']}${
-            (product.cover && product.cover['thumbnail']) || ''
-          }`,
+          cover: `${config['baseURL']}${(product.cover && product.cover['thumbnail']) || ''
+            }`,
           regularPrice: product.price && product.price['regular'],
           offerPrice: product.price && product.price['offer'],
           url: product.url,
@@ -281,18 +278,18 @@ class Converter {
           tags: product.tags,
           price:
             parseInt(product.price['offer']) >
-            parseInt(product.price['regular'])
+              parseInt(product.price['regular'])
               ? product.price['offer']
               : product.price['regular'],
           available:
             product.pricing && product.pricing.length > 0
               ? product.pricing[0]['stock'] &&
-                product.pricing[0]['stock']['available']
+              product.pricing[0]['stock']['available']
               : 0,
           minimum:
             product.pricing && product.pricing.length > 0
               ? product.pricing[0]['stock'] &&
-                product.pricing[0]['stock']['minimum']
+              product.pricing[0]['stock']['minimum']
               : 0,
         };
       });
@@ -483,9 +480,8 @@ class Converter {
           id: product._id || '',
           name: product.name && product.name,
           description: product.description && product.description,
-          cover: `${config['baseURL']}${
-            (product.cover && product.cover['thumbnail']) || ''
-          }`,
+          cover: `${config['baseURL']}${(product.cover && product.cover['thumbnail']) || ''
+            }`,
           regularPrice: product.price && product.price['regular'],
           offerPrice: product.price && product.price['offer'],
           url: product.url,
@@ -499,18 +495,18 @@ class Converter {
           tags: product.tags,
           price:
             parseInt(product.price['offer']) >
-            parseInt(product.price['regular'])
+              parseInt(product.price['regular'])
               ? product.price['offer']
               : product.price['regular'],
           avalable:
             product.pricing && product.pricing.length > 0
               ? product.pricing[0]['stock'] &&
-                product.pricing[0]['stock']['available']
+              product.pricing[0]['stock']['available']
               : 0,
           minimum:
             product.pricing && product.pricing.length > 0
               ? product.pricing[0]['stock'] &&
-                product.pricing[0]['stock']['minimum']
+              product.pricing[0]['stock']['minimum']
               : 0,
         };
       });
@@ -540,9 +536,8 @@ class Converter {
           id: product._id || '',
           name: product.name && product.name,
           description: product.description && product.description,
-          cover: `${config['baseURL']}${
-            (product.cover && product.cover['thumbnail']) || ''
-          }`,
+          cover: `${config['baseURL']}${(product.cover && product.cover['thumbnail']) || ''
+            }`,
           regularPrice: product.price && product.price['regular'],
           offerPrice: product.price && product.price['offer'],
           url: product.url,
@@ -556,18 +551,18 @@ class Converter {
           tags: product.tags,
           price:
             parseInt(product.price['offer']) >
-            parseInt(product.price['regular'])
+              parseInt(product.price['regular'])
               ? product.price['offer']
               : product.price['regular'],
           avalable:
             product.pricing && product.pricing.length > 0
               ? product.pricing[0]['stock'] &&
-                product.pricing[0]['stock']['available']
+              product.pricing[0]['stock']['available']
               : 0,
           minimum:
             product.pricing && product.pricing.length > 0
               ? product.pricing[0]['stock'] &&
-                product.pricing[0]['stock']['minimum']
+              product.pricing[0]['stock']['minimum']
               : 0,
         };
       });
@@ -624,6 +619,8 @@ class Converter {
   async productList(resData) {
     const data = resData.data || [];
     const isNext = resData.page.next;
+    const total = resData.page?.totalIndex;
+
 
     let convertedData =
       data.length > 0 &&
@@ -634,9 +631,8 @@ class Converter {
           name: product.name && product.name,
           description: product.description && product.description,
           cover: product.cover
-            ? `${config['baseURL']}${
-                (product.cover && product.cover['thumbnail']) || ''
-              }`
+            ? `${config['baseURL']}${(product.cover && product.cover['thumbnail']) || ''
+            }`
             : product.cover,
           regularPrice: product.price && product.price['regular'],
           offerPrice: product.price && product.price['offer'],
@@ -667,26 +663,27 @@ class Converter {
           tags: product.tags,
           price:
             parseInt(product.price['offer']) >
-            parseInt(product.price['regular'])
+              parseInt(product.price['regular'])
               ? product.price['offer']
               : product.price['regular'],
           available:
             product.pricing && product.pricing.length > 0
               ? product.pricing[0]['stock'] &&
-                product.pricing[0]['stock']['available']
+              product.pricing[0]['stock']['available']
               : 0,
           minimum:
             product.pricing && product.pricing.length > 0
               ? product.pricing[0]['stock'] &&
-                product.pricing[0]['stock']['minimum']
+              product.pricing[0]['stock']['minimum']
               : 0,
         };
       });
 
-    // convertedData = {
-    // 	data: convertedData,
-    // 	isNext
-    // };
+    convertedData = {
+      data: convertedData,
+      next: isNext,
+      total
+    };
 
     return convertedData;
   }
@@ -713,9 +710,8 @@ class Converter {
           servingSize: post.servingSize && post.servingSize,
           cookingTime: post.cookingTime && post.cookingTime,
           cover: post.cover
-            ? `${config['baseURL']}${
-                (post.cover && post.cover['thumbnail']) || ''
-              }`
+            ? `${config['baseURL']}${(post.cover && post.cover['thumbnail']) || ''
+            }`
             : null,
           url: post.url,
           category: post.category,
@@ -752,9 +748,8 @@ class Converter {
           preparationTime: post.preparationTime && post.preparationTime,
           servingSize: post.servingSize && post.servingSize,
           cookingTime: post.cookingTime && post.cookingTime,
-          cover: `${config['baseURL']}${
-            (post.cover && post.cover['thumbnail']) || ''
-          }`,
+          cover: `${config['baseURL']}${(post.cover && post.cover['thumbnail']) || ''
+            }`,
           url: post.url,
           category: post.category,
           tags: post.tags,
@@ -790,9 +785,8 @@ class Converter {
           preparationTime: post.preparationTime && post.preparationTime,
           servingSize: post.servingSize && post.servingSize,
           cookingTime: post.cookingTime && post.cookingTime,
-          cover: `${config['baseURL']}${
-            (post.cover && post.cover['thumbnail']) || ''
-          }`,
+          cover: `${config['baseURL']}${(post.cover && post.cover['thumbnail']) || ''
+            }`,
           url: post.url,
           category: post.category,
           tags: post.tags,
@@ -823,52 +817,50 @@ class Converter {
         preparationTime: data.preparationTime && data.preparationTime,
         servingSize: data.servingSize && data.servingSize,
         cookingTime: data.cookingTime && data.cookingTime,
-        cover: `${config['baseURL']}${
-          (data.cover && data.cover['medium']) || ''
-        }`,
+        cover: `${config['baseURL']}${(data.cover && data.cover['medium']) || ''
+          }`,
         url: data.url,
         requiredProducts:
           data.requiredProducts && data.requiredProducts.length > 0
             ? data.requiredProducts.map((item) => {
-                return {
-                  ...item,
-                  id: item.id,
-                  ...(item.detail &&
-                    Object.keys(item.detail).length > 0 && {
-                      ...item.detail,
-                      cover: {
-                        cover: `${config['baseURL']}${
-                          item.detail.cover
-                            ? item.detail.cover.original &&
-                              item.detail.cover.original
-                            : ''
-                        }`,
-                        id: item.detail.cover ? item.detail.cover._id : '',
-                      },
-                      price:
-                        parseInt(item.detail.price['offer']) >
-                        parseInt(item.detail.price['regular'])
-                          ? item.detail.price['offer']
-                          : item.detail.price['regular'],
-                      image:
-                        (item.detail.image &&
-                          item.detail.image.length > 0 &&
-                          item.detail.image.map((img) => {
-                            return {
-                              id: img._id || '',
-                              name: img.name && img.name,
-                              cover: `${config['baseURL']}${img.original}`,
-                              added: img.added,
-                              title: img.title,
-                              labels: img.labels,
-                              alt: img.alt,
-                              caption: img.caption,
-                            };
-                          })) ||
-                        [],
-                    }),
-                };
-              })
+              return {
+                ...item,
+                id: item.id,
+                ...(item.detail &&
+                  Object.keys(item.detail).length > 0 && {
+                  ...item.detail,
+                  cover: {
+                    cover: `${config['baseURL']}${item.detail.cover
+                      ? item.detail.cover.original &&
+                      item.detail.cover.original
+                      : ''
+                      }`,
+                    id: item.detail.cover ? item.detail.cover._id : '',
+                  },
+                  price:
+                    parseInt(item.detail.price['offer']) >
+                      parseInt(item.detail.price['regular'])
+                      ? item.detail.price['offer']
+                      : item.detail.price['regular'],
+                  image:
+                    (item.detail.image &&
+                      item.detail.image.length > 0 &&
+                      item.detail.image.map((img) => {
+                        return {
+                          id: img._id || '',
+                          name: img.name && img.name,
+                          cover: `${config['baseURL']}${img.original}`,
+                          added: img.added,
+                          title: img.title,
+                          labels: img.labels,
+                          alt: img.alt,
+                          caption: img.caption,
+                        };
+                      })) ||
+                    [],
+                }),
+              };
+            })
             : [],
         category2:
           (data.category &&
@@ -929,52 +921,50 @@ class Converter {
         preparationTime: data.preparationTime && data.preparationTime,
         servingSize: data.servingSize && data.servingSize,
         cookingTime: data.cookingTime && data.cookingTime,
-        cover: `${config['baseURL']}${
-          (data.cover && data.cover['medium']) || ''
-        }`,
+        cover: `${config['baseURL']}${(data.cover && data.cover['medium']) || ''
+          }`,
         url: data.url,
         requiredProducts:
           data.requiredProducts && data.requiredProducts.length > 0
             ? data.requiredProducts.map((item) => {
-                return {
-                  ...item,
-                  id: item.id,
-                  ...(item.detail &&
-                    Object.keys(item.detail).length > 0 && {
-                      ...item.detail,
-                      cover: {
-                        cover: `${config['baseURL']}${
-                          item.detail.cover
-                            ? item.detail.cover.original &&
-                              item.detail.cover.original
-                            : ''
-                        }`,
-                        id: item.detail.cover ? item.detail.cover._id : '',
-                      },
-                      price:
-                        parseInt(item.detail.price['offer']) >
-                        parseInt(item.detail.price['regular'])
-                          ? item.detail.price['offer']
-                          : item.detail.price['regular'],
-                      image:
-                        (item.detail.image &&
-                          item.detail.image.length > 0 &&
-                          item.detail.image.map((img) => {
-                            return {
-                              id: img._id || '',
-                              name: img.name && img.name,
-                              cover: `${config['baseURL']}${img.original}`,
-                              added: img.added,
-                              title: img.title,
-                              labels: img.labels,
-                              alt: img.alt,
-                              caption: img.caption,
-                            };
-                          })) ||
-                        [],
-                    }),
-                };
-              })
+              return {
+                ...item,
+                id: item.id,
+                ...(item.detail &&
+                  Object.keys(item.detail).length > 0 && {
+                  ...item.detail,
+                  cover: {
+                    cover: `${config['baseURL']}${item.detail.cover
+                      ? item.detail.cover.original &&
+                      item.detail.cover.original
+                      : ''
+                      }`,
+                    id: item.detail.cover ? item.detail.cover._id : '',
+                  },
+                  price:
+                    parseInt(item.detail.price['offer']) >
+                      parseInt(item.detail.price['regular'])
+                      ? item.detail.price['offer']
+                      : item.detail.price['regular'],
+                  image:
+                    (item.detail.image &&
+                      item.detail.image.length > 0 &&
+                      item.detail.image.map((img) => {
+                        return {
+                          id: img._id || '',
+                          name: img.name && img.name,
+                          cover: `${config['baseURL']}${img.original}`,
+                          added: img.added,
+                          title: img.title,
+                          labels: img.labels,
+                          alt: img.alt,
+                          caption: img.caption,
+                        };
+                      })) ||
+                    [],
+                }),
+              };
+            })
             : [],
         category: data.category,
         tags: data.tags && data.tags.length > 0 ? data.tags : [],
@@ -1017,9 +1007,8 @@ class Converter {
           name: product.name && product.name,
           description: product.description && product.description,
           cover: product.cover
-            ? `${config['baseURL']}${
-                (product.cover && product.cover['thumbnail']) || ''
-              }`
+            ? `${config['baseURL']}${(product.cover && product.cover['thumbnail']) || ''
+            }`
             : product.cover,
           regularPrice: product.price && product.price['regular'],
           offerPrice: product.price && product.price['offer'],
@@ -1039,7 +1028,7 @@ class Converter {
           productCount: product['product'].length,
           price:
             parseInt(product.price['offer']) >
-            parseInt(product.price['regular'])
+              parseInt(product.price['regular'])
               ? product.price['offer']
               : product.price['regular'],
         };
@@ -1068,9 +1057,8 @@ class Converter {
         name: data.name && data.name,
         description: data.description && data.description,
         cover: data.cover
-          ? `${config['baseURL']}${
-              (data.cover && data.cover['thumbnail']) || ''
-            }`
+          ? `${config['baseURL']}${(data.cover && data.cover['thumbnail']) || ''
+          }`
           : '',
         regularPrice: data.price && data.price['regular'],
         offerPrice: data.price && data.price['offer'],
@@ -1238,9 +1226,8 @@ class Converter {
           name: product.name && product.name,
           code: product.code,
           cover: product.cover
-            ? `${config['baseURL']}${
-                (product.cover && product.cover['thumbnail']) || ''
-              }`
+            ? `${config['baseURL']}${(product.cover && product.cover['thumbnail']) || ''
+            }`
             : null,
           minimumOrder: product.minimumOrder,
           maximumOrder: product.maximumOrder,
@@ -1674,9 +1661,8 @@ class Converter {
         description: data.description && data.description,
         url: data.url && data.url,
         cover: {
-          cover: `${config['baseURL']}${
-            data.cover ? data.cover.original && data.cover.original : ''
-          }`,
+          cover: `${config['baseURL']}${data.cover ? data.cover.original && data.cover.original : ''
+            }`,
           id: data.cover ? data.cover._id : '',
         },
         image:
@@ -1962,9 +1948,8 @@ class Converter {
           key: theme._id || '',
           name: theme.name || '',
           added: theme.added || '',
-          thumbnail: `${config['baseURL']}${
-            theme.thumbnail ? theme.thumbnail : ''
-          }`,
+          thumbnail: `${config['baseURL']}${theme.thumbnail ? theme.thumbnail : ''
+            }`,
         };
       });
 
@@ -1991,27 +1976,26 @@ class Converter {
             items:
               component.items.length > 0
                 ? component.items.map((item) => {
-                    return {
-                      ...item,
-                      image:
-                        item.image.length > 0
-                          ? item.image.map((img) => {
-                              return {
-                                cover: `${config['baseURL']}${
-                                  img.thumbnail ? img.thumbnail : ''
-                                }`,
-                                id: img._id,
-                                name: img.name && img.name,
-                                added: img.added,
-                                title: img.title,
-                                labels: img.labels,
-                                alt: img.alt,
-                                caption: img.caption,
-                              };
-                            })
-                          : [],
-                    };
-                  })
+                  return {
+                    ...item,
+                    image:
+                      item.image.length > 0
+                        ? item.image.map((img) => {
+                          return {
+                            cover: `${config['baseURL']}${img.thumbnail ? img.thumbnail : ''
+                              }`,
+                            id: img._id,
+                            name: img.name && img.name,
+                            added: img.added,
+                            title: img.title,
+                            labels: img.labels,
+                            alt: img.alt,
+                            caption: img.caption,
+                          };
+                        })
+                        : [],
+                  };
+                })
                 : [],
           };
         });
@@ -2068,6 +2052,8 @@ class Converter {
    */
   async ImageListFromLibrary(resData) {
     const data = resData.data || [];
+    const next = resData.page?.next;
+    const total = resData.page?.totalIndex;
 
     const convertedData =
       data.length > 0 &&
@@ -2084,7 +2070,12 @@ class Converter {
         };
       });
 
-    return convertedData;
+    return {
+      data: convertedData,
+      next,
+      total
+    };
+
   }
 
   /**
@@ -2177,9 +2168,9 @@ class Converter {
         brand:
           data.brand && Object.key(data.brand).length > 0
             ? {
-                id: data.brand.id,
-                name: data.brand.name,
-              }
+              id: data.brand.id,
+              name: data.brand.name,
+            }
             : {},
         price:
           parseInt(data.price['offer']) > parseInt(data.price['regular'])
@@ -2199,9 +2190,8 @@ class Converter {
         tags: data.tags && data.tags.length > 0 ? data.tags : [],
 
         cover: {
-          cover: `${config['baseURL']}${
-            data.cover ? data.cover.original && data.cover.original : ''
-          }`,
+          cover: `${config['baseURL']}${data.cover ? data.cover.original && data.cover.original : ''
+            }`,
           id: data.cover ? data.cover._id : '',
         },
         image:
@@ -2248,9 +2238,8 @@ class Converter {
         id: data._id || '',
         name: data.name && data.name,
         cover: {
-          cover: `${config['baseURL']}${
-            data.cover ? data.cover.original && data.cover.original : ''
-          }`,
+          cover: `${config['baseURL']}${data.cover ? data.cover.original && data.cover.original : ''
+            }`,
           id: data.cover ? data.cover._id : '',
         },
         code: data.code,
@@ -2260,30 +2249,29 @@ class Converter {
         orderedProducts:
           data.orderedProducts && data.orderedProducts.length > 0
             ? data.orderedProducts.map((item) => {
-                console.log('fuckingOrderProduct', item);
-                return {
-                  ...item,
-                  id: item.id,
-                  ...(item.detail &&
-                    Object.keys(item.detail).length > 0 && {
-                      ...item.detail,
-                      cover: {
-                        cover: `${config['baseURL']}${
-                          item.detail.cover
-                            ? item.detail.cover.original &&
-                              item.detail.cover.original
-                            : ''
-                        }`,
-                        id: item.detail.cover ? item.detail.cover._id : '',
-                      },
-                      price:
-                        parseInt(item.detail.price['offer']) >
-                        parseInt(item.detail.price['regular'])
-                          ? item.detail.price['offer']
-                          : item.detail.price['regular'],
-                    }),
-                };
-              })
+              console.log('fuckingOrderProduct', item);
+              return {
+                ...item,
+                id: item.id,
+                ...(item.detail &&
+                  Object.keys(item.detail).length > 0 && {
+                  ...item.detail,
+                  cover: {
+                    cover: `${config['baseURL']}${item.detail.cover
+                      ? item.detail.cover.original &&
+                      item.detail.cover.original
+                      : ''
+                      }`,
+                    id: item.detail.cover ? item.detail.cover._id : '',
+                  },
+                  price:
+                    parseInt(item.detail.price['offer']) >
+                      parseInt(item.detail.price['regular'])
+                      ? item.detail.price['offer']
+                      : item.detail.price['regular'],
+                }),
+              };
+            })
             : [],
         freeProductsCount: data.freeProducts && data.orderedProducts.length,
         amountType: data.amountType,
@@ -2340,43 +2328,39 @@ class Converter {
               return {
                 id: cat._id,
                 name: cat.name,
-                cover: `${config['baseURL']}${
-                  cat.cover ? cat.cover.original && cat.cover.original : ''
-                }`,
+                cover: `${config['baseURL']}${cat.cover ? cat.cover.original && cat.cover.original : ''
+                  }`,
               };
             })) ||
           data.category,
         brand:
           data.brand && Object.keys(data.brand).length > 0
             ? {
-                id: data.brand._id,
-                name: data.brand.name,
-                cover: `${config['baseURL']}${
-                  data.brand.cover
-                    ? data.brand.cover.original && data.brand.cover.original
-                    : ''
+              id: data.brand._id,
+              name: data.brand.name,
+              cover: `${config['baseURL']}${data.brand.cover
+                ? data.brand.cover.original && data.brand.cover.original
+                : ''
                 }`,
-              }
+            }
             : data.brand,
         primaryCategory:
           data.primaryCategory && Object.keys(data.primaryCategory).length > 0
             ? {
-                id: data.primaryCategory._id,
-                name: data.primaryCategory.name,
-                cover: `${config['baseURL']}${
-                  data.primaryCategory.cover
-                    ? data.primaryCategory.cover.original &&
-                      data.primaryCategory.cover.original
-                    : ''
+              id: data.primaryCategory._id,
+              name: data.primaryCategory.name,
+              cover: `${config['baseURL']}${data.primaryCategory.cover
+                ? data.primaryCategory.cover.original &&
+                data.primaryCategory.cover.original
+                : ''
                 }`,
-              }
+            }
             : data.primaryCategory,
         tags: data.tags && data.tags.length > 0 ? data.tags : [],
         availableStock: data.availableStock,
         cover: {
-          cover: `${config['baseURL']}${
-            data.cover ? data.cover.original && data.cover.original : ''
-          }`,
+          cover: `${config['baseURL']}${data.cover ? data.cover.original && data.cover.original : ''
+            }`,
           id: data.cover ? data.cover._id : '',
         },
         image:
@@ -2427,13 +2411,13 @@ class Converter {
         brand:
           data.updated.brand && Object.keys(data.updated.brand).length > 0
             ? {
-                id: data.updated.brand.id,
-                name: data.updated.brand.name,
-              }
+              id: data.updated.brand.id,
+              name: data.updated.brand.name,
+            }
             : {},
         price:
           parseInt(data.updated.price['offer']) >
-          parseInt(data.updated.price['regular'])
+            parseInt(data.updated.price['regular'])
             ? data.updated.price['offer']
             : data.updated.price['regular'],
         pricing: data.updated.pricing,
@@ -2453,11 +2437,10 @@ class Converter {
             : [],
 
         cover: {
-          cover: `${config['baseURL']}${
-            data.updated.cover
-              ? data.updated.cover.original && data.updated.cover.original
-              : ''
-          }`,
+          cover: `${config['baseURL']}${data.updated.cover
+            ? data.updated.cover.original && data.updated.cover.original
+            : ''
+            }`,
           id: data.updated.cover ? data.updated.cover._id : '',
         },
         image:
@@ -2506,11 +2489,10 @@ class Converter {
             : [],
 
         cover: {
-          cover: `${config['baseURL']}${
-            data.updated[0].cover
-              ? data.updated[0].cover.original && data.updated[0].cover.original
-              : ''
-          }`,
+          cover: `${config['baseURL']}${data.updated[0].cover
+            ? data.updated[0].cover.original && data.updated[0].cover.original
+            : ''
+            }`,
           id: data.updated[0].cover ? data.updated[0].cover._id : '',
         },
         image:
@@ -2574,6 +2556,22 @@ class Converter {
     return convertedData;
   }
 
+
+  /**
+   * @public
+   * @method uploadProductCSV convert api data from API to general format based on config server
+   * @param {Object} data response objectc from wc
+   * @returns {Object}  converted data
+   */
+
+
+  async uploadProductCSV(data) {
+    const convertedData = data;
+    return convertedData;
+  }
+
+
+
   /**
    * @public
    * @method categoryUpdateIcon convert api data from API to general format based on config server
@@ -2594,12 +2592,12 @@ class Converter {
   }
 
 
-    /**
-   * @public
-   * @method categoryUpdateThumbnail convert api data from API to general format based on config server
-   * @param {Object} data response objectc from wc
-   * @returns {Object}  converted data
-   */
+  /**
+ * @public
+ * @method categoryUpdateThumbnail convert api data from API to general format based on config server
+ * @param {Object} data response objectc from wc
+ * @returns {Object}  converted data
+ */
   async categoryUpdateThumbnail(data) {
     const convertedData = data;
 
@@ -2937,11 +2935,10 @@ class Converter {
         ...convertedData,
         id: convertedData._id,
         cover: {
-          cover: `${config['baseURL']}${
-            convertedData.cover
-              ? convertedData.cover.original && convertedData.cover.original
-              : ''
-          }`,
+          cover: `${config['baseURL']}${convertedData.cover
+            ? convertedData.cover.original && convertedData.cover.original
+            : ''
+            }`,
           id: convertedData.cover ? convertedData.cover._id : '',
         },
       };
@@ -3149,20 +3146,20 @@ class Converter {
         staff:
           data.staff && data.staff.length > 0
             ? data.staff.map((customer) => {
-                return {
-                  ...customer,
-                  id: customer._id || '',
-                  key: customer._id || '',
-                  firstName: customer.firstName || '',
-                  lastName: customer.lastName || '',
-                  name: customer.firstName + ' ' + customer.lastName,
-                  country: customer.country || '',
-                  city: customer.city || '',
-                  email: customer.email || '',
-                  phone: customer.phone || '',
-                  address: customer.address || '',
-                };
-              })
+              return {
+                ...customer,
+                id: customer._id || '',
+                key: customer._id || '',
+                firstName: customer.firstName || '',
+                lastName: customer.lastName || '',
+                name: customer.firstName + ' ' + customer.lastName,
+                country: customer.country || '',
+                city: customer.city || '',
+                email: customer.email || '',
+                phone: customer.phone || '',
+                address: customer.address || '',
+              };
+            })
             : [],
       };
     } else return {};
@@ -3244,9 +3241,8 @@ class Converter {
       return {
         ...data[0],
         cover: data[0].cover
-          ? `${config['baseURL']}${
-              data[0].cover ? data[0].cover.thumbnail : ''
-            }`
+          ? `${config['baseURL']}${data[0].cover ? data[0].cover.thumbnail : ''
+          }`
           : '',
         status: 'ok',
       };
@@ -3267,9 +3263,8 @@ class Converter {
       return {
         ...data['updated'],
         cover: data['updated'].cover
-          ? `${config['baseURL']}${
-              data['updated'].cover ? data['updated'].cover.thumbnail : ''
-            }`
+          ? `${config['baseURL']}${data['updated'].cover ? data['updated'].cover.thumbnail : ''
+          }`
           : '',
         status: 'ok',
       };
@@ -3358,9 +3353,8 @@ class Converter {
         ...data.inserted[0],
         status: 'ok',
         cover: data.inserted[0].cover
-          ? `${config['baseURL']}${
-              data.inserted[0].cover ? data.inserted[0].cover.thumbnail : ''
-            }`
+          ? `${config['baseURL']}${data.inserted[0].cover ? data.inserted[0].cover.thumbnail : ''
+          }`
           : '',
       };
     }
@@ -3400,9 +3394,8 @@ class Converter {
         ...data.inserted[0],
         status: 'ok',
         cover: data.inserted[0].cover
-          ? `${config['baseURL']}${
-              data.inserted[0].cover ? data.inserted[0].cover.thumbnail : ''
-            }`
+          ? `${config['baseURL']}${data.inserted[0].cover ? data.inserted[0].cover.thumbnail : ''
+          }`
           : '',
       };
     }
@@ -3424,9 +3417,8 @@ class Converter {
         ...data.inserted[0],
         status: 'ok',
         cover: data.inserted[0].cover
-          ? `${config['baseURL']}${
-              data.inserted[0].cover ? data.inserted[0].cover.thumbnail : ''
-            }`
+          ? `${config['baseURL']}${data.inserted[0].cover ? data.inserted[0].cover.thumbnail : ''
+          }`
           : '',
       };
     }
@@ -3635,9 +3627,8 @@ class Converter {
         ...data.inserted[0],
         status: 'ok',
         cover: data.inserted[0].cover
-          ? `${config['baseURL']}${
-              data.inserted[0].cover ? data.inserted[0].cover.thumbnail : ''
-            }`
+          ? `${config['baseURL']}${data.inserted[0].cover ? data.inserted[0].cover.thumbnail : ''
+          }`
           : '',
       };
     }
@@ -4074,30 +4065,29 @@ class Converter {
       thumbnail: data.thumbnail ? `${config['baseURL']}${data.thumbnail}` : null,
       type:
         data.subCategory.length > 0 &&
-        data.subCategory[0] &&
-        data.subCategory[0]['name']
+          data.subCategory[0] &&
+          data.subCategory[0]['name']
           ? 'Top category'
           : 'Child category',
       url: data.url || '',
       subCategory:
         data.subCategory.length > 0 &&
-        data.subCategory[0] &&
-        data.subCategory[0]['name']
+          data.subCategory[0] &&
+          data.subCategory[0]['name']
           ? data.subCategory.map((subCat) => {
-              return {
-                id: subCat._id || '',
-                name: subCat.name && subCat.name,
-                description: subCat.description && subCat.description,
-                cover: subCat.cover
-                  ? `${config['baseURL']}${subCat.cover.medium}`
-                  : '',
-              };
-            })
+            return {
+              id: subCat._id || '',
+              name: subCat.name && subCat.name,
+              description: subCat.description && subCat.description,
+              cover: subCat.cover
+                ? `${config['baseURL']}${subCat.cover.medium}`
+                : '',
+            };
+          })
           : [],
       cover: {
-        cover: `${config['baseURL']}${
-          data.cover ? data.cover.original && data.cover.original : ''
-        }`,
+        cover: `${config['baseURL']}${data.cover ? data.cover.original && data.cover.original : ''
+          }`,
         id: data.cover ? data.cover._id : '',
       },
       image:
@@ -4205,8 +4195,8 @@ class Converter {
           typeof order.status === 'string'
             ? order.status
             : order.status && Object.keys(order.status).length > 0
-            ? order.status['name']
-            : 'pending',
+              ? order.status['name']
+              : 'pending',
         total: order.totalPrice,
         deliveryCharge: order.totalPrice,
         deliveryRegion: order.deliveryRegion,
@@ -4218,38 +4208,37 @@ class Converter {
         products:
           order.products && order.products.length > 0
             ? order.products.map((product) => {
-                return {
-                  ...product,
-                  id: product._id || '',
-                  name: product.name && product.name,
-                  description: product.description && product.description,
-                  cover: `${config['baseURL']}${
-                    (product.cover && product.cover['thumbnail']) || ''
+              return {
+                ...product,
+                id: product._id || '',
+                name: product.name && product.name,
+                description: product.description && product.description,
+                cover: `${config['baseURL']}${(product.cover && product.cover['thumbnail']) || ''
                   }`,
-                  regularPrice: product.price && product.price['regular'],
-                  offerPrice: product.price && product.price['offer'],
-                  url: product.url,
-                  unit: product.unit,
-                  category: product.category,
-                  pricing: product.pricing,
-                  date: product.date,
-                  time: product.time,
-                  venue: product.venue,
-                  brand: product.brand,
-                  tags: product.tags,
-                  price: product.price,
-                  available:
-                    product.pricing && product.pricing.length > 0
-                      ? product.pricing[0]['stock'] &&
-                        product.pricing[0]['stock']['available']
-                      : 0,
-                  minimum:
-                    product.pricing && product.pricing.length > 0
-                      ? product.pricing[0]['stock'] &&
-                        product.pricing[0]['stock']['minimum']
-                      : 0,
-                };
-              })
+                regularPrice: product.price && product.price['regular'],
+                offerPrice: product.price && product.price['offer'],
+                url: product.url,
+                unit: product.unit,
+                category: product.category,
+                pricing: product.pricing,
+                date: product.date,
+                time: product.time,
+                venue: product.venue,
+                brand: product.brand,
+                tags: product.tags,
+                price: product.price,
+                available:
+                  product.pricing && product.pricing.length > 0
+                    ? product.pricing[0]['stock'] &&
+                    product.pricing[0]['stock']['available']
+                    : 0,
+                minimum:
+                  product.pricing && product.pricing.length > 0
+                    ? product.pricing[0]['stock'] &&
+                    product.pricing[0]['stock']['minimum']
+                    : 0,
+              };
+            })
             : [],
         date_created: order.added,
         paymentMethod: order['payment']['paymentMethod'],
@@ -4540,8 +4529,8 @@ class Converter {
               typeof item.status === 'string'
                 ? item.status
                 : item.status && Object.keys(item.status).length > 0
-                ? item.status['name']
-                : 'pending',
+                  ? item.status['name']
+                  : 'pending',
             total: item.totalPrice,
             products: item.products,
             date_created: item.added,
@@ -4603,8 +4592,8 @@ class Converter {
               typeof item.status === 'string'
                 ? item.status
                 : item.status && Object.keys(item.status).length > 0
-                ? item.status['name']
-                : 'pending',
+                  ? item.status['name']
+                  : 'pending',
             total: item.totalPrice,
             products: item.products,
             date_created: item.added,
@@ -4645,8 +4634,8 @@ class Converter {
               typeof item.status === 'string'
                 ? item.status
                 : item.status && Object.keys(item.status).length > 0
-                ? item.status['name']
-                : 'pending',
+                  ? item.status['name']
+                  : 'pending',
             name:
               item.shippingAddress &&
               item.shippingAddress['firstName'] &&
@@ -4936,9 +4925,8 @@ class Converter {
         status: 'ok',
         ...data[0],
         cover: data[0].cover
-          ? `${config['baseURL']}${
-              data[0].cover ? data[0].cover.thumbnail : ''
-            }`
+          ? `${config['baseURL']}${data[0].cover ? data[0].cover.thumbnail : ''
+          }`
           : '',
       };
     }
@@ -4961,9 +4949,8 @@ class Converter {
             ? data[0].price['offer']
             : data[0].price['regular'],
         cover: data[0].cover
-          ? `${config['baseURL']}${
-              data[0].cover ? data[0].cover.thumbnail : ''
-            }`
+          ? `${config['baseURL']}${data[0].cover ? data[0].cover.thumbnail : ''
+          }`
           : '',
       };
     }

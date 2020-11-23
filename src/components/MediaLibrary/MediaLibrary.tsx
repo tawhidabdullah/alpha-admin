@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React, { useState, useEffect } from 'react';
+import { useQueryCache } from 'react-query';
 
 // import libraries
 import {
@@ -13,11 +14,13 @@ import {
   Menu,
   Dropdown,
   Spin,
+  Pagination
 } from 'antd';
 import reqwest from 'reqwest';
 import { Formik } from 'formik';
 import moment from 'moment';
 // import * as Yup from 'yup';
+
 
 import {
   CheckOutlined,
@@ -37,7 +40,7 @@ import Input from '../../components/Field/Input';
 import Empty from '../../components/Empty';
 
 // import hooks
-import { useHandleFetch } from '../../hooks';
+import { useHandleFetch, usePaginate } from '../../hooks';
 
 // import configs
 import config from '../../config.json';
@@ -98,6 +101,21 @@ const MediaLibrary = ({
     imageListFromLibraryState,
     handleImageListFromLibraryFetch,
   ] = useHandleFetch({}, 'ImageListFromLibrary');
+
+  const imageListState = usePaginate('ImageListFromLibrary', {
+    urlOptions: {
+      params: {
+        limitNumber: 11,
+        sortItem: 'added',
+        sortOrderValue: '-1',
+      }
+    },
+  }, `image`);
+
+  const cache = useQueryCache();
+
+
+
   const [
     deleteImageFromLibraryFetchState,
     handleDeleteImageFromLibraryFetch,
@@ -119,9 +137,36 @@ const MediaLibrary = ({
       deleteImageLibraryItemRes &&
       deleteImageLibraryItemRes.status === 'ok'
     ) {
+
+      const queries = cache.getQueries();
+      const queriesKeyMap = queries.filter(query => {
+        const queryKey = query?.queryKey;
+        // @ts-ignore
+        return queryKey?.[0] === 'image' && typeof queryKey?.[1] === 'number'
+      }).map(query => query?.queryKey);
+
+      const idQueryKey = queriesKeyMap.find(key => {
+        let isKey = false;
+        // @ts-ignore
+        if (cache.getQueryData(key)?.data.find(item => item.id === id)) {
+          isKey = true;
+        }
+        return isKey;
+      })
+      if (idQueryKey?.[0]) {
+        // @ts-ignore
+        cache.setQueryData(idQueryKey, ((prev) => {
+          return {
+            // @ts-ignore
+            ...prev,
+            // @ts-ignore
+            data: prev.data?.filter(item => item.id !== id),
+          }
+        }))
+      }
       openSuccessNotification('Imaged Deleted');
-      const newImageList = localImageList.filter((item) => item.id !== id);
-      setLocalImageList(newImageList);
+      // const newImageList = localImageList.filter((item) => item.id !== id);
+      // setLocalImageList(newImageList);
     }
   };
 
@@ -146,7 +191,7 @@ const MediaLibrary = ({
   };
 
   useEffect(() => {
-    getImageList();
+    // getImageList();
   }, []);
 
   const handleUpload = async () => {
@@ -174,30 +219,66 @@ const MediaLibrary = ({
         console.log('successResOfMediaLib', res);
         setfileList([]);
         setuploading(false);
+
+
+
+
+        const queries = cache.getQueries();
+        const queriesKeyMap = queries.filter(query => {
+          const queryKey = query?.queryKey;
+          // @ts-ignore
+          return queryKey?.[0] === 'image' && typeof queryKey?.[1] === 'number'
+        }).map(query => query?.queryKey);
+
+        const firstQueryKey = queriesKeyMap?.[0];
+
+
+        if (firstQueryKey) {
+          // @ts-ignore
+          cache.setQueryData(firstQueryKey, ((prev) => {
+            let newImageItem = res?.inserted?.[0];
+            newImageItem = {
+              ...newImageItem,
+              id: newImageItem._id,
+              cover: `${config.baseURL}${newImageItem?.thumbnail}`
+            }
+            return {
+              // @ts-ignore
+              ...prev,
+              // @ts-ignore
+              data: [newImageItem, ...prev?.data],
+            }
+          }))
+        }
+
+
+
+
+
+
         getImageList();
         message.success('upload successfully.');
 
         if (res && res.inserted && res.inserted[0]) {
           setactiveImageItem({
-            cover: `${config['baseURL']}${
-              res.inserted[0].thumbnail && res.inserted[0].thumbnail
-            }`,
+            cover: `${config['baseURL']}${res.inserted[0].thumbnail && res.inserted[0].thumbnail
+              }`,
             ...res.inserted[0],
           });
         }
         setmediaLibTagActiveKey('2');
 
         /* 
-		added: "2020-09-22T07:53:43.710Z"
-		alt: ""
-		caption: ""
-		cover: "http://localhost:5000\images\library\thumbnail\24582-group-2497.jpg"
-		id: "5f69ad8786d83f2becfe2d10"
-		labels: []
-		name: "Group 2497.png"
-		title: ""
-		
-		*/
+    added: "2020-09-22T07:53:43.710Z"
+    alt: ""
+    caption: ""
+    cover: "http://localhost:5000\images\library\thumbnail\24582-group-2497.jpg"
+    id: "5f69ad8786d83f2becfe2d10"
+    labels: []
+    name: "Group 2497.png"
+    title: ""
+  	
+    */
       },
       error: () => {
         setuploading(false);
@@ -311,22 +392,56 @@ const MediaLibrary = ({
     ) {
       openSuccessNotification('Image Updated');
 
-      const positionInImageList = () => {
-        return localImageList.map((item) => item.id).indexOf(values.id);
-      };
+      const queries = cache.getQueries();
+      const queriesKeyMap = queries.filter(query => {
+        const queryKey = query?.queryKey;
+        // @ts-ignore
+        return queryKey?.[0] === 'image' && typeof queryKey?.[1] === 'number'
+      }).map(query => query?.queryKey);
 
-      const index = positionInImageList();
+      const idQueryKey = queriesKeyMap.find(key => {
+        let isKey = false;
+        // @ts-ignore
+        if (cache.getQueryData(key)?.data.find(item => item.id === id)) {
+          isKey = true;
+        }
+        return isKey;
+      })
+      if (idQueryKey?.[0]) {
+        // @ts-ignore
+        cache.setQueryData(idQueryKey, ((prev) => {
+          const localImageList = prev?.data;
+          const positionInImageList = () => {
+            return localImageList.map((item) => item.id).indexOf(values.id);
+          };
 
-      // @ts-ignore
-      const updatedItem = Object.assign({}, localImageList[index], {
-        ...updateImageLibraryItemRes,
-      });
-      const updateImageList = [
-        ...localImageList.slice(0, index),
-        updatedItem,
-        ...localImageList.slice(index + 1),
-      ];
-      setLocalImageList(updateImageList);
+          const index = positionInImageList();
+
+          // @ts-ignore
+          const updatedItem = Object.assign({}, localImageList[index], {
+            ...updateImageLibraryItemRes,
+          });
+          const updateImageList = [
+            ...localImageList.slice(0, index),
+            updatedItem,
+            ...localImageList.slice(index + 1),
+          ];
+
+
+          return {
+            // @ts-ignore
+            ...prev,
+            // @ts-ignore
+            data: updateImageList,
+          }
+        }))
+      }
+
+
+
+
+
+      // setLocalImageList(updateImageList);
     } else {
       openErrorNotification();
     }
@@ -373,8 +488,6 @@ const MediaLibrary = ({
     );
   };
 
-  console.log('imageListFromLibraryState', imageListFromLibraryState);
-  console.log('activeImageItem', activeImageItem);
 
   return (
     <>
@@ -444,43 +557,10 @@ const MediaLibrary = ({
                 </Button>
               </TabPane>
               <TabPane tab='Media Library' key='2'>
-                <>
-                  {myImages && myImages.lenght > 0 && (
-                    <>
-                      <h3 className='inputFieldLabel'>Selected Items</h3>
-                      <div className='mediaLibraryBodyContainer-selectedImages'>
-                        {imageListFromLibraryState.done &&
-                          myImages.length > 0 &&
-                          myImages.map((image) => {
-                            return (
-                              <div
-                                key={image.id}
-                                className='mediaLibraryBodyContainer-selectedImages-imageListContainer-item'
-                              >
-                                <div
-                                  onClick={() => {
-                                    handleAddToSelectedList(image, image.id);
-                                  }}
-                                  className='mediaLibraryBodyContainer-selectedImages-imageListContainer-item-menu'
-                                >
-                                  <CloseOutlined />
-                                </div>
-
-                                <div className='mediaLibraryBodyContainer-selectedImages-imgContainer'>
-                                  <img src={image.cover} alt='img' />
-                                </div>
-                              </div>
-                            );
-                          })}
-                      </div>
-                    </>
-                  )}
-                </>
-
                 <div className='mediaLibraryBodyContainer-left-imageListContainer'>
-                  {imageListFromLibraryState.done &&
-                    localImageList.length > 0 &&
-                    localImageList.map((image) => {
+                  {imageListState.isSuccess &&
+                    imageListState?.resolvedData?.data.length > 0 &&
+                    imageListState?.resolvedData?.data.map((image) => {
                       return (
                         <div
                           key={image.id}
@@ -491,8 +571,8 @@ const MediaLibrary = ({
                               <CheckOutlined />
                             </div>
                           ) : (
-                            ''
-                          )}
+                              ''
+                            )}
 
                           <Dropdown
                             overlay={() =>
@@ -521,8 +601,8 @@ const MediaLibrary = ({
                       );
                     })}
 
-                  {imageListFromLibraryState.done &&
-                    !(localImageList.length > 0) && (
+                  {imageListState?.isError ||
+                    !(imageListState?.resolvedData?.data?.length > 0) && (
                       <div
                         style={{
                           display: 'flex',
@@ -534,7 +614,7 @@ const MediaLibrary = ({
                       </div>
                     )}
 
-                  {imageListFromLibraryState.isLoading && (
+                  {imageListState.isLoading && (
                     <div
                       style={{
                         display: 'flex',
@@ -546,6 +626,18 @@ const MediaLibrary = ({
                       <Spin size='large' />
                     </div>
                   )}
+
+                </div>
+
+                <div style={{
+                  marginTop: '20px',
+                  display: 'block'
+                }}>
+                  <Pagination
+                    onChange={(pageNumber, _) => {
+                      imageListState?.setPage(pageNumber)
+                    }}
+                    defaultCurrent={1} total={imageListState?.resolvedData?.total} pageSize={11} />
                 </div>
               </TabPane>
             </Tabs>
@@ -576,121 +668,121 @@ const MediaLibrary = ({
                     setFieldTouched,
                     handleReset,
                   }) => (
-                    <>
-                      <h4>Attachment Details</h4>
-                      <div className='mediaLibraryBodyContainer-right-ImageDetails'>
-                        <div className='mediaLibraryBodyContainer-right-ImageDetails-imageContainer'>
-                          <img src={activeImageItem['cover']} alt='img' />
-                        </div>
-                        <div className='mediaLibraryBodyContainer-right-ImageDetails-infoContainer'>
-                          <h5 className='imageLibnameText'>
-                            {activeImageItem['name']}
-                          </h5>
-                          <h5>
-                            {activeImageItem['added'] &&
-                              moment(activeImageItem['added']).format(
-                                'MMMM Do YYYY, h:mm a'
-                              )}
-                          </h5>
-                          {/* <h5>
-										5000 X 500
-									</h5> */}
-
-                          <Popconfirm
-                            onConfirm={() =>
-                              handleDeleteImageFromImageLibrary(
-                                activeImageItem['id']
-                              )
-                            }
-                            title='Are you sure？'
-                            okText='Yes'
-                            cancelText='No'
-                          >
-                            <h5 className='imageLibdeleteText'>
-                              Delete parmanently
+                      <>
+                        <h4>Attachment Details</h4>
+                        <div className='mediaLibraryBodyContainer-right-ImageDetails'>
+                          <div className='mediaLibraryBodyContainer-right-ImageDetails-imageContainer'>
+                            <img src={activeImageItem['cover']} alt='img' />
+                          </div>
+                          <div className='mediaLibraryBodyContainer-right-ImageDetails-infoContainer'>
+                            <h5 className='imageLibnameText'>
+                              {activeImageItem['name']}
                             </h5>
-                          </Popconfirm>
+                            <h5>
+                              {activeImageItem['added'] &&
+                                moment(activeImageItem['added']).format(
+                                  'MMMM Do YYYY, h:mm a'
+                                )}
+                            </h5>
+                            {/* <h5>
+										        5000 X 500
+									          </h5> */}
+
+                            <Popconfirm
+                              onConfirm={() =>
+                                handleDeleteImageFromImageLibrary(
+                                  activeImageItem['id']
+                                )
+                              }
+                              title='Are you sure？'
+                              okText='Yes'
+                              cancelText='No'
+                            >
+                              <h5 className='imageLibdeleteText'>
+                                Delete parmanently
+                            </h5>
+                            </Popconfirm>
+                          </div>
                         </div>
-                      </div>
 
-                      <Input
-                        label='Alternate Text'
-                        value={values.alt}
-                        name='alt'
-                        isError={
-                          (touched.alt && errors.alt) ||
-                          (!isSubmitting &&
-                            updateMediaLibrary.error['error']['alt'])
-                        }
-                        errorString={
-                          (touched.alt && errors.alt) ||
-                          (!isSubmitting &&
-                            updateMediaLibrary.error['error']['alt'])
-                        }
-                        onChange={(e: any) => {
-                          handleChange(e);
-                          setFieldTouched('alt');
-                        }}
-                      />
-
-                      <Input
-                        label='Title'
-                        value={values.title}
-                        name='title'
-                        isError={
-                          (touched.title && errors.title) ||
-                          (!isSubmitting &&
-                            updateMediaLibrary.error['error']['title'])
-                        }
-                        errorString={
-                          (touched.title && errors.title) ||
-                          (!isSubmitting &&
-                            updateMediaLibrary.error['error']['title'])
-                        }
-                        onChange={(e: any) => {
-                          handleChange(e);
-                          setFieldTouched('title');
-                        }}
-                      />
-
-                      <Input
-                        label='Caption'
-                        value={values.caption}
-                        name='caption'
-                        isError={
-                          (touched.caption && errors.caption) ||
-                          (!isSubmitting &&
-                            updateMediaLibrary.error['error']['caption'])
-                        }
-                        errorString={
-                          (touched.caption && errors.caption) ||
-                          (!isSubmitting &&
-                            updateMediaLibrary.error['error']['caption'])
-                        }
-                        onChange={(e: any) => {
-                          handleChange(e);
-                          setFieldTouched('caption');
-                        }}
-                      />
-
-                      <Button
-                        type='default'
-                        onClick={(e: any) => handleSubmit(e)}
-                        disabled={getisUpdateSubmitButtonDisabled(
-                          values,
-                          isValid
-                        )}
-                        loading={isSubmitting}
-                        style={
-                          {
-                            // marginTop: '20px'
+                        <Input
+                          label='Alternate Text'
+                          value={values.alt}
+                          name='alt'
+                          isError={
+                            (touched.alt && errors.alt) ||
+                            (!isSubmitting &&
+                              updateMediaLibrary.error['error']['alt'])
                           }
-                        }
-                      >
-                        Update
+                          errorString={
+                            (touched.alt && errors.alt) ||
+                            (!isSubmitting &&
+                              updateMediaLibrary.error['error']['alt'])
+                          }
+                          onChange={(e: any) => {
+                            handleChange(e);
+                            setFieldTouched('alt');
+                          }}
+                        />
+
+                        <Input
+                          label='Title'
+                          value={values.title}
+                          name='title'
+                          isError={
+                            (touched.title && errors.title) ||
+                            (!isSubmitting &&
+                              updateMediaLibrary.error['error']['title'])
+                          }
+                          errorString={
+                            (touched.title && errors.title) ||
+                            (!isSubmitting &&
+                              updateMediaLibrary.error['error']['title'])
+                          }
+                          onChange={(e: any) => {
+                            handleChange(e);
+                            setFieldTouched('title');
+                          }}
+                        />
+
+                        <Input
+                          label='Caption'
+                          value={values.caption}
+                          name='caption'
+                          isError={
+                            (touched.caption && errors.caption) ||
+                            (!isSubmitting &&
+                              updateMediaLibrary.error['error']['caption'])
+                          }
+                          errorString={
+                            (touched.caption && errors.caption) ||
+                            (!isSubmitting &&
+                              updateMediaLibrary.error['error']['caption'])
+                          }
+                          onChange={(e: any) => {
+                            handleChange(e);
+                            setFieldTouched('caption');
+                          }}
+                        />
+
+                        <Button
+                          type='default'
+                          onClick={(e: any) => handleSubmit(e)}
+                          disabled={getisUpdateSubmitButtonDisabled(
+                            values,
+                            isValid
+                          )}
+                          loading={isSubmitting}
+                          style={
+                            {
+                              // marginTop: '20px'
+                            }
+                          }
+                        >
+                          Update
                       </Button>
-                    </>
-                  )}
+                      </>
+                    )}
                 </Formik>
               </>
             )}

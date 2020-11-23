@@ -1,6 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider as ReduxProvider } from 'react-redux';
+import {
+	QueryCache,
+	ReactQueryCacheProvider,
+} from 'react-query';
 import App from './App';
 
 // import redux store
@@ -13,15 +17,23 @@ import './styles/_main.scss';
 // importing react hot loader for hot loading
 import { AppContainer } from 'react-hot-loader';
 
+const queryCache = new QueryCache()
+
+
 
 // Wrap the rendering in a function:
 const render = () => {
 	ReactDOM.render(
+
 		<ReduxProvider store={store}>
 			<AppContainer>
-				<App />
+				<ReactQueryCacheProvider queryCache={queryCache}>
+					<App />
+				</ReactQueryCacheProvider>
+
 			</AppContainer>
-		</ReduxProvider>,
+		</ReduxProvider>
+		,
 		document.getElementById('root')
 	);
 };
