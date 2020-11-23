@@ -220,9 +220,6 @@ const MediaLibrary = ({
         setfileList([]);
         setuploading(false);
 
-
-
-
         const queries = cache.getQueries();
         const queriesKeyMap = queries.filter(query => {
           const queryKey = query?.queryKey;

@@ -482,7 +482,8 @@ const ProductList = ({ roles }: Props) => {
             />
           )}
           {productListState.status === 'loading' && <DataTableSkeleton />}
-          {productListState.isError || !(productListState.resolvedData?.data?.length) && (
+
+          {productListState.isError || (productListState.isSuccess && !(productListState.resolvedData?.data?.length > 0)) && (
             <div
               style={{
                 marginTop: "50px",
@@ -491,6 +492,7 @@ const ProductList = ({ roles }: Props) => {
               <Empty title="No Product found" />
             </div>
           )}
+
         </div>
       </div>
 
