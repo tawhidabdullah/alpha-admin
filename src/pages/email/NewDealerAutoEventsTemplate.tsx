@@ -176,8 +176,8 @@ const AddNewBrand = ({ visible, setVisible }: Props) => {
       console.log('newDealertemplate', res);
       // @ts-ignore
       if (res) {
-        setadmin(res['admin']);
-        setcustomer(res['user']);
+        setadmin(res?.['admin'] || '');
+        setcustomer(res?.['user'] || '');
       }
       // set auto email template to customer and admin
     };

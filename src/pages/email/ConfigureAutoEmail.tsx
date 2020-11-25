@@ -65,9 +65,9 @@ const openErrorNotification = (message?: any) => {
   });
 };
 
-interface Props {}
+interface Props { }
 
-const ConfigureAutoEmail = ({}: Props) => {
+const ConfigureAutoEmail = ({ }: Props) => {
   const [
     getAutoEmailConfigurationState,
     handleGetAutoEmailConfigurationFetch,
@@ -103,14 +103,14 @@ const ConfigureAutoEmail = ({}: Props) => {
       //@ts-ignore
       if (res) {
         setAutoEmailData(autoEmailData);
-        setnewCustomerAdmin(res['newCustomer']['admin']);
-        setnewCustomerCustomer(res['newCustomer']['user']);
-        setnewDealerAdmin(res['newDealer']['admin']);
-        setnewDealerDealer(res['newDealer']['user']);
-        setIsorderStatusCustomer(res['orderStatus']['user']);
-        setorderStatusAdmin(res['orderStatus']['admin']);
-        setorderAdmin(res['order']['admin']);
-        setorderCustomer(res['order']['user']);
+        setnewCustomerAdmin(res?.['newCustomer']?.['admin'] || '');
+        setnewCustomerCustomer(res?.['newCustomer']?.['user'] || '');
+        setnewDealerAdmin(res?.['newDealer']?.['admin'] || '');
+        setnewDealerDealer(res?.['newDealer']?.['user'] || '');
+        setIsorderStatusCustomer(res?.['orderStatus']?.['user'] || '');
+        setorderStatusAdmin(res?.['orderStatus']?.['admin'] || '');
+        setorderAdmin(res?.['order']?.['admin'] || '');
+        setorderCustomer(res?.['order']?.['user'] || '');
       }
     };
     getAutoEmailConfiguration();

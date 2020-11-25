@@ -97,65 +97,51 @@ const UploadCSV = ({
     };
 
 
-
-    return (
-        <Modal
+    return (<Modal style={{ top: '40px', }} bodyStyle={{ margin: 0, padding: '20px', }} width={'40vw'} title='Upload CSV' visible={isUploadCSVModalOpen} onOk={(e: any) => null} onCancel={() => setIsUploadCSVModalOpen(false)}
+        okText='Create'
+        footer={false}
+        okButtonProps={{
+            loading: false,
+            htmlType: 'submit',
+        }}
+    >
+        <Dragger
+            className='upload-list-inline'
+            listType='picture'
             style={{
-                top: '40px',
+                background: '#fff',
+                borderRadius: '8px',
             }}
-            bodyStyle={{
-                margin: 0,
-                padding: '20px',
-            }}
-            width={'40vw'}
-            title='Upload CSV'
-            visible={isUploadCSVModalOpen}
-            onOk={(e: any) => null}
-            onCancel={() => setIsUploadCSVModalOpen(false)}
-            okText='Create'
-            footer={false}
-            okButtonProps={{
-                loading: false,
-                htmlType: 'submit',
+            {...uploadProps}
+        >
+            <p className='ant-upload-drag-icon'>
+                <FileImageOutlined />
+            </p>
+            <p className='ant-upload-text'>
+                Click or drag .CSV file to this area to upload
+                </p>
+            <p className='ant-upload-hint'>
+                Support for a single upload.
+               </p>
+        </Dragger>
+
+
+        <Button
+            className='btnPrimaryClassNameoutline'
+            type='primary'
+            onClick={handleUpload}
+            disabled={fileList.length === 0}
+            loading={uploading}
+            icon={<ArrowUpOutlined />}
+            style={{
+                marginTop: '20px',
+                marginBottom: '10px',
             }}
         >
-            <Dragger
-                className='upload-list-inline'
-                listType='picture'
-                style={{
-                    background: '#fff',
-                    borderRadius: '8px',
-                }}
-                {...uploadProps}
-            >
-                <p className='ant-upload-drag-icon'>
-                    <FileImageOutlined />
-                </p>
-                <p className='ant-upload-text'>
-                    Click or drag .CSV file to this area to upload
-                </p>
-                <p className='ant-upload-hint'>
-                    Support for a single upload.
-               </p>
-            </Dragger>
-
-
-            <Button
-                className='btnPrimaryClassNameoutline'
-                type='primary'
-                onClick={handleUpload}
-                disabled={fileList.length === 0}
-                loading={uploading}
-                icon={<ArrowUpOutlined />}
-                style={{
-                    marginTop: '20px',
-                    marginBottom: '10px',
-                }}
-            >
-                Upload
+            Upload
             </Button>
 
-        </Modal>
+    </Modal>
     );
 };
 
