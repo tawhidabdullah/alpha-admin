@@ -125,6 +125,66 @@ const MyTable = ({ data, setTagList }) => {
         size='small'
         // pagination={false}
         dataSource={data}
+        summary={pageData => {
+          let amount = 0;
+          pageData?.length > 0 && pageData.forEach(item => {
+            amount += item.amount
+          })
+
+          if (amount) {
+            return (
+              <>
+                <Table.Summary.Row>
+                  <Table.Summary.Cell index={0}>
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={1}>
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={2} colSpan={2}>
+                  </Table.Summary.Cell>
+                </Table.Summary.Row>
+
+                <Table.Summary.Row>
+                  <Table.Summary.Cell index={0}>
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={1}>
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={2} colSpan={2}>
+                  </Table.Summary.Cell>
+                </Table.Summary.Row>
+
+                <Table.Summary.Row style={{
+                  backgroundColor: '#eee !important'
+                }}>
+                  <Table.Summary.Cell
+                    index={0}>
+                    <span style={{
+                      fontSize: '16px',
+                      fontWeight: 600,
+                      textTransform: 'uppercase'
+
+                    }}>
+                      Total
+                    </span>
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={1}>
+                    <span style={{
+                      fontSize: '16px',
+                      fontWeight: 600,
+                      textTransform: 'uppercase'
+
+                    }}>
+                      {amount}
+                    </span>
+
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={2} colSpan={2}>
+                  </Table.Summary.Cell>
+                </Table.Summary.Row>
+              </>
+            )
+          }
+          else return <> </>
+        }}
       >
         <Column
           title='Topic'
@@ -219,9 +279,9 @@ const MyTable = ({ data, setTagList }) => {
   );
 };
 
-interface Props {}
+interface Props { }
 
-const TagList = ({}: Props) => {
+const TagList = ({ }: Props) => {
   const [tagList, setTagList] = useState([]);
 
   const [tagState, handleTagListFetch] = useHandleFetch({}, 'expenseList');
@@ -294,28 +354,28 @@ const TagList = ({}: Props) => {
   };
 
 
-  
+
   const headers = [
     { label: "Topic", key: "topic" },
     { label: "Amount", key: "amount" },
     { label: "Date", key: "date" },
   ];
-   
+
 
   const getData = () => {
-    if(tagList && tagList.length > 0){
+    if (tagList && tagList.length > 0) {
       const csvData = tagList.map(item => {
         return {
           topic: item.topic,
           amount: item.amount,
-          date : item.date ? moment(item.date).format('MMMM Do YYYY, h:mm a') : ''
+          date: item.date ? moment(item.date).format('MMMM Do YYYY, h:mm a') : ''
         }
       })
 
-      return csvData; 
+      return csvData;
     }
-    else return []; 
-  }; 
+    else return [];
+  };
 
 
   const data = getData();
@@ -338,45 +398,45 @@ const TagList = ({}: Props) => {
             />
           </div>
 
-          
-        <div style={{
-          display:'flex',
-          alignItems:'center'
-        }}>
-        
-        {tagList && tagList.length > 0 && (
-          <>
+
           <div style={{
-          display:'flex',
-          alignItems:'center',
-          marginRight: '25px'
-        }}>
-        <CSVLink
-         filename={"Expenses.csv"}
-         data={data} headers={headers}>
-          Export as csv 
+            display: 'flex',
+            alignItems: 'center'
+          }}>
+
+            {tagList && tagList.length > 0 && (
+              <>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  marginRight: '25px'
+                }}>
+                  <CSVLink
+                    filename={"Expenses.csv"}
+                    data={data} headers={headers}>
+                    Export as csv
         </CSVLink>
-        <span style={{
-          color:'#1890ff',
-          marginLeft: '10px'
-        }}>
-        <DownloadOutlined />
-        </span>
-        </div>
-          </>
-        )}
-          <Button
-            // type="primary"
-            className='btnPrimaryClassNameoutline'
-            icon={<PlusOutlined />}
-            onClick={() => setAddNewCategoryVisible(true)}
-          >
-            Add New
+                  <span style={{
+                    color: '#1890ff',
+                    marginLeft: '10px'
+                  }}>
+                    <DownloadOutlined />
+                  </span>
+                </div>
+              </>
+            )}
+            <Button
+              // type="primary"
+              className='btnPrimaryClassNameoutline'
+              icon={<PlusOutlined />}
+              onClick={() => setAddNewCategoryVisible(true)}
+            >
+              Add New
           </Button>
-        </div>
+          </div>
 
 
-        
+
         </div>
         <div className='categoryListContainer__categoryList'>
           {tagState.done && tagList.length > 0 && (

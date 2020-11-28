@@ -4,6 +4,7 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 
 import { useHandleFetch } from '../../hooks';
+import DiscountType from './DiscountType';
 
 // import third party ui lib
 import { notification, Modal, Tooltip, DatePicker } from 'antd';
@@ -101,6 +102,8 @@ const AddNewBrand = ({
   const [freeProductList, setFreeProductList] = useState([]);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [disCountAmountType, setDisCountAmountType] = useState('');
+
 
   useEffect(() => {
     const getProductDetail = async () => {
@@ -147,19 +150,19 @@ const AddNewBrand = ({
     // @ts-ignore
     const imagesIds = myImages
       ? myImages.map((image) => {
-          return image.id;
-        })
+        return image.id;
+      })
       : [];
 
     const orderedProducts =
       productList.length > 0
         ? productList.map((product) => {
-            return {
-              _id: product._id,
-              variation: product.variation,
-              quantity: product.quantity,
-            };
-          })
+          return {
+            _id: product._id,
+            variation: product.variation,
+            quantity: product.quantity,
+          };
+        })
         : [];
 
     // const freeProducts = freeProductList.length > 0 ? freeProductList.map(product => {
@@ -181,7 +184,8 @@ const AddNewBrand = ({
         code: values.code,
         minimumOrder: values.minimumOrder,
         amount: values.amount,
-        amountType: values.amountType,
+        amountType: disCountAmountType,
+
         // freeDelivery: false,
         orderedProducts: orderedProducts,
         // freeProducts: freeProducts,
@@ -365,6 +369,13 @@ const AddNewBrand = ({
     // console.log('freeProductIds', freeProductIds)
   }, [freeProductIds]);
 
+  useEffect(() => {
+    if (category && Object.keys(category).length > 0) {
+      setDisCountAmountType(category.amountType || '')
+    }
+  }, [category]);
+
+
   const handleImagesDelete = (id) => {
     // @ts-ignore
     const newImages =
@@ -427,104 +438,110 @@ const AddNewBrand = ({
         setFieldTouched,
         handleReset,
       }) => (
-        <>
-          <Modal
-            width={'45vw'}
-            style={{
-              top: '40px',
-            }}
-            title='Edit Coupon'
-            visible={addNewCategoryVisible}
-            onOk={(e: any) => handleSubmit(e)}
-            onCancel={handleCancel}
-            okText='Update'
-            okButtonProps={{
-              loading: isSubmitting,
-              htmlType: 'submit',
-              disabled: getisSubmitButtonDisabled(values, isValid),
-            }}
-          >
-            <div className='dubbleRowInputs'>
-              <div className='dubbleRowInputs__item'>
-                <Input
-                  label='Name'
-                  value={values.name}
-                  name='name'
-                  isError={
-                    (touched.name && errors.name) ||
-                    (!isSubmitting && addCouponState.error['error']['name'])
-                  }
-                  errorString={
-                    (touched.name && errors.name) ||
-                    (!isSubmitting && addCouponState.error['error']['name'])
-                  }
-                  onChange={(e: any) => {
-                    handleChange(e);
-                    setFieldTouched('name');
-                  }}
-                />
-              </div>
-              <div className='dubbleRowInputs__item'>
-                <Input
-                  label='Code'
-                  value={values.code}
-                  name='code'
-                  isError={
-                    (touched.code && errors.code) ||
-                    (!isSubmitting && addCouponState.error['error']['code'])
-                  }
-                  errorString={
-                    (touched.code && errors.code) ||
-                    (!isSubmitting && addCouponState.error['error']['code'])
-                  }
-                  onChange={(e: any) => {
-                    handleChange(e);
-                    setFieldTouched('code');
-                  }}
-                />
-              </div>
-            </div>
-
-            <Input
-              label='Minimum Order'
-              value={values.minimumOrder}
-              name='minimumOrder'
-              isError={
-                (touched.minimumOrder && errors.minimumOrder) ||
-                (!isSubmitting && addCouponState.error['error']['minimumOrder'])
-              }
-              errorString={
-                (touched.minimumOrder && errors.minimumOrder) ||
-                (!isSubmitting && addCouponState.error['error']['minimumOrder'])
-              }
-              onChange={(e: any) => {
-                handleChange(e);
-                setFieldTouched('minimumOrder');
+          <>
+            <Modal
+              width={'45vw'}
+              style={{
+                top: '40px',
               }}
-            />
-
-            <div className='dubbleRowInputs'>
-              <div className='dubbleRowInputs__item'>
-                <Input
-                  label='Discount Amount'
-                  value={values.amount}
-                  name='amount'
-                  isError={
-                    (touched.amount && errors.amount) ||
-                    (!isSubmitting && addCouponState.error['error']['amount'])
-                  }
-                  errorString={
-                    (touched.amount && errors.amount) ||
-                    (!isSubmitting && addCouponState.error['error']['amount'])
-                  }
-                  onChange={(e: any) => {
-                    handleChange(e);
-                    setFieldTouched('amount');
-                  }}
-                />
+              title='Edit Coupon'
+              visible={addNewCategoryVisible}
+              onOk={(e: any) => handleSubmit(e)}
+              onCancel={handleCancel}
+              okText='Update'
+              okButtonProps={{
+                loading: isSubmitting,
+                htmlType: 'submit',
+                disabled: getisSubmitButtonDisabled(values, isValid),
+              }}
+            >
+              <div className='dubbleRowInputs'>
+                <div className='dubbleRowInputs__item'>
+                  <Input
+                    label='Name'
+                    value={values.name}
+                    name='name'
+                    isError={
+                      (touched.name && errors.name) ||
+                      (!isSubmitting && addCouponState.error['error']['name'])
+                    }
+                    errorString={
+                      (touched.name && errors.name) ||
+                      (!isSubmitting && addCouponState.error['error']['name'])
+                    }
+                    onChange={(e: any) => {
+                      handleChange(e);
+                      setFieldTouched('name');
+                    }}
+                  />
+                </div>
+                <div className='dubbleRowInputs__item'>
+                  <Input
+                    label='Code'
+                    value={values.code}
+                    name='code'
+                    isError={
+                      (touched.code && errors.code) ||
+                      (!isSubmitting && addCouponState.error['error']['code'])
+                    }
+                    errorString={
+                      (touched.code && errors.code) ||
+                      (!isSubmitting && addCouponState.error['error']['code'])
+                    }
+                    onChange={(e: any) => {
+                      handleChange(e);
+                      setFieldTouched('code');
+                    }}
+                  />
+                </div>
               </div>
-              <div className='dubbleRowInputs__item'>
-                <Input
+
+              <Input
+                label='Minimum Order'
+                value={values.minimumOrder}
+                name='minimumOrder'
+                isError={
+                  (touched.minimumOrder && errors.minimumOrder) ||
+                  (!isSubmitting && addCouponState.error['error']['minimumOrder'])
+                }
+                errorString={
+                  (touched.minimumOrder && errors.minimumOrder) ||
+                  (!isSubmitting && addCouponState.error['error']['minimumOrder'])
+                }
+                onChange={(e: any) => {
+                  handleChange(e);
+                  setFieldTouched('minimumOrder');
+                }}
+              />
+
+              <div className='dubbleRowInputs'>
+                <div className='dubbleRowInputs__item'>
+                  <Input
+                    label='Discount Amount'
+                    value={values.amount}
+                    name='amount'
+                    isError={
+                      (touched.amount && errors.amount) ||
+                      (!isSubmitting && addCouponState.error['error']['amount'])
+                    }
+                    errorString={
+                      (touched.amount && errors.amount) ||
+                      (!isSubmitting && addCouponState.error['error']['amount'])
+                    }
+                    onChange={(e: any) => {
+                      handleChange(e);
+                      setFieldTouched('amount');
+                    }}
+                  />
+                </div>
+                <div className='dubbleRowInputs__item'>
+                  <DiscountType
+                    setDisCountAmountType={setDisCountAmountType}
+                    disCountAmountType={disCountAmountType}
+                  />
+
+
+                  {/* <Input
                   label='Discount Amount Type'
                   value={values.amountType}
                   name='amountType'
@@ -542,70 +559,70 @@ const AddNewBrand = ({
                     handleChange(e);
                     setFieldTouched('amountType');
                   }}
-                />
+                /> */}
+                </div>
               </div>
-            </div>
 
-            {true && (
+              {true && (
+                <div
+                  style={{
+                    marginBottom: '15px',
+                  }}
+                >
+                  <h3 className='inputFieldLabel'>Start and end date</h3>
+                  <RangePicker
+                    style={{
+                      borderRadius: '8px',
+                      borderColor: '#eee',
+                      width: '100%',
+                    }}
+                    value={[
+                      moment(startDate, dateFormat).isValid()
+                        ? moment(startDate, dateFormat)
+                        : undefined,
+                      moment(endDate, dateFormat).isValid()
+                        ? moment(endDate, dateFormat)
+                        : undefined,
+                    ]}
+                    showTime={true}
+                    onChange={handleStartEndDateRangeDate}
+                    picker={'date'}
+                  />
+                </div>
+              )}
+
               <div
+                className='addproductSection-left-header'
                 style={{
-                  marginBottom: '15px',
+                  marginBottom: '-5px',
                 }}
               >
-                <h3 className='inputFieldLabel'>Start and end date</h3>
-                <RangePicker
-                  style={{
-                    borderRadius: '8px',
-                    borderColor: '#eee',
-                    width: '100%',
-                  }}
-                  value={[
-                    moment(startDate, dateFormat).isValid()
-                      ? moment(startDate, dateFormat)
-                      : undefined,
-                    moment(endDate, dateFormat).isValid()
-                      ? moment(endDate, dateFormat)
-                      : undefined,
-                  ]}
-                  showTime={true}
-                  onChange={handleStartEndDateRangeDate}
-                  picker={'date'}
-                />
+                <h3 className='inputFieldLabel'>Cover</h3>
               </div>
-            )}
 
-            <div
-              className='addproductSection-left-header'
-              style={{
-                marginBottom: '-5px',
-              }}
-            >
-              <h3 className='inputFieldLabel'>Cover</h3>
-            </div>
+              <div className='aboutToUploadImagesContainer'>
+                {myImages &&
+                  // @ts-ignore
+                  myImages.length > 0 &&
+                  myImages.map((image, index) => {
+                    return (
+                      <div className='aboutToUploadImagesContainer__item'>
+                        <div
+                          className='aboutToUploadImagesContainer__item-imgContainer'
+                          onClick={() => {
+                            setvisibleMedia(true);
+                          }}
+                        >
+                          <img src={image.cover} alt={image.alt} />
+                        </div>
 
-            <div className='aboutToUploadImagesContainer'>
-              {myImages &&
-                // @ts-ignore
-                myImages.length > 0 &&
-                myImages.map((image, index) => {
-                  return (
-                    <div className='aboutToUploadImagesContainer__item'>
-                      <div
-                        className='aboutToUploadImagesContainer__item-imgContainer'
-                        onClick={() => {
-                          setvisibleMedia(true);
-                        }}
-                      >
-                        <img src={image.cover} alt={image.alt} />
-                      </div>
-
-                      <span
-                        onClick={() => handleImagesDelete(image.id)}
-                        className='aboutToUploadImagesContainer__item-remove'
-                      >
-                        <CloseOutlined />
-                      </span>
-                      {/* 
+                        <span
+                          onClick={() => handleImagesDelete(image.id)}
+                          className='aboutToUploadImagesContainer__item-remove'
+                        >
+                          <CloseOutlined />
+                        </span>
+                        {/* 
                       {coverImageId === image.id ? (
                         <span className='aboutToUploadImagesContainer__item-cover'>
                           <CheckOutlined />
@@ -618,54 +635,54 @@ const AddNewBrand = ({
                           </span>
                         )
                       )} */}
-                    </div>
-                  );
-                })}
+                      </div>
+                    );
+                  })}
 
-              {!myImages ||
-              // @ts-ignore
-              (myImages && !(myImages && myImages.length > 0)) ? (
-                <>
-                  <Tooltip title={'Attach images'}>
-                    <div
-                      onClick={() => {
-                        setvisibleMedia(true);
-                      }}
-                      className='aboutToUploadImagesContainer__uploadItem'
-                    >
-                      <FileImageFilled />
-                      <span className='aboutToUploadImagesContainer__uploadItem-plus'>
-                        <PlusOutlined />
-                      </span>
-                    </div>
-                  </Tooltip>
-                </>
-              ) : (
-                ''
-              )}
-            </div>
+                {!myImages ||
+                  // @ts-ignore
+                  (myImages && !(myImages && myImages.length > 0)) ? (
+                    <>
+                      <Tooltip title={'Attach images'}>
+                        <div
+                          onClick={() => {
+                            setvisibleMedia(true);
+                          }}
+                          className='aboutToUploadImagesContainer__uploadItem'
+                        >
+                          <FileImageFilled />
+                          <span className='aboutToUploadImagesContainer__uploadItem-plus'>
+                            <PlusOutlined />
+                          </span>
+                        </div>
+                      </Tooltip>
+                    </>
+                  ) : (
+                    ''
+                  )}
+              </div>
 
-            <h3 className='inputFieldLabel'>Ordered Products</h3>
+              <h3 className='inputFieldLabel'>Ordered Products</h3>
 
-            <OrderedProductsSelectProducts
-              setProductIds={setProductIds}
-              productIds={productIds}
-            />
+              <OrderedProductsSelectProducts
+                setProductIds={setProductIds}
+                productIds={productIds}
+              />
 
-            <div
-              style={{
-                marginTop: '15px',
-              }}
-            ></div>
+              <div
+                style={{
+                  marginTop: '15px',
+                }}
+              ></div>
 
-            <h3 className='inputFieldLabel'>Selected Ordered Products</h3>
+              <h3 className='inputFieldLabel'>Selected Ordered Products</h3>
 
-            <OrderedProductsSelectedProductItems
-              productList={productList}
-              setProductList={setProductList}
-            />
+              <OrderedProductsSelectedProductItems
+                productList={productList}
+                setProductList={setProductList}
+              />
 
-            {/* <h3 className='inputFieldLabel'>
+              {/* <h3 className='inputFieldLabel'>
                                 Free Products
                                 </h3>
 
@@ -686,17 +703,17 @@ const AddNewBrand = ({
                                 productList={freeProductList}
                                 setProductList={setFreeProductList}
                             /> */}
-          </Modal>
+            </Modal>
 
-          <MediaLibrary
-            setvisible={setvisibleMedia}
-            visible={visibleMedia}
-            setmyImages={setmyImages}
-            myImages={myImages}
-            isModalOpenForImages={false}
-          />
-        </>
-      )}
+            <MediaLibrary
+              setvisible={setvisibleMedia}
+              visible={visibleMedia}
+              setmyImages={setmyImages}
+              myImages={myImages}
+              isModalOpenForImages={false}
+            />
+          </>
+        )}
     </Formik>
   );
 };

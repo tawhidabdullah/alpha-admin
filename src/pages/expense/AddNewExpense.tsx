@@ -118,6 +118,7 @@ const AddNewBrand = ({
         ...tagList,
       ]);
       actions.resetForm();
+      setTimeFeild('');
       setAddNewCategoryVisible(false);
     } else {
       openErrorNotification();
@@ -206,68 +207,68 @@ const AddNewBrand = ({
         setFieldTouched,
         handleReset,
       }) => (
-        <>
-          <Modal
-            style={{
-              top: '40px',
-            }}
-            title='Add New Expense'
-            visible={addNewCategoryVisible}
-            onOk={(e: any) => handleSubmit(e)}
-            onCancel={handleCancel}
-            okText='Create'
-            okButtonProps={{
-              loading: isSubmitting,
-              htmlType: 'submit',
-              //   disabled: getisSubmitButtonDisabled(values, isValid),
-            }}
-          >
-            <Input
-              label='Topic'
-              value={values.topic}
-              name='topic'
-              isError={
-                (touched.topic && errors.topic) ||
-                (!isSubmitting && addTagState.error['error']['topic'])
-              }
-              errorString={
-                (touched.topic && errors.topic) ||
-                (!isSubmitting && addTagState.error['error']['topic'])
-              }
-              onChange={(e: any) => {
-                handleChange(e);
-                setFieldTouched('topic');
+          <>
+            <Modal
+              style={{
+                top: '40px',
               }}
-            />
-
-            <Input
-              label='Amount'
-              value={values.amount}
-              name='amount'
-              type={'number'}
-              min={0}
-              isError={
-                (touched.amount && errors.amount) ||
-                (!isSubmitting && addTagState.error['error']['amount'])
-              }
-              errorString={
-                (touched.amount && errors.amount) ||
-                (!isSubmitting && addTagState.error['error']['amount'])
-              }
-              onChange={(e: any) => {
-                handleChange(e);
-                setFieldTouched('amount');
+              title='Add New Expense'
+              visible={addNewCategoryVisible}
+              onOk={(e: any) => handleSubmit(e)}
+              onCancel={handleCancel}
+              okText='Create'
+              okButtonProps={{
+                loading: isSubmitting,
+                htmlType: 'submit',
+                //   disabled: getisSubmitButtonDisabled(values, isValid),
               }}
-            />
+            >
+              <Input
+                label='Topic'
+                value={values.topic}
+                name='topic'
+                isError={
+                  (touched.topic && errors.topic) ||
+                  (!isSubmitting && addTagState.error['error']['topic'])
+                }
+                errorString={
+                  (touched.topic && errors.topic) ||
+                  (!isSubmitting && addTagState.error['error']['topic'])
+                }
+                onChange={(e: any) => {
+                  handleChange(e);
+                  setFieldTouched('topic');
+                }}
+              />
 
-            <DatePicker
-              date={time}
-              placeholder='10/20/2020'
-              label='Date'
-              onChange={handleTimeChange}
-            />
+              <Input
+                label='Amount'
+                value={values.amount}
+                name='amount'
+                type={'number'}
+                min={0}
+                isError={
+                  (touched.amount && errors.amount) ||
+                  (!isSubmitting && addTagState.error['error']['amount'])
+                }
+                errorString={
+                  (touched.amount && errors.amount) ||
+                  (!isSubmitting && addTagState.error['error']['amount'])
+                }
+                onChange={(e: any) => {
+                  handleChange(e);
+                  setFieldTouched('amount');
+                }}
+              />
 
-            {/* <div
+              <DatePicker
+                date={time}
+                placeholder='10/20/2020'
+                label='Date'
+                onChange={handleTimeChange}
+              />
+
+              {/* <div
               style={{
                 marginTop: '15px',
               }}
@@ -279,17 +280,17 @@ const AddNewBrand = ({
               setSelectedCustomerData={setSelectedCustomerData}
               setCustomerId={setCustomerId}
             /> */}
-          </Modal>
+            </Modal>
 
-          <MediaLibrary
-            setvisible={setvisibleMedia}
-            visible={visibleMedia}
-            setmyImages={setmyImages}
-            myImages={myImages}
-            isModalOpenForImages={true}
-          />
-        </>
-      )}
+            <MediaLibrary
+              setvisible={setvisibleMedia}
+              visible={visibleMedia}
+              setmyImages={setmyImages}
+              myImages={myImages}
+              isModalOpenForImages={true}
+            />
+          </>
+        )}
     </Formik>
   );
 };

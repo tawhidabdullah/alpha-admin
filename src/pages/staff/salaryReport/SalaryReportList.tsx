@@ -140,6 +140,164 @@ const MyTable = ({ data, setTagList }) => {
         size='small'
         // pagination={false}
         dataSource={data}
+
+        summary={pageData => {
+          console.log({ pageData })
+          let totalSalary = 0;
+          let totalBonus = 0;
+          let totalExtra = 0;
+          let totalConvince = 0;
+          let totalBaseSalary = 0;
+          let totalNegative = 0;
+
+
+
+
+
+          pageData?.length > 0 && pageData.forEach(item => {
+            totalSalary += item.totalSalary
+            totalBonus += item.totalBonus
+            totalExtra += item.totalExtra
+            totalConvince += item.totalConvince
+            totalBaseSalary += item.totalBaseSalary
+            totalNegative += item.totalNegative
+
+          })
+
+          if (totalSalary || totalBonus || totalExtra || totalConvince || totalBaseSalary || totalNegative) {
+            return (
+              <>
+                <Table.Summary.Row>
+                  <Table.Summary.Cell index={0}>
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={1}>
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={2}>
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={3}>
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={4}>
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={5}>
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={6}>
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={7}>
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={8}>
+                  </Table.Summary.Cell>
+                </Table.Summary.Row>
+
+                <Table.Summary.Row>
+                  <Table.Summary.Cell index={0}>
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={1}>
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={2}>
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={3}>
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={4}>
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={5}>
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={6}>
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={7}>
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={8}>
+                  </Table.Summary.Cell>
+                </Table.Summary.Row>
+
+                <Table.Summary.Row style={{
+                  backgroundColor: '#eee !important'
+                }}>
+                  <Table.Summary.Cell
+                    index={0}>
+                    <span style={{
+                      fontSize: '16px',
+                      fontWeight: 600,
+                      textTransform: 'uppercase'
+
+                    }}>
+                      Total
+                    </span>
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={1}>
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={2}>
+                    <span style={{
+                      fontSize: '16px',
+                      fontWeight: 600,
+                      textTransform: 'uppercase'
+
+                    }}>
+                      {totalSalary}
+                    </span>
+                  </Table.Summary.Cell>
+
+                  <Table.Summary.Cell index={3}>
+                    <span style={{
+                      fontSize: '16px',
+                      fontWeight: 600,
+                      textTransform: 'uppercase'
+
+                    }}>
+                      {totalBonus}
+                    </span>
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={4}>
+                    <span style={{
+                      fontSize: '16px',
+                      fontWeight: 600,
+                      textTransform: 'uppercase'
+
+                    }}>
+                      {totalExtra}
+                    </span>
+                  </Table.Summary.Cell>
+
+                  <Table.Summary.Cell index={5}>
+                    <span style={{
+                      fontSize: '16px',
+                      fontWeight: 600,
+                      textTransform: 'uppercase'
+
+                    }}>
+                      {totalConvince}
+                    </span>
+                  </Table.Summary.Cell>
+
+                  <Table.Summary.Cell index={6}>
+                    <span style={{
+                      fontSize: '16px',
+                      fontWeight: 600,
+                      textTransform: 'uppercase'
+
+                    }}>
+                      {totalBaseSalary}
+                    </span>
+                  </Table.Summary.Cell>
+
+
+                  <Table.Summary.Cell index={7} colSpan={2}>
+                    <span style={{
+                      fontSize: '16px',
+                      fontWeight: 600,
+                      textTransform: 'uppercase'
+
+                    }}>
+                      {totalNegative}
+                    </span>
+                  </Table.Summary.Cell>
+
+
+                </Table.Summary.Row>
+              </>
+            )
+          }
+          else return <> </>
+        }}
       >
         <Column
           title='Year'
@@ -216,6 +374,21 @@ const MyTable = ({ data, setTagList }) => {
         />
 
         <Column
+          title='Total Base Salary'
+          dataIndex='totalBaseSalary'
+          key='id'
+          className='classnameofthecolumn'
+        />
+
+        <Column
+          title='Total Negative'
+          dataIndex='totalNegative'
+          key='id'
+          className='classnameofthecolumn'
+        />
+
+
+        <Column
           className='classnameofthecolumn'
           title=''
           key='action'
@@ -240,9 +413,9 @@ const MyTable = ({ data, setTagList }) => {
   );
 };
 
-interface Props {}
+interface Props { }
 
-const TagList = ({}: Props) => {
+const TagList = ({ }: Props) => {
   const [tagList, setTagList] = useState([]);
 
   console.log('salaryReport4', tagList);

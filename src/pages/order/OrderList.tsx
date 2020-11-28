@@ -205,6 +205,88 @@ const MyTable = ({ data, setOrderList, roles }: myTableProps) => {
         size='small'
         // pagination={false}
         dataSource={data}
+
+        summary={pageData => {
+          console.log({ pageData })
+          let total = 0;
+          pageData?.length > 0 && pageData.forEach(item => {
+            total += item.total
+          })
+
+          if (total) {
+            return (
+              <>
+                <Table.Summary.Row>
+                  <Table.Summary.Cell index={0}>
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={1}>
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={2}>
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={3}>
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={4}>
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={5}>
+                  </Table.Summary.Cell>
+                </Table.Summary.Row>
+
+                <Table.Summary.Row>
+                  <Table.Summary.Cell index={0}>
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={1}>
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={2}>
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={3}>
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={4}>
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={5}>
+                  </Table.Summary.Cell>
+                </Table.Summary.Row>
+
+                <Table.Summary.Row style={{
+                  backgroundColor: '#eee !important'
+                }}>
+                  <Table.Summary.Cell
+                    index={0}>
+                    <span style={{
+                      fontSize: '16px',
+                      fontWeight: 600,
+                      textTransform: 'uppercase'
+
+                    }}>
+                      Total
+                    </span>
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={1}>
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={2}>
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={3}>
+                  </Table.Summary.Cell>
+
+                  <Table.Summary.Cell index={4}>
+                    <span style={{
+                      fontSize: '16px',
+                      fontWeight: 600,
+                      textTransform: 'uppercase'
+
+                    }}>
+                      {total}
+                    </span>
+
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={2} colSpan={2}>
+                  </Table.Summary.Cell>
+                </Table.Summary.Row>
+              </>
+            )
+          }
+          else return <> </>
+        }}
+
       >
         <Column
           title='Code'
@@ -322,23 +404,23 @@ const MyTable = ({ data, setOrderList, roles }: myTableProps) => {
                   </a>
                 </Dropdown>
               ) : (
-                <a href='##'>
-                  <span
-                    // className={'product-attributeTag'}
-                    style={{
-                      fontSize: '12px',
-                    }}
-                  >
-                    {text}
+                  <a href='##'>
                     <span
+                      // className={'product-attributeTag'}
                       style={{
-                        marginLeft: '5px',
-                        fontSize: '10px',
+                        fontSize: '12px',
                       }}
-                    ></span>
-                  </span>
-                </a>
-              )}
+                    >
+                      {text}
+                      <span
+                        style={{
+                          marginLeft: '5px',
+                          fontSize: '10px',
+                        }}
+                      ></span>
+                    </span>
+                  </a>
+                )}
             </>
           )}
         />
@@ -480,7 +562,7 @@ const CustomerList = ({ roles }: Props) => {
           };
         });
         // @ts-ignore
-        setRegionList([{name: 'All Region', value: 'all'},...regionListOptions]);
+        setRegionList([{ name: 'All Region', value: 'all' }, ...regionListOptions]);
       }
     };
     setRegions();
@@ -493,10 +575,10 @@ const CustomerList = ({ roles }: Props) => {
   const handleSearch = (value) => {
     if (orderState.data.length > 0) {
       const newOrderList = orderState.data.filter((item) => {
-        console.log('orderItem3',item)
-        return `#${item.shortCode.toLowerCase()}`.includes(value.toLowerCase()) ||  `${item.shortCode.toLowerCase()}`.includes(value.toLowerCase())
+        console.log('orderItem3', item)
+        return `#${item.shortCode.toLowerCase()}`.includes(value.toLowerCase()) || `${item.shortCode.toLowerCase()}`.includes(value.toLowerCase())
       }
-        
+
       );
       setOrderList(newOrderList);
     }
@@ -583,7 +665,7 @@ const CustomerList = ({ roles }: Props) => {
               className='searchbarClassName'
               placeholder='search orders (ex. #04343)'
               onChange={(e) => handleSearch(e.target.value)}
-              // style={{ width: 300 }}
+            // style={{ width: 300 }}
             />
           </div>
 

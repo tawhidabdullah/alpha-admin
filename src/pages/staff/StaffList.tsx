@@ -97,6 +97,87 @@ const MyTable = ({ data, setCustomerList }: myTableProps) => {
         size='small'
         // pagination={false}
         dataSource={data}
+
+        summary={pageData => {
+          console.log({ pageData })
+          let salary = 0;
+          pageData?.length > 0 && pageData.forEach(item => {
+            salary += item.salary
+          })
+
+          if (salary) {
+            return (
+              <>
+                <Table.Summary.Row>
+                  <Table.Summary.Cell index={0}>
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={1}>
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={2}>
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={3}>
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={4}>
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={5}>
+                  </Table.Summary.Cell>
+                </Table.Summary.Row>
+
+                <Table.Summary.Row>
+                  <Table.Summary.Cell index={0}>
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={1}>
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={2}>
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={3}>
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={4}>
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={5}>
+                  </Table.Summary.Cell>
+                </Table.Summary.Row>
+
+                <Table.Summary.Row style={{
+                  backgroundColor: '#eee !important'
+                }}>
+                  <Table.Summary.Cell
+                    index={0}>
+                    <span style={{
+                      fontSize: '16px',
+                      fontWeight: 600,
+                      textTransform: 'uppercase'
+
+                    }}>
+                      Total
+                    </span>
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={1}>
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={2}>
+                  </Table.Summary.Cell>
+
+                  <Table.Summary.Cell index={4}>
+                    <span style={{
+                      fontSize: '16px',
+                      fontWeight: 600,
+                      textTransform: 'uppercase'
+
+                    }}>
+                      {salary}
+                    </span>
+                  </Table.Summary.Cell>
+                  <Table.Summary.Cell index={3}>
+                  </Table.Summary.Cell>
+
+                  <Table.Summary.Cell index={2} colSpan={2}>
+                  </Table.Summary.Cell>
+                </Table.Summary.Row>
+              </>
+            )
+          }
+          else return <> </>
+        }}
       >
         <Column
           title='Name'
@@ -310,7 +391,7 @@ const CustomerList = ({ history }: Props) => {
               className='searchbarClassName'
               placeholder='search staffs..'
               onChange={(e) => handleSearch(e.target.value)}
-              // style={{ width: 300 }}
+            // style={{ width: 300 }}
             />
           </div>
 

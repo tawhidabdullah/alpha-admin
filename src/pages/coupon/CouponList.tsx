@@ -191,6 +191,13 @@ const MyTable = ({ data, setTagList }) => {
           className='classnameofthecolumn'
         />
 
+        <Column
+          title='Discount Type'
+          dataIndex='amountType'
+          key='id'
+          className='classnameofthecolumn'
+        />
+
         {/* <Column
                     title="Order Products"
                     dataIndex="orderedProductsCount"
@@ -305,9 +312,9 @@ const MyTable = ({ data, setTagList }) => {
   );
 };
 
-interface Props {}
+interface Props { }
 
-const Couponlist = ({}: Props) => {
+const Couponlist = ({ }: Props) => {
   const [tagList, setTagList] = useState([]);
 
   const [tagState, handleTagListFetch] = useHandleFetch({}, 'couponList');

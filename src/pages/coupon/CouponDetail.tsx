@@ -26,7 +26,7 @@ import { Skeleton, Empty, Button, notification, Table, Space, Input as CoolInput
 import { DataTableSkeleton } from "../../components/Placeholders";
 import CouponEdit from "./CouponEdit";
 import CouponProducts from "./CouponProducts";
-import  moment from 'moment'
+import moment from 'moment'
 
 
 const { Column, ColumnGroup } = Table;
@@ -41,7 +41,7 @@ const NewBrandDetail = (props: Props) => {
     const [tagDetailState, handleTagDetailFetch] = useHandleFetch({}, 'couponDetail');
     const [tagProductsState, handleTagProductsFetch] = useHandleFetch({}, 'tagProducts');
     const [tagEditVisible, setTagEditVisible] = useState(false);
-    const [tagDetailData,setTagDetailData] = useState({}); 
+    const [tagDetailData, setTagDetailData] = useState({});
 
     const params = useParams();
     const history = useHistory();
@@ -59,7 +59,7 @@ const NewBrandDetail = (props: Props) => {
             });
 
             // @ts-ignore
-            if(res){
+            if (res) {
                 // @ts-ignore
                 setTagDetailData(res)
             }
@@ -132,11 +132,11 @@ const NewBrandDetail = (props: Props) => {
 
                                 </h3>
                             )}
-                          
+
 
                             {tagDetailData['amount'] && (
                                 <h3>
-                                    AMOUT:
+                                    AMOUNT:
                                     <span>
                                         {tagDetailData['amount']}
                                     </span>
@@ -145,11 +145,23 @@ const NewBrandDetail = (props: Props) => {
                             )}
 
 
+                            {tagDetailData['amountType'] && (
+                                <h3>
+                                    DISCOUNT TYPE:
+                                    <span>
+                                        {tagDetailData['amountType']}
+                                    </span>
+
+                                </h3>
+                            )}
+
+
+
                             {tagDetailData['startDate'] && (
                                 <h3>
                                     START DATE:
                                     <span>
-                                    {moment(tagDetailData['startDate']).format('MMMM Do YYYY, h:mm:ss a')}
+                                        {moment(tagDetailData['startDate']).format('MMMM Do YYYY, h:mm:ss a')}
                                     </span>
 
                                 </h3>
@@ -161,7 +173,7 @@ const NewBrandDetail = (props: Props) => {
                                 <h3>
                                     END DATE:
                                     <span>
-                                    {moment(tagDetailData['endDate']).format('MMMM Do YYYY, h:mm:ss a')}
+                                        {moment(tagDetailData['endDate']).format('MMMM Do YYYY, h:mm:ss a')}
                                     </span>
 
                                 </h3>
