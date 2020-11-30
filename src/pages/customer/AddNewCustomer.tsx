@@ -279,145 +279,145 @@ const AddNewCategory = ({
         setFieldTouched,
         handleReset,
       }) => (
-        <>
-          <Modal
-            style={{
-              top: '40px',
-            }}
-            bodyStyle={{
-              margin: '0',
-              padding: '10px',
-            }}
-            title='Add New Customer'
-            visible={addNewCategoryVisible}
-            onOk={(e: any) => handleSubmit(e)}
-            onCancel={handleCancel}
-            okText='Create'
-            okButtonProps={{
-              loading: isSubmitting,
-              htmlType: 'submit',
-              // disabled: getisSubmitButtonDisabled(values, isValid)
-            }}
-          >
-            <div className='dubbleRowInputs'>
-              <div className='dubbleRowInputs__item'>
-                <Input
-                  label='First Name *'
-                  value={values.firstName}
-                  name='firstName'
-                  isError={
-                    (touched.firstName && errors.firstName) ||
-                    (!isSubmitting &&
-                      addCustomerState.error['error']['firstName'])
-                  }
-                  errorString={
-                    (touched.firstName && errors.firstName) ||
-                    (!isSubmitting &&
-                      addCustomerState.error['error']['firstName'])
-                  }
-                  onChange={(e: any) => {
-                    handleChange(e);
-                    setFieldTouched('firstName');
-                  }}
-                />
-              </div>
-              <div className='dubbleRowInputs__item'>
-                <Input
-                  label='Last Name'
-                  value={values.lastName}
-                  name='lastName'
-                  isError={
-                    (touched.lastName && errors.lastName) ||
-                    (!isSubmitting &&
-                      addCustomerState.error['error']['lastName'])
-                  }
-                  errorString={
-                    (touched.lastName && errors.lastName) ||
-                    (!isSubmitting &&
-                      addCustomerState.error['error']['lastName'])
-                  }
-                  onChange={(e: any) => {
-                    handleChange(e);
-                    setFieldTouched('lastName');
-                  }}
-                />
-              </div>
-            </div>
-
-            <div className='dubbleRowInputs'>
-              <div className='dubbleRowInputs__item'>
-                <Input
-                  label='Phone *'
-                  value={values.phone}
-                  name='phone'
-                  isError={
-                    (touched.phone && errors.phone) ||
-                    (!isSubmitting && addCustomerState.error['error']['phone'])
-                  }
-                  errorString={
-                    (touched.phone && errors.phone) ||
-                    (!isSubmitting && addCustomerState.error['error']['phone'])
-                  }
-                  onChange={(e: any) => {
-                    handleChange(e);
-                    setFieldTouched('phone');
-                  }}
-                />
-              </div>
-              <div className='dubbleRowInputs__item'>
-                <Input
-                  label='Email'
-                  value={values.email}
-                  name='email'
-                  isError={
-                    (touched.email && errors.email) ||
-                    (!isSubmitting && addCustomerState.error['error']['email'])
-                  }
-                  errorString={
-                    (touched.email && errors.email) ||
-                    (!isSubmitting && addCustomerState.error['error']['email'])
-                  }
-                  onChange={(e: any) => {
-                    handleChange(e);
-                    setFieldTouched('email');
-                  }}
-                />
-              </div>
-            </div>
-
-            <div
-              className='dubbleRowInputs'
+          <>
+            <Modal
               style={{
-                alignItems: 'center',
-                ...(!toggleReferralCode && {
-                  margin: '10px 0',
-                }),
+                top: '40px',
+              }}
+              bodyStyle={{
+                margin: '0',
+                padding: '10px',
+              }}
+              title='Add New Customer'
+              visible={addNewCategoryVisible}
+              onOk={(e: any) => handleSubmit(e)}
+              onCancel={handleCancel}
+              okText='Create'
+              okButtonProps={{
+                loading: isSubmitting,
+                htmlType: 'submit',
+                // disabled: getisSubmitButtonDisabled(values, isValid)
               }}
             >
-              <div className='dubbleRowInputs__item'>
-                {toggleReferralCode && (
+              <div className='dubbleRowInputs'>
+                <div className='dubbleRowInputs__item'>
                   <Input
-                    label='Referral Code'
-                    value={values.dealerCode}
-                    name='dealerCode'
+                    label='First Name *'
+                    value={values.firstName}
+                    name='firstName'
                     isError={
-                      (touched.dealerCode && errors.dealerCode) ||
+                      (touched.firstName && errors.firstName) ||
                       (!isSubmitting &&
-                        addCustomerState.error['error']['dealerCode'])
+                        addCustomerState.error['error']['firstName'])
                     }
                     errorString={
-                      (touched.dealerCode && errors.dealerCode) ||
+                      (touched.firstName && errors.firstName) ||
                       (!isSubmitting &&
-                        addCustomerState.error['error']['dealerCode'])
+                        addCustomerState.error['error']['firstName'])
                     }
                     onChange={(e: any) => {
                       handleChange(e);
-                      setFieldTouched('dealerCode');
+                      setFieldTouched('firstName');
                     }}
                   />
-                )}
+                </div>
+                <div className='dubbleRowInputs__item'>
+                  <Input
+                    label='Last Name'
+                    value={values.lastName}
+                    name='lastName'
+                    isError={
+                      (touched.lastName && errors.lastName) ||
+                      (!isSubmitting &&
+                        addCustomerState.error['error']['lastName'])
+                    }
+                    errorString={
+                      (touched.lastName && errors.lastName) ||
+                      (!isSubmitting &&
+                        addCustomerState.error['error']['lastName'])
+                    }
+                    onChange={(e: any) => {
+                      handleChange(e);
+                      setFieldTouched('lastName');
+                    }}
+                  />
+                </div>
               </div>
-              <div className='dubbleRowInputs__item'>
+
+              <div className='dubbleRowInputs'>
+                <div className='dubbleRowInputs__item'>
+                  <Input
+                    label='Phone *'
+                    value={values.phone}
+                    name='phone'
+                    isError={
+                      (touched.phone && errors.phone) ||
+                      (!isSubmitting && addCustomerState.error['error']['phone'])
+                    }
+                    errorString={
+                      (touched.phone && errors.phone) ||
+                      (!isSubmitting && addCustomerState.error['error']['phone'])
+                    }
+                    onChange={(e: any) => {
+                      handleChange(e);
+                      setFieldTouched('phone');
+                    }}
+                  />
+                </div>
+                <div className='dubbleRowInputs__item'>
+                  <Input
+                    label='Email'
+                    value={values.email}
+                    name='email'
+                    isError={
+                      (touched.email && errors.email) ||
+                      (!isSubmitting && addCustomerState.error['error']['email'])
+                    }
+                    errorString={
+                      (touched.email && errors.email) ||
+                      (!isSubmitting && addCustomerState.error['error']['email'])
+                    }
+                    onChange={(e: any) => {
+                      handleChange(e);
+                      setFieldTouched('email');
+                    }}
+                  />
+                </div>
+              </div>
+
+              <div
+                className='dubbleRowInputs'
+                style={{
+                  alignItems: 'center',
+                  ...(!toggleReferralCode && {
+                    margin: '10px 0',
+                  }),
+                }}
+              >
+                <div className='dubbleRowInputs__item'>
+                  {toggleReferralCode && (
+                    <Input
+                      label='Referral Code'
+                      value={values.dealerCode}
+                      name='dealerCode'
+                      isError={
+                        (touched.dealerCode && errors.dealerCode) ||
+                        (!isSubmitting &&
+                          addCustomerState.error['error']['dealerCode'])
+                      }
+                      errorString={
+                        (touched.dealerCode && errors.dealerCode) ||
+                        (!isSubmitting &&
+                          addCustomerState.error['error']['dealerCode'])
+                      }
+                      onChange={(e: any) => {
+                        handleChange(e);
+                        setFieldTouched('dealerCode');
+                      }}
+                    />
+                  )}
+                </div>
+                {/* <div className='dubbleRowInputs__item'>
                 <h3
                   onClick={() => settoggleReferralCode((value) => !value)}
                   style={{
@@ -430,139 +430,139 @@ const AddNewCategory = ({
                 >
                   Add Referral Code
                 </h3>
+              </div> */}
               </div>
-            </div>
 
-            <div
-              style={{
-                marginRight: '10px',
-              }}
-            >
-              <Input
-                label='Password *'
-                type='password'
-                value={values.password}
-                name='password'
-                isError={
-                  (touched.password && errors.password) ||
-                  (!isSubmitting && addCustomerState.error['error']['password'])
-                }
-                errorString={
-                  (touched.password && errors.password) ||
-                  (!isSubmitting && addCustomerState.error['error']['password'])
-                }
-                onChange={(e: any) => {
-                  handleChange(e);
-                  setFieldTouched('password');
+              <div
+                style={{
+                  marginRight: '10px',
                 }}
-              />
-            </div>
-
-            <div className='dubbleRowInputs'>
-              <div className='dubbleRowInputs__item'>
-                <h3 className='inputFieldLabel'>Country *</h3>
-
-                <Form.Item
-                  validateStatus={
-                    addCustomerState.error['error']['country'] ? 'error' : ''
+              >
+                <Input
+                  label='Password *'
+                  type='password'
+                  value={values.password}
+                  name='password'
+                  isError={
+                    (touched.password && errors.password) ||
+                    (!isSubmitting && addCustomerState.error['error']['password'])
                   }
-                  help={addCustomerState.error['error']['country']}
-                  // noStyle={true}
-                >
-                  <Select
-                    notFoundContent={
-                      <Empty
-                        description='No Country Found'
-                        image={Empty.PRESENTED_IMAGE_SIMPLE}
-                      />
-                    }
-                    showSearch
-                    style={{ width: '100%' }}
-                    placeholder='Select a Country'
-                    optionFilterProp='children'
-                    onChange={onChangeCountry}
-                    filterOption={(input, option) =>
-                      option.children
-                        .toLowerCase()
-                        .indexOf(input.toLowerCase()) >= 0
-                    }
-                  >
-                    {countryListState.done &&
-                      countryListState.data.length > 0 &&
-                      countryOptions.map((option) => {
-                        return (
-                          <Option value={option.value}>{option.name}</Option>
-                        );
-                      })}
-                  </Select>
-                </Form.Item>
-              </div>
-              <div className='dubbleRowInputs__item'>
-                <h3 className='inputFieldLabel'>City *</h3>
-                <Form.Item
-                  // noStyle={true}
-                  validateStatus={
-                    addCustomerState.error['error']['city'] ? 'error' : ''
+                  errorString={
+                    (touched.password && errors.password) ||
+                    (!isSubmitting && addCustomerState.error['error']['password'])
                   }
-                  help={addCustomerState.error['error']['city']}
-                >
-                  <Select
-                    className='selectClassName'
-                    notFoundContent={
-                      <Empty
-                        description='First Select a Country'
-                        image={Empty.PRESENTED_IMAGE_SIMPLE}
-                      />
-                    }
-                    showSearch
-                    style={{ width: '100%' }}
-                    placeholder='Select a city'
-                    optionFilterProp='children'
-                    onChange={onChangeCity}
-                    filterOption={(input, option) =>
-                      option.children
-                        .toLowerCase()
-                        .indexOf(input.toLowerCase()) >= 0
-                    }
-                  >
-                    {cityListState.done &&
-                      cityListState.data.length > 0 &&
-                      cityOptions.map((option) => {
-                        return (
-                          <Option value={option.value}>{option.name}</Option>
-                        );
-                      })}
-                  </Select>
-                </Form.Item>
+                  onChange={(e: any) => {
+                    handleChange(e);
+                    setFieldTouched('password');
+                  }}
+                />
               </div>
-            </div>
 
-            <div
-              style={{
-                marginRight: '10px',
-              }}
-            >
-              <Input
-                label='Address *'
-                value={values.address1}
-                name='address1'
-                isError={
-                  (touched.address1 && errors.address1) ||
-                  (!isSubmitting && addCustomerState.error['error']['address1'])
-                }
-                errorString={
-                  (touched.address1 && errors.address1) ||
-                  (!isSubmitting && addCustomerState.error['error']['address1'])
-                }
-                onChange={(e: any) => {
-                  handleChange(e);
-                  setFieldTouched('address1');
+              <div className='dubbleRowInputs'>
+                <div className='dubbleRowInputs__item'>
+                  <h3 className='inputFieldLabel'>Country *</h3>
+
+                  <Form.Item
+                    validateStatus={
+                      addCustomerState.error['error']['country'] ? 'error' : ''
+                    }
+                    help={addCustomerState.error['error']['country']}
+                  // noStyle={true}
+                  >
+                    <Select
+                      notFoundContent={
+                        <Empty
+                          description='No Country Found'
+                          image={Empty.PRESENTED_IMAGE_SIMPLE}
+                        />
+                      }
+                      showSearch
+                      style={{ width: '100%' }}
+                      placeholder='Select a Country'
+                      optionFilterProp='children'
+                      onChange={onChangeCountry}
+                      filterOption={(input, option) =>
+                        option.children
+                          .toLowerCase()
+                          .indexOf(input.toLowerCase()) >= 0
+                      }
+                    >
+                      {countryListState.done &&
+                        countryListState.data.length > 0 &&
+                        countryOptions.map((option) => {
+                          return (
+                            <Option value={option.value}>{option.name}</Option>
+                          );
+                        })}
+                    </Select>
+                  </Form.Item>
+                </div>
+                <div className='dubbleRowInputs__item'>
+                  <h3 className='inputFieldLabel'>City *</h3>
+                  <Form.Item
+                    // noStyle={true}
+                    validateStatus={
+                      addCustomerState.error['error']['city'] ? 'error' : ''
+                    }
+                    help={addCustomerState.error['error']['city']}
+                  >
+                    <Select
+                      className='selectClassName'
+                      notFoundContent={
+                        <Empty
+                          description='First Select a Country'
+                          image={Empty.PRESENTED_IMAGE_SIMPLE}
+                        />
+                      }
+                      showSearch
+                      style={{ width: '100%' }}
+                      placeholder='Select a city'
+                      optionFilterProp='children'
+                      onChange={onChangeCity}
+                      filterOption={(input, option) =>
+                        option.children
+                          .toLowerCase()
+                          .indexOf(input.toLowerCase()) >= 0
+                      }
+                    >
+                      {cityListState.done &&
+                        cityListState.data.length > 0 &&
+                        cityOptions.map((option) => {
+                          return (
+                            <Option value={option.value}>{option.name}</Option>
+                          );
+                        })}
+                    </Select>
+                  </Form.Item>
+                </div>
+              </div>
+
+              <div
+                style={{
+                  marginRight: '10px',
                 }}
-              />
-            </div>
-          </Modal>
-        </>
-      )}
+              >
+                <Input
+                  label='Address *'
+                  value={values.address1}
+                  name='address1'
+                  isError={
+                    (touched.address1 && errors.address1) ||
+                    (!isSubmitting && addCustomerState.error['error']['address1'])
+                  }
+                  errorString={
+                    (touched.address1 && errors.address1) ||
+                    (!isSubmitting && addCustomerState.error['error']['address1'])
+                  }
+                  onChange={(e: any) => {
+                    handleChange(e);
+                    setFieldTouched('address1');
+                  }}
+                />
+              </div>
+            </Modal>
+          </>
+        )}
     </Formik>
   );
 };

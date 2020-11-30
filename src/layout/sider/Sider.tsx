@@ -84,7 +84,7 @@ const SiderComponent = ({ roles }: any) => {
             key='sub3'
             icon={<GoldOutlined />}
             title='Product'
-            // onTitleClick={() => props.history.push('/product')}
+          // onTitleClick={() => props.history.push('/product')}
           >
             <Menu.Item icon={<RadarChartOutlined />} key='6'>
               <Link to='/admin/product'>Products</Link>
@@ -114,7 +114,7 @@ const SiderComponent = ({ roles }: any) => {
           key='sub333'
           icon={<GoldOutlined />}
           title='Recipes'
-          // onTitleClick={() => props.history.push('/product')}
+        // onTitleClick={() => props.history.push('/product')}
         >
           <Menu.Item icon={<RadarChartOutlined />} key='655'>
             <Link to='/admin/posts'>List Recipe</Link>
@@ -190,7 +190,7 @@ const SiderComponent = ({ roles }: any) => {
             key='sub5553'
             icon={<TeamOutlined />}
             title='Dealer'
-            // onTitleClick={() => props.history.push('/product')}
+          // onTitleClick={() => props.history.push('/product')}
           >
             <Menu.Item icon={<TeamOutlined />} key='666655'>
               <Link to='/admin/dealer'>List dealer</Link>
@@ -263,7 +263,7 @@ const mapStateToProps = (state) => ({
 // @ts-ignore
 export default connect(mapStateToProps, mapDispathToProps)(SiderComponent);
 
-/* 
+/*
 git checkout commit3 && git checkout -b newBranch && git cherry-pick 20ead887
 af2f73c541465d9067c3c6c70c398ac2
 */
