@@ -61,11 +61,14 @@ interface myTableProps {
   setProductList: any;
   roles: any;
   productListState: any
+  searchList?: any;
 }
 
-const MyTable = ({ data, setProductList, roles, productListState }: myTableProps) => {
+const MyTable = ({ data, setProductList, roles, productListState, searchList }: myTableProps) => {
   const [visible, setvisible] = useState(false);
+  const [limit, setLimit] = useState(11);
   const [activeCategoryForEdit, setactiveCategoryForEdit] = useState(false);
+
   const [deleteProductState, handleDeleteProductFetch] = useHandleFetch(
     {},
     "deleteProduct"
@@ -78,8 +81,6 @@ const MyTable = ({ data, setProductList, roles, productListState }: myTableProps
 
   const history = useHistory();
   const cache = useQueryCache();
-
-
 
   const handleDeleteProduct = async (id) => {
     const deleteProductRes = await handleDeleteProductFetch({
@@ -197,12 +198,16 @@ const MyTable = ({ data, setProductList, roles, productListState }: myTableProps
   return (
     <>
       <TableListWithPagination
-        data={productListState?.resolvedData?.data || []}
+        data={searchList?.length > 0 ? searchList : productListState?.resolvedData?.data || []}
         total={productListState?.resolvedData?.total}
         loading={productListState.status === 'loading' || productListState.isFetching}
-        limit={11}
+        limit={productListState.limit}
         handlePageChange={(pageNumber, _) => {
           productListState?.setPage(pageNumber)
+        }}
+        handleShowSizeChange={(current, pageNumber) => {
+          setLimit(pageNumber);
+          productListState?.setLimit(pageNumber)
         }}
       >
         <Column
@@ -380,6 +385,7 @@ interface Props {
 
 const ProductList = ({ roles }: Props) => {
   const [productList, setProductList] = useState([]);
+  const [searchList, setSearchList] = useState([]);
   const [isUploadCSVModalOpen, setIsUploadCSVModalOpen] = useState(false);
 
   const [productState, handleProductListFetch] = useHandleFetch(
@@ -393,6 +399,7 @@ const ProductList = ({ roles }: Props) => {
         limitNumber: 11,
         sortItem: 'added',
         sortOrderValue: '-1',
+        pageNumber: 1
       }
     },
   }, `product`);
@@ -403,12 +410,18 @@ const ProductList = ({ roles }: Props) => {
   // console.log('productState', productState)
 
   const handleSearch = (value) => {
-    if (productState.data.length > 0) {
-      const newProductList = productState.data.filter((item) =>
-        item.name.toLowerCase().includes(value.toLowerCase())
-      );
-      setProductList(newProductList);
+    if (value === '') {
+      setSearchList([]);
     }
+    else {
+      if (productListState?.resolvedData?.data?.length > 0) {
+        const newProductList = productListState?.resolvedData?.data?.filter((item) =>
+          item.name.toLowerCase().includes(value.toLowerCase())
+        );
+        setSearchList(newProductList);
+      }
+    }
+
   };
 
   return (
@@ -479,6 +492,7 @@ const ProductList = ({ roles }: Props) => {
               roles={roles}
               setProductList={setProductList}
               data={[]}
+              searchList={searchList}
             />
           )}
           {productListState.status === 'loading' && <DataTableSkeleton />}

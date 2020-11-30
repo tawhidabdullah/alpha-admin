@@ -9,14 +9,15 @@ import {
 interface Props {
     children: any,
     data: any;
-    handlePageChange?: any
+    handlePageChange?: any;
+    handleShowSizeChange?: any;
     limit?: number;
     loading?: any;
     total?: any;
     current?: any;
 }
 
-const TableListWithPagination = ({ children, data, handlePageChange, limit, loading, total }: Props) => {
+const TableListWithPagination = ({ children, data, handlePageChange, limit, loading, total, handleShowSizeChange }: Props) => {
 
     return (
         <Table
@@ -33,7 +34,9 @@ const TableListWithPagination = ({ children, data, handlePageChange, limit, load
                 {
                     onChange: handlePageChange,
                     pageSize: limit,
-                    total, defaultCurrent: 1, hideOnSinglePage: true
+                    total, defaultCurrent: 1, hideOnSinglePage: true,
+                    onShowSizeChange: handleShowSizeChange,
+                    pageSizeOptions: ['500', '1000', '2000', '3000', '4000', '5000', '6000', '10000', '10000000']
                 }
             }
             dataSource={data}

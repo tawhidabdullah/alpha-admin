@@ -77,7 +77,7 @@ class ComponentToPrint extends React.Component {
                                     style={{
                                       borderBottom: '1px solid #eee',
                                       paddingBottom: '40px',
-                                      marginBottom: '40px',
+                                      marginBottom: '15px',
                                     }}
                                   >
                                     <tbody
@@ -106,51 +106,49 @@ class ComponentToPrint extends React.Component {
                                           >
                                             Bill From:
                                           </span>
-                                          <span
-                                            style={{
-                                              display: 'block',
-                                              marginTop: '10px',
-                                              fontSize: '12px',
-                                              fontWeight: '500',
-                                              color: '#000',
-                                            }}
-                                          >
-                                            {orderDetailState.data['name']}
-                                          </span>
-                                          <span
-                                            style={{
-                                              display: 'block',
-                                              marginTop: '10px',
-                                              fontSize: '12px',
-                                              fontWeight: '500',
-                                              color: '#000',
-                                            }}
-                                          >
-                                            {orderDetailState.data['address']}
-                                          </span>
-                                          <span
-                                            style={{
-                                              display: 'block',
-                                              marginTop: '10px',
-                                              fontSize: '12px',
-                                              fontWeight: '500',
-                                              color: '#000',
-                                            }}
-                                          >
-                                            {orderDetailState.data['phone']}
-                                          </span>
-                                          <span
-                                            style={{
-                                              display: 'block',
-                                              marginTop: '10px',
-                                              fontSize: '12px',
-                                              fontWeight: '500',
-                                              color: '#000',
-                                              marginBottom: '50px',
-                                            }}
-                                          >
-                                            {orderDetailState.data['email']}
-                                          </span>
+                                          <p>{invoiceSettingsState.done &&
+                                            invoiceSettingsState.data &&
+                                            Object.keys(
+                                              invoiceSettingsState.data
+                                            ).length > 0 &&
+                                            invoiceSettingsState.data[
+                                            'invoiceTitle'
+                                            ]}
+                                          </p>
+                                          <p>
+                                            {invoiceSettingsState.done &&
+                                              invoiceSettingsState.data &&
+                                              Object.keys(
+                                                invoiceSettingsState.data
+                                              ).length > 0 &&
+                                              invoiceSettingsState.data[
+                                              'address'
+                                              ]}
+                                          </p>
+                                          <p>
+                                            {invoiceSettingsState.done &&
+                                              invoiceSettingsState.data &&
+                                              Object.keys(
+                                                invoiceSettingsState.data
+                                              ).length > 0 &&
+                                              invoiceSettingsState.data[
+                                              'phone'
+                                              ]}
+                                          </p>
+                                          <p>
+                                            {invoiceSettingsState.done &&
+                                              invoiceSettingsState.data &&
+                                              Object.keys(
+                                                invoiceSettingsState.data
+                                              ).length > 0 &&
+                                              invoiceSettingsState.data[
+                                              'email'
+                                              ]}
+                                          </p>
+                                          <br />
+
+
+
                                         </td>
 
                                         <td
@@ -210,78 +208,19 @@ class ComponentToPrint extends React.Component {
                                           >
                                             Bill To:
                                           </span>
-                                          <span
-                                            style={{
-                                              display: 'block',
-                                              marginTop: '10px',
-                                              fontSize: '12px',
-                                              fontWeight: '500',
-                                              color: '#000',
-                                            }}
-                                          >
-                                            {invoiceSettingsState.done &&
-                                              invoiceSettingsState.data &&
-                                              Object.keys(
-                                                invoiceSettingsState.data
-                                              ).length > 0 &&
-                                              invoiceSettingsState.data[
-                                                'invoiceTitle'
-                                              ]}
-                                          </span>
-                                          <span
-                                            style={{
-                                              display: 'block',
-                                              marginTop: '10px',
-                                              fontSize: '12px',
-                                              fontWeight: '500',
-                                              color: '#000',
-                                            }}
-                                          >
-                                            {invoiceSettingsState.done &&
-                                              invoiceSettingsState.data &&
-                                              Object.keys(
-                                                invoiceSettingsState.data
-                                              ).length > 0 &&
-                                              invoiceSettingsState.data[
-                                                'address'
-                                              ]}
-                                          </span>
-                                          <span
-                                            style={{
-                                              display: 'block',
-                                              marginTop: '10px',
-                                              fontSize: '12px',
-                                              fontWeight: '500',
-                                              color: '#000',
-                                            }}
-                                          >
-                                            {invoiceSettingsState.done &&
-                                              invoiceSettingsState.data &&
-                                              Object.keys(
-                                                invoiceSettingsState.data
-                                              ).length > 0 &&
-                                              invoiceSettingsState.data[
-                                                'phone'
-                                              ]}
-                                          </span>
-                                          <span
-                                            style={{
-                                              display: 'block',
-                                              marginTop: '10px',
-                                              fontSize: '12px',
-                                              fontWeight: '500',
-                                              color: '#000',
-                                            }}
-                                          >
-                                            {invoiceSettingsState.done &&
-                                              invoiceSettingsState.data &&
-                                              Object.keys(
-                                                invoiceSettingsState.data
-                                              ).length > 0 &&
-                                              invoiceSettingsState.data[
-                                                'email'
-                                              ]}
-                                          </span>
+
+                                          <p>
+                                            {orderDetailState.data['name']}
+                                          </p>
+                                          <p>
+                                            {orderDetailState.data['phone']}
+                                          </p>
+                                          <p>
+                                            {orderDetailState.data['address']}
+                                          </p>
+                                          <p>
+                                            {orderDetailState.data['email']}
+                                          </p>
                                         </td>
 
                                         <td
@@ -294,18 +233,23 @@ class ComponentToPrint extends React.Component {
                                             textAlign: 'right',
                                           }}
                                         >
-                                          <small>ORDER</small> #
-                                          {orderDetailState.data['shortCode']}
-                                          <br />
+                                          <p><strong>ORDER ID #
+                                          {orderDetailState.data['shortCode']}</strong></p>
                                           <span>
                                             {orderDetailState.data[
                                               'date_created'
                                             ] &&
                                               moment(
                                                 orderDetailState.data[
-                                                  'date_created'
+                                                'date_created'
                                                 ]
                                               ).format('MMMM Do YYYY, h:mm a')}
+                                          </span>
+                                          <br />
+                                          <span>
+                                            <br />
+                                            <p><strong>Delivery Zone:</strong></p>
+                                            {`${orderDetailState['data']['deliveryName']}, ${orderDetailState['data']['deliveryPickUpLocation']}, ${orderDetailState['data']['deliveryCountryName']}`}
                                           </span>
                                         </td>
                                       </tr>
@@ -378,9 +322,9 @@ class ComponentToPrint extends React.Component {
                                         fontWeight: 'normal',
                                         lineHeight: 1.6,
                                         verticalAlign: 'top',
-                                        padding: '5px 10px 7px 5px',
+                                        padding: '5px 10px 5px 5px',
                                       }}
-                                      width='30%'
+                                      width='50%'
                                       align='left'
                                     >
                                       Name
@@ -392,6 +336,7 @@ class ComponentToPrint extends React.Component {
                                         fontWeight: 'normal',
                                         lineHeight: 1.6,
                                         verticalAlign: 'center',
+                                        textAlign: 'center'
                                       }}
                                       align='left'
                                     >
@@ -404,6 +349,7 @@ class ComponentToPrint extends React.Component {
                                         fontWeight: 'normal',
                                         lineHeight: 1.6,
                                         verticalAlign: 'center',
+                                        textAlign: 'center'
                                       }}
                                       align='left'
                                     >
@@ -416,10 +362,12 @@ class ComponentToPrint extends React.Component {
                                         fontWeight: 'normal',
                                         lineHeight: 1.6,
                                         verticalAlign: 'center',
+                                        textAlign: 'right',
+                                        paddingRight: '5px',
                                       }}
-                                      align='left'
+                                      align='right'
                                     >
-                                      {/* Unit Price */}
+                                      Total Price
                                     </th>
                                   </tr>
 
@@ -436,9 +384,9 @@ class ComponentToPrint extends React.Component {
                                               colSpan={4}
                                             />
                                           </tr>
-                                          <tr>
+                                          {/* <tr>
                                             <td height={10} colSpan={4} />
-                                          </tr>
+                                          </tr> */}
                                           <tr>
                                             <td
                                               width='30%'
@@ -447,7 +395,7 @@ class ComponentToPrint extends React.Component {
                                                 color: '#ff0000',
                                                 lineHeight: 1.6,
                                                 verticalAlign: 'top',
-                                                padding: '10px 0',
+                                                padding: '6px 0',
                                               }}
                                               className='article'
                                             >
@@ -460,7 +408,8 @@ class ComponentToPrint extends React.Component {
                                                 color: '#646a6e',
                                                 lineHeight: 1.6,
                                                 verticalAlign: 'top',
-                                                padding: '10px 0',
+                                                padding: '6px 0',
+                                                textAlign: 'center'
                                               }}
                                               align='left'
                                             >
@@ -472,7 +421,8 @@ class ComponentToPrint extends React.Component {
                                                 color: '#1e2b33',
                                                 lineHeight: 1.6,
                                                 verticalAlign: 'top',
-                                                padding: '10px 0',
+                                                padding: '6px 0',
+                                                textAlign: 'center'
                                               }}
                                               align='left'
                                             >
@@ -486,9 +436,9 @@ class ComponentToPrint extends React.Component {
                                                 color: '#1e2b33',
                                                 lineHeight: 1.6,
                                                 verticalAlign: 'top',
-                                                padding: '10px 0',
+                                                padding: '6px 0',
                                               }}
-                                              align='left'
+                                              align='right'
                                             >
                                               {item.quantity * item.unitPrice}
                                             </td>
@@ -612,16 +562,15 @@ class ComponentToPrint extends React.Component {
                                   }}
                                 >
                                   {orderDetailState.data &&
-                                  orderDetailState.data['total'] > 5000
+                                    orderDetailState.data['total'] > 5000
                                     ? 'Free'
                                     : orderDetailState.data &&
                                       orderDetailState.data[
-                                        'deliveryCharge'
+                                      'deliveryCharge'
                                       ] === 0
-                                    ? 'Free'
-                                    : `+${
-                                        orderDetailState.data &&
-                                        orderDetailState.data['deliveryCharge']
+                                      ? 'Free'
+                                      : `+${orderDetailState.data &&
+                                      orderDetailState.data['deliveryCharge']
                                       }`}
                                 </td>
                               </tr>

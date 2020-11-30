@@ -5,7 +5,7 @@ import { Select, Skeleton } from 'antd';
 interface Props {
     setCustomerId?: any;
     setSelectedCustomerData?: any;
-    customerListState?:any; 
+    customerListState?: any;
 }
 
 const { Option } = Select;
@@ -42,12 +42,12 @@ const Brands = ({ setCustomerId, setSelectedCustomerData }: Props) => {
     useEffect(() => {
         const setBrands = async () => {
             const brandListRes = await handleTagListFetch({
-                urlOptions:{
+                urlOptions: {
                     params: {
-                      sortItem: 'added',
-                      sortOrderValue: '-1'
+                        sortItem: 'added',
+                        sortOrderValue: '-1'
                     }
-                    }
+                }
             });
 
             // @ts-ignore
@@ -57,7 +57,7 @@ const Brands = ({ setCustomerId, setSelectedCustomerData }: Props) => {
                     return {
                         ...brand,
                         value: brand.id,
-                        name: `${brand.firstName} ${brand.lastName}`
+                        name: `Name: ${brand.firstName} ${brand.lastName}, ${brand.phone ? `Phone: ${brand.phone}` : ''}`
                     };
                 });
                 setoptions(brandOptions);

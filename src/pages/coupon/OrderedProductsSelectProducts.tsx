@@ -23,7 +23,8 @@ const Tags = ({
             const tagListRes = await handleTagListFetch({
                 urlOptions: {
                     params: {
-                        isSubCategory: false
+                        isSubCategory: false,
+                        limitNumber: 200
                     }
                 }
             });
@@ -45,14 +46,14 @@ const Tags = ({
 
 
     useEffect(() => {
-        if(productIds && productIds.length > 0){
+        if (productIds && productIds.length > 0) {
             console.log('shippingRunning')
-            const selecttedOptions = productIds.map(item => item.name); 
+            const selecttedOptions = productIds.map(item => item.name);
             setselectedOptions(selecttedOptions)
         }
-    },[productIds]); 
+    }, [productIds]);
 
-    console.log('OrderProudctItemsProductIds',productIds); 
+    console.log('OrderProudctItemsProductIds', productIds);
 
 
 

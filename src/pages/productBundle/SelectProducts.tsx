@@ -16,7 +16,7 @@ const Tags = ({
     const [options, setoptions] = useState([]);
     const [selectedOpions, setselectedOptions] = useState([]);
     const [tagState, handleTagListFetch] = useHandleFetch({}, 'productList');
-    const [isProductIdsfirstTime,setProductIdsfirstTime] = useState(false); 
+    const [isProductIdsfirstTime, setProductIdsfirstTime] = useState(false);
 
     useEffect(() => {
         const setTags = async () => {
@@ -24,7 +24,8 @@ const Tags = ({
                 urlOptions: {
                     params: {
                         sortItem: 'added',
-                        sortOrderValue: '-1'
+                        sortOrderValue: '-1',
+                        pageNumber: 1
                     }
                 }
             });
@@ -45,23 +46,23 @@ const Tags = ({
 
 
 
-    useEffect(()=>{
+    useEffect(() => {
 
-        if(productIds && productIds.length > 0 && !isProductIdsfirstTime){
+        if (productIds && productIds.length > 0 && !isProductIdsfirstTime) {
             const selectItems = productIds.map((tag) => {
                 return tag.id
             });
 
             setselectedOptions(selectItems);
             // setoptions(tagOptions);
-        }; 
+        };
 
-    },[productIds])
+    }, [productIds])
 
 
     const handleChange = (selectItems) => {
         setselectedOptions(selectItems);
-        console.log('selectItems',selectItems); 
+        console.log('selectItems', selectItems);
 
         if (tagState.done && tagState.data.length > 0 && selectItems.length > 0) {
             const selectedCategoryIds = selectItems.map((item) => {

@@ -19,6 +19,8 @@ interface IState {
     readonly isSuccess: boolean;
     setPage: any;
     isFetchingMore: any;
+    setLimit: any;
+    limit: any;
 }
 
 const useQueryPaginate = (
@@ -27,16 +29,19 @@ const useQueryPaginate = (
     key?: string,
 ): IState => {
     const cache = useQueryCache()
-    const [page, setPage] = useState(1)
+    const [page, setPage] = useState(1);
+    const [limit, setLimit] = useState(11);
 
-    const fetchProjects = useCallback(async (_, page = 1) => {
+    const fetchProjects = useCallback(async (_, page = 1, limit = 11) => {
+        console.log({ limit })
         options = {
             ...options,
             urlOptions: {
                 ...options?.urlOptions,
                 params: {
                     ...options?.urlOptions?.params,
-                    pageNumber: page
+                    pageNumber: page,
+                    limitNumber: limit
                 }
             }
         };
@@ -45,7 +50,7 @@ const useQueryPaginate = (
 
 
     const { isLoading, isError, data, error, isSuccess, isFetching, status, resolvedData, latestData, isFetchingMore } = usePaginatedQuery(
-        [key || item, page],
+        [key || item, page, limit],
         fetchProjects,
         {
             retry: 0,
@@ -74,7 +79,9 @@ const useQueryPaginate = (
         resolvedData,
         latestData,
         setPage,
-        isFetchingMore
+        setLimit,
+        isFetchingMore,
+        limit
     };
 };
 

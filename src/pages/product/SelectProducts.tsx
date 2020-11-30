@@ -22,7 +22,8 @@ const Tags = ({
             const tagListRes = await handleTagListFetch({
                 urlOptions: {
                     params: {
-                        isSubCategory: false
+                        isSubCategory: false,
+                        pageNumber: 1
                     }
                 }
             });

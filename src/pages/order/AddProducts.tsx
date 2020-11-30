@@ -1,4 +1,4 @@
-import React, { useEffect, useState,memo } from 'react';
+import React, { useEffect, useState, memo } from 'react';
 import { useHandleFetch } from '../../hooks';
 import { Select, Skeleton } from 'antd';
 
@@ -6,7 +6,7 @@ import { Select, Skeleton } from 'antd';
 interface Props {
     setProductIds?: any;
     productIds?: any;
-    productListState?:any; 
+    productListState?: any;
 }
 
 
@@ -20,7 +20,7 @@ const Tags = ({
 
 
     useEffect(() => {
-        if (productListState.done && productListState.data  && productListState.data.length > 0) {
+        if (productListState.done && productListState.data && productListState.data.length > 0) {
             // @ts-ignore
             const productOptions = productListState.data.map((product) => {
                 return product.name

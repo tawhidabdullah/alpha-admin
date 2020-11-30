@@ -15,6 +15,7 @@ import {
   Empty,
   Steps,
   Form,
+  Input as IInput
 } from 'antd';
 
 import {
@@ -50,9 +51,13 @@ import { product } from '../../state/ducks';
 
 //import utils
 import { getDeliveryChargeTotal } from '.././../utils';
+import DeliveryCharge from '../delivery/DeliveryCharge';
 
 const { Option } = Select;
 const { Step } = Steps;
+
+const { Search } = IInput;
+
 
 const openSuccessNotification = (message?: any) => {
   notification.success({
@@ -100,9 +105,9 @@ const steps = [
   },
 ];
 
-interface Props {}
+interface Props { }
 
-const AddNewOrder = ({}: Props) => {
+const AddNewOrder = ({ }: Props) => {
   const [addOrderState, handleOrderFetch] = useHandleFetch({}, 'addOrder');
   const [selectedCountryValue, setselectedCountryValue] = useState('');
   const [selectedCityValue, setselectedCityValue] = useState('');
@@ -216,6 +221,7 @@ const AddNewOrder = ({}: Props) => {
             sortItem: 'added',
             sortOrderValue: '-1',
             productType: 'product',
+            pageNumber: 1
           },
         },
       });
@@ -245,12 +251,12 @@ const AddNewOrder = ({}: Props) => {
     const products =
       productList && productList.length > 0
         ? productList.map((item) => {
-            return {
-              product: item._id,
-              quantity: item.quantity,
-              variation: item.variation,
-            };
-          })
+          return {
+            product: item._id,
+            quantity: item.quantity,
+            variation: item.variation,
+          };
+        })
         : [];
 
     const addOrderRes = await handleOrderFetch({
@@ -404,7 +410,7 @@ const AddNewOrder = ({}: Props) => {
     return false;
   };
 
-  const handleAddDeliveryCharge = () => {};
+  const handleAddDeliveryCharge = () => { };
 
   useEffect(() => {
     if (productIds && productIds.length > 0 && productList) {
@@ -447,6 +453,25 @@ const AddNewOrder = ({}: Props) => {
   // console.log('productList', productList)
   console.log('selectedCustomerData', selectedCustomerData);
 
+
+
+  const handleSearch = (value) => {
+    if (value === '') {
+      setregionDeliveryCharge(deliveryRegionState.data || []);
+    }
+    else {
+      if (deliveryRegionState?.data?.length > 0) {
+        console.log({ 'deliveryRegionState.data': deliveryRegionState.data });
+        const newRegionDeliveryCharge = deliveryRegionState?.data?.filter(item => item.name?.toLowerCase()?.includes(value?.toLowerCase()));
+        console.log({ 'delivery.data': newRegionDeliveryCharge });
+
+        setregionDeliveryCharge(newRegionDeliveryCharge || [])
+      }
+    }
+  };
+
+
+
   return (
     <Formik
       onSubmit={(values, actions) => handleCheckoutSubmit(values, actions)}
@@ -467,679 +492,689 @@ const AddNewOrder = ({}: Props) => {
         setFieldTouched,
         handleReset,
       }) => (
-        <>
-          <div className='addOrderContainer'>
-            <h3>Add New Order</h3>
-            <div className='addOrderContainer__container'>
-              <Steps current={current}>
-                {steps.map((item) => (
-                  <Step key={item.title} title={item.title} />
-                ))}
-              </Steps>
+          <>
+            <div className='addOrderContainer'>
+              <h3>Add New Order</h3>
+              <div className='addOrderContainer__container'>
+                <Steps current={current}>
+                  {steps.map((item) => (
+                    <Step key={item.title} title={item.title} />
+                  ))}
+                </Steps>
 
-              {current === 0 && (
-                <div className='addOrderContainer__container-OrderInfoContainer'>
-                  <div className='addOrderContainer__container-OrderInfoContainer-left'>
-                    <h3 style={{}} className='addOrderContainer-sectionTitle'>
-                      <span>
-                        <UserOutlined />
-                      </span>
+                {current === 0 && (
+                  <div className='addOrderContainer__container-OrderInfoContainer'>
+                    <div className='addOrderContainer__container-OrderInfoContainer-left'>
+                      <h3 style={{}} className='addOrderContainer-sectionTitle'>
+                        <span>
+                          <UserOutlined />
+                        </span>
                       Customers And products
                     </h3>
 
+                      <div
+                        style={{
+                          marginTop: '15px',
+                        }}
+                      ></div>
+
+                      <h4 className='inputFieldLabel'>Customer</h4>
+                      <CustomersId
+                        customerListState={customerListState}
+                        setSelectedCustomerData={setSelectedCustomerData}
+                        setCustomerId={setCustomerId}
+                      />
+                      <div
+                        style={{
+                          marginTop: '15px',
+                        }}
+                      ></div>
+                      <h4 className='inputFieldLabel'>Products</h4>
+                      <AddProducts
+                        productListState={productListState}
+                        productIds={productIds}
+                        setProductIds={setProductIds}
+                      />
+                    </div>
+                    <div className='addOrderContainer__container-OrderInfoContainer-right'>
+                      <AddNewOrderSummary
+                        setProductList={setProductList}
+                        productList={productList}
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {current === 1 && (
+                  <div className='addOrderContainer__container-address'>
+                    <div className='dubbleRowInputs'>
+                      <div className='dubbleRowInputs__item'>
+                        <Input
+                          label='First Name'
+                          value={values.firstName}
+                          name='firstName'
+                          isError={
+                            (touched.firstName && errors.firstName) ||
+                            (!isSubmitting &&
+                              addOrderState.error['error']['firstName'])
+                          }
+                          errorString={
+                            (touched.firstName && errors.firstName) ||
+                            (!isSubmitting &&
+                              addOrderState.error['error']['firstName'])
+                          }
+                          onChange={(e: any) => {
+                            handleChange(e);
+                            setFieldTouched('firstName');
+                          }}
+                        />
+                      </div>
+                      <div className='dubbleRowInputs__item'>
+                        <Input
+                          label='Last Name'
+                          value={values.lastName}
+                          name='lastName'
+                          isError={
+                            (touched.lastName && errors.lastName) ||
+                            (!isSubmitting &&
+                              addOrderState.error['error']['lastName'])
+                          }
+                          errorString={
+                            (touched.lastName && errors.lastName) ||
+                            (!isSubmitting &&
+                              addOrderState.error['error']['lastName'])
+                          }
+                          onChange={(e: any) => {
+                            handleChange(e);
+                            setFieldTouched('lastName');
+                          }}
+                        />
+                      </div>
+                    </div>
+
+                    <div className='dubbleRowInputs'>
+                      <div className='dubbleRowInputs__item'>
+                        <Input
+                          label='Phone'
+                          value={values.phone}
+                          name='phone'
+                          isError={
+                            (touched.phone && errors.phone) ||
+                            (!isSubmitting &&
+                              addOrderState.error['error']['phone'])
+                          }
+                          errorString={
+                            (touched.phone && errors.phone) ||
+                            (!isSubmitting &&
+                              addOrderState.error['error']['phone'])
+                          }
+                          onChange={(e: any) => {
+                            handleChange(e);
+                            setFieldTouched('phone');
+                          }}
+                        />
+                      </div>
+                      <div className='dubbleRowInputs__item'>
+                        <Input
+                          label='Email'
+                          value={values.email}
+                          name='email'
+                          isError={
+                            (touched.email && errors.email) ||
+                            (!isSubmitting &&
+                              addOrderState.error['error']['email'])
+                          }
+                          errorString={
+                            (touched.email && errors.email) ||
+                            (!isSubmitting &&
+                              addOrderState.error['error']['email'])
+                          }
+                          onChange={(e: any) => {
+                            handleChange(e);
+                            setFieldTouched('email');
+                          }}
+                        />
+                      </div>
+                    </div>
+
+                    <div className='dubbleRowInputs'>
+                      <div className='dubbleRowInputs__item'>
+                        <h3 className='inputFieldLabel'>Country</h3>
+
+                        <Form.Item
+                          validateStatus={
+                            addOrderState.error['error']['country'] ? 'error' : ''
+                          }
+                          help={addOrderState.error['error']['country']}
+                        // noStyle={true}
+                        >
+                          <Select
+                            defaultValue={values.country}
+                            notFoundContent={
+                              <Empty
+                                description='No Country Found'
+                                image={Empty.PRESENTED_IMAGE_SIMPLE}
+                              />
+                            }
+                            showSearch
+                            style={{ width: '100%' }}
+                            placeholder='Select a Country'
+                            optionFilterProp='children'
+                            onChange={onChangeCountry}
+                            filterOption={(input, option) =>
+                              option.children
+                                .toLowerCase()
+                                .indexOf(input.toLowerCase()) >= 0
+                            }
+                          >
+                            {countryListState.done &&
+                              countryListState.data.length > 0 &&
+                              countryOptions.map((option) => {
+                                return (
+                                  <Option value={option.value}>
+                                    {option.name}
+                                  </Option>
+                                );
+                              })}
+                          </Select>
+                        </Form.Item>
+                      </div>
+                      <div className='dubbleRowInputs__item'>
+                        <h3 className='inputFieldLabel'>City</h3>
+                        <Form.Item
+                          // noStyle={true}
+                          validateStatus={
+                            addOrderState.error['error']['city'] ? 'error' : ''
+                          }
+                          help={addOrderState.error['error']['city']}
+                        >
+                          <Select
+                            defaultValue={values.city}
+                            className='selectClassName'
+                            notFoundContent={
+                              <Empty
+                                description='First Select a Country'
+                                image={Empty.PRESENTED_IMAGE_SIMPLE}
+                              />
+                            }
+                            showSearch
+                            style={{ width: '100%' }}
+                            placeholder='Select a city'
+                            optionFilterProp='children'
+                            onChange={onChangeCity}
+                            filterOption={(input, option) =>
+                              option.children
+                                .toLowerCase()
+                                .indexOf(input.toLowerCase()) >= 0
+                            }
+                          >
+                            {cityListState.done &&
+                              cityListState.data.length > 0 &&
+                              cityOptions.map((option) => {
+                                return (
+                                  <Option value={option.value}>
+                                    {option.name}
+                                  </Option>
+                                );
+                              })}
+                          </Select>
+                        </Form.Item>
+                      </div>
+                    </div>
+
                     <div
                       style={{
-                        marginTop: '15px',
+                        marginTop: '12px',
                       }}
                     ></div>
 
-                    <h4 className='inputFieldLabel'>Customer</h4>
-                    <CustomersId
-                      customerListState={customerListState}
-                      setSelectedCustomerData={setSelectedCustomerData}
-                      setCustomerId={setCustomerId}
-                    />
+                    <div className='dubbleRowInputs'>
+                      <div className='dubbleRowInputs__item'>
+                        <Input
+                          label='Address'
+                          value={values.address1}
+                          name='address1'
+                          isError={
+                            (touched.address1 && errors.address1) ||
+                            (!isSubmitting &&
+                              addOrderState.error['error']['address1'])
+                          }
+                          errorString={
+                            (touched.address1 && errors.address1) ||
+                            (!isSubmitting &&
+                              addOrderState.error['error']['address1'])
+                          }
+                          onChange={(e: any) => {
+                            handleChange(e);
+                            setFieldTouched('address1');
+                          }}
+                        />
+                      </div>
+                      <div className='dubbleRowInputs__item'>
+                        <Input
+                          label='Address 2'
+                          value={values.address2}
+                          name='address2'
+                          isError={
+                            (touched.address2 && errors.address2) ||
+                            (!isSubmitting &&
+                              addOrderState.error['error']['address2'])
+                          }
+                          errorString={
+                            (touched.address2 && errors.address2) ||
+                            (!isSubmitting &&
+                              addOrderState.error['error']['address2'])
+                          }
+                          onChange={(e: any) => {
+                            handleChange(e);
+                            setFieldTouched('address2');
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {current === 10 && (
+                  <div className='addOrderContainer__container-address'>
+                    <div className='dubbleRowInputs'>
+                      <div className='dubbleRowInputs__item'>
+                        <Input
+                          label='First Name'
+                          value={values.firstName}
+                          name='firstName'
+                          isError={
+                            (touched.firstName && errors.firstName) ||
+                            (!isSubmitting &&
+                              addOrderState.error['error']['firstName'])
+                          }
+                          errorString={
+                            (touched.firstName && errors.firstName) ||
+                            (!isSubmitting &&
+                              addOrderState.error['error']['firstName'])
+                          }
+                          onChange={(e: any) => {
+                            handleChange(e);
+                            setFieldTouched('firstName');
+                          }}
+                        />
+                      </div>
+                      <div className='dubbleRowInputs__item'>
+                        <Input
+                          label='Last Name'
+                          value={values.lastName}
+                          name='lastName'
+                          isError={
+                            (touched.lastName && errors.lastName) ||
+                            (!isSubmitting &&
+                              addOrderState.error['error']['lastName'])
+                          }
+                          errorString={
+                            (touched.lastName && errors.lastName) ||
+                            (!isSubmitting &&
+                              addOrderState.error['error']['lastName'])
+                          }
+                          onChange={(e: any) => {
+                            handleChange(e);
+                            setFieldTouched('lastName');
+                          }}
+                        />
+                      </div>
+                    </div>
+
+                    <div className='dubbleRowInputs'>
+                      <div className='dubbleRowInputs__item'>
+                        <Input
+                          label='Phone'
+                          value={values.phone}
+                          name='phone'
+                          isError={
+                            (touched.phone && errors.phone) ||
+                            (!isSubmitting &&
+                              addOrderState.error['error']['phone'])
+                          }
+                          errorString={
+                            (touched.phone && errors.phone) ||
+                            (!isSubmitting &&
+                              addOrderState.error['error']['phone'])
+                          }
+                          onChange={(e: any) => {
+                            handleChange(e);
+                            setFieldTouched('phone');
+                          }}
+                        />
+                      </div>
+                      <div className='dubbleRowInputs__item'>
+                        <Input
+                          label='Email'
+                          value={values.email}
+                          name='email'
+                          isError={
+                            (touched.email && errors.email) ||
+                            (!isSubmitting &&
+                              addOrderState.error['error']['email'])
+                          }
+                          errorString={
+                            (touched.email && errors.email) ||
+                            (!isSubmitting &&
+                              addOrderState.error['error']['email'])
+                          }
+                          onChange={(e: any) => {
+                            handleChange(e);
+                            setFieldTouched('email');
+                          }}
+                        />
+                      </div>
+                    </div>
+
+                    <div className='dubbleRowInputs'>
+                      <div className='dubbleRowInputs__item'>
+                        <h3 className='inputFieldLabel'>Country</h3>
+
+                        <Form.Item
+                          validateStatus={
+                            addOrderState.error['error']['country'] ? 'error' : ''
+                          }
+                          help={addOrderState.error['error']['country']}
+                        // noStyle={true}
+                        >
+                          <Select
+                            defaultValue={'Comoros'}
+                            notFoundContent={
+                              <Empty
+                                description='No Country Found'
+                                image={Empty.PRESENTED_IMAGE_SIMPLE}
+                              />
+                            }
+                            showSearch
+                            style={{ width: '100%' }}
+                            placeholder='Select a Country'
+                            optionFilterProp='children'
+                            onChange={onChangeCountry}
+                            filterOption={(input, option) =>
+                              option.children
+                                .toLowerCase()
+                                .indexOf(input.toLowerCase()) >= 0
+                            }
+                          >
+                            {countryListState.done &&
+                              countryListState.data.length > 0 &&
+                              countryOptions.map((option) => {
+                                return (
+                                  <Option value={option.value}>
+                                    {option.name}
+                                  </Option>
+                                );
+                              })}
+                          </Select>
+                        </Form.Item>
+                      </div>
+                      <div className='dubbleRowInputs__item'>
+                        <h3 className='inputFieldLabel'>City</h3>
+                        <Form.Item
+                          // noStyle={true}
+                          validateStatus={
+                            addOrderState.error['error']['city'] ? 'error' : ''
+                          }
+                          help={addOrderState.error['error']['city']}
+                        >
+                          <Select
+                            defaultValue={'Dhaka'}
+                            className='selectClassName'
+                            notFoundContent={
+                              <Empty
+                                description='First Select a Country'
+                                image={Empty.PRESENTED_IMAGE_SIMPLE}
+                              />
+                            }
+                            showSearch
+                            style={{ width: '100%' }}
+                            placeholder='Select a city'
+                            optionFilterProp='children'
+                            onChange={onChangeCity}
+                            filterOption={(input, option) =>
+                              option.children
+                                .toLowerCase()
+                                .indexOf(input.toLowerCase()) >= 0
+                            }
+                          >
+                            {cityListState.done &&
+                              cityListState.data.length > 0 &&
+                              cityOptions.map((option) => {
+                                return (
+                                  <Option value={option.value}>
+                                    {option.name}
+                                  </Option>
+                                );
+                              })}
+                          </Select>
+                        </Form.Item>
+                      </div>
+                    </div>
+
                     <div
                       style={{
-                        marginTop: '15px',
+                        marginTop: '12px',
                       }}
                     ></div>
-                    <h4 className='inputFieldLabel'>Products</h4>
-                    <AddProducts
-                      productListState={productListState}
-                      productIds={productIds}
-                      setProductIds={setProductIds}
-                    />
+
+                    <div className='dubbleRowInputs'>
+                      <div className='dubbleRowInputs__item'>
+                        <Input
+                          label='Address'
+                          value={values.address1}
+                          name='address1'
+                          isError={
+                            (touched.address1 && errors.address1) ||
+                            (!isSubmitting &&
+                              addOrderState.error['error']['address1'])
+                          }
+                          errorString={
+                            (touched.address1 && errors.address1) ||
+                            (!isSubmitting &&
+                              addOrderState.error['error']['address1'])
+                          }
+                          onChange={(e: any) => {
+                            handleChange(e);
+                            setFieldTouched('address1');
+                          }}
+                        />
+                      </div>
+                      <div className='dubbleRowInputs__item'>
+                        <Input
+                          label='More specific address'
+                          value={values.address2}
+                          name='address2'
+                          isError={
+                            (touched.address2 && errors.address2) ||
+                            (!isSubmitting &&
+                              addOrderState.error['error']['address2'])
+                          }
+                          errorString={
+                            (touched.address2 && errors.address2) ||
+                            (!isSubmitting &&
+                              addOrderState.error['error']['address2'])
+                          }
+                          onChange={(e: any) => {
+                            handleChange(e);
+                            setFieldTouched('address2');
+                          }}
+                        />
+                      </div>
+                    </div>
                   </div>
-                  <div className='addOrderContainer__container-OrderInfoContainer-right'>
+                )}
+
+                {current === 2 && (
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      marginTop: '40px',
+                      alignItems: 'center',
+                      flexDirection: 'column',
+                    }}
+                  >
                     <AddNewOrderSummary
                       setProductList={setProductList}
                       productList={productList}
                     />
-                  </div>
-                </div>
-              )}
 
-              {current === 1 && (
-                <div className='addOrderContainer__container-address'>
-                  <div className='dubbleRowInputs'>
-                    <div className='dubbleRowInputs__item'>
-                      <Input
-                        label='First Name'
-                        value={values.firstName}
-                        name='firstName'
-                        isError={
-                          (touched.firstName && errors.firstName) ||
-                          (!isSubmitting &&
-                            addOrderState.error['error']['firstName'])
-                        }
-                        errorString={
-                          (touched.firstName && errors.firstName) ||
-                          (!isSubmitting &&
-                            addOrderState.error['error']['firstName'])
-                        }
-                        onChange={(e: any) => {
-                          handleChange(e);
-                          setFieldTouched('firstName');
-                        }}
-                      />
-                    </div>
-                    <div className='dubbleRowInputs__item'>
-                      <Input
-                        label='Last Name'
-                        value={values.lastName}
-                        name='lastName'
-                        isError={
-                          (touched.lastName && errors.lastName) ||
-                          (!isSubmitting &&
-                            addOrderState.error['error']['lastName'])
-                        }
-                        errorString={
-                          (touched.lastName && errors.lastName) ||
-                          (!isSubmitting &&
-                            addOrderState.error['error']['lastName'])
-                        }
-                        onChange={(e: any) => {
-                          handleChange(e);
-                          setFieldTouched('lastName');
-                        }}
-                      />
-                    </div>
-                  </div>
-
-                  <div className='dubbleRowInputs'>
-                    <div className='dubbleRowInputs__item'>
-                      <Input
-                        label='Phone'
-                        value={values.phone}
-                        name='phone'
-                        isError={
-                          (touched.phone && errors.phone) ||
-                          (!isSubmitting &&
-                            addOrderState.error['error']['phone'])
-                        }
-                        errorString={
-                          (touched.phone && errors.phone) ||
-                          (!isSubmitting &&
-                            addOrderState.error['error']['phone'])
-                        }
-                        onChange={(e: any) => {
-                          handleChange(e);
-                          setFieldTouched('phone');
-                        }}
-                      />
-                    </div>
-                    <div className='dubbleRowInputs__item'>
-                      <Input
-                        label='Email'
-                        value={values.email}
-                        name='email'
-                        isError={
-                          (touched.email && errors.email) ||
-                          (!isSubmitting &&
-                            addOrderState.error['error']['email'])
-                        }
-                        errorString={
-                          (touched.email && errors.email) ||
-                          (!isSubmitting &&
-                            addOrderState.error['error']['email'])
-                        }
-                        onChange={(e: any) => {
-                          handleChange(e);
-                          setFieldTouched('email');
-                        }}
-                      />
-                    </div>
-                  </div>
-
-                  <div className='dubbleRowInputs'>
-                    <div className='dubbleRowInputs__item'>
-                      <h3 className='inputFieldLabel'>Country</h3>
-
-                      <Form.Item
-                        validateStatus={
-                          addOrderState.error['error']['country'] ? 'error' : ''
-                        }
-                        help={addOrderState.error['error']['country']}
-                        // noStyle={true}
-                      >
-                        <Select
-                          defaultValue={values.country}
-                          notFoundContent={
-                            <Empty
-                              description='No Country Found'
-                              image={Empty.PRESENTED_IMAGE_SIMPLE}
-                            />
-                          }
-                          showSearch
-                          style={{ width: '100%' }}
-                          placeholder='Select a Country'
-                          optionFilterProp='children'
-                          onChange={onChangeCountry}
-                          filterOption={(input, option) =>
-                            option.children
-                              .toLowerCase()
-                              .indexOf(input.toLowerCase()) >= 0
-                          }
-                        >
-                          {countryListState.done &&
-                            countryListState.data.length > 0 &&
-                            countryOptions.map((option) => {
-                              return (
-                                <Option value={option.value}>
-                                  {option.name}
-                                </Option>
-                              );
-                            })}
-                        </Select>
-                      </Form.Item>
-                    </div>
-                    <div className='dubbleRowInputs__item'>
-                      <h3 className='inputFieldLabel'>City</h3>
-                      <Form.Item
-                        // noStyle={true}
-                        validateStatus={
-                          addOrderState.error['error']['city'] ? 'error' : ''
-                        }
-                        help={addOrderState.error['error']['city']}
-                      >
-                        <Select
-                          defaultValue={values.city}
-                          className='selectClassName'
-                          notFoundContent={
-                            <Empty
-                              description='First Select a Country'
-                              image={Empty.PRESENTED_IMAGE_SIMPLE}
-                            />
-                          }
-                          showSearch
-                          style={{ width: '100%' }}
-                          placeholder='Select a city'
-                          optionFilterProp='children'
-                          onChange={onChangeCity}
-                          filterOption={(input, option) =>
-                            option.children
-                              .toLowerCase()
-                              .indexOf(input.toLowerCase()) >= 0
-                          }
-                        >
-                          {cityListState.done &&
-                            cityListState.data.length > 0 &&
-                            cityOptions.map((option) => {
-                              return (
-                                <Option value={option.value}>
-                                  {option.name}
-                                </Option>
-                              );
-                            })}
-                        </Select>
-                      </Form.Item>
-                    </div>
-                  </div>
-
-                  <div
-                    style={{
-                      marginTop: '12px',
-                    }}
-                  ></div>
-
-                  <div className='dubbleRowInputs'>
-                    <div className='dubbleRowInputs__item'>
-                      <Input
-                        label='Address'
-                        value={values.address1}
-                        name='address1'
-                        isError={
-                          (touched.address1 && errors.address1) ||
-                          (!isSubmitting &&
-                            addOrderState.error['error']['address1'])
-                        }
-                        errorString={
-                          (touched.address1 && errors.address1) ||
-                          (!isSubmitting &&
-                            addOrderState.error['error']['address1'])
-                        }
-                        onChange={(e: any) => {
-                          handleChange(e);
-                          setFieldTouched('address1');
-                        }}
-                      />
-                    </div>
-                    <div className='dubbleRowInputs__item'>
-                      <Input
-                        label='Address 2'
-                        value={values.address2}
-                        name='address2'
-                        isError={
-                          (touched.address2 && errors.address2) ||
-                          (!isSubmitting &&
-                            addOrderState.error['error']['address2'])
-                        }
-                        errorString={
-                          (touched.address2 && errors.address2) ||
-                          (!isSubmitting &&
-                            addOrderState.error['error']['address2'])
-                        }
-                        onChange={(e: any) => {
-                          handleChange(e);
-                          setFieldTouched('address2');
-                        }}
-                      />
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {current === 10 && (
-                <div className='addOrderContainer__container-address'>
-                  <div className='dubbleRowInputs'>
-                    <div className='dubbleRowInputs__item'>
-                      <Input
-                        label='First Name'
-                        value={values.firstName}
-                        name='firstName'
-                        isError={
-                          (touched.firstName && errors.firstName) ||
-                          (!isSubmitting &&
-                            addOrderState.error['error']['firstName'])
-                        }
-                        errorString={
-                          (touched.firstName && errors.firstName) ||
-                          (!isSubmitting &&
-                            addOrderState.error['error']['firstName'])
-                        }
-                        onChange={(e: any) => {
-                          handleChange(e);
-                          setFieldTouched('firstName');
-                        }}
-                      />
-                    </div>
-                    <div className='dubbleRowInputs__item'>
-                      <Input
-                        label='Last Name'
-                        value={values.lastName}
-                        name='lastName'
-                        isError={
-                          (touched.lastName && errors.lastName) ||
-                          (!isSubmitting &&
-                            addOrderState.error['error']['lastName'])
-                        }
-                        errorString={
-                          (touched.lastName && errors.lastName) ||
-                          (!isSubmitting &&
-                            addOrderState.error['error']['lastName'])
-                        }
-                        onChange={(e: any) => {
-                          handleChange(e);
-                          setFieldTouched('lastName');
-                        }}
-                      />
-                    </div>
-                  </div>
-
-                  <div className='dubbleRowInputs'>
-                    <div className='dubbleRowInputs__item'>
-                      <Input
-                        label='Phone'
-                        value={values.phone}
-                        name='phone'
-                        isError={
-                          (touched.phone && errors.phone) ||
-                          (!isSubmitting &&
-                            addOrderState.error['error']['phone'])
-                        }
-                        errorString={
-                          (touched.phone && errors.phone) ||
-                          (!isSubmitting &&
-                            addOrderState.error['error']['phone'])
-                        }
-                        onChange={(e: any) => {
-                          handleChange(e);
-                          setFieldTouched('phone');
-                        }}
-                      />
-                    </div>
-                    <div className='dubbleRowInputs__item'>
-                      <Input
-                        label='Email'
-                        value={values.email}
-                        name='email'
-                        isError={
-                          (touched.email && errors.email) ||
-                          (!isSubmitting &&
-                            addOrderState.error['error']['email'])
-                        }
-                        errorString={
-                          (touched.email && errors.email) ||
-                          (!isSubmitting &&
-                            addOrderState.error['error']['email'])
-                        }
-                        onChange={(e: any) => {
-                          handleChange(e);
-                          setFieldTouched('email');
-                        }}
-                      />
-                    </div>
-                  </div>
-
-                  <div className='dubbleRowInputs'>
-                    <div className='dubbleRowInputs__item'>
-                      <h3 className='inputFieldLabel'>Country</h3>
-
-                      <Form.Item
-                        validateStatus={
-                          addOrderState.error['error']['country'] ? 'error' : ''
-                        }
-                        help={addOrderState.error['error']['country']}
-                        // noStyle={true}
-                      >
-                        <Select
-                          defaultValue={'Comoros'}
-                          notFoundContent={
-                            <Empty
-                              description='No Country Found'
-                              image={Empty.PRESENTED_IMAGE_SIMPLE}
-                            />
-                          }
-                          showSearch
-                          style={{ width: '100%' }}
-                          placeholder='Select a Country'
-                          optionFilterProp='children'
-                          onChange={onChangeCountry}
-                          filterOption={(input, option) =>
-                            option.children
-                              .toLowerCase()
-                              .indexOf(input.toLowerCase()) >= 0
-                          }
-                        >
-                          {countryListState.done &&
-                            countryListState.data.length > 0 &&
-                            countryOptions.map((option) => {
-                              return (
-                                <Option value={option.value}>
-                                  {option.name}
-                                </Option>
-                              );
-                            })}
-                        </Select>
-                      </Form.Item>
-                    </div>
-                    <div className='dubbleRowInputs__item'>
-                      <h3 className='inputFieldLabel'>City</h3>
-                      <Form.Item
-                        // noStyle={true}
-                        validateStatus={
-                          addOrderState.error['error']['city'] ? 'error' : ''
-                        }
-                        help={addOrderState.error['error']['city']}
-                      >
-                        <Select
-                          defaultValue={'Dhaka'}
-                          className='selectClassName'
-                          notFoundContent={
-                            <Empty
-                              description='First Select a Country'
-                              image={Empty.PRESENTED_IMAGE_SIMPLE}
-                            />
-                          }
-                          showSearch
-                          style={{ width: '100%' }}
-                          placeholder='Select a city'
-                          optionFilterProp='children'
-                          onChange={onChangeCity}
-                          filterOption={(input, option) =>
-                            option.children
-                              .toLowerCase()
-                              .indexOf(input.toLowerCase()) >= 0
-                          }
-                        >
-                          {cityListState.done &&
-                            cityListState.data.length > 0 &&
-                            cityOptions.map((option) => {
-                              return (
-                                <Option value={option.value}>
-                                  {option.name}
-                                </Option>
-                              );
-                            })}
-                        </Select>
-                      </Form.Item>
-                    </div>
-                  </div>
-
-                  <div
-                    style={{
-                      marginTop: '12px',
-                    }}
-                  ></div>
-
-                  <div className='dubbleRowInputs'>
-                    <div className='dubbleRowInputs__item'>
-                      <Input
-                        label='Address'
-                        value={values.address1}
-                        name='address1'
-                        isError={
-                          (touched.address1 && errors.address1) ||
-                          (!isSubmitting &&
-                            addOrderState.error['error']['address1'])
-                        }
-                        errorString={
-                          (touched.address1 && errors.address1) ||
-                          (!isSubmitting &&
-                            addOrderState.error['error']['address1'])
-                        }
-                        onChange={(e: any) => {
-                          handleChange(e);
-                          setFieldTouched('address1');
-                        }}
-                      />
-                    </div>
-                    <div className='dubbleRowInputs__item'>
-                      <Input
-                        label='More specific address'
-                        value={values.address2}
-                        name='address2'
-                        isError={
-                          (touched.address2 && errors.address2) ||
-                          (!isSubmitting &&
-                            addOrderState.error['error']['address2'])
-                        }
-                        errorString={
-                          (touched.address2 && errors.address2) ||
-                          (!isSubmitting &&
-                            addOrderState.error['error']['address2'])
-                        }
-                        onChange={(e: any) => {
-                          handleChange(e);
-                          setFieldTouched('address2');
-                        }}
-                      />
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {current === 2 && (
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    marginTop: '40px',
-                    alignItems: 'center',
-                    flexDirection: 'column',
-                  }}
-                >
-                  <AddNewOrderSummary
-                    setProductList={setProductList}
-                    productList={productList}
-                  />
-
-                  <div
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <h3
+                    <div
                       style={{
-                        marginTop: '20px',
-                        display: 'inline-block',
-                        textAlign: 'center',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        alignItems: 'center',
                       }}
-                      className='addOrderContainer-sectionTitle'
                     >
-                      <span>
-                        <CarOutlined />
-                      </span>
+                      <h3
+                        style={{
+                          marginTop: '20px',
+                          display: 'inline-block',
+                          textAlign: 'center',
+                        }}
+                        className='addOrderContainer-sectionTitle'
+                      >
+                        <span>
+                          <CarOutlined />
+                        </span>
                       Delivery Region List ({selectedCityValue})
                     </h3>
 
-                    {regionDeliveryCharge && regionDeliveryCharge.length > 0 ? (
-                      <>
-                        <Radio.Group
-                          style={{
-                            display: 'flex',
-                            justifyContent: 'center',
-                            flexWrap: 'wrap',
-                          }}
-                          value={deliveryRegionName}
-                          defaultValue={deliveryRegionName}
-                          name='radiogroup'
-                        >
-                          {regionDeliveryCharge.map((deliveryRegionItem) => {
-                            return (
-                              <div
-                                onClick={() =>
-                                  handleDeviliveryRegionChange(
-                                    deliveryRegionItem._id
-                                  )
-                                }
-                                className='deliveryRegionLabelContainer'
-                              >
-                                <div className='deliveryRegionLabelContainer__radio'>
-                                  <Radio value={deliveryRegionItem._id}></Radio>
+                      <Search
+                        style={{
+                          marginTop: '15px'
+                        }}
+                        enterButton={false}
+                        className="searchbarClassName"
+                        placeholder="search region.."
+                        onChange={(e) => handleSearch(e.target.value)}
+                      />
+
+                      {regionDeliveryCharge && regionDeliveryCharge.length > 0 ? (
+                        <>
+                          <Radio.Group
+                            style={{
+                              display: 'flex',
+                              justifyContent: 'center',
+                              flexWrap: 'wrap',
+                            }}
+                            value={deliveryRegionName}
+                            defaultValue={deliveryRegionName}
+                            name='radiogroup'
+                          >
+                            {regionDeliveryCharge.map((deliveryRegionItem) => {
+                              return (
+                                <div
+                                  onClick={() =>
+                                    handleDeviliveryRegionChange(
+                                      deliveryRegionItem._id
+                                    )
+                                  }
+                                  className='deliveryRegionLabelContainer'
+                                >
+                                  <div className='deliveryRegionLabelContainer__radio'>
+                                    <Radio value={deliveryRegionItem._id}></Radio>
+                                  </div>
+                                  <div className='deliveryRegionLabelContainer__info'>
+                                    <h3>{deliveryRegionItem.name}</h3>
+                                    <h4>
+                                      <span>
+                                        <CarOutlined />
+                                      </span>
+                                      {deliveryRegionItem.pickUpLocation}
+                                    </h4>
+                                    <h4>
+                                      <span>
+                                        <ClockCircleOutlined />
+                                      </span>
+                                      {deliveryRegionItem.time}
+                                    </h4>
+                                  </div>
                                 </div>
-                                <div className='deliveryRegionLabelContainer__info'>
-                                  <h3>{deliveryRegionItem.name}</h3>
-                                  <h4>
-                                    <span>
-                                      <CarOutlined />
-                                    </span>
-                                    {deliveryRegionItem.pickUpLocation}
-                                  </h4>
-                                  <h4>
-                                    <span>
-                                      <ClockCircleOutlined />
-                                    </span>
-                                    {deliveryRegionItem.time}
-                                  </h4>
-                                </div>
-                              </div>
-                            );
-                          })}
-                        </Radio.Group>
-                      </>
-                    ) : (
-                      <>
-                        <h4
-                          style={{
-                            textAlign: 'center',
-                            color: '#777',
-                            marginTop: '50px',
-                          }}
-                        >
-                          Delivery not found
+                              );
+                            })}
+                          </Radio.Group>
+                        </>
+                      ) : (
+                          <>
+                            <h4
+                              style={{
+                                textAlign: 'center',
+                                color: '#777',
+                                marginTop: '50px',
+                              }}
+                            >
+                              Delivery not found
                         </h4>
-                      </>
-                    )}
-                  </div>
+                          </>
+                        )}
+                    </div>
 
-                  <div
-                    style={{
-                      display: 'flex',
-                      marginTop: '40px',
-                      marginBottom: '50px',
-                    }}
-                  >
-                    <Button
-                      loading={addOrderState.isLoading}
+                    <div
                       style={{
-                        marginTop: '10px',
-                        marginLeft: '15px',
+                        display: 'flex',
+                        marginTop: '40px',
+                        marginBottom: '50px',
                       }}
-                      className='btnPrimaryClassNameoutline-blue'
-                      onClick={(e: any) => handleSubmit(e)}
                     >
-                      Place Order
-                      <CaretRightOutlined />
-                    </Button>
-                  </div>
-                </div>
-              )}
-
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                }}
-              >
-                {current > 0 && (
-                  <Button
-                    style={{ marginRight: '15px', marginTop: '10px' }}
-                    // type="primary"
-                    className='btnPrimaryClassNameoutline'
-                    type='primary'
-                    onClick={() => prev()}
-                  >
-                    <CaretLeftOutlined /> Previous
-                  </Button>
-                )}
-
-                {current < steps.length - 1 && (
-                  <>
-                    <div>
                       <Button
+                        loading={addOrderState.isLoading}
                         style={{
                           marginTop: '10px',
+                          marginLeft: '15px',
                         }}
-                        className='btnPrimaryClassNameoutline'
-                        type='primary'
-                        onClick={() => {
-                          if (current === 1) {
-                            setCurrent(2);
-                          } else {
-                            next();
-                          }
-                        }}
+                        className='btnPrimaryClassNameoutline-blue'
+                        onClick={(e: any) => handleSubmit(e)}
                       >
-                        Next
-                        <CaretRightOutlined />
+                        Place Order
+                      <CaretRightOutlined />
                       </Button>
+                    </div>
+                  </div>
+                )}
 
-                      {/* {current === 1 && <Button
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  {current > 0 && (
+                    <Button
+                      style={{ marginRight: '15px', marginTop: '10px' }}
+                      // type="primary"
+                      className='btnPrimaryClassNameoutline'
+                      type='primary'
+                      onClick={() => prev()}
+                    >
+                      <CaretLeftOutlined /> Previous
+                    </Button>
+                  )}
+
+                  {current < steps.length - 1 && (
+                    <>
+                      <div>
+                        <Button
+                          style={{
+                            marginTop: '10px',
+                          }}
+                          className='btnPrimaryClassNameoutline'
+                          type='primary'
+                          onClick={() => {
+                            if (current === 1) {
+                              setCurrent(2);
+                            } else {
+                              next();
+                            }
+                          }}
+                        >
+                          Next
+                        <CaretRightOutlined />
+                        </Button>
+
+                        {/* {current === 1 && <Button
 													style={{
 														marginTop: '10px',
 														marginLeft: '15px'
@@ -1152,11 +1187,11 @@ const AddNewOrder = ({}: Props) => {
 
 												</Button>
 												} */}
-                    </div>
-                  </>
-                )}
+                      </div>
+                    </>
+                  )}
 
-                {/* {current === steps.length - 1 && (
+                  {/* {current === steps.length - 1 && (
 										<Button
 											style={{
 												marginTop: '10px',
@@ -1171,18 +1206,18 @@ const AddNewOrder = ({}: Props) => {
 
 										</Button>
 									)} */}
-              </div>
+                </div>
 
-              {/* <div className='addOrderContainer__container-left'>
+                {/* <div className='addOrderContainer__container-left'>
 								
 								</div>
 								<div className='addOrderContainer__container-right'>
 									<AddNewOrderSummary />
 								</div> */}
+              </div>
             </div>
-          </div>
-        </>
-      )}
+          </>
+        )}
     </Formik>
   );
 };

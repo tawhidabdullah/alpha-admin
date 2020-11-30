@@ -23,7 +23,8 @@ const Tags = ({
             const tagListRes = await handleTagListFetch({
                 urlOptions: {
                     params: {
-                        isSubCategory: false
+                        isSubCategory: false,
+                        limitNumber: 100
                     }
                 }
             });
@@ -92,12 +93,12 @@ const Tags = ({
             </Skeleton>
 
             {tagState.done && tagState.data && !(tagState.data.length > 0) && (
-                    <div style={{
-                        marginLeft: '32px'
-                    }}>
-                        <Empty title='No Product Found' height={150} />
-                    </div>
-                )}
+                <div style={{
+                    marginLeft: '32px'
+                }}>
+                    <Empty title='No Product Found' height={150} />
+                </div>
+            )}
 
 
         </>

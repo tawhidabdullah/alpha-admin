@@ -2,6 +2,9 @@ import config from '../config.json';
 import dataMap from '../dataMap.json';
 import moment from 'moment';
 
+// import utils
+import { getDeliveryChargeTotal } from "../utils";
+
 class Converter {
   /**
    * @public
@@ -4187,7 +4190,7 @@ class Converter {
           order.shippingAddress['lastName'],
         country: order.shippingAddress['country'],
         city: order.shippingAddress['city'],
-        address: order.shippingAddress['address'],
+        address: order.shippingAddress['address1'],
         phone: order.shippingAddress['phone'],
         email: order.shippingAddress['email'],
         shortCode: order.shortCode || '',
@@ -4198,7 +4201,7 @@ class Converter {
               ? order.status['name']
               : 'pending',
         total: order.totalPrice,
-        deliveryCharge: order.totalPrice,
+        deliveryCharge: order.totalCharge - order.totalPrice,
         deliveryRegion: order.deliveryRegion,
         deliveryName: order.deliveryRegion && order.deliveryRegion['name'],
         deliveryPickUpLocation:

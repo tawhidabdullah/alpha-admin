@@ -21,6 +21,7 @@ const Tags = ({ setProductIds, productIds }: Props) => {
             sortItem: 'added',
             sortOrderValue: '-1',
             productType: 'product',
+            pageNumber: 1
           },
         },
       });

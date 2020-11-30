@@ -1,5 +1,5 @@
 {
     "server": "alpha",
-    "baseURL": "http://localhost:5000",
+    "baseURL": "",
     "baseURL2": ""
 }

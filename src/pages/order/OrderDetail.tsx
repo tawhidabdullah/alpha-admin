@@ -176,6 +176,7 @@ const NewBrandDetail = ({ roles }: Props) => {
     } else return '';
   };
 
+  console.log({ tagDetailState })
 
   return (
     <div className='brandDetailContainer'>
@@ -258,55 +259,55 @@ const NewBrandDetail = ({ roles }: Props) => {
                 >
                   <div className='brandDetailContainer__header-info'>
                     {tagDetailState.data['shortCode'] && (
-                        <h2>#{tagDetailState.data['shortCode']}</h2>
+                      <h2>#{tagDetailState.data['shortCode']}</h2>
                     )}
-                 
+
                     <h2>{tagDetailState.data['name']}</h2>
                     <h3>{tagDetailState.data['description']}</h3>
                     {tagDetailState.data['url'] && (
-                      <h3>
+                      <h3 className="m-0">
                         URL:
                         <span>{tagDetailState.data['url']}</span>
                       </h3>
                     )}
 
                     {tagDetailState['data']['country'] && (
-                      <h3>
+                      <h3 className="m-0">
                         COUNTRY:
                         <span>{tagDetailState['data']['country']}</span>
                       </h3>
                     )}
 
                     {tagDetailState['data']['city'] && (
-                      <h3>
+                      <h3 className="m-0">
                         CITY:
                         <span>{tagDetailState['data']['city']}</span>
                       </h3>
                     )}
 
-                    {tagDetailState['data']['address1'] && (
-                      <h3>
+                    {tagDetailState['data']['address'] && (
+                      <h3 className="m-0">
                         ADDRESS:
-                        <span>{tagDetailState['data']['address1']}</span>
+                        <span>{tagDetailState['data']['address']}</span>
                       </h3>
                     )}
 
                     {tagDetailState['data']['phone'] && (
-                      <h3>
+                      <h3 className="m-0">
                         PHONE:
                         <span>{tagDetailState['data']['phone']}</span>
                       </h3>
                     )}
 
                     {tagDetailState['data']['email'] && (
-                      <h3>
+                      <h3 className="m-0">
                         EMAIL:
                         <span>{tagDetailState['data']['email']}</span>
                       </h3>
                     )}
 
                     {tagDetailState['data']['paymentMethod'] && (
-                      <h3>
+                      <h3 className="m-0">
                         PAYMENT METHOD:
                         <span>{tagDetailState['data']['paymentMethod']}</span>
                       </h3>
@@ -510,16 +511,16 @@ const NewBrandDetail = ({ roles }: Props) => {
                   className='classnameofthecolumn'
                   render={(cover, record: any) => (
                     <>
-                    <div
-                      className='listCoverImage'
-                      onClick={() => {
-                        history.push(`/admin/product/${record.id}`);
-                      }}
-                    >
-                      <img src={getCover(record)} alt='' />
-                    </div>
+                      <div
+                        className='listCoverImage'
+                        onClick={() => {
+                          history.push(`/admin/product/${record.id}`);
+                        }}
+                      >
+                        <img src={getCover(record)} alt='' />
+                      </div>
 
-         
+
                     </>
                   )}
                 />
