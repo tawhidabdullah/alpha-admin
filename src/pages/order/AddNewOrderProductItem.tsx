@@ -199,7 +199,7 @@ const CartOverLayCartItem = ({
     console.log('modifiedPrice', modifiedPrice);
     return (
         <>
-
+            Hello there
             {item && Object.keys(item).length > 0 && (
                 <div className='cart-item' key={''}>
                     <div className='cart-item-quantityCounter'>

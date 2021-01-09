@@ -51,6 +51,7 @@ const CouponProducts = ({
         <Skeleton
             paragraph={{ rows: 2 }}
             loading={productDetailState.isLoading}>
+                {console.log({productDetailState})}
             {productDetailState.data && Object.keys(productDetailState.data).length > 0 && (
                 <>
                     <div className='couponDetailProductItem'>

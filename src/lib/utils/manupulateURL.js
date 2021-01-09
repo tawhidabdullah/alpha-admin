@@ -10,10 +10,8 @@ const manipulateURL = (url, urlOptions = {}) => {
 
 
 
-  return url
-    .split('/')
-    .map(currentValue => {
-      console.log({ currentValue })
+  return url.split('/').map(currentValue => {
+
       if (currentValue?.includes(':') && !isObjectEmpty(placeHolders) && !currentValue?.includes('?')) {
         let actualPlaceholderValue = placeHolders[currentValue.replace(':', '')];
         currentValue = actualPlaceholderValue;
@@ -31,9 +29,7 @@ const manipulateURL = (url, urlOptions = {}) => {
       }
 
       if (currentValue?.includes('?') && !currentValue?.includes('/')) {
-        currentValue = currentValue
-          .split('&')
-          .map(currentValue => {
+        currentValue = currentValue.split('&').map(currentValue => {
             const param = currentValue.slice(currentValue.indexOf('=') + 1);
             return currentValue.replace(param, params[param] || '');
           })

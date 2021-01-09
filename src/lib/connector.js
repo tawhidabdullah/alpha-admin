@@ -87,7 +87,7 @@ class Connector {
 
     //*replace variable parts in url with actual data if params exists |or| just return the url
 
-    console.log('myUrl', getUrl(api.url), getUrlOptions(options.urlOptions));
+    // console.log('myUrl', getUrl(api.url), getUrlOptions(options.urlOptions));
 
     const url = manupulateURL(
       getUrl(api.url),

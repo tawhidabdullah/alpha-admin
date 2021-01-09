@@ -493,8 +493,9 @@ const CustomerList = ({ roles }: Props) => {
   const handleSearch = (value) => {
     if (orderState.data.length > 0) {
       const newOrderList = orderState.data.filter((item) => {
-        console.log('orderItem3',item)
-        return `#${item.shortCode.toLowerCase()}`.includes(value.toLowerCase()) ||  `${item.shortCode.toLowerCase()}`.includes(value.toLowerCase())
+        // console.log('orderItem3',item)
+        return JSON.stringify(item).toLocaleLowerCase().includes(value);
+        // return `#${item.shortCode.toLowerCase()}`.includes(value.toLowerCase()) ||  `${item.shortCode.toLowerCase()}`.includes(value.toLowerCase())
       }
         
       );
@@ -550,6 +551,7 @@ const CustomerList = ({ roles }: Props) => {
   const getData = () => {
     if (orderList && orderList.length > 0) {
       const csvData = orderList.map((item) => {
+        console.log(item);
         return {
           shortCode: item.shortCode,
           name: item.name,

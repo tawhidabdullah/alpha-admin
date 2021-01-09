@@ -20,9 +20,9 @@ const Tags = ({
 
 
     useEffect(() => {
-        if (productListState.done && productListState.data && productListState.data.length > 0) {
+        if (productListState.done && productListState.data && productListState.data.data.length > 0) {
             // @ts-ignore
-            const productOptions = productListState.data.map((product) => {
+            const productOptions = productListState.data.data.map((product) => {
                 return product.name
             });
             setoptions(productOptions);
@@ -35,11 +35,9 @@ const Tags = ({
     const handleChange = (selectItems) => {
         setselectedOptions(selectItems);
 
-        console.log('selectedProducts', selectItems);
-
-        if (productListState.done && productListState.data.length > 0 && selectItems.length > 0) {
+        if (productListState.done && productListState.data.data.length > 0 && selectItems.length > 0) {
             const selectedCategoryIds = selectItems.map((item) => {
-                const selectedcategory = productListState.data.find(
+                const selectedcategory = productListState.data.data.find(
                     (cat) => cat.name.toLowerCase() === item.toLowerCase()
                 );
                 if (selectedcategory) {
@@ -61,7 +59,7 @@ const Tags = ({
     return (
         <>
             <Skeleton loading={productListState.isLoading}>
-                {productListState.done && productListState.data.length > 0 && <Select
+                {productListState.done && productListState.data.data.length > 0 && <Select
                     mode="multiple"
                     placeholder="search products"
                     value={selectedOpions}
@@ -73,6 +71,7 @@ const Tags = ({
                             {item}
                         </Select.Option>
                     ))}
+
                 </Select>}
             </Skeleton>
 

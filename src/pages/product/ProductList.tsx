@@ -1,3 +1,5 @@
+//@ts-nocheck
+
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { queryCache, useMutation, useQueryCache } from 'react-query'
@@ -44,6 +46,10 @@ import TableListWithPagination from "../../components/TableListWithPagination";
 // import state
 import { isAccess } from "../../utils";
 import { connect } from "react-redux";
+
+import requestApi from "../../lib/RequestApi.js";
+requestApi.baseURL = config.baseURL;
+
 
 const { Column, ColumnGroup } = Table;
 const { Search } = Input;
@@ -120,7 +126,7 @@ const MyTable = ({ data, setProductList, roles, productListState, searchList }: 
         }))
       }
 
-      console.log({ idQueryKey: idQueryKey })
+      // console.log({ idQueryKey: idQueryKey })
 
       openSuccessNotification();
 
@@ -151,7 +157,7 @@ const MyTable = ({ data, setProductList, roles, productListState, searchList }: 
       };
 
       const index = positionInTag();
-      console.log("recordis", record, index);
+      // console.log("recordis", record, index);
 
       // @ts-ignore
       const updatedItem = Object.assign({}, data[index], {
@@ -162,7 +168,7 @@ const MyTable = ({ data, setProductList, roles, productListState, searchList }: 
         updatedItem,
         ...data.slice(index + 1),
       ];
-      console.log("updateOrderList", updateOrderList, "-----", setProductList);
+      // console.log("updateOrderList", updateOrderList, "-----", setProductList);
       setProductList(updateOrderList);
     }
   };
@@ -387,6 +393,7 @@ const ProductList = ({ roles }: Props) => {
   const [productList, setProductList] = useState([]);
   const [searchList, setSearchList] = useState([]);
   const [isUploadCSVModalOpen, setIsUploadCSVModalOpen] = useState(false);
+  const [keyWord, setKeyWord] = useState("");
 
   const [productState, handleProductListFetch] = useHandleFetch(
     {},
@@ -397,29 +404,46 @@ const ProductList = ({ roles }: Props) => {
     urlOptions: {
       params: {
         limitNumber: 11,
-        sortItem: 'added',
-        sortOrderValue: '-1',
+        sortItem: 'name',
+        sortOrderValue: '1',
         pageNumber: 1
       }
     },
   }, `product`);
 
+  // const [searchResultState, handleSearchResult] = useHandleFetch([], "searchProduct");
+
+  async function getSearchResult() {
+    if (keyWord) {
+      const searchResponse = await requestApi.get("/api/search?limit=1000&query=" + keyWord);
+      if (searchResponse && searchResponse.data) {
+        setSearchList(searchResponse.data)
+      }
+
+    }
+  }
+
+  useEffect(() => {
+    getSearchResult();
+  }, [keyWord])
+
+
+  useEffect(() => { console.log({ searchList }) }, [searchList])
 
   const [addNewCategoryVisible, setAddNewCategoryVisible] = useState(false);
 
   // console.log('productState', productState)
 
-  const handleSearch = (value) => {
+  const handleSearch = async (value) => {
+
+
+
     if (value === '') {
       setSearchList([]);
+      setKeyWord("")
     }
     else {
-      if (productListState?.resolvedData?.data?.length > 0) {
-        const newProductList = productListState?.resolvedData?.data?.filter((item) =>
-          item.name.toLowerCase().includes(value.toLowerCase())
-        );
-        setSearchList(newProductList);
-      }
+      setKeyWord(value);
     }
 
   };

@@ -10,29 +10,30 @@ interface Props {
 }
 
 
-const Tags = ({
-    setProductIds,
-    productIds
-}: Props) => {
+const Products = ({ setProductIds, productIds }: Props) => {
     const [options, setoptions] = useState([]);
     const [selectedOpions, setselectedOptions] = useState([]);
-    const [tagState, handleTagListFetch] = useHandleFetch({}, 'productList');
+    const [productState, handleProductListFetch] = useHandleFetch({}, "productList");
 
     useEffect(() => {
-        const setTags = async () => {
-            const tagListRes = await handleTagListFetch({
+        const setProducts = async () => {
+            const productListRes = await handleProductListFetch({
                 urlOptions: {
                     params: {
-                        isSubCategory: false,
-                        limitNumber: 200
+                        limit:100000,
+                        sortItem:"name",
+                        sortOrderValue:"1",
+                        productType:"product",
+                        pageNumber: 1,
+                
                     }
                 }
             });
-
+            console.log({productListRes})
             // @ts-ignore
-            if (tagListRes && tagListRes.length > 0) {
+            if (productListRes && productListRes.data.length > 0) {
                 // @ts-ignore
-                const tagOptions = tagListRes.map((tag) => {
+                const tagOptions = productListRes.data.map((tag) => {
                     return tag.name
                 });
                 setoptions(tagOptions);
@@ -40,7 +41,7 @@ const Tags = ({
 
         };
 
-        setTags();
+        setProducts();
     }, []);
 
 
@@ -53,26 +54,25 @@ const Tags = ({
         }
     }, [productIds]);
 
-    console.log('OrderProudctItemsProductIds', productIds);
-
-
-
+    useEffect(()=>{
+        console.log({productState})
+    }, [productState])
 
     const handleChange = (selectItems) => {
         setselectedOptions(selectItems);
 
-        console.log('selectedProducts', selectItems);
-
-        if (tagState.done && tagState.data.length > 0 && selectItems.length > 0) {
+        // console.log('selectedProducts', selectItems);
+        console.log({productState})
+        if (productState.done && productState.data.data.length > 0 && selectItems.length > 0) {
             const selectedCategoryIds = selectItems.map((item) => {
-                const selectedcategory = tagState.data.find(
+                const selectedcategory = productState.data.data.find(
                     (cat) => cat.name.toLowerCase() === item.toLowerCase()
                 );
                 if (selectedcategory) {
                     return selectedcategory;
                 }
             });
-            console.log('selectedCategoryIds', selectedCategoryIds);
+            // console.log('selectedCategoryIds', selectedCategoryIds);
             setProductIds(selectedCategoryIds);
         }
         else {
@@ -89,8 +89,9 @@ const Tags = ({
     return (
         <>
 
-            <Skeleton loading={tagState.isLoading}>
-                {tagState.done && tagState.data.length > 0 && <Select
+            <Skeleton loading={productState.isLoading}>
+                {console.log(productState)}
+                {productState.done && productState.data.data.length > 0 && <Select
                     mode="multiple"
                     placeholder="search products"
                     value={selectedOpions}
@@ -103,7 +104,7 @@ const Tags = ({
                         </Select.Option>
                     ))}
                 </Select>}
-                {tagState.done && tagState.data && !(tagState.data.length > 0) && (
+                {productState.done && productState.data.data && !(productState.data.data.length > 0) && (
                     <div style={{
                         marginLeft: '32px'
                     }}>
@@ -118,4 +119,4 @@ const Tags = ({
     )
 }
 
-export default Tags
+export default Products

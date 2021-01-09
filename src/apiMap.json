@@ -48,6 +48,12 @@
       "url": "/admin/api/image/cover/:imageId/:collection/:itemId",
       "method": "post"
     },
+
+    "searchProduct":{
+      "url": "/api/search?query=query",
+      "method": "get"
+    },
+
     "productList": {
       "url": "/api/product?sort=sortItem&sortOrder=sortOrderValue&type=productType&page=pageNumber",
       "method": "get"

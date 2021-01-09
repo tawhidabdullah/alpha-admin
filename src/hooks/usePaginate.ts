@@ -63,7 +63,7 @@ const useQueryPaginate = (
     useEffect(() => {
         // @ts-ignore
         if (latestData?.next) {
-            cache.prefetchQuery([key || item, page + 1], fetchProjects)
+            cache.prefetchQuery([key || item, page], fetchProjects)
         }
     }, [latestData, fetchProjects, page]);
 

@@ -29,7 +29,7 @@ class ComponentToPrint extends React.Component {
       <>
         <div ref={anotherRef} className='invoiceContainer'>
           <table
-            width='100%'
+            width='98%'
             border={0}
             cellPadding={0}
             cellSpacing={0}
@@ -283,7 +283,7 @@ class ComponentToPrint extends React.Component {
                   <tr>
                     <td>
                       <table
-                        width={600}
+                        width={"100%"}
                         border={0}
                         cellPadding={0}
                         cellSpacing={0}
@@ -302,7 +302,7 @@ class ComponentToPrint extends React.Component {
                           <tr>
                             <td>
                               <table
-                                width={570}
+                                width={"95%"}
                                 border={0}
                                 cellPadding={0}
                                 cellSpacing={0}
@@ -324,11 +324,27 @@ class ComponentToPrint extends React.Component {
                                         verticalAlign: 'top',
                                         padding: '5px 10px 5px 5px',
                                       }}
-                                      width='50%'
+                                      width='25%'
                                       align='left'
                                     >
                                       Name
                                     </th>
+
+                                    <th
+                                      style={{
+                                        fontSize: 12,
+                                        color: '#5b5b5b',
+                                        fontWeight: 'normal',
+                                        lineHeight: 1.6,
+                                        verticalAlign: 'top',
+                                        padding: '5px 10px 5px 5px',
+                                      }}
+                                      width='20%'
+                                      align='left'
+                                    >
+                                      Variation
+                                    </th>
+
                                     <th
                                       style={{
                                         fontSize: 12,
@@ -373,6 +389,10 @@ class ComponentToPrint extends React.Component {
 
                                   {orderDetailState.data['products'].map(
                                     (item) => {
+
+                                      const variationDetail = item.pricing.find(i =>
+                                        i._id == item.variation)
+                                      console.log(variationDetail)
                                       return (
                                         <>
                                           <tr>
@@ -381,7 +401,7 @@ class ComponentToPrint extends React.Component {
                                               style={{
                                                 background: '#bebebe',
                                               }}
-                                              colSpan={4}
+                                              colSpan={5}
                                             />
                                           </tr>
                                           {/* <tr>
@@ -400,6 +420,22 @@ class ComponentToPrint extends React.Component {
                                               className='article'
                                             >
                                               {item.name}
+                                            </td>
+
+                                            <td
+                                              width='15%'
+                                              style={{
+                                                fontSize: 12,
+                                                color: '#ff0000',
+                                                lineHeight: 1.6,
+                                                verticalAlign: 'top',
+                                                padding: '6px 0',
+                                              }}
+                                              className='article'
+                                            >
+                                              {Object.keys(variationDetail.attribute).map(key=>{
+                                                return `${key} : ${variationDetail.attribute[key]}`
+                                              })}
                                             </td>
 
                                             <td

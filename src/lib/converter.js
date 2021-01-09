@@ -4514,12 +4514,9 @@ class Converter {
             id: item.id || item._id,
             shippingAddress: item.billingAddress,
             shortCode: item.shortCode || '',
-            name:
-              item.shippingAddress &&
-              item.shippingAddress['firstName'] &&
-              item.shippingAddress['firstName'] + ' ' + item.shippingAddress &&
-              item.shippingAddress['lastName'] &&
-              item.shippingAddress['lastName'],
+            name: item.customer ? (item.customer.firstName + " " + item.customer.lastName)
+                : item.shippingAddress && (item.shippingAddress.firstName + item.shippingAddress.lastName),
+            
             country:
               item.shippingAddress &&
               item.shippingAddress['country'] &&
@@ -4639,12 +4636,8 @@ class Converter {
                 : item.status && Object.keys(item.status).length > 0
                   ? item.status['name']
                   : 'pending',
-            name:
-              item.shippingAddress &&
-              item.shippingAddress['firstName'] &&
-              item.shippingAddress['firstName'] + ' ' + item.shippingAddress &&
-              item.shippingAddress['lastName'] &&
-              item.shippingAddress['lastName'],
+            name: item.customer ? (item.customer.firstName + " " + item.customer.lastName)
+                : item.shippingAddress && (item.shippingAddress.firstName + item.shippingAddress.lastName),
             country:
               item.shippingAddress &&
               item.shippingAddress['country'] &&
