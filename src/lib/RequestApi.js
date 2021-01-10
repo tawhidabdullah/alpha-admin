@@ -188,5 +188,7 @@ class RequestApi {
     }
 }
 
-module.exports = new RequestApi();
+const instance = new RequestApi()
+export default  instance;
+module.exports = instance;
 module.exports.RequestApi = RequestApi;
