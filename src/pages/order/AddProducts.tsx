@@ -35,7 +35,7 @@ const Tags = ({
     const handleChange = (selectItems) => {
         setselectedOptions(selectItems);
 
-        if (productListState.done && productListState.data.data.length > 0 && selectItems.length > 0) {
+        if (productListState.done && productListState.data && productListState.data.data.length > 0 && selectItems.length > 0) {
             const selectedCategoryIds = selectItems.map((item) => {
                 const selectedcategory = productListState.data.data.find(
                     (cat) => cat.name.toLowerCase() === item.toLowerCase()
@@ -59,7 +59,7 @@ const Tags = ({
     return (
         <>
             <Skeleton loading={productListState.isLoading}>
-                {productListState.done && productListState.data.data.length > 0 && <Select
+                {productListState.done && productListState.data && productListState.data.data.length > 0 && <Select
                     mode="multiple"
                     placeholder="search products"
                     value={selectedOpions}

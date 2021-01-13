@@ -69,9 +69,9 @@ class RequestApi {
 
         if (RequestApi.isAbsoluteUrl(url)) return url; //absolute url passed; ignored baseurl
         else {
-            if (!baseURL) throw new Error("Invalid URL, make sure to pass baseURL if first argument contains relative URL");
+            // if (!baseURL) throw new Error("Invalid URL, make sure to pass baseURL if first argument contains relative URL");
 
-            if (url[0] !== "/" && baseURL[baseURL.length - 1] !== '/') url = "/" + url; //add forward slash if not present
+            // if (url[0] !== "/" && baseURL[baseURL.length - 1] !== '/') url = "/" + url; //add forward slash if not present
 
             return baseURL + url;
         }
@@ -188,7 +188,6 @@ class RequestApi {
     }
 }
 
-const instance = new RequestApi()
+export const instance = new RequestApi()
+instance.RequestApi = RequestApi;
 export default  instance;
-module.exports = instance;
-module.exports.RequestApi = RequestApi;

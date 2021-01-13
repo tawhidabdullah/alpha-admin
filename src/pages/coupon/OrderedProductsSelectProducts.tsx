@@ -63,7 +63,7 @@ const Products = ({ setProductIds, productIds }: Props) => {
 
         // console.log('selectedProducts', selectItems);
         console.log({productState})
-        if (productState.done && productState.data.data.length > 0 && selectItems.length > 0) {
+        if (productState.done && productState.data && productState.data.data.length > 0 && selectItems.length > 0) {
             const selectedCategoryIds = selectItems.map((item) => {
                 const selectedcategory = productState.data.data.find(
                     (cat) => cat.name.toLowerCase() === item.toLowerCase()
@@ -91,7 +91,7 @@ const Products = ({ setProductIds, productIds }: Props) => {
 
             <Skeleton loading={productState.isLoading}>
                 {console.log(productState)}
-                {productState.done && productState.data.data.length > 0 && <Select
+                {productState.done && productState.data && productState.data.data.length > 0 && <Select
                     mode="multiple"
                     placeholder="search products"
                     value={selectedOpions}
@@ -104,7 +104,7 @@ const Products = ({ setProductIds, productIds }: Props) => {
                         </Select.Option>
                     ))}
                 </Select>}
-                {productState.done && productState.data.data && !(productState.data.data.length > 0) && (
+                {productState.done && productState.data && productState.data.data && !(productState.data.data.length > 0) && (
                     <div style={{
                         marginLeft: '32px'
                     }}>

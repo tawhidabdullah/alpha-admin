@@ -48,6 +48,9 @@ import { isAccess } from "../../utils";
 import { connect } from "react-redux";
 
 
+import requestApi from "./../../lib/RequestApi.js";
+requestApi.baseURL = config.baseURL;
+
 const { Column, ColumnGroup } = Table;
 const { Search } = Input;
 
