@@ -197,7 +197,11 @@ const MyTable = ({ data, setProductList, roles, productListState, searchList }: 
 
   const getCover = (record: any) => {
     if (record.cover) {
-      return record.cover;
+      if(typeof record.cover == "string"){
+        return record.cover;
+      }else if(typeof record.cover == "object"){
+        return record.cover.thumbnail;
+      }
     } else return "";
   };
 
@@ -227,7 +231,7 @@ const MyTable = ({ data, setProductList, roles, productListState, searchList }: 
               <div
                 className="listCoverImage"
                 onClick={() => {
-                  history.push(`/admin/product/${record.id}`);
+                  history.push(`/admin/product/${record.id || record._id}`);
                   setactiveCategoryForEdit(record);
                 }}
               >
@@ -246,7 +250,7 @@ const MyTable = ({ data, setProductList, roles, productListState, searchList }: 
             <>
               <h4
                 onClick={() => {
-                  history.push(`/admin/product/${record.id}`);
+                  history.push(`/admin/product/${record.id || record._id}`);
                   setactiveCategoryForEdit(record);
                 }}
                 style={{
